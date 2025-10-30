@@ -1,4 +1,4 @@
-package com.example.itshalloween
+package com.example.itshalloween.ui.screens.cardcreation
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -25,6 +25,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.itshalloween.R
 import com.example.itshalloween.ui.theme.Gray
 import com.example.itshalloween.ui.theme.SoftBlack
 import com.example.itshalloween.ui.theme.White
@@ -33,7 +34,7 @@ import com.example.itshalloween.ui.theme.White
 val tabItems = listOf("Elements", "Background")
 
 @Composable
-fun CreateCardScreen(onBackClicked: () -> Unit = {}, onNextClicked: () -> Unit = {}) {
+fun CardCreationScreen(onBackClicked: () -> Unit = {}, onNextClicked: () -> Unit = {}) {
     // 현재 선택된 토글 상태를 저장하는 변수 (첫 번째 탭이 기본값)
     var selection by remember { mutableStateOf(tabItems.first()) }
 
@@ -226,6 +227,6 @@ fun SelectableGrid(items: List<Int>, columns: Int, selectedItemIndex: Int) {
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun NewCardScreenPreview() {
-    CreateCardScreen()
+fun CardCreationScreenPreview() {
+    CardCreationScreen()
 }

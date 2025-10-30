@@ -1,4 +1,4 @@
-package com.example.itshalloween
+package com.example.itshalloween.ui.screens.cardeditor
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -29,6 +29,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.itshalloween.R
 import com.example.itshalloween.ui.theme.Orange
 import com.example.itshalloween.ui.theme.SoftBlack
 import com.example.itshalloween.ui.theme.White
@@ -48,7 +49,7 @@ data class DraggableTextInfo(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FinalizeCardScreen(
+fun CardEditorScreen(
     onBackClicked: () -> Unit = {},
     onShareClicked: () -> Unit = {}
 ) {
@@ -182,6 +183,6 @@ fun DraggableEditableTextField(
 
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
-fun FinalizeCardScreenPreview() {
-    FinalizeCardScreen()
+fun CardEditorScreenPreview() {
+    CardEditorScreen()
 }

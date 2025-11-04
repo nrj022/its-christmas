@@ -10,7 +10,6 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -19,10 +18,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.itshalloween.R
@@ -34,69 +31,26 @@ import com.example.itshalloween.ui.theme.White
 val tabItems = listOf("Elements", "Background")
 
 @Composable
-fun CardCreationScreen(onBackClicked: () -> Unit = {}, onNextClicked: () -> Unit = {}) {
+fun CardCreationBottomScreen(onNextClicked: () -> Unit = {}) {
     // 현재 선택된 토글 상태를 저장하는 변수 (첫 번째 탭이 기본값)
     var selection by remember { mutableStateOf(tabItems.first()) }
 
-    Scaffold (
-        modifier = Modifier.fillMaxSize(),
-    ) { innerPadding ->
-        Column(modifier = Modifier.fillMaxSize()) {
-            // 1. 상단 이미지 및 뒤로가기 버튼 영역
-            TopImageSection(topPadding = innerPadding.calculateTopPadding(), onBackClicked = onBackClicked)
-
-            // 2. 하단 인터랙션 영역
-            BottomInteractionSection(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f), // 남은 공간을 모두 차지하도록 weight 설정
-                selectedTab = selection,
-                onTabSelected = { selection = it },
-                onNextClicked = onNextClicked
-            )
-        }
-    }
+    CardCreationBottomContent(
+        selectedTab = selection,
+        onTabSelected = { selection = it },
+        onNextClicked = onNextClicked
+    )
 }
 
 @Composable
-fun TopImageSection(topPadding: Dp, onBackClicked: () -> Unit) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .fillMaxHeight(0.5f)
-    ) {
-        Image(
-            painter = painterResource(id = R.drawable.img_sample), // 표시할 메인 이미지
-            contentDescription = "Main Card Image",
-            contentScale = ContentScale.Crop,
-            modifier = Modifier.fillMaxSize()
-        )
-        // 뒤로가기 버튼
-        IconButton(
-            onClick = onBackClicked,
-            modifier = Modifier
-                .padding(16.dp)
-                .padding(top = topPadding)
-                .background(White.copy(alpha = 0.5f), CircleShape)
-        ) {
-            Icon(
-                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = "Back",
-                tint = SoftBlack
-            )
-        }
-    }
-}
-
-@Composable
-fun BottomInteractionSection(
+fun CardCreationBottomContent(
     modifier: Modifier = Modifier,
     selectedTab: String,
     onTabSelected: (String) -> Unit,
     onNextClicked: () -> Unit
 ) {
     Column(
-        modifier = modifier.background(White)
+        modifier = modifier.fillMaxWidth().background(White)
     ) {
         // "Elements", "Background" 토글 및 "NEXT" 버튼이 있는 헤더
         ControlHeader(
@@ -228,5 +182,9 @@ fun SelectableGrid(items: List<Int>, columns: Int, selectedItemIndex: Int) {
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun CardCreationScreenPreview() {
-    CardCreationScreen()
+    CardCreationBottomContent(
+        selectedTab = tabItems.first(),
+        onTabSelected = { },
+        onNextClicked = { }
+    )
 }

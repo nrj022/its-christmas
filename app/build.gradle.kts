@@ -36,10 +36,23 @@ android {
     }
     buildFeatures {
         compose = true
+        viewBinding = true
     }
 }
 
 dependencies {
+    implementation(project(":unityLibrary"))
+    implementation(project(":unityLibrary:mobilenotifications.androidlib"))
+
+    implementation(
+        fileTree(
+            mapOf(
+                "dir" to (findProject(":unityLibrary")?.projectDir?.resolve("libs")
+                    ?: file("D:/Unity/its-halloween-unity/AndroidBuild/unityLibrary/libs")),
+                "include" to listOf("*.jar")
+            )
+        )
+    )
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -49,6 +62,10 @@ dependencies {
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
+    implementation(libs.material)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.navigation.ui.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

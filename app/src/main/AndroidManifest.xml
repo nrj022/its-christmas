@@ -12,6 +12,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ItsHalloween">
         <activity
+            android:name=".ui.screens.cardcreation.CardCreationActivity"
+            android:exported="true"
+            android:theme="@style/Theme.ItsHalloween" >
+        </activity>
+        <activity
             android:name=".ui.screens.main.MainActivity"
             android:exported="true"
             android:label="@string/app_name"

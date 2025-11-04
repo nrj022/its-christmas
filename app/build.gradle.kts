@@ -40,6 +40,18 @@ android {
 }
 
 dependencies {
+    implementation(project(":unityLibrary"))
+    implementation(project(":unityLibrary:mobilenotifications.androidlib"))
+
+    implementation(
+        fileTree(
+            mapOf(
+                "dir" to (findProject(":unityLibrary")?.projectDir?.resolve("libs")
+                    ?: file("D:/Unity/its-halloween-unity/AndroidBuild/unityLibrary/libs")),
+                "include" to listOf("*.jar")
+            )
+        )
+    )
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

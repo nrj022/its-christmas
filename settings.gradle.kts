@@ -1,3 +1,12 @@
+rootProject.name = "It\'s Halloween"
+include(":app")
+include(":unityLibrary")
+project(":unityLibrary").projectDir = File("D:\\Unity\\its-halloween-unity\\AndroidBuild\\unityLibrary")
+
+include(":unityLibrary:mobilenotifications.androidlib")
+project(":unityLibrary:mobilenotifications.androidlib").projectDir =
+    File("D:\\Unity\\its-halloween-unity\\AndroidBuild\\unityLibrary\\mobilenotifications.androidlib")
+
 pluginManagement {
     repositories {
         google {
@@ -11,14 +20,14 @@ pluginManagement {
         gradlePluginPortal()
     }
 }
+
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
+        flatDir {
+            dirs("${project(":unityLibrary").projectDir}/libs")
+        }
         google()
         mavenCentral()
     }
 }
-
-rootProject.name = "It\'s Halloween"
-include(":app")
- 

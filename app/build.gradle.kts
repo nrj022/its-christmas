@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.google.services)
 }
 
 android {
@@ -41,6 +42,10 @@ android {
 }
 
 dependencies {
+    // Firebase
+    implementation(platform(libs.google.firebase.bom))
+    implementation(libs.google.firebase.analytics)
+
     implementation(project(":unityLibrary"))
     implementation(project(":unityLibrary:mobilenotifications.androidlib"))
 

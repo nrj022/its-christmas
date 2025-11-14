@@ -17,6 +17,9 @@ navigationUiKtx = "2.6.0"
 googleServices = "4.4.4"
 firebaseBom = "34.5.0"
 
+# KSP
+ksp = "2.0.21-1.0.27"
+
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -48,4 +51,7 @@ kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "ko
 
 # Firebase
 google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
+
+# KSP
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 

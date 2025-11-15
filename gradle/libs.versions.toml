@@ -20,6 +20,9 @@ firebaseBom = "34.5.0"
 # KSP
 ksp = "2.0.21-1.0.27"
 
+# Room
+room = "2.8.3"
+
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -43,6 +46,12 @@ androidx-navigation-ui-ktx = { group = "androidx.navigation", name = "navigation
 # Firebase
 google-firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
 google-firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics" }
+
+# Room
+androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
+androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
+androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
+
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

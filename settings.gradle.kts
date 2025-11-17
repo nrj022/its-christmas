@@ -31,3 +31,4 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
+include(":core:database")

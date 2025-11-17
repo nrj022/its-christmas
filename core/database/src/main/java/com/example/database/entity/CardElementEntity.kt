@@ -6,10 +6,10 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "card_elements")
 data class CardElementEntity(
     @PrimaryKey(autoGenerate = true)
-    val elementId: Int = 0,
+    val elementId: Long = 0,
 
-    val cardId: Int,              // FK to Card.cardId
-    val assetId: Int? = null,     // null when elementType = TEXT
+    val cardId: Long,              // FK to Card.cardId
+    val assetId: Long? = null,     // null when elementType = TEXT
     val elementType: ElementType, // ASSET / TEXT
 
     // Transform

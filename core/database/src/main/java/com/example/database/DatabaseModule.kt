@@ -10,6 +10,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import javax.inject.Provider
 import javax.inject.Singleton
 
 @Module
@@ -19,27 +20,25 @@ object DatabaseModule {
     @Singleton
     @Provides
     fun provideAppDatabase(
-        @ApplicationContext context: Context
+        @ApplicationContext context: Context,
+        assetDaoProvider: Provider<AssetDao>
     ): AppDatabase {
         return Room.databaseBuilder(
             context,
             AppDatabase::class.java,
-            "app_database"
-        ).build()
+            "app_database.db"
+        )
+        .fallbackToDestructiveMigration()   // DB 스키마 변경 시 기존 데이터 삭제 후 다시 생성 - TODO 마이그레이션 추가
+        .addCallback(AppDatabaseCallback(assetDaoProvider))
+        .build()
     }
 
     @Provides
-    fun provideCardDao(appDatabase: AppDatabase): CardDao {
-        return appDatabase.cardDao()
-    }
+    fun provideCardDao(appDatabase: AppDatabase): CardDao = appDatabase.cardDao()
 
     @Provides
-    fun provideAssetDao(appDatabase: AppDatabase): AssetDao {
-        return appDatabase.assetDao()
-    }
+    fun provideAssetDao(appDatabase: AppDatabase): AssetDao = appDatabase.assetDao()
 
     @Provides
-    fun provideCardElementDao(appDatabase: AppDatabase): CardElementDao {
-        return appDatabase.cardElementDao()
-    }
+    fun provideCardElementDao(appDatabase: AppDatabase): CardElementDao = appDatabase.cardElementDao()
 }

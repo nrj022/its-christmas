@@ -10,7 +10,7 @@ data class AssetEntity(
 
     val assetType: AssetType,         // MODEL / DECORATION / BACKGROUND / TEXT_TEMPLATE
     val unityKey: String,             // Addressable key or prefab name
-    val thumbnailPath: String         // local path or remote URL
+    val thumbnailKey: String         // local path or remote URL
 )
 
 enum class AssetType {

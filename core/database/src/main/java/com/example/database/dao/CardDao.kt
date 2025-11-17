@@ -7,5 +7,5 @@ import com.example.database.entity.CardEntity
 @Dao
 interface CardDao {
     @Query("SELECT * FROM cards")
-    fun getAllCards(): List<CardEntity>
+    suspend fun getAllCards(): List<CardEntity>
 }

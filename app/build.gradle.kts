@@ -44,6 +44,10 @@ android {
 }
 
 dependencies {
+
+    implementation(project(":core:designsystem"))
+    implementation(project(":feature:card"))
+
     // Hilt
     implementation(libs.google.hilt.android)
     ksp(libs.google.hilt.compiler)
@@ -51,20 +55,6 @@ dependencies {
     // Firebase
     implementation(platform(libs.google.firebase.bom))
     implementation(libs.google.firebase.analytics)
-
-    implementation(project(":unityLibrary"))
-    implementation(project(":core:designsystem"))
-    implementation(project(":unityLibrary:mobilenotifications.androidlib"))
-
-    implementation(
-        fileTree(
-            mapOf(
-                "dir" to (findProject(":unityLibrary")?.projectDir?.resolve("libs")
-                    ?: file("D:/Unity/its-halloween-unity/AndroidBuild/unityLibrary/libs")),
-                "include" to listOf("*.jar")
-            )
-        )
-    )
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

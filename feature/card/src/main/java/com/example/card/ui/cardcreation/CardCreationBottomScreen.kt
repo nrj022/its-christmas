@@ -1,4 +1,4 @@
-package com.example.itshalloween.ui.screens.cardcreation
+package com.example.card.ui.cardcreation
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -22,10 +22,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.card.R
 import com.example.designsystem.theme.Gray
 import com.example.designsystem.theme.SoftBlack
 import com.example.designsystem.theme.White
-import com.example.itshalloween.R
 
 // 토글 탭 목록 정의
 val tabItems = listOf("Elements", "Background")

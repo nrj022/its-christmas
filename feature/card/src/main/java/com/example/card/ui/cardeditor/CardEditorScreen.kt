@@ -1,4 +1,4 @@
-package com.example.itshalloween.ui.screens.cardeditor
+package com.example.card.ui.cardeditor
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -29,10 +29,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.card.R
 import com.example.designsystem.theme.Orange
 import com.example.designsystem.theme.SoftBlack
 import com.example.designsystem.theme.White
-import com.example.itshalloween.R
 import kotlin.math.roundToInt
 
 /**

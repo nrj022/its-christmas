@@ -13,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ItsHalloween">
         <activity
-            android:name=".ui.screens.cardcreation.CardCreationActivity"
+            android:name="com.example.card.ui.cardcreation.CardCreationActivity"
             android:exported="true"
             android:theme="@style/Theme.ItsHalloween" >
         </activity>

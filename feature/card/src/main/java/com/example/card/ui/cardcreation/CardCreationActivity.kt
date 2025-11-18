@@ -1,11 +1,11 @@
-package com.example.itshalloween.ui.screens.cardcreation
+package com.example.card.ui.cardcreation
 
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.MotionEvent
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
-import com.example.itshalloween.databinding.ActivityCardCreationBinding
+import com.example.card.databinding.ActivityCardCreationBinding
 import com.unity3d.player.UnityPlayerForActivityOrService
 
 class CardCreationActivity : AppCompatActivity() {

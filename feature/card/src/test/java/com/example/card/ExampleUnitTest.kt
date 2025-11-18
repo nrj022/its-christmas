@@ -1,4 +1,4 @@
-package com.example.cardcreation
+package com.example.card
 
 import org.junit.Test
 

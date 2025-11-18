@@ -1,0 +1,61 @@
+package com.example.card.ui.cardcreation
+
+import android.annotation.SuppressLint
+import android.os.Bundle
+import android.view.MotionEvent
+import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
+import com.example.card.databinding.ActivityCardCreationBinding
+import com.unity3d.player.UnityPlayerForActivityOrService
+
+class CardCreationActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityCardCreationBinding
+    private lateinit var unityPlayer: UnityPlayerForActivityOrService
+
+    @SuppressLint("ClickableViewAccessibility")
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityCardCreationBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        unityPlayer = UnityPlayerForActivityOrService(this)
+        (unityPlayer.view.parent as? ViewGroup)?.removeView(unityPlayer.view)
+
+        binding.unityContainer.addView(
+            unityPlayer.view,
+            ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
+            )
+        )
+
+        unityPlayer.view.setOnTouchListener(null)
+        binding.unityContainer.setOnTouchListener { v, event ->
+            unityPlayer.injectEvent(event)
+            if (event.action == MotionEvent.ACTION_UP) v.performClick()
+            true
+        }
+
+        unityPlayer.windowFocusChanged(true)
+
+        binding.composeContainer.setContent {
+            CardCreationBottomScreen()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        unityPlayer.resume()
+    }
+
+    override fun onPause() {
+        unityPlayer.pause()
+        super.onPause()
+    }
+
+    override fun onDestroy() {
+        unityPlayer.destroy()
+        super.onDestroy()
+    }
+}

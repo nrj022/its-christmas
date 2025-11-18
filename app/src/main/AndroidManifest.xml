@@ -13,14 +13,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ItsHalloween">
         <activity
-            android:name=".ui.screens.cardcreation.CardCreationActivity"
+            android:name="com.example.card.ui.cardcreation.CardCreationActivity"
             android:exported="true"
             android:theme="@style/Theme.ItsHalloween" >
         </activity>
         <activity
-            android:name=".ui.screens.main.MainActivity"
+            android:name="com.example.main.ui.MainActivity"
             android:exported="true"
-            android:label="@string/app_name"
             android:theme="@style/Theme.ItsHalloween">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

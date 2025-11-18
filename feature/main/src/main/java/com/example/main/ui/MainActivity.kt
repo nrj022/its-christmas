@@ -1,4 +1,4 @@
-package com.example.itshalloween.ui.screens.main
+package com.example.main.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity

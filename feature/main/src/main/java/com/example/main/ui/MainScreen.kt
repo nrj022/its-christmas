@@ -1,4 +1,4 @@
-package com.example.itshalloween.ui.screens.main
+package com.example.main.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -29,7 +29,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.itshalloween.R
+import com.example.main.R
 
 val halloweenImages = listOf(
     R.drawable.img_sample,

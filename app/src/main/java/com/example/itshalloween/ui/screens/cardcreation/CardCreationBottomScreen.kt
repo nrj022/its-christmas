@@ -22,10 +22,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.designsystem.theme.Gray
+import com.example.designsystem.theme.SoftBlack
+import com.example.designsystem.theme.White
 import com.example.itshalloween.R
-import com.example.itshalloween.ui.theme.Gray
-import com.example.itshalloween.ui.theme.SoftBlack
-import com.example.itshalloween.ui.theme.White
 
 // 토글 탭 목록 정의
 val tabItems = listOf("Elements", "Background")

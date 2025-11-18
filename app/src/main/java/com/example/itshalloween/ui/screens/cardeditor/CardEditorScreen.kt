@@ -29,10 +29,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.designsystem.theme.Orange
+import com.example.designsystem.theme.SoftBlack
+import com.example.designsystem.theme.White
 import com.example.itshalloween.R
-import com.example.itshalloween.ui.theme.Orange
-import com.example.itshalloween.ui.theme.SoftBlack
-import com.example.itshalloween.ui.theme.White
 import kotlin.math.roundToInt
 
 /**

@@ -1,4 +1,4 @@
-package com.example.card.ui.cardcreation
+package com.example.card.ui.cardeditor
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

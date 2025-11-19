@@ -41,7 +41,9 @@ class CardEditorActivity : AppCompatActivity() {
         unityPlayer.windowFocusChanged(true)
 
         binding.composeContainer.setContent {
-            CardCreationBottomScreen()
+            ItsHalloweenTheme {
+                AssetBrowserPanel()
+            }
         }
     }
 

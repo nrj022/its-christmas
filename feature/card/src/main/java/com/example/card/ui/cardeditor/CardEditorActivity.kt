@@ -1,22 +1,24 @@
-package com.example.card.ui.cardcreation
+package com.example.card.ui.cardeditor
 
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.MotionEvent
+import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
-import com.example.card.databinding.ActivityCardCreationBinding
+import com.example.card.databinding.ActivityCardEditorBinding
+import com.example.designsystem.theme.ItsHalloweenTheme
 import com.unity3d.player.UnityPlayerForActivityOrService
 
-class CardCreationActivity : AppCompatActivity() {
+class CardEditorActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityCardCreationBinding
+    private lateinit var binding: ActivityCardEditorBinding
     private lateinit var unityPlayer: UnityPlayerForActivityOrService
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityCardCreationBinding.inflate(layoutInflater)
+        binding = ActivityCardEditorBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         unityPlayer = UnityPlayerForActivityOrService(this)
@@ -37,10 +39,15 @@ class CardCreationActivity : AppCompatActivity() {
             true
         }
 
+        // TODO: ViewModel 연동 후 compose의 my element selected 여부와 visibility 연결
+        binding.elementOptionContainer.visibility = View.VISIBLE
+
         unityPlayer.windowFocusChanged(true)
 
         binding.composeContainer.setContent {
-            CardCreationBottomScreen()
+            ItsHalloweenTheme {
+                CardEditorBottomScreen()
+            }
         }
     }
 

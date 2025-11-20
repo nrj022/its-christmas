@@ -22,7 +22,7 @@
         android:background="@drawable/bg_circle_white_70"
         android:layout_marginTop="30dp"
         android:layout_marginStart="20dp"
-        android:contentDescription="@string/editor_cd_back_img_button"
+        android:contentDescription="@string/common_cd_back_button"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/ic_arrow_left" />

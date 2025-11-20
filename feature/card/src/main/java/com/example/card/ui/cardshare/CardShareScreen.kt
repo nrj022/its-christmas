@@ -1,5 +1,7 @@
 package com.example.card.ui.cardshare
 
+import android.content.Context
+import android.content.Intent
 import android.view.ViewGroup
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -12,7 +14,9 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -23,13 +27,34 @@ import com.example.designsystem.theme.White
 
 @Composable
 fun CardShareScreen(
+) {
+    val context = LocalContext.current
+
+    CardShareContent(
+        cardUrl = "https://its-christmas-1f0ea.firebaseapp.com/",
+        onBackClicked = {},
+        onCompleteClicked = {},
+        onShareClicked = { context.shareCard("https://")}
+    )
+}
+
+private fun Context.shareCard(cardUrl: String) {
+    val intent = Intent(Intent.ACTION_SEND)
+    intent.putExtra(Intent.EXTRA_TEXT, cardUrl)
+    intent.type = "text/plain"
+    startActivity(Intent.createChooser(intent, null))
+}
+
+@Composable
+fun CardShareContent(
+    cardUrl: String = "",
     onBackClicked: () -> Unit = {},
     onCompleteClicked: () -> Unit = {},
     onShareClicked: () -> Unit = {}
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
 
-        WebView()
+        CardShareWebView(cardUrl)
 
         TopSection(onBackClicked, onCompleteClicked)
 
@@ -60,7 +85,7 @@ fun BackButton(onBackClicked: () -> Unit) {
     ) {
         Icon(
             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-            contentDescription = "Back",
+            contentDescription = stringResource(R.string.common_cd_back_button),
             tint = SoftBlack
         )
     }
@@ -74,14 +99,14 @@ fun CompleteButton(onCompleteClicked: () -> Unit) {
         colors = ButtonDefaults.buttonColors(containerColor = White, contentColor = SoftBlack),
     ) {
         Text(
-            text = "Complete",
+            text = stringResource(R.string.share_label_complete_button),
             fontWeight = FontWeight.Bold,
         )
     }
 }
 
 @Composable
-fun WebView() {
+fun CardShareWebView(cardUrl: String) {
     AndroidView(
         factory = { context ->
             val webView = WebView(context)
@@ -103,7 +128,7 @@ fun WebView() {
                 )
             }
         }, update = { webView ->
-            webView.loadUrl("https://its-christmas-1f0ea.firebaseapp.com/")
+            webView.loadUrl(cardUrl)
         }
     )
 }
@@ -127,11 +152,11 @@ fun BoxScope.ShareButton(onShareClicked: () -> Unit) {
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_share),
-                    contentDescription = "Share",
+                    contentDescription = stringResource(R.string.share_cd_share_button),
                     tint = SoftBlack
                 )
                 Text(
-                    text = "Share",
+                    text = stringResource(R.string.share_label_share_button),
                     fontWeight = FontWeight.Bold,
                 )
             }
@@ -141,6 +166,6 @@ fun BoxScope.ShareButton(onShareClicked: () -> Unit) {
 
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
-fun CardEditorScreenPreview() {
-    CardShareScreen()
+fun CardShareScreenPreview() {
+    CardShareContent()
 }

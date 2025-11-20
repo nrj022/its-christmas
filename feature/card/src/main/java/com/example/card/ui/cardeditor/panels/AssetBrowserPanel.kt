@@ -138,13 +138,13 @@ fun ControlHeader(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = stringResource(R.string.editor_label_next),
+                text = stringResource(R.string.editor_label_next_button),
                 style = MaterialTheme.typography.labelSmall,
                 fontSize = 14.sp
             )
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowForward,
-                contentDescription = stringResource(R.string.editor_cd_next),
+                contentDescription = stringResource(R.string.editor_cd_next_button),
                 modifier = Modifier.size(14.dp),
                 tint = SoftBlack
             )

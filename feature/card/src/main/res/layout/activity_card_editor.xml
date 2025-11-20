@@ -27,32 +27,41 @@
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/ic_arrow_left" />
 
-    <ImageButton
-        android:id="@+id/img_btn_delete"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:background="@drawable/bg_circle_white"
-        android:elevation="2dp"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/element_option_container"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
-        android:layout_marginStart="20dp"
-        android:contentDescription="@string/editor_cd_delete_img_button"
+        android:layout_marginHorizontal="20dp"
         app:layout_constraintBottom_toBottomOf="@+id/unity_container"
-        app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/ic_trash_bin" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
 
-    <android.widget.Button
-        android:id="@+id/btn_adjust"
-        android:layout_width="wrap_content"
-        android:layout_height="48dp"
-        android:text="@string/editor_btn_adjust"
-        android:textAllCaps="false"
-        android:fontFamily="@font/irish_grover_regular"
-        android:backgroundTint="#FFFFFF"
-        android:background="@drawable/bg_rounded_rect_white"
-        android:layout_marginBottom="20dp"
-        android:layout_marginEnd="20dp"
-        app:layout_constraintBottom_toBottomOf="@+id/unity_container"
-        app:layout_constraintEnd_toEndOf="parent" />
+        <ImageButton
+            android:id="@+id/img_btn_delete"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/bg_circle_white"
+            android:contentDescription="@string/editor_cd_delete_img_button"
+            android:elevation="2dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:srcCompat="@drawable/ic_trash_bin" />
+
+        <android.widget.Button
+            android:id="@+id/btn_adjust"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:background="@drawable/bg_rounded_rect_white"
+            android:backgroundTint="#FFFFFF"
+            android:fontFamily="@font/irish_grover_regular"
+            android:text="@string/editor_btn_adjust"
+            android:textAllCaps="false"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.compose.ui.platform.ComposeView
         android:id="@+id/compose_container"

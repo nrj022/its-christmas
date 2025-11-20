@@ -3,6 +3,7 @@ package com.example.card.ui.cardeditor
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.MotionEvent
+import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import com.example.card.databinding.ActivityCardEditorBinding
@@ -37,6 +38,9 @@ class CardEditorActivity : AppCompatActivity() {
             if (event.action == MotionEvent.ACTION_UP) v.performClick()
             true
         }
+
+        // TODO: ViewModel 연동 후 compose의 my element selected 여부와 visibility 연결
+        binding.elementOptionContainer.visibility = View.VISIBLE
 
         unityPlayer.windowFocusChanged(true)
 

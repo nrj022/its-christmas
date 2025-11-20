@@ -43,16 +43,15 @@ enum class Direction {
  */
 @Composable
 fun TransformControlPanel(
-    scale: Int,
-    onScaleChange: (Int) -> Unit,
-    onDirectionalClick: (Direction) -> Unit,
-    onReset: () -> Unit,
-    onCancel: () -> Unit,
-    onApply: () -> Unit,
-    modifier: Modifier = Modifier
+    scale: Int = 1,
+    onScaleChange: (Int) -> Unit = {},
+    onDirectionalClick: (Direction) -> Unit = {},
+    onReset: () -> Unit = {},
+    onCancel: () -> Unit = {},
+    onApply: () -> Unit = {},
 ) {
     Column(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
             .padding(16.dp),
@@ -250,20 +249,6 @@ private fun ScaleAdjustButton(
 @Composable
 fun ControllerPreview() {
     MaterialTheme {
-        var scale by remember { mutableIntStateOf(1) }
-        TransformControlPanel(
-            scale = scale,
-            onScaleChange = { newQuantity ->
-                if (newQuantity > 0) { // 0 이하로 내려가지 않도록 예시
-                    scale = newQuantity
-                }
-            },
-            onCancel = { },
-            onApply = { },
-            onDirectionalClick = { direction ->
-                println("$direction clicked")
-            },
-            onReset = { }
-        )
+        TransformControlPanel()
     }
 }

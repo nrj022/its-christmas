@@ -1,6 +1,12 @@
 <resources>
-    <string name="creation_cd_back_img_button">Go back</string>
-    <string name="creation_cd_delete_img_button">Delete Element</string>
+    <string name="editor_cd_back_img_button">Go back</string>
+    <string name="editor_cd_delete_img_button">Delete Element</string>
+    <string name="editor_btn_adjust">Adjust</string>
 
-    <string name="creation_btn_adjust">Adjust</string>
+    <string name="editor_title_asset_tab_elements">Elements</string>
+    <string name="editor_title_asset_tab_background">Background</string>
+    <string name="editor_label_next">Next</string>
+    <string name="editor_cd_next">Next</string>
+    <string name="editor_title_my_elements_list">My Elements</string>
+    <string name="editor_cd_asset">Asset</string>
 </resources>

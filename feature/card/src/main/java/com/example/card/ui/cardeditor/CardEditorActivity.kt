@@ -42,7 +42,7 @@ class CardEditorActivity : AppCompatActivity() {
 
         binding.composeContainer.setContent {
             ItsHalloweenTheme {
-                AssetBrowserPanel()
+                CardEditorBottomScreen()
             }
         }
     }

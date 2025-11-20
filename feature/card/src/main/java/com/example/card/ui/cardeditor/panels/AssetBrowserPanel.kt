@@ -1,4 +1,4 @@
-package com.example.card.ui.cardeditor
+package com.example.card.ui.cardeditor.panels
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -30,26 +31,56 @@ import com.example.designsystem.theme.SoftBlack
 import com.example.designsystem.theme.White
 
 private const val COLUMNS = 3
+
 // 토글 탭 목록 정의
-val tabItems = listOf("Elements", "Background")
+enum class AssetBrowserTab(val resId: Int) {
+    ELEMENTS(R.string.editor_title_asset_tab_elements),
+    BACKGROUND(R.string.editor_title_asset_tab_background)
+}
 
 @Composable
-fun AssetBrowserPanel(onNextClicked: () -> Unit = {}) {
-    // 현재 선택된 토글 상태를 저장하는 변수 (첫 번째 탭이 기본값)
-    var selection by remember { mutableStateOf(tabItems.first()) }
+fun AssetBrowserPanel(
+    elementItems: List<Int> = emptyList(),
+    backgroundItems: List<Int> = emptyList(),
+    myElements: List<Int> = emptyList(),
+    selectedMyElement: Int? = null,
+    selectedBackground: Int = 0,
+    onNextClicked: () -> Unit = {},
+    onElementClicked: (Int) -> Unit = {},
+    onMyElementClicked: (Int) -> Unit = {},
+    onBackgroundClicked: (Int) -> Unit = {},
+) {
 
-    CardCreationBottomContent(
-        selectedTab = selection,
-        onTabSelected = { selection = it },
-        onNextClicked = onNextClicked
+    var selectedTab by remember { mutableStateOf(AssetBrowserTab.ELEMENTS) }
+
+    AssetBrowserPanelContent(
+        selectedTab = selectedTab,
+        elementItems = elementItems,
+        backgroundItems = backgroundItems,
+        myElements = myElements,
+        selectedMyElement = selectedMyElement,
+        selectedBackground = selectedBackground,
+        onTabSelected = { selectedTab = it },
+        onNextClicked = onNextClicked,
+        onElementClicked = onElementClicked,
+        onMyElementClicked = onMyElementClicked,
+        onBackgroundClicked = onBackgroundClicked
     )
 }
 
 @Composable
-fun CardCreationBottomContent(
+fun AssetBrowserPanelContent(
     modifier: Modifier = Modifier,
-    selectedTab: String,
-    onTabSelected: (String) -> Unit,
+    selectedTab: AssetBrowserTab,
+    elementItems: List<Int>,
+    backgroundItems: List<Int>,
+    myElements: List<Int>,
+    selectedMyElement: Int?,
+    selectedBackground: Int,
+    onTabSelected: (AssetBrowserTab) -> Unit,
+    onElementClicked: (Int) -> Unit,
+    onMyElementClicked: (Int) -> Unit,
+    onBackgroundClicked: (Int) -> Unit,
     onNextClicked: () -> Unit
 ) {
     Column(
@@ -62,21 +93,24 @@ fun CardCreationBottomContent(
             onNextClicked = onNextClicked
         )
 
-        // 선택된 토글에 따라 다른 그리드를 표시
-        val gridItems = if (selectedTab == "Elements") {
-            (1..8).toList() // Elements용 임시 데이터
-        } else {
-            (1..12).toList() // Background용 임시 데이터
-        }
-
-        if (selectedTab == "Elements") {
-            MyAssetList(items = gridItems, selectedItemIndex = 0)
-            ClickableGrid(items = gridItems) {}
+        if (selectedTab == AssetBrowserTab.ELEMENTS) {
+            if(myElements.isNotEmpty()) {
+                MyElementList(
+                    items = myElements,
+                    selectedItemIndex = selectedMyElement,
+                    onItemClicked = { onMyElementClicked(it) }
+                )
+            }
+            ClickableGrid(
+                items = elementItems,
+                onItemClicked = { onElementClicked(it) }
+            )
         } else {
             SelectableGrid(
-                items = gridItems,
+                items = backgroundItems,
                 // 첫 번째 아이템이 선택된 것처럼 보이게 처리 (임시)
-                selectedItemIndex = 0
+                selectedItemIndex = selectedBackground,
+                onItemClicked = { onBackgroundClicked(it) }
             )
         }
     }
@@ -84,8 +118,8 @@ fun CardCreationBottomContent(
 
 @Composable
 fun ControlHeader(
-    selectedTab: String,
-    onTabSelected: (String) -> Unit,
+    selectedTab: AssetBrowserTab,
+    onTabSelected: (AssetBrowserTab) -> Unit,
     onNextClicked: () -> Unit
 ) {
     Row(
@@ -96,7 +130,7 @@ fun ControlHeader(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         // "Elements", "Background" 토글 버튼 그룹
-        ToggleButtons(tabs = tabItems, selectedTab = selectedTab, onTabSelected = onTabSelected)
+        ToggleButtons(selectedTab = selectedTab, onTabSelected = onTabSelected)
 
         // "NEXT >" 버튼
         Row(
@@ -104,13 +138,13 @@ fun ControlHeader(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "NEXT",
+                text = stringResource(R.string.editor_label_next),
                 style = MaterialTheme.typography.labelSmall,
                 fontSize = 14.sp
             )
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowForward,
-                contentDescription = "Next",
+                contentDescription = stringResource(R.string.editor_cd_next),
                 modifier = Modifier.size(14.dp),
                 tint = SoftBlack
             )
@@ -120,22 +154,21 @@ fun ControlHeader(
 
 @Composable
 fun ToggleButtons(
-    tabs: List<String>,
-    selectedTab: String,
-    onTabSelected: (String) -> Unit
+    selectedTab: AssetBrowserTab,
+    onTabSelected: (AssetBrowserTab) -> Unit
 ) {
     Row(
         modifier = Modifier
             .clip(CircleShape)
             .padding(vertical = 4.dp)
     ) {
-        tabs.forEachIndexed { index, tabTitle ->
-            val isSelected = selectedTab == tabTitle
+        AssetBrowserTab.entries.forEachIndexed { index, item ->
+            val isSelected = selectedTab == item
             val containerColor = if (isSelected) SoftBlack else Gray
             val contentColor = if (isSelected) White else SoftBlack
 
             Button(
-                onClick = { onTabSelected(tabTitle) },
+                onClick = { onTabSelected(item) },
                 shape = CircleShape,
                 colors = ButtonDefaults.buttonColors(
                     containerColor = containerColor,
@@ -143,12 +176,12 @@ fun ToggleButtons(
                 ),
             ) {
                 Text(
-                    text = tabTitle,
+                    text = stringResource(item.resId),
                     style = MaterialTheme.typography.labelSmall
                 )
             }
 
-            if (index < tabs.size - 1) {
+            if (index < AssetBrowserTab.entries.size - 1) {
                 Spacer(modifier = Modifier.width(8.dp))
             }
         }
@@ -156,11 +189,11 @@ fun ToggleButtons(
 }
 
 @Composable
-fun MyAssetList(items: List<Int>, selectedItemIndex: Int) {
+fun MyElementList(items: List<Int>, selectedItemIndex: Int?, onItemClicked: (Int) -> Unit) {
     Column {
         Text(
             modifier = Modifier.padding(horizontal = 20.dp).padding(bottom = 12.dp),
-            text = "My Elements",
+            text = stringResource(R.string.editor_title_my_elements_list),
             style = MaterialTheme.typography.labelSmall,
             fontSize = 14.sp
         )
@@ -174,7 +207,7 @@ fun MyAssetList(items: List<Int>, selectedItemIndex: Int) {
                 Image(
                     painter = painterResource(id = R.drawable.img_sample),
                     contentScale = ContentScale.Crop,
-                    contentDescription = "Element",
+                    contentDescription = stringResource(R.string.editor_cd_asset),
                     modifier = Modifier
                         .size(90.dp)
                         .border(
@@ -183,7 +216,7 @@ fun MyAssetList(items: List<Int>, selectedItemIndex: Int) {
                             RoundedCornerShape(10.dp)
                         )
                         .clip(RoundedCornerShape(10.dp))
-                        .clickable { }
+                        .clickable { onItemClicked(index) }
                 )
             }
         }
@@ -203,7 +236,7 @@ fun ClickableGrid(items: List<Int>, onItemClicked: (Int) -> Unit) {
             Image(
                 painter = painterResource(id = R.drawable.img_sample),
                 contentScale = ContentScale.Crop,
-                contentDescription = "Element",
+                contentDescription = stringResource(R.string.editor_cd_asset),
                 modifier = Modifier
                     .aspectRatio(1f)
                     .fillMaxSize()
@@ -216,7 +249,7 @@ fun ClickableGrid(items: List<Int>, onItemClicked: (Int) -> Unit) {
 }
 
 @Composable
-fun SelectableGrid(items: List<Int>, selectedItemIndex: Int) {
+fun SelectableGrid(items: List<Int>, selectedItemIndex: Int, onItemClicked: (Int) -> Unit) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(COLUMNS),
         modifier = Modifier.padding(horizontal = 16.dp),
@@ -228,7 +261,7 @@ fun SelectableGrid(items: List<Int>, selectedItemIndex: Int) {
             Image(
                 painter = painterResource(id = R.drawable.img_sample),
                 contentScale = ContentScale.Crop,
-                contentDescription = "Element",
+                contentDescription = stringResource(R.string.editor_cd_asset),
                 modifier = Modifier
                     .aspectRatio(1f) // 1:1 비율 유지
                     .border(
@@ -237,7 +270,7 @@ fun SelectableGrid(items: List<Int>, selectedItemIndex: Int) {
                         RoundedCornerShape(16.dp)
                     )
                     .clip(RoundedCornerShape(16.dp))
-                    .clickable { }
+                    .clickable { onItemClicked(index) }
             )
         }
     }
@@ -247,9 +280,9 @@ fun SelectableGrid(items: List<Int>, selectedItemIndex: Int) {
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun CardCreationScreenPreview() {
-    CardCreationBottomContent(
-        selectedTab = tabItems.first(),
-        onTabSelected = { },
-        onNextClicked = { }
+    AssetBrowserPanel(
+        myElements = (0..2).toList(),
+        elementItems = (0..7).toList(),
+        backgroundItems = (0..5).toList()
     )
 }

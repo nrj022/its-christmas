@@ -1,4 +1,4 @@
-package com.example.card.ui.cardeditor
+package com.example.card.ui.cardeditor.panels
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

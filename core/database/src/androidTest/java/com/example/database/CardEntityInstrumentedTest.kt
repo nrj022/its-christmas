@@ -4,10 +4,10 @@ import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.example.database.dao.AssetDao
-import com.example.database.data.InitialData
+import com.example.database.dao.CardDao
 import com.example.database.entity.AssetEntity
 import com.example.database.entity.AssetType
+import com.example.database.entity.CardEntity
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.runBlocking
 import org.junit.After
@@ -22,50 +22,52 @@ import java.io.IOException
  * See [testing documentation](http://d.android.com/tools/testing).
  */
 @RunWith(AndroidJUnit4::class)
-class AssetEntityInstrumentedTest {
-    private lateinit var assetDao: AssetDao
+class CardEntityInstrumentedTest {
+    private lateinit var cardDao: CardDao
     private lateinit var db: AppDatabase
+
+    private val card = CardEntity(
+        cardId = 0,
+        title ="card_001",
+        glbKey = "sample",
+        isDraft = false,
+        createdAt = System.currentTimeMillis(),
+        updatedAt = System.currentTimeMillis()
+    )
 
     @Before
     fun createDb() {
         val context = ApplicationProvider.getApplicationContext<Context>()
         db = Room.inMemoryDatabaseBuilder(context, AppDatabase::class.java)
             .build()
-        assetDao = db.assetDao()
+        cardDao = db.cardDao()
     }
 
     @Test
     fun insertAndReadAsset() = runBlocking {
-        assetDao.insertAll(InitialData.getInitialAssets())
+        cardDao.insertCard(card)
+        val cards = cardDao.getAllCards()
 
+        assertThat(cards).hasSize(1)
+        assertThat(cards.first().title).isEqualTo("card_001")
+    }
+
+    @Test
+    fun updateCardBackground() = runBlocking {
         val asset = AssetEntity(
             assetId = 0, // autoGenerate면 0 넣기
             assetType = AssetType.MODEL,
             unityKey = "m_003",
             thumbnailKey = "thumb_m_003"
         )
-        val id = assetDao.insertAsset(asset)
-        val assets = assetDao.getAll()
+        db.assetDao().insertAsset(asset)
 
-        assertThat(assets).hasSize(3)
-        assertThat(id).isGreaterThan(2)
-        assertThat(assets.first().unityKey).isEqualTo("m_001")
-        assertThat(assets.last().unityKey).isEqualTo("m_003")
-    }
+        val id = cardDao.insertCard(card)
+        cardDao.updateBackgroundAssetId(id, 1)
 
-    @Test
-    fun readByType() = runBlocking {
-        val asset = AssetEntity(
-            assetId = 0, // autoGenerate면 0 넣기
-            assetType = AssetType.BACKGROUND,
-            unityKey = "bg_001",
-            thumbnailKey = "thumb_bg_001"
-        )
+        val card = cardDao.getCardById(id)
 
-        val id = assetDao.insertAsset(asset)
-        val assets = assetDao.getByType(AssetType.MODEL)
-
-        assertThat(id).isNotIn(assets)
+        assertThat(card.backgroundAssetId?.let { db.assetDao().getById(it).unityKey }).isEqualTo("m_003")
     }
 
     @After

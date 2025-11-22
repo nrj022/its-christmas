@@ -40,7 +40,7 @@ class AssetEntityInstrumentedTest {
 
         val asset = AssetEntity(
             assetId = 0, // autoGenerate면 0 넣기
-            assetType = AssetType.MODEL,
+            assetType = AssetType.OBJECT,
             unityKey = "m_003",
             thumbnailKey = "thumb_m_003"
         )
@@ -63,7 +63,7 @@ class AssetEntityInstrumentedTest {
         )
 
         val id = assetDao.insertAsset(asset)
-        val assets = assetDao.getByType(AssetType.MODEL)
+        val assets = assetDao.getByType(AssetType.OBJECT)
 
         assertThat(id).isNotIn(assets)
     }

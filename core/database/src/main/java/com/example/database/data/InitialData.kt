@@ -7,8 +7,8 @@ object InitialData {
     fun getInitialAssets(): List<AssetEntity> {
         return listOf(
             // 모델
-            AssetEntity(assetType = AssetType.MODEL, unityKey = "m_001", thumbnailKey = "thumb_m_001"),
-            AssetEntity(assetType = AssetType.MODEL, unityKey = "m_002", thumbnailKey = "thumb_m_002")
+            AssetEntity(assetType = AssetType.OBJECT, unityKey = "m_001", thumbnailKey = "thumb_m_001"),
+            AssetEntity(assetType = AssetType.OBJECT, unityKey = "m_002", thumbnailKey = "thumb_m_002")
         )
     }
 

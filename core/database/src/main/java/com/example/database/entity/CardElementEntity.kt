@@ -10,7 +10,7 @@ data class CardElementEntity(
 
     val cardId: Long,              // FK to Card.cardId
     val assetId: Long? = null,     // null when elementType = TEXT
-    val elementType: ElementType, // ASSET / TEXT
+    val elementType: ElementType, // OBJECT / TEXT
 
     // Transform
     val posX: Int,
@@ -35,7 +35,7 @@ data class CardElementEntity(
 )
 
 enum class ElementType {
-    ASSET,
+    OBJECT,
     TEXT
 }
 

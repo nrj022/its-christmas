@@ -11,23 +11,23 @@ import com.example.card.ui.cardeditor.panels.TransformControlPanel
 
 @Composable
 fun CardEditorBottomScreen() {
-    var myElements by remember { mutableStateOf(emptyList<Int>()) }
+    var myObjects by remember { mutableStateOf(emptyList<Int>()) }
     var selectedBackground by remember { mutableIntStateOf(0) }
-    var selectedMyElement by remember { mutableStateOf<Int?>(null) }
+    var selectedMyObject by remember { mutableStateOf<Int?>(null) }
 
     var scale by remember { mutableIntStateOf(1) }
 
     // TODO: UI State에 따라 각 Panel 표시 상태 변경
     AssetBrowserPanel(
-        elementItems = (0..7).toList(), // 임시 데이터
+        objectItems = (0..7).toList(), // 임시 데이터
         backgroundItems = (0..5).toList(),  // 임시 데이터
-        myElements = myElements,
-        selectedMyElement = selectedMyElement,
+        myObjects = myObjects,
+        selectedMyObject = selectedMyObject,
         selectedBackground = selectedBackground,
         onNextClicked = {},
-        onElementClicked = { myElements += it },
-        onMyElementClicked = {
-            selectedMyElement = if (selectedMyElement == it) null else it
+        onObjectClicked = { myObjects += it },
+        onMyObjectClicked = {
+            selectedMyObject = if (selectedMyObject == it) null else it
         },
         onBackgroundClicked = { selectedBackground = it }
     )

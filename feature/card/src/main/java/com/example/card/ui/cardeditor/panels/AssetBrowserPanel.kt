@@ -34,36 +34,36 @@ private const val COLUMNS = 3
 
 // 토글 탭 목록 정의
 enum class AssetBrowserTab(val resId: Int) {
-    ELEMENTS(R.string.editor_title_asset_tab_elements),
+    OBJECTS(R.string.editor_title_asset_tab_objects),
     BACKGROUND(R.string.editor_title_asset_tab_background)
 }
 
 @Composable
 fun AssetBrowserPanel(
-    elementItems: List<Int> = emptyList(),
+    objectItems: List<Int> = emptyList(),
     backgroundItems: List<Int> = emptyList(),
-    myElements: List<Int> = emptyList(),
-    selectedMyElement: Int? = null,
+    myObjects: List<Int> = emptyList(),
+    selectedMyObject: Int? = null,
     selectedBackground: Int = 0,
     onNextClicked: () -> Unit = {},
-    onElementClicked: (Int) -> Unit = {},
-    onMyElementClicked: (Int) -> Unit = {},
+    onObjectClicked: (Int) -> Unit = {},
+    onMyObjectClicked: (Int) -> Unit = {},
     onBackgroundClicked: (Int) -> Unit = {},
 ) {
 
-    var selectedTab by remember { mutableStateOf(AssetBrowserTab.ELEMENTS) }
+    var selectedTab by remember { mutableStateOf(AssetBrowserTab.OBJECTS) }
 
     AssetBrowserPanelContent(
         selectedTab = selectedTab,
-        elementItems = elementItems,
+        ObjectItems = objectItems,
         backgroundItems = backgroundItems,
-        myElements = myElements,
-        selectedMyElement = selectedMyElement,
+        myObjects = myObjects,
+        selectedMyObject = selectedMyObject,
         selectedBackground = selectedBackground,
         onTabSelected = { selectedTab = it },
         onNextClicked = onNextClicked,
-        onElementClicked = onElementClicked,
-        onMyElementClicked = onMyElementClicked,
+        onObjectClicked = onObjectClicked,
+        onMyObjectClicked = onMyObjectClicked,
         onBackgroundClicked = onBackgroundClicked
     )
 }
@@ -72,38 +72,38 @@ fun AssetBrowserPanel(
 fun AssetBrowserPanelContent(
     modifier: Modifier = Modifier,
     selectedTab: AssetBrowserTab,
-    elementItems: List<Int>,
+    ObjectItems: List<Int>,
     backgroundItems: List<Int>,
-    myElements: List<Int>,
-    selectedMyElement: Int?,
+    myObjects: List<Int>,
+    selectedMyObject: Int?,
     selectedBackground: Int,
     onTabSelected: (AssetBrowserTab) -> Unit,
-    onElementClicked: (Int) -> Unit,
-    onMyElementClicked: (Int) -> Unit,
+    onObjectClicked: (Int) -> Unit,
+    onMyObjectClicked: (Int) -> Unit,
     onBackgroundClicked: (Int) -> Unit,
     onNextClicked: () -> Unit
 ) {
     Column(
         modifier = modifier.fillMaxWidth().background(White)
     ) {
-        // "Elements", "Background" 토글 및 "NEXT" 버튼이 있는 헤더
+        // "3D Object", "Background" 토글 및 "NEXT" 버튼이 있는 헤더
         ControlHeader(
             selectedTab = selectedTab,
             onTabSelected = onTabSelected,
             onNextClicked = onNextClicked
         )
 
-        if (selectedTab == AssetBrowserTab.ELEMENTS) {
-            if(myElements.isNotEmpty()) {
-                MyElementList(
-                    items = myElements,
-                    selectedItemIndex = selectedMyElement,
-                    onItemClicked = { onMyElementClicked(it) }
+        if (selectedTab == AssetBrowserTab.OBJECTS) {
+            if(myObjects.isNotEmpty()) {
+                MyObjectList(
+                    items = myObjects,
+                    selectedItemIndex = selectedMyObject,
+                    onItemClicked = { onMyObjectClicked(it) }
                 )
             }
             ClickableGrid(
-                items = elementItems,
-                onItemClicked = { onElementClicked(it) }
+                items = ObjectItems,
+                onItemClicked = { onObjectClicked(it) }
             )
         } else {
             SelectableGrid(
@@ -129,7 +129,7 @@ fun ControlHeader(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        // "Elements", "Background" 토글 버튼 그룹
+        // "3D Object", "Background" 토글 버튼 그룹
         ToggleButtons(selectedTab = selectedTab, onTabSelected = onTabSelected)
 
         // "NEXT >" 버튼
@@ -189,11 +189,11 @@ fun ToggleButtons(
 }
 
 @Composable
-fun MyElementList(items: List<Int>, selectedItemIndex: Int?, onItemClicked: (Int) -> Unit) {
+fun MyObjectList(items: List<Int>, selectedItemIndex: Int?, onItemClicked: (Int) -> Unit) {
     Column {
         Text(
             modifier = Modifier.padding(horizontal = 20.dp).padding(bottom = 12.dp),
-            text = stringResource(R.string.editor_title_my_elements_list),
+            text = stringResource(R.string.editor_title_my_objects_list),
             style = MaterialTheme.typography.labelSmall,
             fontSize = 14.sp
         )
@@ -281,8 +281,8 @@ fun SelectableGrid(items: List<Int>, selectedItemIndex: Int, onItemClicked: (Int
 @Composable
 fun CardCreationScreenPreview() {
     AssetBrowserPanel(
-        myElements = (0..2).toList(),
-        elementItems = (0..7).toList(),
+        myObjects = (0..2).toList(),
+        objectItems = (0..7).toList(),
         backgroundItems = (0..5).toList()
     )
 }

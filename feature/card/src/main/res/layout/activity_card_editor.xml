@@ -28,7 +28,7 @@
         app:srcCompat="@drawable/ic_arrow_left" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/element_option_container"
+        android:id="@+id/object_option_container"
         android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

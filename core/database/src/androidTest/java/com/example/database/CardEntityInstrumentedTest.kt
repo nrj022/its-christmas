@@ -56,7 +56,7 @@ class CardEntityInstrumentedTest {
     fun updateCardBackground() = runBlocking {
         val asset = AssetEntity(
             assetId = 0, // autoGenerate면 0 넣기
-            assetType = AssetType.MODEL,
+            assetType = AssetType.OBJECT,
             unityKey = "m_003",
             thumbnailKey = "thumb_m_003"
         )

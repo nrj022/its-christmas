@@ -23,6 +23,8 @@ class CardEditorActivity : AppCompatActivity() {
         binding = ActivityCardEditorBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        val cardId = intent.getLongExtra("cardId", 1)
+
         unityPlayer = UnityPlayerForActivityOrService(this)
         (unityPlayer.view.parent as? ViewGroup)?.removeView(unityPlayer.view)
 
@@ -48,7 +50,7 @@ class CardEditorActivity : AppCompatActivity() {
 
         binding.composeContainer.setContent {
             ItsHalloweenTheme {
-                CardEditorBottomScreen()
+                CardEditorBottomScreen(cardId)
             }
         }
     }

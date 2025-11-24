@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -29,6 +31,8 @@ import com.example.card.R
 import com.example.designsystem.theme.Gray
 import com.example.designsystem.theme.SoftBlack
 import com.example.designsystem.theme.White
+import com.example.domain.model.Asset
+import com.example.domain.model.CardElement
 
 private const val COLUMNS = 3
 
@@ -40,22 +44,22 @@ enum class AssetBrowserTab(val resId: Int) {
 
 @Composable
 fun AssetBrowserPanel(
-    objectItems: List<Int> = emptyList(),
-    backgroundItems: List<Int> = emptyList(),
-    myObjects: List<Int> = emptyList(),
-    selectedMyObject: Int? = null,
-    selectedBackground: Int = 0,
+    objectItems: List<Asset> = emptyList(),
+    backgroundItems: List<Asset> = emptyList(),
+    myObjects: List<CardElement> = emptyList(),
+    selectedMyObject: Long? = null,
+    selectedBackground: Long? = null,
     onNextClicked: () -> Unit = {},
-    onObjectClicked: (Int) -> Unit = {},
-    onMyObjectClicked: (Int) -> Unit = {},
-    onBackgroundClicked: (Int) -> Unit = {},
+    onObjectClicked: (Asset) -> Unit = {},
+    onMyObjectClicked: (Long) -> Unit = {},
+    onBackgroundClicked: (Long) -> Unit = {},
 ) {
 
     var selectedTab by remember { mutableStateOf(AssetBrowserTab.OBJECTS) }
 
     AssetBrowserPanelContent(
         selectedTab = selectedTab,
-        ObjectItems = objectItems,
+        objectItems = objectItems,
         backgroundItems = backgroundItems,
         myObjects = myObjects,
         selectedMyObject = selectedMyObject,
@@ -72,15 +76,15 @@ fun AssetBrowserPanel(
 fun AssetBrowserPanelContent(
     modifier: Modifier = Modifier,
     selectedTab: AssetBrowserTab,
-    ObjectItems: List<Int>,
-    backgroundItems: List<Int>,
-    myObjects: List<Int>,
-    selectedMyObject: Int?,
-    selectedBackground: Int,
+    objectItems: List<Asset>,
+    backgroundItems: List<Asset>,
+    myObjects: List<CardElement>,
+    selectedMyObject: Long?,
+    selectedBackground: Long?,
     onTabSelected: (AssetBrowserTab) -> Unit,
-    onObjectClicked: (Int) -> Unit,
-    onMyObjectClicked: (Int) -> Unit,
-    onBackgroundClicked: (Int) -> Unit,
+    onObjectClicked: (Asset) -> Unit,
+    onMyObjectClicked: (Long) -> Unit,
+    onBackgroundClicked: (Long) -> Unit,
     onNextClicked: () -> Unit
 ) {
     Column(
@@ -96,18 +100,18 @@ fun AssetBrowserPanelContent(
         if (selectedTab == AssetBrowserTab.OBJECTS) {
             if(myObjects.isNotEmpty()) {
                 MyObjectList(
-                    items = myObjects,
+                    elements = myObjects,
                     selectedItemIndex = selectedMyObject,
                     onItemClicked = { onMyObjectClicked(it) }
                 )
             }
             ClickableGrid(
-                items = ObjectItems,
+                assets = objectItems,
                 onItemClicked = { onObjectClicked(it) }
             )
         } else {
             SelectableGrid(
-                items = backgroundItems,
+                assets = backgroundItems,
                 // 첫 번째 아이템이 선택된 것처럼 보이게 처리 (임시)
                 selectedItemIndex = selectedBackground,
                 onItemClicked = { onBackgroundClicked(it) }
@@ -189,7 +193,7 @@ fun ToggleButtons(
 }
 
 @Composable
-fun MyObjectList(items: List<Int>, selectedItemIndex: Int?, onItemClicked: (Int) -> Unit) {
+fun MyObjectList(elements: List<CardElement>, selectedItemIndex: Long?, onItemClicked: (Long) -> Unit) {
     Column {
         Text(
             modifier = Modifier.padding(horizontal = 20.dp).padding(bottom = 12.dp),
@@ -203,7 +207,7 @@ fun MyObjectList(items: List<Int>, selectedItemIndex: Int?, onItemClicked: (Int)
         ) {
             item { Box(Modifier.size(8.dp)) }
 
-            items(items.size) { index ->
+            items(items = elements, key = { it.elementId } ) { element ->
                 Image(
                     painter = painterResource(id = R.drawable.img_sample),
                     contentScale = ContentScale.Crop,
@@ -212,11 +216,11 @@ fun MyObjectList(items: List<Int>, selectedItemIndex: Int?, onItemClicked: (Int)
                         .size(90.dp)
                         .border(
                             2.dp,
-                            if (index == selectedItemIndex) SoftBlack else Gray,
+                            if (element.elementId == selectedItemIndex) SoftBlack else Gray,
                             RoundedCornerShape(10.dp)
                         )
                         .clip(RoundedCornerShape(10.dp))
-                        .clickable { onItemClicked(index) }
+                        .clickable { onItemClicked(element.elementId) }
                 )
             }
         }
@@ -224,7 +228,7 @@ fun MyObjectList(items: List<Int>, selectedItemIndex: Int?, onItemClicked: (Int)
 }
 
 @Composable
-fun ClickableGrid(items: List<Int>, onItemClicked: (Int) -> Unit) {
+fun ClickableGrid(assets: List<Asset>, onItemClicked: (Asset) -> Unit) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(COLUMNS),
         modifier = Modifier.padding(horizontal = 16.dp),
@@ -232,7 +236,7 @@ fun ClickableGrid(items: List<Int>, onItemClicked: (Int) -> Unit) {
         verticalArrangement = Arrangement.spacedBy(12.dp),
         contentPadding = PaddingValues(bottom = 16.dp)
     ) {
-        items(items.size) { index ->
+        items(assets, key = { it.assetId }) { asset ->
             Image(
                 painter = painterResource(id = R.drawable.img_sample),
                 contentScale = ContentScale.Crop,
@@ -242,14 +246,14 @@ fun ClickableGrid(items: List<Int>, onItemClicked: (Int) -> Unit) {
                     .fillMaxSize()
                     .clip(RoundedCornerShape(16.dp))
                     .border(2.dp, Gray, RoundedCornerShape(16.dp))
-                    .clickable { onItemClicked(index) }
+                    .clickable { onItemClicked(asset) }
             )
         }
     }
 }
 
 @Composable
-fun SelectableGrid(items: List<Int>, selectedItemIndex: Int, onItemClicked: (Int) -> Unit) {
+fun SelectableGrid(assets: List<Asset>, selectedItemIndex: Long?, onItemClicked: (Long) -> Unit) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(COLUMNS),
         modifier = Modifier.padding(horizontal = 16.dp),
@@ -257,7 +261,7 @@ fun SelectableGrid(items: List<Int>, selectedItemIndex: Int, onItemClicked: (Int
         verticalArrangement = Arrangement.spacedBy(12.dp),
         contentPadding = PaddingValues(bottom = 16.dp)
     ) {
-        items(items.size) { index ->
+        items(items = assets, key = { it.assetId }) { asset ->
             Image(
                 painter = painterResource(id = R.drawable.img_sample),
                 contentScale = ContentScale.Crop,
@@ -266,11 +270,11 @@ fun SelectableGrid(items: List<Int>, selectedItemIndex: Int, onItemClicked: (Int
                     .aspectRatio(1f) // 1:1 비율 유지
                     .border(
                         2.dp,
-                        if (index == selectedItemIndex) SoftBlack else Gray,
+                        if (asset.assetId == selectedItemIndex) SoftBlack else Gray,
                         RoundedCornerShape(16.dp)
                     )
                     .clip(RoundedCornerShape(16.dp))
-                    .clickable { onItemClicked(index) }
+                    .clickable { onItemClicked(asset.assetId) }
             )
         }
     }
@@ -281,8 +285,8 @@ fun SelectableGrid(items: List<Int>, selectedItemIndex: Int, onItemClicked: (Int
 @Composable
 fun CardCreationScreenPreview() {
     AssetBrowserPanel(
-        myObjects = (0..2).toList(),
-        objectItems = (0..7).toList(),
-        backgroundItems = (0..5).toList()
+        myObjects = emptyList(),
+        objectItems = emptyList(),
+        backgroundItems = emptyList()
     )
 }

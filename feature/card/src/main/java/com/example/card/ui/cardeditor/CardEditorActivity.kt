@@ -39,8 +39,8 @@ class CardEditorActivity : AppCompatActivity() {
             true
         }
 
-        // TODO: ViewModel 연동 후 compose의 my element selected 여부와 visibility 연결
-        binding.elementOptionContainer.visibility = View.VISIBLE
+        // TODO: ViewModel 연동 후 compose의 my object selected 여부와 visibility 연결
+        binding.objectOptionContainer.visibility = View.VISIBLE
 
         unityPlayer.windowFocusChanged(true)
 

@@ -11,9 +11,8 @@ data class CardEntity(
     val title: String? = null,
     val glbKey: String? = null,
     val thumbnailPath: String? = null,
-    val backgroundAssetId: Int? = null,   // FK: Asset.assetId
+    val backgroundAssetId: Long? = null,   // FK: Asset.assetId
     val isDraft: Boolean = true,
-    val syncState: Int = 0, // 0: local-only, 1: needs upload, 2: synced
     val createdAt: Long,
     val updatedAt: Long
 )

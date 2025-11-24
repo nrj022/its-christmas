@@ -42,6 +42,7 @@ dependencies {
 
     implementation(project(":feature:card"))
     implementation(project(":feature:main"))
+    implementation(project(":core:data"))
 
     // Hilt
     implementation(libs.google.hilt.android)

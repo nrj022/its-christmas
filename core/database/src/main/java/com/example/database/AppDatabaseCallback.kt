@@ -20,6 +20,7 @@ class AppDatabaseCallback(
         CoroutineScope(Dispatchers.IO).launch {
             // 미리 정의된 초기 데이터를 데이터베이스에 삽입합니다.
             assetDaoProvider.get().insertAll(InitialData.getInitialAssets())
+            assetDaoProvider.get().insertAll(InitialData.getInitialBackgrounds())
         }
     }
 }

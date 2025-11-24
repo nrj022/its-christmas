@@ -10,7 +10,7 @@ data class CardElementEntity(
 
     val cardId: Long,              // FK to Card.cardId
     val assetId: Long? = null,     // null when elementType = TEXT
-    val elementType: ElementType, // ASSET / TEXT
+    val elementType: String, // ElementType: OBJECT / TEXT
 
     // Transform
     val posX: Int,
@@ -27,20 +27,9 @@ data class CardElementEntity(
     val textContent: String? = null,
     val fontFamily: String? = null,
     val fontSize: Float? = null,
-    val fontWeight: String? = null, // normal / bold
+    val fontWeight: String? = null, // UnityFontWeight: NORMAL / BOLD
     val textColor: String? = null,
-    val textAlign: TextAlign? = null,
+    val textAlign: String? = null,   // UnityTextAlign: LEFT / CENTER / RIGHT
     val lineSpacing: Float? = null,
     val letterSpacing: Float? = null
 )
-
-enum class ElementType {
-    ASSET,
-    TEXT
-}
-
-enum class TextAlign {
-    LEFT,
-    CENTER,
-    RIGHT
-}

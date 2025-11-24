@@ -12,8 +12,14 @@ interface AssetDao {
     suspend fun insertAll(assets: List<AssetEntity>): List<Long>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insert(asset: AssetEntity): Long
+    suspend fun insertAsset(asset: AssetEntity): Long
 
     @Query("SELECT * FROM assets")
     suspend fun getAll(): List<AssetEntity>
+
+    @Query("SELECT * FROM assets WHERE assetType = :assetType")
+    suspend fun getByType(assetType: String): List<AssetEntity>
+
+    @Query("SELECT * FROM assets WHERE assetId = :assetId")
+    suspend fun getById(assetId: Long): AssetEntity
 }

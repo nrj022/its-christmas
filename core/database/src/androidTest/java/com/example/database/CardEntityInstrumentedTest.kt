@@ -6,7 +6,6 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.database.dao.CardDao
 import com.example.database.entity.AssetEntity
-import com.example.database.entity.AssetType
 import com.example.database.entity.CardEntity
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.runBlocking
@@ -27,10 +26,8 @@ class CardEntityInstrumentedTest {
     private lateinit var db: AppDatabase
 
     private val card = CardEntity(
-        cardId = 0,
-        title ="card_001",
-        glbKey = "sample",
-        isDraft = false,
+        cardId = 1,
+        title = "card_001",
         createdAt = System.currentTimeMillis(),
         updatedAt = System.currentTimeMillis()
     )
@@ -45,10 +42,11 @@ class CardEntityInstrumentedTest {
 
     @Test
     fun insertAndReadAsset() = runBlocking {
-        cardDao.insertCard(card)
+        val id = cardDao.insertCard(card)
         val cards = cardDao.getAllCards()
 
         assertThat(cards).hasSize(1)
+        assertThat(id).isEqualTo(1)
         assertThat(cards.first().title).isEqualTo("card_001")
     }
 
@@ -56,7 +54,7 @@ class CardEntityInstrumentedTest {
     fun updateCardBackground() = runBlocking {
         val asset = AssetEntity(
             assetId = 0, // autoGenerate면 0 넣기
-            assetType = AssetType.OBJECT,
+            assetType = "OBJECT",
             unityKey = "m_003",
             thumbnailKey = "thumb_m_003"
         )

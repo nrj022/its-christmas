@@ -6,12 +6,14 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.card.ui.cardeditor.panels.AssetBrowserPanel
 import com.example.card.ui.cardeditor.panels.TransformControlPanel
 
 @Composable
 fun CardEditorBottomScreen() {
     var myObjects by remember { mutableStateOf(emptyList<Int>()) }
+fun CardEditorBottomScreen(viewModel: CardEditorViewModel = hiltViewModel()) {
     var selectedBackground by remember { mutableIntStateOf(0) }
     var selectedMyObject by remember { mutableStateOf<Int?>(null) }
 

@@ -9,7 +9,9 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.card.databinding.ActivityCardEditorBinding
 import com.example.designsystem.theme.ItsHalloweenTheme
 import com.unity3d.player.UnityPlayerForActivityOrService
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class CardEditorActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityCardEditorBinding

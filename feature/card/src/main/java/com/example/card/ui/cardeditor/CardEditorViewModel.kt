@@ -1,5 +1,6 @@
 package com.example.card.ui.cardeditor
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.domain.enum.AssetType
@@ -11,13 +12,17 @@ import com.example.domain.repository.CardElementRepository
 import com.example.domain.repository.CardRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import kotlin.Long
+
+private const val TAG = "CardEditorViewModel"
 
 @HiltViewModel
 class CardEditorViewModel @Inject constructor(
@@ -47,30 +52,27 @@ class CardEditorViewModel @Inject constructor(
     }
 
     private fun handleInit(cardId: Long) {
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                getCardDataFromDB(cardId)
-                loadMyObjectsFromDB(cardId)
-                getObjectsFromDB()
-                getBackgroundsFromDB()
-            }
-        }
+        getCardDataFromDB(cardId)
+        getObjectsFromDB()
+        getBackgroundsFromDB()
+
+        // Flow 구독
+        loadMyObjectsFromDB(cardId)
     }
+
     private fun handleObjectClicked(cardId: Long, clickedObject: Asset) {
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                cardElementRepository.insertCardElement(
-                    CardElement(
-                        elementId = 0,
-                        cardId = cardId,
-                        assetId = clickedObject.assetId,
-                        elementType = ElementType.OBJECT,
-                        posX = 0,
-                        posY = 0,
-                        scale = 1
-                    )
+        viewModelScope.launch(Dispatchers.IO) {
+            cardElementRepository.insertCardElement(
+                CardElement(
+                    elementId = 0,
+                    cardId = cardId,
+                    assetId = clickedObject.assetId,
+                    elementType = ElementType.OBJECT,
+                    posX = 0,
+                    posY = 0,
+                    scale = 1
                 )
-            }
+            )
         }
     }
 
@@ -86,17 +88,37 @@ class CardEditorViewModel @Inject constructor(
         }
     }
 
-    suspend fun getCardDataFromDB(cardId: Long) {
-        val card = cardRepository.getCardById(cardId)
-        _cardEditorState.update {
-            it.copy(selectedBackground = card.backgroundAssetId)
+    private fun getCardDataFromDB(cardId: Long) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val card = cardRepository.getCardById(cardId)
+            _cardEditorState.update {
+                it.copy(selectedBackground = card.backgroundAssetId)
+            }
+        }
+    }
+    private fun getObjectsFromDB() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val objects = assetRepository.getAssetsByType(AssetType.OBJECT)
+            _cardEditorState.update {
+                it.copy(objects = objects)
+            }
+        }
+    }
+
+    private fun getBackgroundsFromDB() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val backgrounds = assetRepository.getAssetsByType(AssetType.BACKGROUND)
+            _cardEditorState.update {
+                it.copy(backgrounds = backgrounds)
+            }
         }
     }
 
     private fun loadMyObjectsFromDB(cardId: Long) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             cardElementRepository.getObjectElementsByCardId(cardId)
                 .collect {
+                    loadAssetThumbMap(it)
                     _cardEditorState.update { state ->
                         state.copy(myObjects = it)
                     }
@@ -104,17 +126,30 @@ class CardEditorViewModel @Inject constructor(
         }
     }
 
-    suspend fun getObjectsFromDB() {
-        val objects = assetRepository.getAssetsByType(AssetType.OBJECT)
-        _cardEditorState.update {
-            it.copy(objects = objects)
-        }
-    }
+    private suspend fun loadAssetThumbMap(objects: List<CardElement>) {
+        val objectIds = objects.mapNotNull { it.assetId }.distinct()
+        val currentMap = _cardEditorState.value.assetThumbMap.toMutableMap()
 
-    suspend fun getBackgroundsFromDB() {
-        val backgrounds = assetRepository.getAssetsByType(AssetType.BACKGROUND)
+        val missingIds = objectIds.filter { it !in currentMap.keys }
+        if(missingIds.isEmpty()) return
+
+        val results = coroutineScope {
+            missingIds.map { id ->
+                async {
+                    try {
+                        val asset = assetRepository.getAssetById(id)
+                        val thumb = asset.thumbnailKey
+                        if(thumb.isNotEmpty()) id to thumb else null
+                    } catch (e: Exception) {
+                        Log.e(TAG, "failed to fetch assets", e)
+                        null
+                    }
+                }
+            }.awaitAll().filterNotNull()
+        }
+
         _cardEditorState.update {
-            it.copy(backgrounds = backgrounds)
+            it.copy(assetThumbMap = it.assetThumbMap + results.toMap())
         }
     }
 }

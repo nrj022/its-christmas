@@ -22,12 +22,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.card.R
+import com.example.card.ui.cardeditor.common.getDrawableIdByKey
 import com.example.designsystem.theme.Gray
 import com.example.designsystem.theme.SoftBlack
 import com.example.designsystem.theme.White
@@ -47,6 +49,7 @@ fun AssetBrowserPanel(
     objectItems: List<Asset> = emptyList(),
     backgroundItems: List<Asset> = emptyList(),
     myObjects: List<CardElement> = emptyList(),
+    assetThumbMap: Map<Long, String> = emptyMap(),
     selectedMyObject: Long? = null,
     selectedBackground: Long? = null,
     onNextClicked: () -> Unit = {},
@@ -62,6 +65,7 @@ fun AssetBrowserPanel(
         objectItems = objectItems,
         backgroundItems = backgroundItems,
         myObjects = myObjects,
+        assetThumbMap = assetThumbMap,
         selectedMyObject = selectedMyObject,
         selectedBackground = selectedBackground,
         onTabSelected = { selectedTab = it },
@@ -79,6 +83,7 @@ fun AssetBrowserPanelContent(
     objectItems: List<Asset>,
     backgroundItems: List<Asset>,
     myObjects: List<CardElement>,
+    assetThumbMap: Map<Long, String>,
     selectedMyObject: Long?,
     selectedBackground: Long?,
     onTabSelected: (AssetBrowserTab) -> Unit,
@@ -102,6 +107,7 @@ fun AssetBrowserPanelContent(
                 MyObjectList(
                     elements = myObjects,
                     selectedItemIndex = selectedMyObject,
+                    assetThumbMap = assetThumbMap,
                     onItemClicked = { onMyObjectClicked(it) }
                 )
             }
@@ -193,7 +199,14 @@ fun ToggleButtons(
 }
 
 @Composable
-fun MyObjectList(elements: List<CardElement>, selectedItemIndex: Long?, onItemClicked: (Long) -> Unit) {
+fun MyObjectList(
+    elements: List<CardElement>,
+    assetThumbMap: Map<Long, String>,
+    selectedItemIndex: Long?,
+    onItemClicked: (Long) -> Unit
+) {
+    val context = LocalContext.current
+
     Column {
         Text(
             modifier = Modifier.padding(horizontal = 20.dp).padding(bottom = 12.dp),
@@ -209,7 +222,7 @@ fun MyObjectList(elements: List<CardElement>, selectedItemIndex: Long?, onItemCl
 
             items(items = elements, key = { it.elementId } ) { element ->
                 Image(
-                    painter = painterResource(id = R.drawable.img_sample),
+                    painter = painterResource(id = getDrawableIdByKey(context, assetThumbMap[element.assetId])),
                     contentScale = ContentScale.Crop,
                     contentDescription = stringResource(R.string.editor_cd_asset),
                     modifier = Modifier
@@ -229,6 +242,8 @@ fun MyObjectList(elements: List<CardElement>, selectedItemIndex: Long?, onItemCl
 
 @Composable
 fun ClickableGrid(assets: List<Asset>, onItemClicked: (Asset) -> Unit) {
+    val context = LocalContext.current
+
     LazyVerticalGrid(
         columns = GridCells.Fixed(COLUMNS),
         modifier = Modifier.padding(horizontal = 16.dp),
@@ -238,7 +253,7 @@ fun ClickableGrid(assets: List<Asset>, onItemClicked: (Asset) -> Unit) {
     ) {
         items(assets, key = { it.assetId }) { asset ->
             Image(
-                painter = painterResource(id = R.drawable.img_sample),
+                painter = painterResource(id = getDrawableIdByKey(context, asset.thumbnailKey)),
                 contentScale = ContentScale.Crop,
                 contentDescription = stringResource(R.string.editor_cd_asset),
                 modifier = Modifier
@@ -254,6 +269,8 @@ fun ClickableGrid(assets: List<Asset>, onItemClicked: (Asset) -> Unit) {
 
 @Composable
 fun SelectableGrid(assets: List<Asset>, selectedItemIndex: Long?, onItemClicked: (Long) -> Unit) {
+    val context = LocalContext.current
+
     LazyVerticalGrid(
         columns = GridCells.Fixed(COLUMNS),
         modifier = Modifier.padding(horizontal = 16.dp),
@@ -263,7 +280,7 @@ fun SelectableGrid(assets: List<Asset>, selectedItemIndex: Long?, onItemClicked:
     ) {
         items(items = assets, key = { it.assetId }) { asset ->
             Image(
-                painter = painterResource(id = R.drawable.img_sample),
+                painter = painterResource(id = getDrawableIdByKey(context, asset.thumbnailKey)),
                 contentScale = ContentScale.Crop,
                 contentDescription = stringResource(R.string.editor_cd_asset),
                 modifier = Modifier

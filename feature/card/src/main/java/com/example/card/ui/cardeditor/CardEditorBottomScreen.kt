@@ -26,6 +26,7 @@ fun CardEditorBottomScreen(cardId: Long, viewModel: CardEditorViewModel = hiltVi
         objectItems = state.objects, // 임시 데이터
         backgroundItems = state.backgrounds,  // 임시 데이터
         myObjects = state.myObjects,
+        assetThumbMap = state.assetThumbMap,
         selectedMyObject = state.selectedMyObject,
         selectedBackground = state.selectedBackground,
         onNextClicked = {},
@@ -34,7 +35,7 @@ fun CardEditorBottomScreen(cardId: Long, viewModel: CardEditorViewModel = hiltVi
         onBackgroundClicked = { viewModel.onIntent(CardEditorIntent.BackgroundClicked(it)) }
     )
 
-    TransformControlPanel(
+    /*TransformControlPanel(
         scale = scale,
         onScaleChange = { newScale ->
             if (newScale > 0) { // 0 이하로 내려가지 않도록 예시
@@ -47,5 +48,5 @@ fun CardEditorBottomScreen(cardId: Long, viewModel: CardEditorViewModel = hiltVi
             println("$direction clicked")
         },
         onReset = { println("Reset clicked") }
-    )
+    )*/
 }

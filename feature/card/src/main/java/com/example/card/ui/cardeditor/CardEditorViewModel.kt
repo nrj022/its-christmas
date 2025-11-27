@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import kotlin.Long
 
@@ -56,12 +57,12 @@ class CardEditorViewModel @Inject constructor(
         getObjectsFromDB()
         getBackgroundsFromDB()
 
-        // Flow 구독
+        // MyObjects Flow 구독
         loadMyObjectsFromDB(cardId)
     }
 
     private fun handleObjectClicked(cardId: Long, clickedObject: Asset) {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             cardElementRepository.insertCardElement(
                 CardElement(
                     elementId = 0,
@@ -89,7 +90,7 @@ class CardEditorViewModel @Inject constructor(
     }
 
     private fun getCardDataFromDB(cardId: Long) {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             val card = cardRepository.getCardById(cardId)
             _cardEditorState.update {
                 it.copy(selectedBackground = card.backgroundAssetId)
@@ -97,7 +98,7 @@ class CardEditorViewModel @Inject constructor(
         }
     }
     private fun getObjectsFromDB() {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             val objects = assetRepository.getAssetsByType(AssetType.OBJECT)
             _cardEditorState.update {
                 it.copy(objects = objects)
@@ -106,7 +107,7 @@ class CardEditorViewModel @Inject constructor(
     }
 
     private fun getBackgroundsFromDB() {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             val backgrounds = assetRepository.getAssetsByType(AssetType.BACKGROUND)
             _cardEditorState.update {
                 it.copy(backgrounds = backgrounds)
@@ -115,7 +116,7 @@ class CardEditorViewModel @Inject constructor(
     }
 
     private fun loadMyObjectsFromDB(cardId: Long) {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             cardElementRepository.getObjectElementsByCardId(cardId)
                 .collect {
                     loadAssetThumbMap(it)
@@ -127,26 +128,30 @@ class CardEditorViewModel @Inject constructor(
     }
 
     private suspend fun loadAssetThumbMap(objects: List<CardElement>) {
-        val objectIds = objects.mapNotNull { it.assetId }.distinct()
-        val currentMap = _cardEditorState.value.assetThumbMap.toMutableMap()
+        val results: List<Pair<Long, String>>? = withContext(Dispatchers.IO) {
+            val objectIds = objects.mapNotNull { it.assetId }.distinct()
+            val currentMap = _cardEditorState.value.assetThumbMap.toMutableMap()
 
-        val missingIds = objectIds.filter { it !in currentMap.keys }
-        if(missingIds.isEmpty()) return
+            val missingIds = objectIds.filter { it !in currentMap.keys }
+            if(missingIds.isEmpty()) null
 
-        val results = coroutineScope {
-            missingIds.map { id ->
-                async {
-                    try {
-                        val asset = assetRepository.getAssetById(id)
-                        val thumb = asset.thumbnailKey
-                        if(thumb.isNotEmpty()) id to thumb else null
-                    } catch (e: Exception) {
-                        Log.e(TAG, "failed to fetch assets", e)
-                        null
+            coroutineScope {
+                missingIds.map { id ->
+                    async {
+                        try {
+                            val asset = assetRepository.getAssetById(id)
+                            val thumb = asset.thumbnailKey
+                            if(thumb.isNotEmpty()) id to thumb else null
+                        } catch (e: Exception) {
+                            Log.e(TAG, "failed to fetch assets", e)
+                            null
+                        }
                     }
-                }
-            }.awaitAll().filterNotNull()
+                }.awaitAll().filterNotNull()
+            }
         }
+
+        if(results == null) return
 
         _cardEditorState.update {
             it.copy(assetThumbMap = it.assetThumbMap + results.toMap())

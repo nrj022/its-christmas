@@ -5,17 +5,23 @@ import com.example.database.dao.AssetDao
 import com.example.domain.enum.AssetType
 import com.example.domain.model.Asset
 import com.example.domain.repository.AssetRepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class AssetRepositoryImpl @Inject constructor(
     private val assetDao: AssetDao
-): AssetRepository {
+) : AssetRepository {
 
     override suspend fun getAssetsByType(assetType: AssetType): List<Asset> {
-        return assetDao.getByType(assetType.name).map { it.toDomain() }
+        return withContext(Dispatchers.IO) {
+            assetDao.getByType(assetType.name).map { it.toDomain() }
+        }
     }
 
     override suspend fun getAssetById(assetId: Long): Asset {
-        return assetDao.getById(assetId).toDomain()
+        return withContext(Dispatchers.IO) {
+            assetDao.getById(assetId).toDomain()
+        }
     }
 }

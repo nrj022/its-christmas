@@ -7,7 +7,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.database.dao.AssetDao
 import com.example.database.data.InitialData
 import com.example.database.entity.AssetEntity
-import com.example.database.entity.AssetType
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.runBlocking
 import org.junit.After
@@ -40,7 +39,7 @@ class AssetEntityInstrumentedTest {
 
         val asset = AssetEntity(
             assetId = 0, // autoGenerate면 0 넣기
-            assetType = AssetType.OBJECT,
+            assetType = "OBJECT",
             unityKey = "m_003",
             thumbnailKey = "thumb_m_003"
         )
@@ -57,13 +56,13 @@ class AssetEntityInstrumentedTest {
     fun readByType() = runBlocking {
         val asset = AssetEntity(
             assetId = 0, // autoGenerate면 0 넣기
-            assetType = AssetType.BACKGROUND,
+            assetType = "BACKGROUND",
             unityKey = "bg_001",
             thumbnailKey = "thumb_bg_001"
         )
 
         val id = assetDao.insertAsset(asset)
-        val assets = assetDao.getByType(AssetType.OBJECT)
+        val assets = assetDao.getByType("OBJECT")
 
         assertThat(id).isNotIn(assets)
     }

@@ -40,9 +40,10 @@ android {
 }
 
 dependencies {
+    implementation(project(":unityLibrary:mobilenotifications.androidlib"))
     implementation(project(":unityLibrary"))
     implementation(project(":core:designsystem"))
-    implementation(project(":unityLibrary:mobilenotifications.androidlib"))
+    implementation(project(":core:domain"))
 
     implementation(
         fileTree(
@@ -57,6 +58,7 @@ dependencies {
     // Hilt
     implementation(libs.google.hilt.android)
     ksp(libs.google.hilt.compiler)
+    implementation(libs.androidx.hilt.navigation.compose)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -72,6 +74,10 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.navigation.ui.ktx)
     testImplementation(libs.junit)
+    testImplementation(libs.kotlinx.coroutines.test) // Coroutine 테스트
+    testImplementation(libs.mockk) // Repository mocking
+    testImplementation(libs.turbine) // Flow 테스트
+    testImplementation(kotlin("test"))
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))

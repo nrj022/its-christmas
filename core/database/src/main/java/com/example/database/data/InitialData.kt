@@ -1,6 +1,7 @@
 package com.example.database.data
 
 import com.example.database.entity.AssetEntity
+import com.example.database.entity.CardEntity
 
 object InitialData {
     fun getInitialAssets(): List<AssetEntity> {
@@ -20,6 +21,15 @@ object InitialData {
             AssetEntity(assetType = "BACKGROUND", unityKey = "bg_004", thumbnailKey = "thumb_bg_004"),
             AssetEntity(assetType = "BACKGROUND", unityKey = "bg_005", thumbnailKey = "thumb_bg_005"),
             AssetEntity(assetType = "BACKGROUND", unityKey = "bg_006", thumbnailKey = "thumb_bg_006")
+        )
+    }
+
+    /* 임시 데이터 // TODO: 추후 제거 예정 */
+    fun getInitialCard(): CardEntity {
+        return CardEntity(
+            cardId = 1,
+            createdAt = System.currentTimeMillis(),
+            updatedAt = System.currentTimeMillis()
         )
     }
 }

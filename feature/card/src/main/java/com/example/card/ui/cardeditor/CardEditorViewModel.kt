@@ -128,14 +128,14 @@ class CardEditorViewModel @Inject constructor(
     }
 
     private suspend fun loadAssetThumbMap(objects: List<CardElement>) {
-        withContext(Dispatchers.IO) {
+        val results: List<Pair<Long, String>>? = withContext(Dispatchers.IO) {
             val objectIds = objects.mapNotNull { it.assetId }.distinct()
             val currentMap = _cardEditorState.value.assetThumbMap.toMutableMap()
 
             val missingIds = objectIds.filter { it !in currentMap.keys }
-            if(missingIds.isEmpty()) return@withContext
+            if(missingIds.isEmpty()) null
 
-            val results = coroutineScope {
+            coroutineScope {
                 missingIds.map { id ->
                     async {
                         try {
@@ -149,10 +149,12 @@ class CardEditorViewModel @Inject constructor(
                     }
                 }.awaitAll().filterNotNull()
             }
+        }
 
-            _cardEditorState.update {
-                it.copy(assetThumbMap = it.assetThumbMap + results.toMap())
-            }
+        if(results == null) return
+
+        _cardEditorState.update {
+            it.copy(assetThumbMap = it.assetThumbMap + results.toMap())
         }
     }
 }

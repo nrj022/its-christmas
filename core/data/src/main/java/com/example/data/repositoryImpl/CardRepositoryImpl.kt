@@ -34,6 +34,6 @@ class CardRepositoryImpl @Inject constructor(
 
     // TODO: Firebase Storage GLB 파일 업로드 기능 구현
     override suspend fun uploadGlbFileToFirebase(glbFile: File): String {
-        return ""
+        throw NotImplementedError("uploadGlbFileToFirebase is not implemented yet")
     }
 }

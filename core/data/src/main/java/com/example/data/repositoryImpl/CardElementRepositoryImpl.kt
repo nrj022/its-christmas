@@ -16,8 +16,8 @@ class CardElementRepositoryImpl @Inject constructor(
         cardElementDao.insertAll(cardElements.map { it.toEntity() })
     }
 
-    override suspend fun insertCardElement(cardElement: CardElement) {
-        cardElementDao.insertElement(cardElement.toEntity())
+    override suspend fun insertCardElement(cardElement: CardElement): Long {
+        return cardElementDao.insertElement(cardElement.toEntity())
     }
 
     override suspend fun deleteCardElementsByCardId(cardId: Long) {

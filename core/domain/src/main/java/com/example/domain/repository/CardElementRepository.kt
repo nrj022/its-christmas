@@ -7,7 +7,7 @@ interface CardElementRepository {
 
     suspend fun insertCardElements(cardElements: List<CardElement>)
 
-    suspend fun insertCardElement(cardElement: CardElement)
+    suspend fun insertCardElement(cardElement: CardElement): Long
 
     suspend fun deleteCardElementsByCardId(cardId: Long)
 

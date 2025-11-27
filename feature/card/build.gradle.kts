@@ -74,6 +74,10 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.navigation.ui.ktx)
     testImplementation(libs.junit)
+    testImplementation(libs.kotlinx.coroutines.test) // Coroutine 테스트
+    testImplementation(libs.mockk) // Repository mocking
+    testImplementation(libs.turbine) // Flow 테스트
+    testImplementation(kotlin("test"))
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))

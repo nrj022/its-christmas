@@ -1,4 +1,4 @@
-package com.itschristmas.card.ui.cardeditor
+package com.itschristmas.card.cardeditor
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -8,7 +8,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.itschristmas.card.ui.cardeditor.panels.AssetBrowserPanel
+import com.itschristmas.card.cardeditor.panels.AssetBrowserPanel
 
 @Composable
 fun CardEditorBottomScreen(cardId: Long, viewModel: CardEditorViewModel = hiltViewModel()) {

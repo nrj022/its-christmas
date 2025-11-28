@@ -1,4 +1,4 @@
-package com.itschristmas.card.ui.cardeditor
+package com.itschristmas.card.cardeditor
 
 import android.annotation.SuppressLint
 import android.os.Bundle

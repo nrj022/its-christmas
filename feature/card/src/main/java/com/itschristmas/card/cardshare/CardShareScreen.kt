@@ -1,4 +1,4 @@
-package com.itschristmas.card.ui.cardshare
+package com.itschristmas.card.cardshare
 
 import android.content.Context
 import android.content.Intent

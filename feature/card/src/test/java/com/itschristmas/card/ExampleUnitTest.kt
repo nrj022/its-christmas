@@ -1,8 +1,8 @@
 package com.itschristmas.card
 
 import app.cash.turbine.test
-import com.itschristmas.card.ui.cardeditor.CardEditorIntent
-import com.itschristmas.card.ui.cardeditor.CardEditorViewModel
+import com.itschristmas.card.cardeditor.CardEditorIntent
+import com.itschristmas.card.cardeditor.CardEditorViewModel
 import com.itschristmas.domain.enum.AssetType
 import com.itschristmas.domain.enum.ElementType
 import com.itschristmas.domain.model.Asset

@@ -1,4 +1,4 @@
-package com.itschristmas.card.ui.cardeditor
+package com.itschristmas.card.cardeditor
 
 import com.itschristmas.domain.model.Asset
 import com.itschristmas.domain.model.CardElement

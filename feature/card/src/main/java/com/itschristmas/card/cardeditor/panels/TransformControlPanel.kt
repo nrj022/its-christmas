@@ -1,4 +1,4 @@
-package com.itschristmas.card.ui.cardeditor.panels
+package com.itschristmas.card.cardeditor.panels
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

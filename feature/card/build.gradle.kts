@@ -7,7 +7,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.card"
+    namespace = "com.itschristmas.card"
     compileSdk = 36
 
     defaultConfig {

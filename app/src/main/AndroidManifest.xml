@@ -11,16 +11,16 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.ItsHalloween">
+        android:theme="@style/Theme.ItsChristmas">
         <activity
-            android:name="com.example.card.ui.cardeditor.CardEditorActivity"
+            android:name="com.itschristmas.card.ui.cardeditor.CardEditorActivity"
             android:exported="true"
-            android:theme="@style/Theme.ItsHalloween" >
+            android:theme="@style/Theme.ItsChristmas" >
         </activity>
         <activity
-            android:name="com.example.main.ui.MainActivity"
+            android:name="com.itschristmas.main.ui.MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.ItsHalloween">
+            android:theme="@style/Theme.ItsChristmas">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

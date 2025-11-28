@@ -7,11 +7,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.itshalloween"
+    namespace = "com.itschristmas.android"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.example.itshalloween"
+        applicationId = "com.itschristmas.android"
         minSdk = 26
         targetSdk = 36
         versionCode = 1

@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import com.itschristmas.card.databinding.ActivityCardEditorBinding
-import com.itschristmas.designsystem.theme.ItsHalloweenTheme
+import com.itschristmas.designsystem.theme.ItsChristmasTheme
 import com.unity3d.player.UnityPlayerForActivityOrService
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -49,7 +49,7 @@ class CardEditorActivity : AppCompatActivity() {
         unityPlayer.windowFocusChanged(true)
 
         binding.composeContainer.setContent {
-            ItsHalloweenTheme {
+            ItsChristmasTheme {
                 CardEditorBottomScreen(cardId)
             }
         }

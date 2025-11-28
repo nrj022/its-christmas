@@ -1,11 +1,11 @@
-rootProject.name = "It\'s Halloween"
+rootProject.name = "It\'s Christmas"
 include(":app")
 include(":unityLibrary")
-project(":unityLibrary").projectDir = File("D:\\Unity\\its-halloween-unity\\AndroidBuild\\unityLibrary")
+project(":unityLibrary").projectDir = File("D:\\Unity\\its-christmas-unity\\AndroidBuild\\unityLibrary")
 
 include(":unityLibrary:mobilenotifications.androidlib")
 project(":unityLibrary:mobilenotifications.androidlib").projectDir =
-    File("D:\\Unity\\its-halloween-unity\\AndroidBuild\\unityLibrary\\mobilenotifications.androidlib")
+    File("D:\\Unity\\its-christmas-unity\\AndroidBuild\\unityLibrary\\mobilenotifications.androidlib")
 
 pluginManagement {
     repositories {

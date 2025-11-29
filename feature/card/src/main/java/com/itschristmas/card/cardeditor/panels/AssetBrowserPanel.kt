@@ -28,14 +28,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.itschristmas.domain.model.CardElementWithAssetKeys
 import com.itschristmas.card.cardeditor.common.getDrawableIdByKey
 import com.itschristmas.designsystem.theme.Gray
 import com.itschristmas.designsystem.theme.SoftBlack
 import com.itschristmas.designsystem.theme.White
 import com.itschristmas.domain.model.Asset
-import com.itschristmas.domain.model.CardElement
 import com.itschristmas.card.R
-import kotlin.collections.get
 
 private const val COLUMNS = 3
 
@@ -49,8 +48,7 @@ enum class AssetBrowserTab(val resId: Int) {
 fun AssetBrowserPanel(
     objectItems: List<Asset> = emptyList(),
     backgroundItems: List<Asset> = emptyList(),
-    myObjects: List<CardElement> = emptyList(),
-    assetThumbMap: Map<Long, String> = emptyMap(),
+    myObjects: List<CardElementWithAssetKeys> = emptyList(),
     selectedMyObject: Long? = null,
     selectedBackground: Long? = null,
     onNextClicked: () -> Unit = {},
@@ -66,7 +64,6 @@ fun AssetBrowserPanel(
         objectItems = objectItems,
         backgroundItems = backgroundItems,
         myObjects = myObjects,
-        assetThumbMap = assetThumbMap,
         selectedMyObject = selectedMyObject,
         selectedBackground = selectedBackground,
         onTabSelected = { selectedTab = it },
@@ -83,8 +80,7 @@ fun AssetBrowserPanelContent(
     selectedTab: AssetBrowserTab,
     objectItems: List<Asset>,
     backgroundItems: List<Asset>,
-    myObjects: List<CardElement>,
-    assetThumbMap: Map<Long, String>,
+    myObjects: List<CardElementWithAssetKeys>,
     selectedMyObject: Long?,
     selectedBackground: Long?,
     onTabSelected: (AssetBrowserTab) -> Unit,
@@ -108,7 +104,6 @@ fun AssetBrowserPanelContent(
                 MyObjectList(
                     elements = myObjects,
                     selectedItemIndex = selectedMyObject,
-                    assetThumbMap = assetThumbMap,
                     onItemClicked = { onMyObjectClicked(it) }
                 )
             }
@@ -201,8 +196,7 @@ fun ToggleButtons(
 
 @Composable
 fun MyObjectList(
-    elements: List<CardElement>,
-    assetThumbMap: Map<Long, String>,
+    elements: List<CardElementWithAssetKeys>,
     selectedItemIndex: Long?,
     onItemClicked: (Long) -> Unit
 ) {
@@ -221,20 +215,20 @@ fun MyObjectList(
         ) {
             item { Box(Modifier.size(8.dp)) }
 
-            items(items = elements, key = { it.elementId } ) { element ->
+            items(items = elements, key = { it.cardElement.elementId } ) { element ->
                 Image(
-                    painter = painterResource(id = getDrawableIdByKey(context, assetThumbMap[element.assetId])),
+                    painter = painterResource(id = getDrawableIdByKey(context, element.thumbnailKey)),
                     contentScale = ContentScale.Crop,
                     contentDescription = stringResource(R.string.editor_cd_asset),
                     modifier = Modifier
                         .size(90.dp)
                         .border(
                             2.dp,
-                            if (element.elementId == selectedItemIndex) SoftBlack else Gray,
+                            if (element.cardElement.elementId == selectedItemIndex) SoftBlack else Gray,
                             RoundedCornerShape(10.dp)
                         )
                         .clip(RoundedCornerShape(10.dp))
-                        .clickable { onItemClicked(element.elementId) }
+                        .clickable { onItemClicked(element.cardElement.elementId) }
                 )
             }
         }

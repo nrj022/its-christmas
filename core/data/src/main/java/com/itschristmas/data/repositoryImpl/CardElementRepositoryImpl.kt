@@ -1,5 +1,6 @@
 package com.itschristmas.data.repositoryImpl
 
+import com.itschristmas.domain.model.CardElementWithAssetKeys
 import com.itschristmas.data.mapper.toDomain
 import com.itschristmas.data.mapper.toEntity
 import com.itschristmas.database.dao.CardElementDao
@@ -33,8 +34,8 @@ class CardElementRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun getObjectElementsByCardId(cardId: Long): Flow<List<CardElement>> {
-        return cardElementDao.getObjectElementsByCardId(cardId)
+    override fun getObjectElementsWithAssetKeysByCardId(cardId: Long): Flow<List<CardElementWithAssetKeys>> {
+        return cardElementDao.getObjectElementsWithAssetKeysByCardId(cardId)
             .map { entityList -> entityList.map { it.toDomain() } }
             .flowOn(Dispatchers.IO)
     }

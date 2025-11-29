@@ -1,5 +1,6 @@
 package com.itschristmas.domain.repository
 
+import com.itschristmas.domain.model.CardElementWithAssetKeys
 import com.itschristmas.domain.model.CardElement
 import kotlinx.coroutines.flow.Flow
 
@@ -11,7 +12,7 @@ interface CardElementRepository {
 
     suspend fun deleteCardElementsByCardId(cardId: Long)
 
-    fun getObjectElementsByCardId(cardId: Long): Flow<List<CardElement>>
+    fun getObjectElementsWithAssetKeysByCardId(cardId: Long): Flow<List<CardElementWithAssetKeys>>
 
     suspend fun getTextElementsByCardId(cardId: Long): List<CardElement>
 }

@@ -111,9 +111,8 @@ class CardEditorViewModel @Inject constructor(
 
     private fun loadMyObjectsFromDB(cardId: Long) {
         viewModelScope.launch {
-            cardElementRepository.getObjectElementsByCardId(cardId)
+            cardElementRepository.getObjectElementsWithAssetKeysByCardId(cardId)
                 .collect {
-                    loadAssetThumbMap(it)
                     _cardEditorState.update { state ->
                         state.copy(myObjects = it)
                     }

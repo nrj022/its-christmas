@@ -22,4 +22,7 @@ interface AssetDao {
 
     @Query("SELECT * FROM assets WHERE assetId = :assetId")
     suspend fun getById(assetId: Long): AssetEntity
+
+    @Query("SELECT unityKey FROM assets WHERE assetId = :assetId")
+    suspend fun getUnityKeyById(assetId: Long): String?
 }

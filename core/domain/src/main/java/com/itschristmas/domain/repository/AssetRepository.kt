@@ -8,4 +8,6 @@ interface AssetRepository {
     suspend fun getAssetsByType(assetType: AssetType): List<Asset>
 
     suspend fun getAssetById(assetId: Long): Asset
+
+    suspend fun getUnityKeyById(assetId: Long): String?
 }

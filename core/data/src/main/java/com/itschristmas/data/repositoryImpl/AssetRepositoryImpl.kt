@@ -24,4 +24,10 @@ class AssetRepositoryImpl @Inject constructor(
             assetDao.getById(assetId).toDomain()
         }
     }
+
+    override suspend fun getUnityKeyById(assetId: Long): String? {
+        return withContext(Dispatchers.IO) {
+            assetDao.getUnityKeyById(assetId)
+        }
+    }
 }

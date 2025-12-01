@@ -16,8 +16,8 @@ import javax.inject.Inject
 class CardElementRepositoryImpl @Inject constructor(
     private val cardElementDao: CardElementDao
 ): CardElementRepository {
-    override suspend fun insertCardElements(cardElements: List<CardElement>) {
-        withContext(Dispatchers.IO) {
+    override suspend fun insertCardElements(cardElements: List<CardElement>): List<Long> {
+        return withContext(Dispatchers.IO) {
             cardElementDao.insertAll(cardElements.map { it.toEntity() })
         }
     }
@@ -28,8 +28,8 @@ class CardElementRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun deleteCardElementsByCardId(cardId: Long) {
-        withContext(Dispatchers.IO) {
+    override suspend fun deleteCardElementsByCardId(cardId: Long): Int {
+        return withContext(Dispatchers.IO) {
             cardElementDao.deleteByCardId(cardId)
         }
     }
@@ -43,6 +43,48 @@ class CardElementRepositoryImpl @Inject constructor(
     override suspend fun getTextElementsByCardId(cardId: Long): List<CardElement> {
         return withContext(Dispatchers.IO) {
             cardElementDao.getTextElementsByCardId(cardId).map { it.toDomain() }
+        }
+    }
+
+    override suspend fun updateElementPosition(elementId: Long, posX: Int, posY: Int): Int {
+        return withContext(Dispatchers.IO) {
+            cardElementDao.updateElementPosition(elementId, posX, posY)
+        }
+    }
+
+    override suspend fun updateElementScale(elementId: Long, scale: Int): Int {
+        return withContext(Dispatchers.IO) {
+            cardElementDao.updateElementScale(elementId, scale)
+        }
+    }
+
+    override suspend fun updateTextFontSize(elementId: Long, fontSize: Float): Int {
+        return withContext(Dispatchers.IO) {
+            cardElementDao.updateTextFontSize(elementId, fontSize)
+        }
+    }
+
+    override suspend fun updateTextColor(elementId: Long, textColor: String): Int {
+        return withContext(Dispatchers.IO) {
+            cardElementDao.updateTextColor(elementId, textColor)
+        }
+    }
+
+    override suspend fun updateTextContent(elementId: Long, textContent: String): Int {
+        return withContext(Dispatchers.IO) {
+            cardElementDao.updateTextContent(elementId, textContent)
+        }
+    }
+
+    override suspend fun updateTextFont(elementId: Long, fontFamily: String): Int {
+        return withContext(Dispatchers.IO) {
+            cardElementDao.updateTextFont(elementId, fontFamily)
+        }
+    }
+
+    override suspend fun updateTextAlign(elementId: Long, textAlign: String): Int {
+        return withContext(Dispatchers.IO) {
+            cardElementDao.updateTextAlign(elementId, textAlign)
         }
     }
 }

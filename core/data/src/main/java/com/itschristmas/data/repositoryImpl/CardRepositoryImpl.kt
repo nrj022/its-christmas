@@ -7,7 +7,6 @@ import com.itschristmas.domain.model.Card
 import com.itschristmas.domain.repository.CardRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.io.File
 import javax.inject.Inject
 
 class CardRepositoryImpl @Inject constructor(
@@ -26,14 +25,21 @@ class CardRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun updateBackgroundAssetId(cardId: Long, backgroundAssetId: Int) {
-        withContext(Dispatchers.IO) {
+    override suspend fun getGlbKeyAndBackgroundUnityKey(cardId: Long): Pair<String?, String?> {
+        return withContext(Dispatchers.IO) {
+            cardDao.getGlbKeyAndBackgroundUnityKey(cardId)
+        }
+    }
+
+    override suspend fun updateBackgroundAssetId(cardId: Long, backgroundAssetId: Long): Int {
+        return withContext(Dispatchers.IO) {
             cardDao.updateBackgroundAssetId(cardId, backgroundAssetId)
         }
     }
 
-    // TODO: Firebase Storage GLB 파일 업로드 기능 구현
-    override suspend fun uploadGlbFileToFirebase(glbFile: File): String {
-        throw NotImplementedError("uploadGlbFileToFirebase is not implemented yet")
+    override suspend fun updateGlbKey(cardId: Long, glbKey: String): Int {
+        return withContext(Dispatchers.IO) {
+            cardDao.updateGlbKey(cardId, glbKey)
+        }
     }
 }

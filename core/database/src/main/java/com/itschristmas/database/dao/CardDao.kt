@@ -17,6 +17,12 @@ interface CardDao {
     @Query("SELECT * FROM cards WHERE cardId = :cardId")
     suspend fun getCardById(cardId: Long): CardEntity
 
+    @Query("SELECT cards.glbKey, assets.unityKey FROM cards JOIN assets ON cards.backgroundAssetId = assets.assetId WHERE cards.cardId = :cardId")
+    suspend fun getGlbKeyAndBackgroundUnityKey(cardId: Long): Pair<String?, String?>
+
     @Query("UPDATE cards SET backgroundAssetId = :backgroundAssetId WHERE cardId = :cardId")
-    suspend fun updateBackgroundAssetId(cardId: Long, backgroundAssetId: Int)
+    suspend fun updateBackgroundAssetId(cardId: Long, backgroundAssetId: Long): Int
+
+    @Query("UPDATE cards SET glbKey = :glbKey WHERE cardId = :cardId")
+    suspend fun updateGlbKey(cardId: Long, glbKey: String): Int
 }

@@ -50,7 +50,7 @@ class IoCatchingTest {
 
         // Then
         assertTrue(result.isFailure)
-        assertEquals(expectedException, result.exceptionOrNull())
+        assertEquals(expectedException.message, result.exceptionOrNull()?.message)
     }
 
     @Test

@@ -3,88 +3,83 @@ package com.itschristmas.data.repositoryImpl
 import com.itschristmas.domain.model.CardElementWithAssetKeys
 import com.itschristmas.data.mapper.toDomain
 import com.itschristmas.data.mapper.toEntity
+import com.itschristmas.data.repositoryImpl.common.ioCatching
 import com.itschristmas.database.dao.CardElementDao
 import com.itschristmas.domain.model.CardElement
 import com.itschristmas.domain.repository.CardElementRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class CardElementRepositoryImpl @Inject constructor(
     private val cardElementDao: CardElementDao
 ): CardElementRepository {
-    override suspend fun insertCardElements(cardElements: List<CardElement>): List<Long> {
-        return withContext(Dispatchers.IO) {
+    override suspend fun insertCardElements(cardElements: List<CardElement>): Result<List<Long>> =
+        ioCatching {
             cardElementDao.insertAll(cardElements.map { it.toEntity() })
         }
-    }
 
-    override suspend fun insertCardElement(cardElement: CardElement): Long {
-        return withContext(Dispatchers.IO) {
+    override suspend fun insertCardElement(cardElement: CardElement): Result<Long> =
+        ioCatching {
             cardElementDao.insertElement(cardElement.toEntity())
         }
-    }
 
-    override suspend fun deleteCardElementsByCardId(cardId: Long): Int {
-        return withContext(Dispatchers.IO) {
+    override suspend fun deleteCardElementsByCardId(cardId: Long): Result<Int> =
+        ioCatching {
             cardElementDao.deleteByCardId(cardId)
         }
-    }
 
-    override fun getObjectElementsWithAssetKeysByCardId(cardId: Long): Flow<List<CardElementWithAssetKeys>> {
+    override fun getObjectElementsWithAssetKeysByCardId(cardId: Long): Flow<Result<List<CardElementWithAssetKeys>>> {
         return cardElementDao.getObjectElementsWithAssetKeysByCardId(cardId)
-            .map { entityList -> entityList.map { it.toDomain() } }
+            .map { entityList ->
+                Result.success(entityList.map { it.toDomain() })
+            }
+            .catch { e ->
+                emit(Result.failure(e))
+            }
             .flowOn(Dispatchers.IO)
     }
 
-    override suspend fun getTextElementsByCardId(cardId: Long): List<CardElement> {
-        return withContext(Dispatchers.IO) {
+    override suspend fun getTextElementsByCardId(cardId: Long): Result<List<CardElement>> =
+        ioCatching {
             cardElementDao.getTextElementsByCardId(cardId).map { it.toDomain() }
         }
-    }
 
-    override suspend fun updateElementPosition(elementId: Long, posX: Int, posY: Int): Int {
-        return withContext(Dispatchers.IO) {
+    override suspend fun updateElementPosition(elementId: Long, posX: Int, posY: Int): Result<Int> =
+        ioCatching {
             cardElementDao.updateElementPosition(elementId, posX, posY)
         }
-    }
 
-    override suspend fun updateElementScale(elementId: Long, scale: Int): Int {
-        return withContext(Dispatchers.IO) {
+    override suspend fun updateElementScale(elementId: Long, scale: Int): Result<Int> =
+        ioCatching {
             cardElementDao.updateElementScale(elementId, scale)
         }
-    }
 
-    override suspend fun updateTextFontSize(elementId: Long, fontSize: Float): Int {
-        return withContext(Dispatchers.IO) {
+    override suspend fun updateTextFontSize(elementId: Long, fontSize: Float): Result<Int> =
+        ioCatching {
             cardElementDao.updateTextFontSize(elementId, fontSize)
         }
-    }
 
-    override suspend fun updateTextColor(elementId: Long, textColor: String): Int {
-        return withContext(Dispatchers.IO) {
+    override suspend fun updateTextColor(elementId: Long, textColor: String): Result<Int> =
+        ioCatching {
             cardElementDao.updateTextColor(elementId, textColor)
         }
-    }
 
-    override suspend fun updateTextContent(elementId: Long, textContent: String): Int {
-        return withContext(Dispatchers.IO) {
+    override suspend fun updateTextContent(elementId: Long, textContent: String): Result<Int> =
+        ioCatching {
             cardElementDao.updateTextContent(elementId, textContent)
         }
-    }
 
-    override suspend fun updateTextFont(elementId: Long, fontFamily: String): Int {
-        return withContext(Dispatchers.IO) {
+    override suspend fun updateTextFont(elementId: Long, fontFamily: String): Result<Int> =
+        ioCatching {
             cardElementDao.updateTextFont(elementId, fontFamily)
         }
-    }
 
-    override suspend fun updateTextAlign(elementId: Long, textAlign: String): Int {
-        return withContext(Dispatchers.IO) {
+    override suspend fun updateTextAlign(elementId: Long, textAlign: String): Result<Int> =
+        ioCatching {
             cardElementDao.updateTextAlign(elementId, textAlign)
         }
-    }
 }

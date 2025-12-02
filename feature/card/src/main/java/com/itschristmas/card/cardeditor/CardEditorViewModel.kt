@@ -113,9 +113,11 @@ class CardEditorViewModel @Inject constructor(
     private fun loadMyObjectsFromDB(cardId: Long) {
         viewModelScope.launch {
             cardElementRepository.getObjectElementsWithAssetKeysByCardId(cardId)
-                .collect {
-                    _cardEditorState.update { state ->
-                        state.copy(myObjects = it)
+                .collect { result ->
+                    result.onSuccess {
+                        _cardEditorState.update { state ->
+                            state.copy(myObjects = it)
+                        }
                     }
                 }
         }

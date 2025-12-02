@@ -28,6 +28,7 @@ object InitialData {
     fun getInitialCard(): CardEntity {
         return CardEntity(
             cardId = 1,
+            backgroundAssetId = 1,
             createdAt = System.currentTimeMillis(),
             updatedAt = System.currentTimeMillis()
         )

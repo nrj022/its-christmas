@@ -35,7 +35,7 @@ interface CardElementDao {
     @Query("SELECT * FROM card_elements WHERE cardId = :cardId and elementType = 'TEXT'")
     suspend fun getTextElementsByCardId(cardId: Long): List<CardElementEntity>
 
-    @Query("UPDATE card_elements SET posX = :posX and posY = :posY WHERE elementId = :elementId")
+    @Query("UPDATE card_elements SET posX = :posX, posY = :posY WHERE elementId = :elementId")
     suspend fun updateElementPosition(elementId: Long, posX: Int, posY: Int): Int
 
     @Query("UPDATE card_elements SET scale = :scale WHERE elementId = :elementId")

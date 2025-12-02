@@ -11,7 +11,7 @@ data class CardEntity(
     val title: String? = null,
     val glbKey: String? = null,
     val thumbnailPath: String? = null,
-    val backgroundAssetId: Long = 1,    // 기본값
+    val backgroundAssetId: Long,
     val isDraft: Boolean = true,
     val createdAt: Long,
     val updatedAt: Long

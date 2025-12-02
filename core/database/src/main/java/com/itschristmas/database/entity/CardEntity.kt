@@ -11,7 +11,7 @@ data class CardEntity(
     val title: String? = null,
     val glbKey: String? = null,
     val thumbnailPath: String? = null,
-    val backgroundAssetId: Long? = null,   // FK: Asset.assetId
+    val backgroundAssetId: Long,
     val isDraft: Boolean = true,
     val createdAt: Long,
     val updatedAt: Long

@@ -1,6 +1,5 @@
 package com.itschristmas.card.cardeditor
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.itschristmas.domain.enum.AssetType
@@ -11,15 +10,10 @@ import com.itschristmas.domain.repository.AssetRepository
 import com.itschristmas.domain.repository.CardElementRepository
 import com.itschristmas.domain.repository.CardRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import kotlin.Long
 
@@ -91,70 +85,41 @@ class CardEditorViewModel @Inject constructor(
 
     private fun getCardDataFromDB(cardId: Long) {
         viewModelScope.launch {
-            val card = cardRepository.getCardById(cardId)
-            _cardEditorState.update {
-                it.copy(selectedBackground = card.backgroundAssetId)
-            }
+            cardRepository.getCardById(cardId)
+                .onSuccess { card ->
+                    _cardEditorState.update { it.copy(selectedBackground = card.backgroundAssetId) }
+                }
         }
     }
+
     private fun getObjectsFromDB() {
         viewModelScope.launch {
-            val objects = assetRepository.getAssetsByType(AssetType.OBJECT)
-            _cardEditorState.update {
-                it.copy(objects = objects)
-            }
+            assetRepository.getAssetsByType(AssetType.OBJECT)
+                .onSuccess { objects ->
+                    _cardEditorState.update { it.copy(objects = objects) }
+                }
         }
     }
 
     private fun getBackgroundsFromDB() {
         viewModelScope.launch {
-            val backgrounds = assetRepository.getAssetsByType(AssetType.BACKGROUND)
-            _cardEditorState.update {
-                it.copy(backgrounds = backgrounds)
-            }
+            assetRepository.getAssetsByType(AssetType.BACKGROUND)
+                .onSuccess { backgrounds ->
+                    _cardEditorState.update { it.copy(backgrounds = backgrounds) }
+                }
         }
     }
 
     private fun loadMyObjectsFromDB(cardId: Long) {
         viewModelScope.launch {
-            cardElementRepository.getObjectElementsByCardId(cardId)
-                .collect {
-                    loadAssetThumbMap(it)
-                    _cardEditorState.update { state ->
-                        state.copy(myObjects = it)
-                    }
-                }
-        }
-    }
-
-    private suspend fun loadAssetThumbMap(objects: List<CardElement>) {
-        val results: List<Pair<Long, String>>? = withContext(Dispatchers.IO) {
-            val objectIds = objects.mapNotNull { it.assetId }.distinct()
-            val currentMap = _cardEditorState.value.assetThumbMap.toMutableMap()
-
-            val missingIds = objectIds.filter { it !in currentMap.keys }
-            if(missingIds.isEmpty()) null
-
-            coroutineScope {
-                missingIds.map { id ->
-                    async {
-                        try {
-                            val asset = assetRepository.getAssetById(id)
-                            val thumb = asset.thumbnailKey
-                            if(thumb.isNotEmpty()) id to thumb else null
-                        } catch (e: Exception) {
-                            Log.e(TAG, "failed to fetch assets", e)
-                            null
+            cardElementRepository.getObjectElementsWithAssetKeysByCardId(cardId)
+                .collect { result ->
+                    result.onSuccess {
+                        _cardEditorState.update { state ->
+                            state.copy(myObjects = it)
                         }
                     }
-                }.awaitAll().filterNotNull()
-            }
-        }
-
-        if(results == null) return
-
-        _cardEditorState.update {
-            it.copy(assetThumbMap = it.assetThumbMap + results.toMap())
+                }
         }
     }
 }

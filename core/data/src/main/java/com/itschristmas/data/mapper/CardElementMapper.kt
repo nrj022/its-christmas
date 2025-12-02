@@ -18,8 +18,6 @@ fun CardElementEntity.toDomain(): CardElement {
             fontWeight = fontWeight?.let { UnityFontWeight.valueOf(it) } ?: default.fontWeight,
             textColor = textColor ?: default.textColor,
             textAlign = textAlign?.let { UnityTextAlign.valueOf(it) } ?: default.textAlign,
-            lineSpacing = lineSpacing ?: default.lineSpacing,
-            letterSpacing = letterSpacing ?: default.letterSpacing
         )
     }
 
@@ -58,7 +56,5 @@ fun CardElement.toEntity(): CardElementEntity {
         fontWeight = unityTextStyle?.fontWeight?.name,
         textColor = unityTextStyle?.textColor,
         textAlign = unityTextStyle?.textAlign?.name,
-        lineSpacing = unityTextStyle?.lineSpacing,
-        letterSpacing = unityTextStyle?.letterSpacing
     )
 }

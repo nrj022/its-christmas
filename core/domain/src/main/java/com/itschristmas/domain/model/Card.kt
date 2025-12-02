@@ -5,7 +5,7 @@ data class Card(
     val title: String? = null,
     val glbKey: String? = null,
     val thumbnailPath: String? = null,
-    val backgroundAssetId: Long? = null,
+    val backgroundAssetId: Long,
     val isDraft: Boolean = true,
     val createdAt: Long,
     val updatedAt: Long

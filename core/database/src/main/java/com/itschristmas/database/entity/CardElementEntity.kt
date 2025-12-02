@@ -15,13 +15,13 @@ data class CardElementEntity(
     // Transform
     val posX: Int,
     val posY: Int,
-    val posZ: Int? = null,
+    val posZ: Int = 0,
 
-    val rotX: Int? = null,
-    val rotY: Int? = null,
-    val rotZ: Int? = null,
+    val rotX: Int = 0,
+    val rotY: Int = 0,
+    val rotZ: Int = 0,
 
-    val scale: Int,
+    val scale: Int = 1,
 
     // Text fields (nullable)
     val textContent: String? = null,
@@ -30,6 +30,4 @@ data class CardElementEntity(
     val fontWeight: String? = null, // UnityFontWeight: NORMAL / BOLD
     val textColor: String? = null,
     val textAlign: String? = null,   // UnityTextAlign: LEFT / CENTER / RIGHT
-    val lineSpacing: Float? = null,
-    val letterSpacing: Float? = null
 )

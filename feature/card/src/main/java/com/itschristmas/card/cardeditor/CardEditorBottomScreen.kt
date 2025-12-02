@@ -25,7 +25,6 @@ fun CardEditorBottomScreen(cardId: Long, viewModel: CardEditorViewModel = hiltVi
         objectItems = state.objects, // 임시 데이터
         backgroundItems = state.backgrounds,  // 임시 데이터
         myObjects = state.myObjects,
-        assetThumbMap = state.assetThumbMap,
         selectedMyObject = state.selectedMyObject,
         selectedBackground = state.selectedBackground,
         onNextClicked = {},

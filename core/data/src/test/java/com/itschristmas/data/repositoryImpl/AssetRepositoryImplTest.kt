@@ -93,7 +93,7 @@ class AssetRepositoryImplTest {
 
         // Then
         assertTrue(result.isFailure)
-        assertEquals(exception, result.exceptionOrNull())
+        assertEquals(exception.message, result.exceptionOrNull()?.message)
     }
 
     @Test

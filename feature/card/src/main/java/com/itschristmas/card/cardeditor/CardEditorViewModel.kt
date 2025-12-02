@@ -85,12 +85,13 @@ class CardEditorViewModel @Inject constructor(
 
     private fun getCardDataFromDB(cardId: Long) {
         viewModelScope.launch {
-            val card = cardRepository.getCardById(cardId)
-            _cardEditorState.update {
-                it.copy(selectedBackground = card.backgroundAssetId)
-            }
+            cardRepository.getCardById(cardId)
+                .onSuccess { card ->
+                    _cardEditorState.update { it.copy(selectedBackground = card.backgroundAssetId) }
+                }
         }
     }
+
     private fun getObjectsFromDB() {
         viewModelScope.launch {
             assetRepository.getAssetsByType(AssetType.OBJECT)

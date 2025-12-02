@@ -5,7 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.itschristmas.database.entity.CardElementEntity
-import com.itschristmas.database.entity.CardElementWithAssetKeysEntity
+import com.itschristmas.database.dto.CardElementWithAssetKeysDto
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -30,7 +30,7 @@ interface CardElementDao {
         WHERE ce.cardId = :cardId 
         and elementType = 'OBJECT'
         """)
-    fun getObjectElementsWithAssetKeysByCardId(cardId: Long): Flow<List<CardElementWithAssetKeysEntity>>
+    fun getObjectElementsWithAssetKeysByCardId(cardId: Long): Flow<List<CardElementWithAssetKeysDto>>
 
     @Query("SELECT * FROM card_elements WHERE cardId = :cardId and elementType = 'TEXT'")
     suspend fun getTextElementsByCardId(cardId: Long): List<CardElementEntity>

@@ -12,13 +12,13 @@ data class CardElement(
     // Transform
     val posX: Int,
     val posY: Int,
-    val posZ: Int? = null,
+    val posZ: Int = 0,
 
-    val rotX: Int? = null,
-    val rotY: Int? = null,
-    val rotZ: Int? = null,
+    val rotX: Int = 0,
+    val rotY: Int = 0,
+    val rotZ: Int = 0,
 
-    val scale: Int,
+    val scale: Int = 1,
 
     // Text fields (nullable)
     val unityTextStyle: UnityTextStyle? = null

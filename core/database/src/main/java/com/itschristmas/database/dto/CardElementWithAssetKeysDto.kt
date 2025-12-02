@@ -1,8 +1,9 @@
-package com.itschristmas.database.entity
+package com.itschristmas.database.dto
 
 import androidx.room.Embedded
+import com.itschristmas.database.entity.CardElementEntity
 
-data class CardElementWithAssetKeysEntity(
+data class CardElementWithAssetKeysDto(
     @Embedded
     val cardElement: CardElementEntity,
 

@@ -93,19 +93,19 @@ class CardEditorViewModel @Inject constructor(
     }
     private fun getObjectsFromDB() {
         viewModelScope.launch {
-            val objects = assetRepository.getAssetsByType(AssetType.OBJECT)
-            _cardEditorState.update {
-                it.copy(objects = objects)
-            }
+            assetRepository.getAssetsByType(AssetType.OBJECT)
+                .onSuccess { objects ->
+                    _cardEditorState.update { it.copy(objects = objects) }
+                }
         }
     }
 
     private fun getBackgroundsFromDB() {
         viewModelScope.launch {
-            val backgrounds = assetRepository.getAssetsByType(AssetType.BACKGROUND)
-            _cardEditorState.update {
-                it.copy(backgrounds = backgrounds)
-            }
+            assetRepository.getAssetsByType(AssetType.BACKGROUND)
+                .onSuccess { backgrounds ->
+                    _cardEditorState.update { it.copy(backgrounds = backgrounds) }
+                }
         }
     }
 

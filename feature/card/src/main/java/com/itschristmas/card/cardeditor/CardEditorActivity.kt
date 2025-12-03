@@ -5,11 +5,16 @@ import android.os.Bundle
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.itschristmas.card.databinding.ActivityCardEditorBinding
 import com.itschristmas.designsystem.theme.ItsChristmasTheme
 import com.unity3d.player.UnityPlayerForActivityOrService
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class CardEditorActivity : AppCompatActivity() {
@@ -17,14 +22,32 @@ class CardEditorActivity : AppCompatActivity() {
     private lateinit var binding: ActivityCardEditorBinding
     private lateinit var unityPlayer: UnityPlayerForActivityOrService
 
-    @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityCardEditorBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
         val cardId = intent.getLongExtra("cardId", 1)
+        val viewModel: CardEditorViewModel by viewModels()
 
+        setContentView(binding.root)
+        unitySetting()
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.cardEditorState.collect {
+                    updateUi(it)
+                }
+            }
+        }
+
+        binding.composeContainer.setContent {
+            ItsChristmasTheme {
+                CardEditorBottomScreen(cardId)
+            }
+        }
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private fun unitySetting() {
         unityPlayer = UnityPlayerForActivityOrService(this)
         (unityPlayer.view.parent as? ViewGroup)?.removeView(unityPlayer.view)
 
@@ -43,16 +66,11 @@ class CardEditorActivity : AppCompatActivity() {
             true
         }
 
-        // TODO: ViewModel 연동 후 compose의 my object selected 여부와 visibility 연결
-        binding.objectOptionContainer.visibility = View.VISIBLE
-
         unityPlayer.windowFocusChanged(true)
+    }
 
-        binding.composeContainer.setContent {
-            ItsChristmasTheme {
-                CardEditorBottomScreen(cardId)
-            }
-        }
+    private fun updateUi(state: CardEditorState) {
+        binding.objectOptionContainer.visibility = if(state.showObjectOptionContainer) View.VISIBLE else View.GONE
     }
 
     override fun onResume() {

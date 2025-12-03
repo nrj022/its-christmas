@@ -3,14 +3,16 @@ package com.itschristmas.card.cardeditor
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.MotionEvent
-import android.view.View
 import android.view.ViewGroup
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.itschristmas.card.cardeditor.common.getDrawableIdByKey
+import com.itschristmas.card.cardeditor.common.toBase62
 import com.itschristmas.card.databinding.ActivityCardEditorBinding
 import com.itschristmas.designsystem.theme.ItsChristmasTheme
 import com.unity3d.player.UnityPlayerForActivityOrService
@@ -84,12 +86,26 @@ class CardEditorActivity : AppCompatActivity() {
     }
 
     private fun updateUi(state: CardEditorState) {
-        binding.imgBtnBack.visibility = if(state.isAssetBrowserPanelActive) View.VISIBLE else View.GONE
-        binding.cardObjectThumb.visibility = if(state.isTransformPanelActive) View.VISIBLE else View.GONE
-        binding.objectOptionContainer.visibility = if(state.showObjectOptionContainer) View.VISIBLE else View.GONE
+        binding.imgBtnBack.isVisible = state.isAssetBrowserPanelActive
+        binding.objectOptionContainer.isVisible = state.showObjectOptionContainer
 
-        if(layoutParams.matchConstraintPercentHeight != state.unityContainerHeightFraction) {
-            layoutParams.matchConstraintPercentHeight = state.unityContainerHeightFraction
+        updateTransformPanel(state)
+        updateUnityContainerHeight(state.unityContainerHeightFraction)
+
+    }
+
+    private fun updateTransformPanel(state: CardEditorState) {
+        val temp = state.tempTransformState
+        val active = state.isTransformPanelActive && temp != null
+
+        binding.cardObjectThumb.isVisible = active
+        binding.imgObjectThumb.setImageResource(getDrawableIdByKey(this, temp?.thumbnailKey))
+        binding.textElementKey.text = if(active) toBase62(temp.elementId) else ""
+    }
+
+    private fun updateUnityContainerHeight(heightFraction: Float) {
+        if(layoutParams.matchConstraintPercentHeight != heightFraction) {
+            layoutParams.matchConstraintPercentHeight = heightFraction
             binding.unityContainer.layoutParams = layoutParams
         }
     }

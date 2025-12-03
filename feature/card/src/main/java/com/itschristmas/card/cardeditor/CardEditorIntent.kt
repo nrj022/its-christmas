@@ -1,11 +1,12 @@
 package com.itschristmas.card.cardeditor
 
 import com.itschristmas.domain.model.Asset
+import com.itschristmas.domain.model.CardElementWithAssetKeys
 
 sealed class CardEditorIntent {
     data class Init(val cardId: Long): CardEditorIntent()
     data class ObjectClicked(val cardId: Long, val clickedObject: Asset): CardEditorIntent()
-    data class MyObjectClicked(val assetId: Long): CardEditorIntent()
+    data class MyObjectClicked(val element: CardElementWithAssetKeys): CardEditorIntent()
     data object DeleteClicked: CardEditorIntent()
     data object AdjustClicked: CardEditorIntent()
     data object AdjustCancelClicked: CardEditorIntent()

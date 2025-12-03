@@ -55,7 +55,7 @@ fun AssetBrowserPanel(
     selectedBackground: Long? = null,
     onNextClicked: () -> Unit = {},
     onObjectClicked: (Asset) -> Unit = {},
-    onMyObjectClicked: (Long) -> Unit = {},
+    onMyObjectClicked: (CardElementWithAssetKeys) -> Unit = {},
     onBackgroundClicked: (Long) -> Unit = {},
 ) {
 
@@ -87,7 +87,7 @@ fun AssetBrowserPanelContent(
     selectedBackground: Long?,
     onTabSelected: (AssetBrowserTab) -> Unit,
     onObjectClicked: (Asset) -> Unit,
-    onMyObjectClicked: (Long) -> Unit,
+    onMyObjectClicked: (CardElementWithAssetKeys) -> Unit,
     onBackgroundClicked: (Long) -> Unit,
     onNextClicked: () -> Unit
 ) {
@@ -199,7 +199,7 @@ fun ToggleButtons(
 fun MyObjectList(
     elements: List<CardElementWithAssetKeys>,
     selectedItemIndex: Long?,
-    onItemClicked: (Long) -> Unit
+    onItemClicked: (CardElementWithAssetKeys) -> Unit
 ) {
     val context = LocalContext.current
 
@@ -232,7 +232,7 @@ fun MyObjectList(
                         contentDescription = stringResource(R.string.editor_cd_asset),
                         modifier = Modifier
                             .fillMaxSize()
-                            .clickable { onItemClicked(element.cardElement.elementId) }
+                            .clickable { onItemClicked(element) }
                     )
                     Box(
                         modifier = Modifier

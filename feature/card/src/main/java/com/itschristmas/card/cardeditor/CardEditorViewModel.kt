@@ -3,10 +3,12 @@ package com.itschristmas.card.cardeditor
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.itschristmas.card.cardeditor.model.PanelState
+import com.itschristmas.card.cardeditor.model.TempTransformState
 import com.itschristmas.domain.enum.AssetType
 import com.itschristmas.domain.enum.ElementType
 import com.itschristmas.domain.model.Asset
 import com.itschristmas.domain.model.CardElement
+import com.itschristmas.domain.model.CardElementWithAssetKeys
 import com.itschristmas.domain.repository.AssetRepository
 import com.itschristmas.domain.repository.CardElementRepository
 import com.itschristmas.domain.repository.CardRepository
@@ -42,16 +44,16 @@ class CardEditorViewModel @Inject constructor(
                 handleBackgroundClicked(intent.assetId)
             }
             is CardEditorIntent.MyObjectClicked -> {
-                handleMyObjectClicked(intent.assetId)
+                handleMyObjectClicked(intent.element)
             }
             is CardEditorIntent.DeleteClicked -> {
-                handelDeleteClicked()
+                handleDeleteClicked()
             }
             is CardEditorIntent.AdjustClicked -> {
-                handelAdjustClicked()
+                handleAdjustClicked()
             }
             is CardEditorIntent.AdjustCancelClicked -> {
-                handelAdjustCancelClicked()
+                handleAdjustCancelClicked()
             }
         }
     }
@@ -87,23 +89,38 @@ class CardEditorViewModel @Inject constructor(
         }
     }
 
-    private fun handleMyObjectClicked(assetId: Long) {
+    private fun handleMyObjectClicked(element: CardElementWithAssetKeys) {
         _cardEditorState.update {
-            it.copy(selectedMyObject = if (it.selectedMyObject == assetId) null else assetId)
+            it.copy(selectedMyObject = if (it.selectedMyObjectIdx == element.cardElement.elementId) null else element)
         }
     }
 
-    private fun handelAdjustClicked() {
-        updatePanelState(PanelState.TRANSFORM_CONTROL)
+    private fun handleAdjustClicked() {
+        _cardEditorState.value.selectedMyObject?.let { obj ->
+            updatePanelState(PanelState.TRANSFORM_CONTROL)
+            _cardEditorState.update {
+                it.copy(
+                    tempTransformState = TempTransformState(
+                        elementId = obj.cardElement.elementId,
+                        thumbnailKey = obj.thumbnailKey,
+                        posX = obj.cardElement.posX,
+                        posY = obj.cardElement.posY,
+                        scale = obj.cardElement.scale
+                    )
+                )
+            }
+        }
     }
 
-    private fun handelAdjustCancelClicked() {
+    private fun handleAdjustCancelClicked() {
         updatePanelState(PanelState.ASSET_BROWSER)
+        _cardEditorState.update { it.copy(tempTransformState = null) }
     }
 
-    private fun handelDeleteClicked() {
+    private fun handleDeleteClicked() {
         viewModelScope.launch {
             _cardEditorState.value.selectedMyObject?.let {
+            _cardEditorState.value.selectedMyObjectIdx?.let {
             }
         }
     }

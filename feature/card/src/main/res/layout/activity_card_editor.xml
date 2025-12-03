@@ -39,12 +39,25 @@
         app:layout_constraintStart_toStartOf="parent" >
 
         <ImageView
+            android:id="@+id/img_object_thumb"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:contentDescription="@string/editor_cd_object_thumb_img"
             android:scaleType="centerCrop"
             android:foreground="@drawable/bg_rounded_rect_border"
             android:src="@drawable/img_placeholder" />
+
+        <TextView
+            android:id="@+id/text_element_key"
+            android:layout_width="wrap_content"
+            android:layout_height="28dp"
+            android:padding="4dp"
+            android:background="@drawable/bg_rounded_rect_black_10"
+            android:fontFamily="@font/irish_grover_regular"
+            android:textAlignment="center"
+            android:gravity="center"
+            android:textSize="12sp" />
+
     </androidx.cardview.widget.CardView>
 
     <androidx.constraintlayout.widget.ConstraintLayout

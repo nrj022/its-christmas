@@ -12,6 +12,15 @@ data class CardEditorState(
     val selectedBackground: Long? = null,
     val selectedMyObject: Long? = null
 ) {
+    val isAssetBrowserPanelActive: Boolean
+        get() = panelState == PanelState.ASSET_BROWSER
+
+    val isTransformPanelActive: Boolean
+        get() = panelState == PanelState.TRANSFORM_CONTROL
+
     val showObjectOptionContainer: Boolean
-        get() = selectedMyObject != null
+        get() = selectedMyObject != null && panelState == PanelState.ASSET_BROWSER
+
+    val unityContainerHeightFraction: Float
+        get() = if (panelState == PanelState.TRANSFORM_CONTROL) 0.6f else 0.5f
 }

@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -21,15 +22,18 @@ class CardEditorActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityCardEditorBinding
     private lateinit var unityPlayer: UnityPlayerForActivityOrService
+    private lateinit var layoutParams: ConstraintLayout.LayoutParams
+    private val viewModel: CardEditorViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityCardEditorBinding.inflate(layoutInflater)
+        layoutParams = binding.unityContainer.layoutParams as ConstraintLayout.LayoutParams
         val cardId = intent.getLongExtra("cardId", 1)
-        val viewModel: CardEditorViewModel by viewModels()
 
         setContentView(binding.root)
-        unitySetting()
+        initUnity()
+        initListener()
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -47,7 +51,7 @@ class CardEditorActivity : AppCompatActivity() {
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    private fun unitySetting() {
+    private fun initUnity() {
         unityPlayer = UnityPlayerForActivityOrService(this)
         (unityPlayer.view.parent as? ViewGroup)?.removeView(unityPlayer.view)
 
@@ -69,8 +73,25 @@ class CardEditorActivity : AppCompatActivity() {
         unityPlayer.windowFocusChanged(true)
     }
 
+    private fun initListener() {
+        binding.btnAdjust.setOnClickListener {
+            viewModel.onIntent(CardEditorIntent.AdjustClicked)
+        }
+
+        binding.imgBtnDelete.setOnClickListener {
+            viewModel.onIntent(CardEditorIntent.DeleteClicked)
+        }
+    }
+
     private fun updateUi(state: CardEditorState) {
+        binding.imgBtnBack.visibility = if(state.isAssetBrowserPanelActive) View.VISIBLE else View.GONE
+        binding.cardObjectThumb.visibility = if(state.isTransformPanelActive) View.VISIBLE else View.GONE
         binding.objectOptionContainer.visibility = if(state.showObjectOptionContainer) View.VISIBLE else View.GONE
+
+        if(layoutParams.matchConstraintPercentHeight != state.unityContainerHeightFraction) {
+            layoutParams.matchConstraintPercentHeight = state.unityContainerHeightFraction
+            binding.unityContainer.layoutParams = layoutParams
+        }
     }
 
     override fun onResume() {

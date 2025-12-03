@@ -27,6 +27,26 @@
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/ic_arrow_left" />
 
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_object_thumb"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginStart="20dp"
+        app:cardCornerRadius="10dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/unity_container"
+        app:layout_constraintStart_toStartOf="parent" >
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="@string/editor_cd_object_thumb_img"
+            android:scaleType="centerCrop"
+            android:foreground="@drawable/bg_rounded_rect_border"
+            android:src="@drawable/img_placeholder" />
+    </androidx.cardview.widget.CardView>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/object_option_container"
         android:visibility="gone"

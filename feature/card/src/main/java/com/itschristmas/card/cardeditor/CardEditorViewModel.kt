@@ -2,6 +2,7 @@ package com.itschristmas.card.cardeditor
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.itschristmas.card.cardeditor.model.PanelState
 import com.itschristmas.domain.enum.AssetType
 import com.itschristmas.domain.enum.ElementType
 import com.itschristmas.domain.model.Asset
@@ -43,6 +44,15 @@ class CardEditorViewModel @Inject constructor(
             is CardEditorIntent.MyObjectClicked -> {
                 handleMyObjectClicked(intent.assetId)
             }
+            is CardEditorIntent.DeleteClicked -> {
+                handelDeleteClicked()
+            }
+            is CardEditorIntent.AdjustClicked -> {
+                handelAdjustClicked()
+            }
+            is CardEditorIntent.AdjustCancelClicked -> {
+                handelAdjustCancelClicked()
+            }
         }
     }
 
@@ -80,6 +90,27 @@ class CardEditorViewModel @Inject constructor(
     private fun handleMyObjectClicked(assetId: Long) {
         _cardEditorState.update {
             it.copy(selectedMyObject = if (it.selectedMyObject == assetId) null else assetId)
+        }
+    }
+
+    private fun handelAdjustClicked() {
+        updatePanelState(PanelState.TRANSFORM_CONTROL)
+    }
+
+    private fun handelAdjustCancelClicked() {
+        updatePanelState(PanelState.ASSET_BROWSER)
+    }
+
+    private fun handelDeleteClicked() {
+        viewModelScope.launch {
+            _cardEditorState.value.selectedMyObject?.let {
+            }
+        }
+    }
+
+    private fun updatePanelState(panelState: PanelState) {
+        _cardEditorState.update {
+            it.copy(panelState = panelState)
         }
     }
 

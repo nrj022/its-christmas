@@ -27,6 +27,7 @@ truth = "1.4.5"
 foundation = "1.9.4"
 material3 = "1.4.0"
 turbine = "1.2.1"
+cardview = "1.0.0"
 
 [libraries]
 androidx-compose-material-icons-extended = { module = "androidx.compose.material:material-icons-extended" }
@@ -69,6 +70,7 @@ truth = { module = "com.google.truth:truth", version.ref = "truth" }
 androidx-compose-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "foundation" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }
 turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
+androidx-cardview = { group = "androidx.cardview", name = "cardview", version.ref = "cardview" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

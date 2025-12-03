@@ -44,7 +44,7 @@ fun CardEditorBottomScreen(cardId: Long, viewModel: CardEditorViewModel = hiltVi
                         scale = newScale
                     }
                 },
-                onCancel = { },
+                onCancel = { viewModel.onIntent(CardEditorIntent.AdjustCancelClicked) },
                 onApply = { },
                 onDirectionalClick = { direction ->
                     println("$direction clicked")

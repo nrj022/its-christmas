@@ -147,7 +147,7 @@ class CardEditorViewModel @Inject constructor(
                 .collect { result ->
                     result.onSuccess {
                         _cardEditorState.update { state ->
-                            state.copy(myObjects = it)
+                            state.copy(myObjects = it.reversed())
                         }
                     }
                 }

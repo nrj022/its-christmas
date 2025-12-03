@@ -21,6 +21,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -35,6 +36,7 @@ import com.itschristmas.designsystem.theme.SoftBlack
 import com.itschristmas.designsystem.theme.White
 import com.itschristmas.domain.model.Asset
 import com.itschristmas.card.R
+import com.itschristmas.card.cardeditor.common.toBase62
 
 private const val COLUMNS = 3
 
@@ -114,7 +116,6 @@ fun AssetBrowserPanelContent(
         } else {
             SelectableGrid(
                 assets = backgroundItems,
-                // 첫 번째 아이템이 선택된 것처럼 보이게 처리 (임시)
                 selectedItemIndex = selectedBackground,
                 onItemClicked = { onBackgroundClicked(it) }
             )
@@ -214,23 +215,41 @@ fun MyObjectList(
             contentPadding = PaddingValues(bottom = 24.dp)
         ) {
             item { Box(Modifier.size(8.dp)) }
-
-            items(items = elements, key = { it.cardElement.elementId } ) { element ->
-                Image(
-                    painter = painterResource(id = getDrawableIdByKey(context, element.thumbnailKey)),
-                    contentScale = ContentScale.Crop,
-                    contentDescription = stringResource(R.string.editor_cd_asset),
+            items(items = elements, key = { it.cardElement.elementId }) { element ->
+                Box(
                     modifier = Modifier
-                        .size(90.dp)
+                        .size(72.dp)
                         .border(
                             2.dp,
                             if (element.cardElement.elementId == selectedItemIndex) SoftBlack else Gray,
                             RoundedCornerShape(10.dp)
                         )
                         .clip(RoundedCornerShape(10.dp))
-                        .clickable { onItemClicked(element.cardElement.elementId) }
-                )
+                ) {
+                    Image(
+                        painter = painterResource(id = getDrawableIdByKey(context, element.thumbnailKey)),
+                        contentScale = ContentScale.Crop,
+                        contentDescription = stringResource(R.string.editor_cd_asset),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .clickable { onItemClicked(element.cardElement.elementId) }
+                    )
+                    Box(
+                        modifier = Modifier
+                            .height(30.dp)
+                            .clip(CircleShape)
+                            .background(Color.Black.copy(alpha = 0.1f))
+                            .padding(4.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = toBase62(element.cardElement.elementId),
+                            style = MaterialTheme.typography.labelSmall,
+                        )
+                    }
+                }
             }
+            item { Box(Modifier.size(8.dp)) }
         }
     }
 }

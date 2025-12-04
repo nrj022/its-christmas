@@ -83,11 +83,15 @@ class CardEditorActivity : AppCompatActivity() {
         binding.imgBtnDelete.setOnClickListener {
             viewModel.onIntent(CardEditorIntent.DeleteClicked)
         }
+
+        binding.imgBtnTransformReset.setOnClickListener {
+            viewModel.onIntent(CardEditorIntent.TransformResetClicked)
+        }
     }
 
     private fun updateUi(state: CardEditorState) {
         binding.imgBtnBack.isVisible = state.isAssetBrowserPanelActive
-        binding.objectOptionContainer.isVisible = state.showObjectOptionContainer
+        binding.containerObjectOption.isVisible = state.showObjectOptionContainer
 
         updateTransformPanel(state)
         updateUnityContainerHeight(state.unityContainerHeightFraction)
@@ -98,7 +102,8 @@ class CardEditorActivity : AppCompatActivity() {
         val temp = state.tempTransformState
         val active = state.isTransformPanelActive && temp != null
 
-        binding.cardObjectThumb.isVisible = active
+        binding.containerTransformOption.isVisible = active
+        binding.imgBtnTransformReset.isVisible = active && state.hasPendingTransform
         binding.imgObjectThumb.setImageResource(getDrawableIdByKey(this, temp?.thumbnailKey))
         binding.textElementKey.text = if(active) toBase62(temp.elementId) else ""
     }

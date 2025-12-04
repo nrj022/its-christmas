@@ -2,6 +2,7 @@
     <string name="common_cd_back_button">Go back</string>
 
     <string name="editor_cd_delete_img_button">Delete Element</string>
+    <string name="editor_cd_transform_reset_img_button">Reset Transform</string>
     <string name="editor_cd_object_thumb_img">Object Thumbnail</string>
     <string name="editor_btn_adjust">Adjust</string>
 

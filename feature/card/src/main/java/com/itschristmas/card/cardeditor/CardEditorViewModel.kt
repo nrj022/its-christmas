@@ -2,6 +2,7 @@ package com.itschristmas.card.cardeditor
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.itschristmas.card.cardeditor.model.Direction
 import com.itschristmas.card.cardeditor.model.PanelState
 import com.itschristmas.card.cardeditor.model.TempTransformState
 import com.itschristmas.domain.enum.AssetType
@@ -54,6 +55,21 @@ class CardEditorViewModel @Inject constructor(
             }
             is CardEditorIntent.AdjustCancelClicked -> {
                 handleAdjustCancelClicked()
+            }
+            is CardEditorIntent.AdjustApplyClicked -> {
+                handleAdjustApplyClicked()
+            }
+            is CardEditorIntent.DirectionalClicked -> {
+                handleDirectionalClicked(intent.direction)
+            }
+            is CardEditorIntent.ScaleChanged -> {
+                handleScaleChanged(intent.newScale)
+            }
+            is CardEditorIntent.CameraResetClicked -> {
+                handleCameraResetClicked()
+            }
+            is CardEditorIntent.TransformResetClicked -> {
+                handleTransformResetClicked()
             }
         }
     }
@@ -125,7 +141,74 @@ class CardEditorViewModel @Inject constructor(
         _cardEditorState.update { it.copy(tempTransformState = null) }
     }
 
+    private fun handleAdjustApplyClicked() {
+        val tempState = _cardEditorState.value.tempTransformState ?: return
+        val initialState = _cardEditorState.value.selectedMyObject ?: return
 
+        viewModelScope.launch {
+            cardElementRepository.updateElementPosition(
+                elementId = tempState.elementId,
+                posX = tempState.posX,
+                posY = tempState.posY
+            )
+            cardElementRepository.updateElementScale(
+                elementId = tempState.elementId,
+                scale = tempState.scale
+            )
+            _cardEditorState.update {
+                it.copy(selectedMyObject =
+                    initialState.copy(
+                        cardElement = initialState.cardElement.copy(
+                            posX = tempState.posX,
+                            posY = tempState.posY,
+                            scale = tempState.scale
+                        )
+                    )
+                )
+            }
+        }
+    }
+
+    private fun handleDirectionalClicked(direction: Direction) {
+        val tempState = _cardEditorState.value.tempTransformState ?: return
+        _cardEditorState.update {
+            it.copy(tempTransformState =
+                when (direction) {
+                    Direction.UP -> tempState.copy(posY = tempState.posY + 1)
+                    Direction.DOWN -> tempState.copy(posY = tempState.posY - 1)
+                    Direction.LEFT -> tempState.copy(posX = tempState.posX - 1)
+                    Direction.RIGHT -> tempState.copy(posX = tempState.posX + 1)
+                }
+            )
+        }
+    }
+
+    private fun handleScaleChanged(newScale: Int) {
+        if(newScale < 1) return
+
+        _cardEditorState.update {
+            it.copy(tempTransformState = it.tempTransformState?.copy(scale = newScale))
+        }
+    }
+
+    private fun handleCameraResetClicked() {
+
+    }
+
+    private fun handleTransformResetClicked() {
+        val tempState = _cardEditorState.value.tempTransformState ?: return
+        val initialState = _cardEditorState.value.selectedMyObject?.cardElement
+
+        _cardEditorState.update {
+            it.copy(tempTransformState =
+                tempState.copy(
+                    posX = initialState?.posX ?: 0,
+                    posY = initialState?.posY ?: 0,
+                    scale = initialState?.scale ?: 1
+                )
+            )
+        }
+    }
 
     private fun updatePanelState(panelState: PanelState) {
         _cardEditorState.update {

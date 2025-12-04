@@ -28,4 +28,13 @@ data class CardEditorState(
 
     val selectedMyObjectIdx: Long?
         get() = selectedMyObject?.cardElement?.elementId
+
+    val hasPendingTransform: Boolean
+        get() = tempTransformState?.let { temp ->
+            selectedMyObject?.let { selected ->
+                temp.posX != selected.cardElement.posX ||
+                temp.posY != selected.cardElement.posY ||
+                temp.scale != selected.cardElement.scale
+            } ?: false
+        } ?: false
 }

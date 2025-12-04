@@ -3,9 +3,6 @@ package com.itschristmas.card.cardeditor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.itschristmas.card.cardeditor.model.PanelState
@@ -15,8 +12,6 @@ import com.itschristmas.card.cardeditor.panels.TransformControlPanel
 @Composable
 fun CardEditorBottomScreen(cardId: Long, viewModel: CardEditorViewModel = hiltViewModel()) {
     val state by viewModel.cardEditorState.collectAsStateWithLifecycle()
-
-    var scale by remember { mutableIntStateOf(1) }
 
     LaunchedEffect(Unit) {
         viewModel.onIntent(CardEditorIntent.Init(cardId))
@@ -38,18 +33,16 @@ fun CardEditorBottomScreen(cardId: Long, viewModel: CardEditorViewModel = hiltVi
 
         PanelState.TRANSFORM_CONTROL -> {
             TransformControlPanel(
-                scale = scale,
+                scale = state.tempTransformState?.scale ?: 1,
                 onScaleChange = { newScale ->
-                    if (newScale > 0) { // 0 이하로 내려가지 않도록 예시
-                        scale = newScale
-                    }
+                    viewModel.onIntent(CardEditorIntent.ScaleChanged(newScale))
                 },
                 onCancel = { viewModel.onIntent(CardEditorIntent.AdjustCancelClicked) },
-                onApply = { },
+                onApply = { viewModel.onIntent(CardEditorIntent.AdjustApplyClicked) },
                 onDirectionalClick = { direction ->
-                    println("$direction clicked")
+                    viewModel.onIntent(CardEditorIntent.DirectionalClicked(direction))
                 },
-                onReset = { println("Reset clicked") }
+                onCameraReset = { viewModel.onIntent(CardEditorIntent.CameraResetClicked) }
             )
         }
         PanelState.TEXT_EDITOR -> {}

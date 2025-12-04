@@ -12,6 +12,8 @@ interface CardElementRepository {
 
     suspend fun deleteCardElementsByCardId(cardId: Long): Result<Int>
 
+    suspend fun deleteCardElementsById(elementId: Long): Result<Int>
+
     fun getObjectElementsWithAssetKeysByCardId(cardId: Long): Flow<Result<List<CardElementWithAssetKeys>>>
 
     suspend fun getTextElementsByCardId(cardId: Long): Result<List<CardElement>>

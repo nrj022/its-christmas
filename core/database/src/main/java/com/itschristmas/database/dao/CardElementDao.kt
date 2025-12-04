@@ -23,6 +23,9 @@ interface CardElementDao {
     @Query("DELETE FROM card_elements WHERE cardId = :cardId")
     suspend fun deleteByCardId(cardId: Long): Int
 
+    @Query("DELETE FROM card_elements WHERE elementId = :elementId")
+    suspend fun deleteElementById(elementId: Long): Int
+
     @Query("""
         SELECT ce.*, a.thumbnailKey, a.unityKey
         FROM card_elements AS ce

@@ -95,6 +95,14 @@ class CardEditorViewModel @Inject constructor(
         }
     }
 
+    private fun handleDeleteClicked() {
+        viewModelScope.launch {
+            _cardEditorState.value.selectedMyObjectIdx?.let {
+                cardElementRepository.deleteCardElementsById(it)
+            }
+        }
+    }
+
     private fun handleAdjustClicked() {
         _cardEditorState.value.selectedMyObject?.let { obj ->
             updatePanelState(PanelState.TRANSFORM_CONTROL)
@@ -117,13 +125,7 @@ class CardEditorViewModel @Inject constructor(
         _cardEditorState.update { it.copy(tempTransformState = null) }
     }
 
-    private fun handleDeleteClicked() {
-        viewModelScope.launch {
-            _cardEditorState.value.selectedMyObject?.let {
-            _cardEditorState.value.selectedMyObjectIdx?.let {
-            }
-        }
-    }
+
 
     private fun updatePanelState(panelState: PanelState) {
         _cardEditorState.update {

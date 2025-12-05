@@ -139,19 +139,19 @@ fun ControlHeader(
         // "3D Object", "Background" 토글 버튼 그룹
         ToggleButtons(selectedTab = selectedTab, onTabSelected = onTabSelected)
 
-        // "NEXT >" 버튼
+        // "Add Text >" 버튼
         Row(
             modifier = Modifier.clickable(onClick = onNextClicked),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = stringResource(R.string.editor_label_next_button),
+                text = stringResource(R.string.editor_button_add_text),
                 style = MaterialTheme.typography.labelSmall,
                 fontSize = 14.sp
             )
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowForward,
-                contentDescription = stringResource(R.string.editor_cd_next_button),
+                contentDescription = stringResource(R.string.editor_cd_add_text_button),
                 modifier = Modifier.size(14.dp),
                 tint = SoftBlack
             )

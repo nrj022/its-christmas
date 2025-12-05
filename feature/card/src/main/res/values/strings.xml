@@ -12,8 +12,8 @@
 
     <string name="editor_title_asset_tab_objects">3D Object</string>
     <string name="editor_title_asset_tab_background">Background</string>
-    <string name="editor_label_next_button">Next</string>
-    <string name="editor_cd_next_button">Next</string>
+    <string name="editor_button_add_text">Add Text</string>
+    <string name="editor_cd_add_text_button">Add Text</string>
     <string name="editor_title_my_objects_list">My Objects</string>
     <string name="editor_cd_asset">Asset</string>
 

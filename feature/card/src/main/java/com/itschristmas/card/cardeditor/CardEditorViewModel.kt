@@ -3,6 +3,7 @@ package com.itschristmas.card.cardeditor
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.itschristmas.card.cardeditor.model.Direction
+import com.itschristmas.card.cardeditor.model.EditorDialogState
 import com.itschristmas.card.cardeditor.model.PanelState
 import com.itschristmas.card.cardeditor.model.TempTransformState
 import com.itschristmas.domain.enum.AssetType
@@ -38,6 +39,12 @@ class CardEditorViewModel @Inject constructor(
             is CardEditorIntent.Init -> {
                 handleInit(intent.cardId)
             }
+            is CardEditorIntent.CardTitleChanged -> {
+                handleCardTitleChanged(intent.newTitle)
+            }
+            is CardEditorIntent.CardGenerateClicked -> {
+                handleCardGenerateClicked()
+            }
             is CardEditorIntent.ObjectClicked -> {
                 handleObjectClicked(intent.cardId, intent.clickedObject)
             }
@@ -47,8 +54,11 @@ class CardEditorViewModel @Inject constructor(
             is CardEditorIntent.MyObjectClicked -> {
                 handleMyObjectClicked(intent.element)
             }
-            is CardEditorIntent.DeleteClicked -> {
-                handleDeleteClicked()
+            is CardEditorIntent.DialogStateChanged -> {
+                handleDialogStateChanged(intent.dialogState)
+            }
+            is CardEditorIntent.DeleteMyObject -> {
+                handleDeleteMyObject()
             }
             is CardEditorIntent.AdjustClicked -> {
                 handleAdjustClicked()
@@ -58,6 +68,12 @@ class CardEditorViewModel @Inject constructor(
             }
             is CardEditorIntent.AdjustApplyClicked -> {
                 handleAdjustApplyClicked()
+            }
+            is CardEditorIntent.AdjustApplyAndExit -> {
+                handleAdjustApplyAndExit()
+            }
+            is CardEditorIntent.AdjustDiscardAndExit -> {
+                handleAdjustDiscardAndExit()
             }
             is CardEditorIntent.DirectionalClicked -> {
                 handleDirectionalClicked(intent.direction)
@@ -81,6 +97,14 @@ class CardEditorViewModel @Inject constructor(
 
         // MyObjects Flow 구독
         loadMyObjectsFromDB(cardId)
+    }
+
+    private fun handleCardTitleChanged(newTitle: String) {
+        _cardEditorState.update { it.copy(cardTitle = newTitle) }
+    }
+
+    private fun handleCardGenerateClicked() {
+        /* TODO */
     }
 
     private fun handleObjectClicked(cardId: Long, clickedObject: Asset) {
@@ -111,11 +135,16 @@ class CardEditorViewModel @Inject constructor(
         }
     }
 
-    private fun handleDeleteClicked() {
+    private fun handleDialogStateChanged(dialogState: EditorDialogState) {
+        updateDialogState(dialogState)
+    }
+
+    private fun handleDeleteMyObject() {
         viewModelScope.launch {
             _cardEditorState.value.selectedMyObjectIdx?.let {
                 cardElementRepository.deleteCardElementsById(it)
             }
+            updateDialogState(EditorDialogState.NONE)
         }
     }
 
@@ -137,36 +166,26 @@ class CardEditorViewModel @Inject constructor(
     }
 
     private fun handleAdjustCancelClicked() {
-        updatePanelState(PanelState.ASSET_BROWSER)
-        _cardEditorState.update { it.copy(tempTransformState = null) }
+        if(_cardEditorState.value.hasPendingTransform) {
+            updateDialogState(EditorDialogState.UNSAVED_TRANSFORM_CHANGES)
+        } else {
+            exitTransform()
+        }
     }
 
     private fun handleAdjustApplyClicked() {
-        val tempState = _cardEditorState.value.tempTransformState ?: return
-        val initialState = _cardEditorState.value.selectedMyObject ?: return
+        updateTransform()
+    }
 
-        viewModelScope.launch {
-            cardElementRepository.updateElementPosition(
-                elementId = tempState.elementId,
-                posX = tempState.posX,
-                posY = tempState.posY
-            )
-            cardElementRepository.updateElementScale(
-                elementId = tempState.elementId,
-                scale = tempState.scale
-            )
-            _cardEditorState.update {
-                it.copy(selectedMyObject =
-                    initialState.copy(
-                        cardElement = initialState.cardElement.copy(
-                            posX = tempState.posX,
-                            posY = tempState.posY,
-                            scale = tempState.scale
-                        )
-                    )
-                )
-            }
-        }
+    private fun handleAdjustApplyAndExit() {
+        updateTransform()
+        exitTransform()
+        updateDialogState(EditorDialogState.NONE)
+    }
+
+    private fun handleAdjustDiscardAndExit() {
+        exitTransform()
+        updateDialogState(EditorDialogState.NONE)
     }
 
     private fun handleDirectionalClicked(direction: Direction) {
@@ -214,6 +233,45 @@ class CardEditorViewModel @Inject constructor(
         _cardEditorState.update {
             it.copy(panelState = panelState)
         }
+    }
+
+    private fun updateDialogState(dialogState: EditorDialogState) {
+        _cardEditorState.update {
+            it.copy(editorDialogState = dialogState)
+        }
+    }
+
+    private fun updateTransform() {
+        val tempState = _cardEditorState.value.tempTransformState ?: return
+        val initialState = _cardEditorState.value.selectedMyObject ?: return
+
+        viewModelScope.launch {
+            cardElementRepository.updateElementPosition(
+                elementId = tempState.elementId,
+                posX = tempState.posX,
+                posY = tempState.posY
+            )
+            cardElementRepository.updateElementScale(
+                elementId = tempState.elementId,
+                scale = tempState.scale
+            )
+            _cardEditorState.update {
+                it.copy(selectedMyObject =
+                    initialState.copy(
+                        cardElement = initialState.cardElement.copy(
+                            posX = tempState.posX,
+                            posY = tempState.posY,
+                            scale = tempState.scale
+                        )
+                    )
+                )
+            }
+        }
+    }
+
+    private fun exitTransform() {
+        updatePanelState(PanelState.ASSET_BROWSER)
+        _cardEditorState.update { it.copy(tempTransformState = null) }
     }
 
     private fun getCardDataFromDB(cardId: Long) {

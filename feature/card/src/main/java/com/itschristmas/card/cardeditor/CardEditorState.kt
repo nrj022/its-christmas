@@ -1,5 +1,6 @@
 package com.itschristmas.card.cardeditor
 
+import com.itschristmas.card.cardeditor.model.EditorDialogState
 import com.itschristmas.card.cardeditor.model.PanelState
 import com.itschristmas.card.cardeditor.model.TempTransformState
 import com.itschristmas.domain.model.CardElementWithAssetKeys
@@ -8,6 +9,8 @@ import com.itschristmas.domain.model.Asset
 data class CardEditorState(
     val panelState: PanelState = PanelState.ASSET_BROWSER,
     val tempTransformState: TempTransformState? = null,
+    val editorDialogState: EditorDialogState = EditorDialogState.NONE,
+    val cardTitle: String = "",
     val objects: List<Asset> = emptyList(),
     val backgrounds: List<Asset> = emptyList(),
     val myObjects: List<CardElementWithAssetKeys> = emptyList(),

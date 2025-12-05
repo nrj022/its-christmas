@@ -8,6 +8,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.itschristmas.card.cardeditor.model.PanelState
 import com.itschristmas.card.cardeditor.panels.AssetBrowserPanel
 import com.itschristmas.card.cardeditor.panels.TransformControlPanel
+import com.itschristmas.card.cardeditor.model.EditorDialogState
+import com.itschristmas.card.cardeditor.dialog.ObjectDeleteConfirmDialog
+import com.itschristmas.card.cardeditor.dialog.SetCardTitleDialog
+import com.itschristmas.card.cardeditor.dialog.UnsavedChangesDialog
 
 @Composable
 fun CardEditorBottomScreen(cardId: Long, viewModel: CardEditorViewModel = hiltViewModel()) {
@@ -46,5 +50,37 @@ fun CardEditorBottomScreen(cardId: Long, viewModel: CardEditorViewModel = hiltVi
             )
         }
         PanelState.TEXT_EDITOR -> {}
+    }
+
+    when(state.editorDialogState) {
+        EditorDialogState.NONE -> {}
+        EditorDialogState.DELETE_CONFIRM -> {
+            ObjectDeleteConfirmDialog(
+                onDeleteObject = { viewModel.onIntent(CardEditorIntent.DeleteMyObject) },
+                onDismiss = { viewModel.onIntent(CardEditorIntent.DialogStateChanged(EditorDialogState.NONE)) }
+            )
+        }
+        EditorDialogState.UNSAVED_TRANSFORM_CHANGES -> {
+            UnsavedChangesDialog(
+                onApplyChanges = { viewModel.onIntent(CardEditorIntent.AdjustApplyAndExit) },
+                onDiscardChanges = { viewModel.onIntent(CardEditorIntent.AdjustDiscardAndExit) },
+                onDismiss = { viewModel.onIntent(CardEditorIntent.DialogStateChanged(EditorDialogState.NONE)) }
+            )
+        }
+        EditorDialogState.UNSAVED_TEXT_CHANGES -> {
+            UnsavedChangesDialog(
+                onApplyChanges = { },
+                onDiscardChanges = { },
+                onDismiss = { }
+            )
+        }
+        EditorDialogState.SET_CARD_TITLE -> {
+            SetCardTitleDialog(
+                cardTitle = state.cardTitle,
+                onTitleChange = { viewModel.onIntent(CardEditorIntent.CardTitleChanged(it)) },
+                onGenerateCard = { viewModel.onIntent(CardEditorIntent.CardGenerateClicked) },
+                onDismiss = { viewModel.onIntent(CardEditorIntent.DialogStateChanged(EditorDialogState.NONE)) }
+            )
+        }
     }
 }

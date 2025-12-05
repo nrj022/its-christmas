@@ -13,6 +13,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.itschristmas.card.cardeditor.common.getDrawableIdByKey
 import com.itschristmas.card.cardeditor.common.toBase62
+import com.itschristmas.card.cardeditor.model.EditorDialogState
 import com.itschristmas.card.databinding.ActivityCardEditorBinding
 import com.itschristmas.designsystem.theme.ItsChristmasTheme
 import com.unity3d.player.UnityPlayerForActivityOrService
@@ -81,7 +82,7 @@ class CardEditorActivity : AppCompatActivity() {
         }
 
         binding.imgBtnDelete.setOnClickListener {
-            viewModel.onIntent(CardEditorIntent.DeleteClicked)
+            viewModel.onIntent(CardEditorIntent.DialogStateChanged(EditorDialogState.DELETE_CONFIRM))
         }
 
         binding.imgBtnTransformReset.setOnClickListener {

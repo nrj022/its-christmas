@@ -77,6 +77,10 @@ class CardEditorActivity : AppCompatActivity() {
     }
 
     private fun initListener() {
+        binding.btnComplete.setOnClickListener {
+            viewModel.onIntent(CardEditorIntent.CompleteClicked)
+        }
+
         binding.btnAdjust.setOnClickListener {
             viewModel.onIntent(CardEditorIntent.AdjustClicked)
         }
@@ -92,6 +96,7 @@ class CardEditorActivity : AppCompatActivity() {
 
     private fun updateUi(state: CardEditorState) {
         binding.imgBtnBack.isVisible = state.isAssetBrowserPanelActive
+        binding.btnComplete.isVisible = state.isAssetBrowserPanelActive
         binding.containerObjectOption.isVisible = state.showObjectOptionContainer
 
         updateTransformPanel(state)

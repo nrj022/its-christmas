@@ -10,7 +10,7 @@ data class CardEditorState(
     val panelState: PanelState = PanelState.ASSET_BROWSER,
     val tempTransformState: TempTransformState? = null,
     val editorDialogState: EditorDialogState = EditorDialogState.NONE,
-    val cardTitle: String = "",
+    val cardTitle: String = "New Card",
     val objects: List<Asset> = emptyList(),
     val backgrounds: List<Asset> = emptyList(),
     val myObjects: List<CardElementWithAssetKeys> = emptyList(),

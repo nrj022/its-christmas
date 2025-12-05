@@ -42,8 +42,11 @@ class CardEditorViewModel @Inject constructor(
             is CardEditorIntent.CardTitleChanged -> {
                 handleCardTitleChanged(intent.newTitle)
             }
-            is CardEditorIntent.CardGenerateClicked -> {
-                handleCardGenerateClicked()
+            is CardEditorIntent.CompleteClicked -> {
+                handleCompleteClicked()
+            }
+            is CardEditorIntent.GenerateCard -> {
+                handleGenerateCard()
             }
             is CardEditorIntent.ObjectClicked -> {
                 handleObjectClicked(intent.cardId, intent.clickedObject)
@@ -103,7 +106,11 @@ class CardEditorViewModel @Inject constructor(
         _cardEditorState.update { it.copy(cardTitle = newTitle) }
     }
 
-    private fun handleCardGenerateClicked() {
+    private fun handleCompleteClicked() {
+        updateDialogState(EditorDialogState.SET_CARD_TITLE)
+    }
+
+    private fun handleGenerateCard() {
         /* TODO */
     }
 

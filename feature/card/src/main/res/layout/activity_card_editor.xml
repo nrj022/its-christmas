@@ -27,6 +27,20 @@
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/ic_arrow_left" />
 
+    <android.widget.Button
+        android:id="@+id/btn_complete"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="20dp"
+        android:paddingHorizontal="18dp"
+        android:background="@drawable/bg_rounded_rect_white_70"
+        android:contentDescription="@string/editor_cd_complete_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:textAllCaps="false"
+        android:text="@string/editor_button_complete" />
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/container_transform_option"
         android:layout_width="match_parent"
@@ -110,7 +124,7 @@
             android:background="@drawable/bg_rounded_rect_white"
             android:backgroundTint="#FFFFFF"
             android:fontFamily="@font/irish_grover_regular"
-            android:text="@string/editor_btn_adjust"
+            android:text="@string/editor_button_adjust"
             android:textAllCaps="false"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />

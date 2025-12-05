@@ -8,7 +8,8 @@ import com.itschristmas.domain.model.CardElementWithAssetKeys
 sealed class CardEditorIntent {
     data class Init(val cardId: Long): CardEditorIntent()
     data class CardTitleChanged(val newTitle: String): CardEditorIntent()
-    data object CardGenerateClicked: CardEditorIntent()
+    data object CompleteClicked: CardEditorIntent()
+    data object GenerateCard: CardEditorIntent()
     data class ObjectClicked(val cardId: Long, val clickedObject: Asset): CardEditorIntent()
     data class BackgroundClicked(val assetId: Long): CardEditorIntent()
     data class MyObjectClicked(val element: CardElementWithAssetKeys): CardEditorIntent()

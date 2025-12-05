@@ -6,7 +6,9 @@
     <string name="editor_cd_delete_img_button">Delete Element</string>
     <string name="editor_cd_transform_reset_img_button">Reset Transform</string>
     <string name="editor_cd_object_thumb_img">Object Thumbnail</string>
-    <string name="editor_btn_adjust">Adjust</string>
+    <string name="editor_button_adjust">Adjust</string>
+    <string name="editor_button_complete">Complete</string>
+    <string name="editor_cd_complete_button">Complete Editing Card</string>
 
     <string name="editor_title_asset_tab_objects">3D Object</string>
     <string name="editor_title_asset_tab_background">Background</string>

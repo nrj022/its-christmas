@@ -78,7 +78,7 @@ fun CardEditorBottomScreen(cardId: Long, viewModel: CardEditorViewModel = hiltVi
             SetCardTitleDialog(
                 cardTitle = state.cardTitle,
                 onTitleChange = { viewModel.onIntent(CardEditorIntent.CardTitleChanged(it)) },
-                onGenerateCard = { viewModel.onIntent(CardEditorIntent.CardGenerateClicked) },
+                onGenerateCard = { viewModel.onIntent(CardEditorIntent.GenerateCard) },
                 onDismiss = { viewModel.onIntent(CardEditorIntent.DialogStateChanged(EditorDialogState.NONE)) }
             )
         }

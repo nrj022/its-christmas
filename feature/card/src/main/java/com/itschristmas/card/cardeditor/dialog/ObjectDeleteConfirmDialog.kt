@@ -1,0 +1,21 @@
+package com.itschristmas.card.cardeditor.dialog
+
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
+import com.itschristmas.card.cardeditor.common.BaseDialog
+import com.itschristmas.card.R
+
+@Composable
+fun ObjectDeleteConfirmDialog(
+    onDeleteObject: () -> Unit,
+    onDismiss: () -> Unit
+) {
+    BaseDialog(
+        title = stringResource(R.string.editor_dialog_title_delete),
+        confirmLabel = stringResource(R.string.editor_dialog_button_delete),
+        dismissLabel = stringResource(R.string.common_button_cancel),
+        onConfirm = onDeleteObject,
+        onDismiss = onDismiss,
+        onDismissRequest = onDismiss
+    )
+}

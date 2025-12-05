@@ -1,5 +1,7 @@
 <resources>
     <string name="common_cd_back_button">Go back</string>
+    <string name="common_button_cancel">Cancel</string>
+    <string name="common_button_no">No</string>
 
     <string name="editor_cd_delete_img_button">Delete Element</string>
     <string name="editor_cd_transform_reset_img_button">Reset Transform</string>
@@ -12,6 +14,17 @@
     <string name="editor_cd_next_button">Next</string>
     <string name="editor_title_my_objects_list">My Objects</string>
     <string name="editor_cd_asset">Asset</string>
+
+    <string name="editor_dialog_button_delete">Delete</string>
+    <string name="editor_dialog_button_save">Yes</string>
+    <string name="editor_dialog_button_generate">Generate 3D Card</string>
+
+    <string name="editor_dialog_title_delete">Delete This Object?</string>
+    <string name="editor_dialog_title_set_card_title">Set the title of your card!</string>
+    <string name="editor_dialog_title_unsaved_changes">You have unsaved changes.</string>
+
+    <string name="editor_dialog_placeholder_card_title">Enter the title</string>
+    <string name="editor_dialog_content_unsaved_changes">Do you want to save before leaving?</string>
 
     <string name="share_label_complete_button">Complete</string>
     <string name="share_label_share_button">Share</string>

@@ -8,6 +8,7 @@ import com.itschristmas.domain.enum.ElementType
 import com.itschristmas.domain.model.Asset
 import com.itschristmas.domain.model.Card
 import com.itschristmas.domain.model.CardElement
+import com.itschristmas.domain.model.CardElementWithAssetKeys
 import com.itschristmas.domain.repository.AssetRepository
 import com.itschristmas.domain.repository.CardElementRepository
 import com.itschristmas.domain.repository.CardRepository
@@ -60,15 +61,21 @@ class CardEditorViewModelTest {
         val backgrounds = listOf(
             Asset(assetId = 10, unityKey = "bg1", assetType = AssetType.BACKGROUND, thumbnailKey = "bgthumb")
         )
-        val cardElements = listOf(
-            CardElement(elementId = 1, cardId = cardId, assetId = 1, elementType = ElementType.OBJECT, posX = 0, posY = 0, scale = 1)
+        val cardElement = CardElement(elementId = 1, cardId = cardId, assetId = 1, elementType = ElementType.OBJECT, posX = 0, posY = 0, scale = 1)
+
+        val cardElementsWithAssetKeys = listOf(
+            CardElementWithAssetKeys(
+                cardElement = cardElement,
+                unityKey = "obj1",
+                thumbnailKey = "thumb1"
+            )
         )
 
-        coEvery { cardRepository.getCardById(cardId) } returns card
-        coEvery { assetRepository.getAssetsByType(AssetType.OBJECT) } returns objects
-        coEvery { assetRepository.getAssetsByType(AssetType.BACKGROUND) } returns backgrounds
-        coEvery { cardElementRepository.getObjectElementsByCardId(cardId) } returns flowOf(cardElements)
-        coEvery { assetRepository.getAssetById(1) } returns objects[0]
+        coEvery { cardRepository.getCardById(cardId) } returns Result.success(card)
+        coEvery { assetRepository.getAssetsByType(AssetType.OBJECT) } returns Result.success(objects)
+        coEvery { assetRepository.getAssetsByType(AssetType.BACKGROUND) } returns Result.success(backgrounds)
+        coEvery { cardElementRepository.getObjectElementsWithAssetKeysByCardId(cardId) } returns flowOf(Result.success(cardElementsWithAssetKeys))
+        coEvery { assetRepository.getAssetById(1) } returns Result.success(objects[0])
 
         viewModel.onIntent(CardEditorIntent.Init(cardId))
         testDispatcher.scheduler.advanceUntilIdle()
@@ -80,8 +87,7 @@ class CardEditorViewModelTest {
             assertEquals(100L, finalState.selectedBackground)
             assertEquals(objects, finalState.objects)
             assertEquals(backgrounds, finalState.backgrounds)
-            assertEquals(mapOf(1L to "thumb1"), finalState.assetThumbMap)
-            assertEquals(cardElements, finalState.myObjects)
+            assertEquals(cardElementsWithAssetKeys, finalState.myObjects)
             cancelAndIgnoreRemainingEvents()
         }
     }
@@ -113,7 +119,7 @@ class CardEditorViewModelTest {
         val cardId = 1L
         val clickedObject = Asset(assetId = 1, unityKey = "obj1", assetType = AssetType.OBJECT, thumbnailKey = "")
 
-        coEvery { cardElementRepository.insertCardElement(any()) } returns 123L
+        coEvery { cardElementRepository.insertCardElement(any()) } returns Result.success(123L)
 
         viewModel.onIntent(CardEditorIntent.ObjectClicked(cardId, clickedObject))
         testDispatcher.scheduler.advanceUntilIdle()

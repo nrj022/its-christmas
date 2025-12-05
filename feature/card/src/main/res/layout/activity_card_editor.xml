@@ -27,8 +27,76 @@
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/ic_arrow_left" />
 
+    <android.widget.Button
+        android:id="@+id/btn_complete"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="20dp"
+        android:paddingHorizontal="18dp"
+        android:background="@drawable/bg_rounded_rect_white_70"
+        android:contentDescription="@string/editor_cd_complete_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:textAllCaps="false"
+        android:text="@string/editor_button_complete" />
+
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/object_option_container"
+        android:id="@+id/container_transform_option"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:layout_marginHorizontal="20dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/unity_container">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card_object_thumb"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            app:cardCornerRadius="10dp"
+            app:layout_constraintStart_toStartOf="@+id/container_transform_option"
+            app:layout_constraintBottom_toBottomOf="@+id/container_transform_option">
+
+            <ImageView
+                android:id="@+id/img_object_thumb"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="@string/editor_cd_object_thumb_img"
+                android:foreground="@drawable/bg_rounded_rect_border"
+                android:scaleType="centerCrop"
+                android:src="@drawable/img_placeholder" />
+
+            <TextView
+                android:id="@+id/text_element_key"
+                android:layout_width="wrap_content"
+                android:layout_height="28dp"
+                android:background="@drawable/bg_rounded_rect_black_10"
+                android:fontFamily="@font/irish_grover_regular"
+                android:gravity="center"
+                android:padding="4dp"
+                android:textAlignment="center"
+                android:textSize="12sp" />
+
+        </androidx.cardview.widget.CardView>
+
+        <ImageButton
+            android:id="@+id/img_btn_transform_reset"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/bg_circle_white"
+            android:contentDescription="@string/editor_cd_transform_reset_img_button"
+            android:elevation="2dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:srcCompat="@drawable/ic_reset" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/container_object_option"
         android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -56,7 +124,7 @@
             android:background="@drawable/bg_rounded_rect_white"
             android:backgroundTint="#FFFFFF"
             android:fontFamily="@font/irish_grover_regular"
-            android:text="@string/editor_btn_adjust"
+            android:text="@string/editor_button_adjust"
             android:textAllCaps="false"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />

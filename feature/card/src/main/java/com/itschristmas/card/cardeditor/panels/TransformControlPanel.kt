@@ -24,18 +24,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-
-// 방향을 나타내는 Enum 클래스 (코드 가독성을 위해 사용)
-enum class Direction {
-    UP, DOWN, LEFT, RIGHT
-}
+import com.itschristmas.card.cardeditor.model.Direction
 
 /**
  * 이미지에 표시된 컨트롤러 전체 UI
  * @param scale 현재 수량 (가운데 숫자)
  * @param onScaleChange 수량 변경 시 호출되는 콜백 (+, - 버튼)
  * @param onDirectionalClick 방향키 클릭 시 호출되는 콜백
- * @param onReset 가운데 원(원래 상태로) 클릭 시 호출되는 콜백
+ * @param onCameraReset 가운데 원(원래 상태로) 클릭 시 호출되는 콜백
  * @param onCancel 'Cancel' 버튼 클릭 시 호출되는 콜백
  * @param onApply 'Apply' 버튼 클릭 시 호출되는 콜백
  */
@@ -44,7 +40,7 @@ fun TransformControlPanel(
     scale: Int = 1,
     onScaleChange: (Int) -> Unit = {},
     onDirectionalClick: (Direction) -> Unit = {},
-    onReset: () -> Unit = {},
+    onCameraReset: () -> Unit = {},
     onCancel: () -> Unit = {},
     onApply: () -> Unit = {},
 ) {
@@ -66,7 +62,7 @@ fun TransformControlPanel(
             horizontalArrangement = Arrangement.spacedBy(40.dp) // 방향키와 수량 조절기 사이 간격
         ) {
             // 2-1. 방향키 컨트롤러
-            DirectionalController(onClick = onDirectionalClick, onReset = onReset)
+            DirectionalController(onClick = onDirectionalClick, onCameraReset = onCameraReset)
 
             // 2-2. Scale 조절기
             ScaleController(
@@ -106,7 +102,7 @@ private fun TopActionRow(
 @Composable
 private fun DirectionalController(
     onClick: (Direction) -> Unit,
-    onReset: () -> Unit,
+    onCameraReset: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Box(
@@ -121,7 +117,7 @@ private fun DirectionalController(
                 .size(44.dp)
                 .clip(CircleShape)
                 .background(Color.LightGray.copy(alpha = 0.5f))
-                .clickable { onReset() }
+                .clickable { onCameraReset() }
         )
 
         // 방향 버튼들

@@ -12,13 +12,13 @@ interface CardElementRepository {
 
     suspend fun deleteCardElementsByCardId(cardId: Long): Result<Int>
 
+    suspend fun deleteCardElementsById(elementId: Long): Result<Int>
+
     fun getObjectElementsWithAssetKeysByCardId(cardId: Long): Flow<Result<List<CardElementWithAssetKeys>>>
 
     suspend fun getTextElementsByCardId(cardId: Long): Result<List<CardElement>>
 
-    suspend fun updateElementPosition(elementId: Long, posX: Int, posY: Int): Result<Int>
-
-    suspend fun updateElementScale(elementId: Long, scale: Int): Result<Int>
+    suspend fun updateElementTransform(elementId: Long, posX: Int, posY: Int, scale: Int): Result<Int>
 
     suspend fun updateTextFontSize(elementId: Long, fontSize: Float): Result<Int>
 

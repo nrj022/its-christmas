@@ -23,6 +23,9 @@ interface CardElementDao {
     @Query("DELETE FROM card_elements WHERE cardId = :cardId")
     suspend fun deleteByCardId(cardId: Long): Int
 
+    @Query("DELETE FROM card_elements WHERE elementId = :elementId")
+    suspend fun deleteElementById(elementId: Long): Int
+
     @Query("""
         SELECT ce.*, a.thumbnailKey, a.unityKey
         FROM card_elements AS ce
@@ -35,11 +38,8 @@ interface CardElementDao {
     @Query("SELECT * FROM card_elements WHERE cardId = :cardId and elementType = 'TEXT'")
     suspend fun getTextElementsByCardId(cardId: Long): List<CardElementEntity>
 
-    @Query("UPDATE card_elements SET posX = :posX, posY = :posY WHERE elementId = :elementId")
-    suspend fun updateElementPosition(elementId: Long, posX: Int, posY: Int): Int
-
-    @Query("UPDATE card_elements SET scale = :scale WHERE elementId = :elementId")
-    suspend fun updateElementScale(elementId: Long, scale: Int): Int
+    @Query("UPDATE card_elements SET posX = :posX, posY = :posY, scale = :scale WHERE elementId = :elementId")
+    suspend fun updateElementTransform(elementId: Long, posX: Int, posY: Int, scale: Int): Int
 
     @Query("UPDATE card_elements SET fontSize = :fontSize WHERE elementId = :elementId and elementType = 'TEXT'")
     suspend fun updateTextFontSize(elementId: Long, fontSize: Float): Int

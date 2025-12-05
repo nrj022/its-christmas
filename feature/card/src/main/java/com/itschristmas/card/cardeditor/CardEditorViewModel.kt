@@ -246,13 +246,10 @@ class CardEditorViewModel @Inject constructor(
         val initialState = _cardEditorState.value.selectedMyObject ?: return
 
         viewModelScope.launch {
-            cardElementRepository.updateElementPosition(
+            cardElementRepository.updateElementTransform(
                 elementId = tempState.elementId,
                 posX = tempState.posX,
-                posY = tempState.posY
-            )
-            cardElementRepository.updateElementScale(
-                elementId = tempState.elementId,
+                posY = tempState.posY,
                 scale = tempState.scale
             )
             _cardEditorState.update {

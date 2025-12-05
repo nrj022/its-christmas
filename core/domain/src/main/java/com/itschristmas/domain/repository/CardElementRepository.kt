@@ -18,9 +18,7 @@ interface CardElementRepository {
 
     suspend fun getTextElementsByCardId(cardId: Long): Result<List<CardElement>>
 
-    suspend fun updateElementPosition(elementId: Long, posX: Int, posY: Int): Result<Int>
-
-    suspend fun updateElementScale(elementId: Long, scale: Int): Result<Int>
+    suspend fun updateElementTransform(elementId: Long, posX: Int, posY: Int, scale: Int): Result<Int>
 
     suspend fun updateTextFontSize(elementId: Long, fontSize: Float): Result<Int>
 

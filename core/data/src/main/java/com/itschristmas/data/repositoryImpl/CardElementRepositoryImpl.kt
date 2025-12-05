@@ -53,14 +53,9 @@ class CardElementRepositoryImpl @Inject constructor(
             cardElementDao.getTextElementsByCardId(cardId).map { it.toDomain() }
         }
 
-    override suspend fun updateElementPosition(elementId: Long, posX: Int, posY: Int): Result<Int> =
+    override suspend fun updateElementTransform(elementId: Long, posX: Int, posY: Int, scale: Int): Result<Int> =
         ioCatching {
-            cardElementDao.updateElementPosition(elementId, posX, posY)
-        }
-
-    override suspend fun updateElementScale(elementId: Long, scale: Int): Result<Int> =
-        ioCatching {
-            cardElementDao.updateElementScale(elementId, scale)
+            cardElementDao.updateElementTransform(elementId, posX, posY, scale)
         }
 
     override suspend fun updateTextFontSize(elementId: Long, fontSize: Float): Result<Int> =

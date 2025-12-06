@@ -12,6 +12,9 @@ import com.itschristmas.card.cardeditor.model.EditorDialogState
 import com.itschristmas.card.cardeditor.dialog.ObjectDeleteConfirmDialog
 import com.itschristmas.card.cardeditor.dialog.SetCardTitleDialog
 import com.itschristmas.card.cardeditor.dialog.UnsavedChangesDialog
+import com.itschristmas.card.cardeditor.panels.TextEditorPanel
+import com.itschristmas.domain.model.ColorOption
+import com.itschristmas.domain.model.TextAlignmentOption
 
 @Composable
 fun CardEditorBottomScreen(cardId: Long, viewModel: CardEditorViewModel = hiltViewModel()) {
@@ -29,7 +32,7 @@ fun CardEditorBottomScreen(cardId: Long, viewModel: CardEditorViewModel = hiltVi
                 myObjects = state.myObjects,
                 selectedMyObject = state.selectedMyObjectIdx,
                 selectedBackground = state.selectedBackground,
-                onAddTextClicked = {},
+                onAddTextClicked = { viewModel.onIntent(CardEditorIntent.AddTextClicked) },
                 onObjectClicked = { viewModel.onIntent(CardEditorIntent.ObjectClicked(cardId, it)) },
                 onMyObjectClicked = { viewModel.onIntent(CardEditorIntent.MyObjectClicked(it)) },
                 onBackgroundClicked = { viewModel.onIntent(CardEditorIntent.BackgroundClicked(it)) }
@@ -49,7 +52,21 @@ fun CardEditorBottomScreen(cardId: Long, viewModel: CardEditorViewModel = hiltVi
                 onCameraReset = { viewModel.onIntent(CardEditorIntent.CameraResetClicked) }
             )
         }
-        PanelState.TEXT_EDITOR -> {}
+        PanelState.TEXT_EDITOR -> {
+            TextEditorPanel(
+                text = "",
+                selectedColor = ColorOption.Black,
+                selectedAlignment = TextAlignmentOption.Start,
+                fontSize = 24f,
+                onColorSelected = { },
+                onTextChange = { },
+                onAlignmentSelected = { },
+                onFontSizeChange = { },
+                onFontSelected = { },
+                onApply = { },
+                onBack = { }
+            )
+        }
     }
 
     when(state.editorDialogState) {

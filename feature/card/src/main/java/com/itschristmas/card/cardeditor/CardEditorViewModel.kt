@@ -17,6 +17,8 @@ import com.itschristmas.domain.repository.CardRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -33,6 +35,18 @@ class CardEditorViewModel @Inject constructor(
 
     private val _cardEditorState = MutableStateFlow(CardEditorState())
     val cardEditorState: StateFlow<CardEditorState> = _cardEditorState
+
+    private val _imeVisible = MutableStateFlow(false)
+    val imeVisible = _imeVisible.asStateFlow()
+
+    fun setImeVisible(visible: Boolean) {
+        _imeVisible.value = visible
+    }
+
+    val unityContainerHeightFractionFlow = combine(cardEditorState, imeVisible) { state, ime ->
+        if(ime && state.panelState == PanelState.TEXT_EDITOR) 0.4f
+        else state.unityContainerHeightFraction
+    }
 
     fun onIntent(intent: CardEditorIntent) {
         when(intent) {
@@ -53,6 +67,9 @@ class CardEditorViewModel @Inject constructor(
             }
             is CardEditorIntent.BackgroundClicked -> {
                 handleBackgroundClicked(intent.assetId)
+            }
+            is CardEditorIntent.AddTextClicked -> {
+                updatePanelState(PanelState.TEXT_EDITOR)
             }
             is CardEditorIntent.MyObjectClicked -> {
                 handleMyObjectClicked(intent.element)

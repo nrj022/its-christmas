@@ -12,6 +12,7 @@ sealed class CardEditorIntent {
     data object GenerateCard: CardEditorIntent()
     data class ObjectClicked(val cardId: Long, val clickedObject: Asset): CardEditorIntent()
     data class BackgroundClicked(val assetId: Long): CardEditorIntent()
+    data object AddTextClicked: CardEditorIntent()
     data class MyObjectClicked(val element: CardElementWithAssetKeys): CardEditorIntent()
     data class DialogStateChanged(val dialogState: EditorDialogState): CardEditorIntent()
     data object DeleteMyObject: CardEditorIntent()

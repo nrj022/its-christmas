@@ -2,6 +2,7 @@
     <string name="common_cd_back_button">Go back</string>
     <string name="common_button_cancel">Cancel</string>
     <string name="common_button_no">No</string>
+    <string name="common_button_apply">Apply</string>
 
     <string name="editor_cd_delete_img_button">Delete Element</string>
     <string name="editor_cd_transform_reset_img_button">Reset Transform</string>
@@ -16,6 +17,13 @@
     <string name="editor_cd_add_text_button">Add Text</string>
     <string name="editor_title_my_objects_list">My Objects</string>
     <string name="editor_cd_asset">Asset</string>
+
+    <string name="editor_title_text_tab_style">Style</string>
+    <string name="editor_title_text_tab_font">Font</string>
+    <string name="editor_title_text_tab_position">Position</string>
+    <string name="editor_button_back">Back</string>
+    <string name="editor_placeholder_text">New Text</string>
+    <string name="editor_cd_align_icon">Align %s</string>
 
     <string name="editor_dialog_button_delete">Delete</string>
     <string name="editor_dialog_button_save">Yes</string>

@@ -1,29 +1,22 @@
 package com.itschristmas.card.cardeditor.panels
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.itschristmas.card.cardeditor.common.DirectionalController
 import com.itschristmas.card.cardeditor.model.Direction
 
 /**
@@ -57,7 +50,7 @@ fun TransformControlPanel(
             onApply = onApply
         )
         Row(
-            modifier = Modifier.padding(top = 10.dp),
+            modifier = Modifier.padding(top = 10.dp, bottom = 30.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(40.dp) // 방향키와 수량 조절기 사이 간격
         ) {
@@ -93,84 +86,6 @@ private fun TopActionRow(
         TextButton(onClick = onApply) {
             Text(text = "Apply", color = Color.Black, fontSize = 16.sp)
         }
-    }
-}
-
-/**
- * 상하좌우 방향키 컨트롤러
- */
-@Composable
-private fun DirectionalController(
-    onClick: (Direction) -> Unit,
-    onCameraReset: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Box(
-        modifier = modifier
-            .size(220.dp)
-            .aspectRatio(1f),
-        contentAlignment = Alignment.Center
-    ) {
-        // 가운데 작은 회색 원
-        Box(
-            modifier = Modifier
-                .size(44.dp)
-                .clip(CircleShape)
-                .background(Color.LightGray.copy(alpha = 0.5f))
-                .clickable { onCameraReset() }
-        )
-
-        // 방향 버튼들
-        ControlButton(
-            icon = Icons.Default.KeyboardArrowUp,
-            direction = Direction.UP,
-            onClick = onClick,
-            modifier = Modifier.align(Alignment.TopCenter)
-        )
-        ControlButton(
-            icon = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
-            direction = Direction.LEFT,
-            onClick = onClick,
-            modifier = Modifier.align(Alignment.CenterStart)
-        )
-        ControlButton(
-            icon = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-            direction = Direction.RIGHT,
-            onClick = onClick,
-            modifier = Modifier.align(Alignment.CenterEnd)
-        )
-        ControlButton(
-            icon = Icons.Default.KeyboardArrowDown,
-            direction = Direction.DOWN,
-            onClick = onClick,
-            modifier = Modifier.align(Alignment.BottomCenter)
-        )
-    }
-}
-
-/**
- * 방향키에 사용되는 원형 아이콘 버튼
- */
-@Composable
-private fun ControlButton(
-    icon: ImageVector,
-    direction: Direction,
-    onClick: (Direction) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    IconButton(
-        onClick = { onClick(direction) },
-        modifier = modifier
-            .size(70.dp)
-            .shadow(elevation = 3.dp, shape = CircleShape)
-            .background(Color.White, CircleShape)
-    ) {
-        Icon(
-            imageVector = icon,
-            contentDescription = "$direction Button",
-            tint = Color.Black,
-            modifier = Modifier.size(42.dp)
-        )
     }
 }
 

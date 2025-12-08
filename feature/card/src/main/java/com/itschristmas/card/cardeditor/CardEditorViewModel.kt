@@ -294,12 +294,18 @@ class CardEditorViewModel @Inject constructor(
     }
 
     private fun handleDefaultTextRequest() {
-        val newTextElement = TempTextElementState()
         _cardEditorState.update {
-            it.copy(
-                tempTextList = listOf(newTextElement),
-                selectedTextTempId = newTextElement.tempId
-            )
+            if (it.tempTextList.isNotEmpty()) {
+                if (it.selectedTextTempId == null) {
+                    it.copy(selectedTextTempId = it.tempTextList.first().tempId)
+                } else it
+            } else {
+                val newTextElement = TempTextElementState()
+                it.copy(
+                    tempTextList = listOf(newTextElement),
+                    selectedTextTempId = newTextElement.tempId
+                )
+            }
         }
     }
 
@@ -338,8 +344,8 @@ class CardEditorViewModel @Inject constructor(
 
     private fun handleTextChanged(newText: String) {
         _cardEditorState.update {
-            val id = _cardEditorState.value.selectedTextTempId
-            val newList = _cardEditorState.value.tempTextList.map { item ->
+            val id = it.selectedTextTempId
+            val newList = it.tempTextList.map { item ->
                 if(item.tempId == id) item.copy(text = newText) else item
             }
             it.copy(tempTextList = newList)
@@ -348,8 +354,8 @@ class CardEditorViewModel @Inject constructor(
 
     private fun handleAlignmentSelected(newAlignment: TextAlignmentOption) {
         _cardEditorState.update {
-            val id = _cardEditorState.value.selectedTextTempId
-            val newList = _cardEditorState.value.tempTextList.map { item ->
+            val id = it.selectedTextTempId
+            val newList = it.tempTextList.map { item ->
                 if(item.tempId == id) item.copy(alignment = newAlignment) else item
             }
             it.copy(tempTextList = newList)
@@ -358,8 +364,8 @@ class CardEditorViewModel @Inject constructor(
 
     private fun handleColorSelected(newColor: ColorOption) {
         _cardEditorState.update {
-            val id = _cardEditorState.value.selectedTextTempId
-            val newList = _cardEditorState.value.tempTextList.map { item ->
+            val id = it.selectedTextTempId
+            val newList = it.tempTextList.map { item ->
                 if(item.tempId == id) item.copy(color = newColor) else item
             }
             it.copy(tempTextList = newList)
@@ -368,8 +374,8 @@ class CardEditorViewModel @Inject constructor(
 
     private fun handleFontSizeChanged(newSize: Float) {
         _cardEditorState.update {
-            val id = _cardEditorState.value.selectedTextTempId
-            val newList = _cardEditorState.value.tempTextList.map { item ->
+            val id = it.selectedTextTempId
+            val newList = it.tempTextList.map { item ->
                 if(item.tempId == id) item.copy(fontSize = newSize) else item
             }
             it.copy(tempTextList = newList)
@@ -378,8 +384,8 @@ class CardEditorViewModel @Inject constructor(
 
     private fun handleFontSelected(newFont: FontOption) {
         _cardEditorState.update {
-            val id = _cardEditorState.value.selectedTextTempId
-            val newList = _cardEditorState.value.tempTextList.map { item ->
+            val id = it.selectedTextTempId
+            val newList = it.tempTextList.map { item ->
                 if(item.tempId == id) item.copy(fontFamily = newFont) else item
             }
             it.copy(tempTextList = newList)
@@ -388,8 +394,8 @@ class CardEditorViewModel @Inject constructor(
 
     private fun handleTextDirectionClicked(direction: Direction) {
         _cardEditorState.update {
-            val id = _cardEditorState.value.selectedTextTempId
-            val newList = _cardEditorState.value.tempTextList.map { item ->
+            val id = it.selectedTextTempId
+            val newList = it.tempTextList.map { item ->
                 if(item.tempId == id) {
                     when (direction) {
                         Direction.UP -> item.copy(posY = item.posY + 1)

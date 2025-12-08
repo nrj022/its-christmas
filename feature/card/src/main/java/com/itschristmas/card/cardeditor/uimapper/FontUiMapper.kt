@@ -12,10 +12,10 @@ private val fontResMap: Map<String, Int> = mapOf(
     "BebasNeue" to R.font.bebasneue_regular,
     "IrishGrover" to R.font.irishgrover_regular,
     "PermanentMarker" to R.font.permanentmarker_regular,
-    "PlayfairDisplay" to R.font.playfairdisplay_midium,
+    "PlayfairDisplay" to R.font.playfairdisplay_medium,
     "PlayfairDisplayItalic" to R.font.playfairdisplay_medium_italic,
     "ShadowsIntoLight" to R.font.shadowsintolight_regular,
-    "TitanOne" to R.font.titanone_reqular
+    "TitanOne" to R.font.titanone_regular
 )
 
 @Composable

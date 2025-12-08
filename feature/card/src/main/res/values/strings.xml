@@ -10,6 +10,8 @@
     <string name="editor_button_adjust">Adjust</string>
     <string name="editor_button_complete">Complete</string>
     <string name="editor_cd_complete_button">Complete Editing Card</string>
+    <string name="editor_cd_add_text">New Text</string>
+    <string name="editor_cd_delete_text">Delete Text</string>
 
     <string name="editor_title_asset_tab_objects">3D Object</string>
     <string name="editor_title_asset_tab_background">Background</string>

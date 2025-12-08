@@ -41,7 +41,6 @@ fun TextListPanel(
         verticalAlignment = Alignment.CenterVertically
     ) {
         items(items = textList, key = { it.tempId }) { text ->
-            println(textList)
             TextChip(
                 text = text.text,
                 isSelected = selectedTextId == text.tempId,

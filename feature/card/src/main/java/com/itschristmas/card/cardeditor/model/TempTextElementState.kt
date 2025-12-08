@@ -5,7 +5,7 @@ import com.itschristmas.domain.model.FontOption
 import com.itschristmas.domain.model.TextAlignmentOption
 
 data class TempTextElementState(
-    val tempId: Long = System.currentTimeMillis(),
+    val tempId: Long = System.nanoTime(),
     val elementId: Long? = null,
     val text: String = "New Text",
     val alignment: TextAlignmentOption = TextAlignmentOption.Start,

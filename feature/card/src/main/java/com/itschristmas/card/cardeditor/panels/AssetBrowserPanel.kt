@@ -166,42 +166,6 @@ fun ControlHeader(
 }
 
 @Composable
-fun ToggleButtons(
-    selectedTab: AssetBrowserTab,
-    onTabSelected: (AssetBrowserTab) -> Unit
-) {
-    Row(
-        modifier = Modifier
-            .clip(CircleShape)
-            .padding(vertical = 4.dp)
-    ) {
-        AssetBrowserTab.entries.forEachIndexed { index, item ->
-            val isSelected = selectedTab == item
-            val containerColor = if (isSelected) SoftBlack else Gray
-            val contentColor = if (isSelected) White else SoftBlack
-
-            Button(
-                onClick = { onTabSelected(item) },
-                shape = CircleShape,
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = containerColor,
-                    contentColor = contentColor
-                ),
-            ) {
-                Text(
-                    text = stringResource(item.resId),
-                    style = MaterialTheme.typography.labelSmall
-                )
-            }
-
-            if (index < AssetBrowserTab.entries.size - 1) {
-                Spacer(modifier = Modifier.width(8.dp))
-            }
-        }
-    }
-}
-
-@Composable
 fun MyObjectList(
     elements: List<CardElementWithAssetKeys>,
     selectedItemIndex: Long?,

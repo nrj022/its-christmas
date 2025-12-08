@@ -13,8 +13,6 @@ import com.itschristmas.card.cardeditor.dialog.ObjectDeleteConfirmDialog
 import com.itschristmas.card.cardeditor.dialog.SetCardTitleDialog
 import com.itschristmas.card.cardeditor.dialog.UnsavedChangesDialog
 import com.itschristmas.card.cardeditor.panels.TextEditorPanel
-import com.itschristmas.domain.model.ColorOption
-import com.itschristmas.domain.model.TextAlignmentOption
 
 @Composable
 fun CardEditorBottomScreen(cardId: Long, viewModel: CardEditorViewModel = hiltViewModel()) {
@@ -47,25 +45,30 @@ fun CardEditorBottomScreen(cardId: Long, viewModel: CardEditorViewModel = hiltVi
                 onCancel = { viewModel.onIntent(CardEditorIntent.AdjustCancelClicked) },
                 onApply = { viewModel.onIntent(CardEditorIntent.AdjustApplyClicked) },
                 onDirectionalClick = { direction ->
-                    viewModel.onIntent(CardEditorIntent.DirectionalClicked(direction))
+                    viewModel.onIntent(CardEditorIntent.ObjectDirectionClicked(direction))
                 },
                 onCameraReset = { viewModel.onIntent(CardEditorIntent.CameraResetClicked) }
             )
         }
+
         PanelState.TEXT_EDITOR -> {
-            TextEditorPanel(
-                text = "",
-                selectedColor = ColorOption.Black,
-                selectedAlignment = TextAlignmentOption.Start,
-                fontSize = 24f,
-                onColorSelected = { },
-                onTextChange = { },
-                onAlignmentSelected = { },
-                onFontSizeChange = { },
-                onFontSelected = { },
-                onApply = { },
-                onBack = { }
-            )
+            val textElement = state.selectedText
+            if(state.tempTextList.isEmpty() || textElement == null) {
+                viewModel.onIntent(CardEditorIntent.RequestDefaultText)
+            } else {
+                TextEditorPanel(
+                    textElement = textElement,
+                    onTextChange = { viewModel.onIntent(CardEditorIntent.TextChanged(it)) },
+                    onAlignmentSelected = { viewModel.onIntent(CardEditorIntent.AlignmentSelected(it)) },
+                    onColorSelected = { viewModel.onIntent(CardEditorIntent.ColorSelected(it)) },
+                    onFontSizeChange = { viewModel.onIntent(CardEditorIntent.FontSizeChanged(it)) },
+                    onFontSelected = { viewModel.onIntent(CardEditorIntent.FontSelected(it)) },
+                    onPositionChange = { viewModel.onIntent(CardEditorIntent.TextDirectionClicked(it)) },
+                    onCameraReset = { viewModel.onIntent(CardEditorIntent.CameraResetClicked) },
+                    onApply = { viewModel.onIntent(CardEditorIntent.TextApplyClicked) },
+                    onBack = { viewModel.onIntent(CardEditorIntent.DialogStateChanged(EditorDialogState.UNSAVED_TEXT_CHANGES)) }
+                )
+            }
         }
     }
 

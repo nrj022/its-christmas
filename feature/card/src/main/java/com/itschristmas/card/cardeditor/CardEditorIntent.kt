@@ -4,6 +4,9 @@ import com.itschristmas.card.cardeditor.model.Direction
 import com.itschristmas.card.cardeditor.model.EditorDialogState
 import com.itschristmas.domain.model.Asset
 import com.itschristmas.domain.model.CardElementWithAssetKeys
+import com.itschristmas.domain.model.ColorOption
+import com.itschristmas.domain.model.FontOption
+import com.itschristmas.domain.model.TextAlignmentOption
 
 sealed class CardEditorIntent {
     data class Init(val cardId: Long): CardEditorIntent()
@@ -21,8 +24,18 @@ sealed class CardEditorIntent {
     data object AdjustApplyClicked: CardEditorIntent()
     data object AdjustApplyAndExit: CardEditorIntent()
     data object AdjustDiscardAndExit: CardEditorIntent()
-    data class DirectionalClicked(val direction: Direction): CardEditorIntent()
+    data class ObjectDirectionClicked(val direction: Direction): CardEditorIntent()
     data class ScaleChanged(val newScale: Int): CardEditorIntent()
     data object CameraResetClicked: CardEditorIntent()
     data object TransformResetClicked: CardEditorIntent()
+    data object RequestDefaultText: CardEditorIntent()
+    data class TextChanged(val newText: String): CardEditorIntent()
+    data class AlignmentSelected(val newAlignment: TextAlignmentOption): CardEditorIntent()
+    data class ColorSelected(val newColor: ColorOption): CardEditorIntent()
+    data class FontSizeChanged(val newSize: Float): CardEditorIntent()
+    data class FontSelected(val newFont: FontOption): CardEditorIntent()
+    data class TextDirectionClicked(val direction: Direction): CardEditorIntent()
+    data object TextApplyClicked: CardEditorIntent()
+    data object TextApplyAndExit: CardEditorIntent()
+    data object TextDiscardAndExit: CardEditorIntent()
 }

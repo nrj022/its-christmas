@@ -45,6 +45,7 @@ import com.itschristmas.card.cardeditor.common.DirectionalController
 import com.itschristmas.card.cardeditor.uimapper.icon
 import com.itschristmas.card.cardeditor.uimapper.rememberFontFamilies
 import com.itschristmas.card.cardeditor.model.BaseTabItems
+import com.itschristmas.card.cardeditor.model.TempTextElementState
 import com.itschristmas.designsystem.theme.Gray
 import com.itschristmas.designsystem.theme.ItsChristmasTheme
 import com.itschristmas.designsystem.theme.SoftBlack
@@ -52,6 +53,7 @@ import com.itschristmas.designsystem.theme.White
 import com.itschristmas.domain.model.ColorOption
 import com.itschristmas.domain.model.FontOption
 import com.itschristmas.domain.model.TextAlignmentOption
+import com.itschristmas.card.cardeditor.model.Direction
 
 // 토글 탭 목록 정의
 enum class TextEditorTab(val resId: Int) {
@@ -62,34 +64,30 @@ enum class TextEditorTab(val resId: Int) {
 
 @Composable
 fun TextEditorPanel(
-    text: String = "",
-    selectedColor: ColorOption = ColorOption.Black,
-    selectedAlignment: TextAlignmentOption = TextAlignmentOption.Start,
-    selectedFont: FontOption = FontOption.PlaywriteUsTradGuides,
-    fontSize: Float = 24f,
+    textElement: TempTextElementState = TempTextElementState(),
     onTextChange: (String) -> Unit = {},
     onColorSelected: (ColorOption) -> Unit = {},
     onAlignmentSelected: (TextAlignmentOption) -> Unit = {},
     onFontSizeChange: (Float) -> Unit = {},
     onFontSelected: (FontOption) -> Unit = {},
+    onPositionChange: (Direction) -> Unit = { },
+    onCameraReset: () -> Unit = {},
     onApply: () -> Unit = {},
     onBack: () -> Unit = {}
 ) {
     var selectedTab by remember { mutableStateOf(TextEditorTab.STYLE) }
 
     EditorTabContent(
-        text = text,
+        textElement = textElement,
         selectedTab = selectedTab,
-        selectedColor = selectedColor,
-        selectedAlignment = selectedAlignment,
-        selectedFont = selectedFont,
-        fontSize = fontSize,
         onTextChange = onTextChange,
         onTabSelected = { selectedTab = it },
         onColorSelected = onColorSelected,
         onAlignmentSelected = onAlignmentSelected,
         onFontSizeChange = onFontSizeChange,
         onFontSelected = onFontSelected,
+        onPositionChange = onPositionChange,
+        onCameraReset = onCameraReset,
         onApply = onApply,
         onBack = onBack
     )
@@ -97,18 +95,16 @@ fun TextEditorPanel(
 
 @Composable
 private fun EditorTabContent(
-    text: String,
+    textElement: TempTextElementState,
     selectedTab: TextEditorTab,
-    selectedColor: ColorOption,
-    selectedAlignment: TextAlignmentOption,
-    selectedFont: FontOption,
-    fontSize: Float,
     onTextChange: (String) -> Unit,
     onTabSelected: (TextEditorTab) -> Unit,
     onColorSelected: (ColorOption) -> Unit,
     onAlignmentSelected: (TextAlignmentOption) -> Unit,
     onFontSizeChange: (Float) -> Unit,
     onFontSelected: (FontOption) -> Unit,
+    onPositionChange: (Direction) -> Unit,
+    onCameraReset: () -> Unit,
     onApply: () -> Unit,
     onBack: () -> Unit
 ) {
@@ -120,7 +116,7 @@ private fun EditorTabContent(
     ) {
         // 텍스트 입력, 적용, 뒤로 가기
         EditorHeader(
-            text = text,
+            text = textElement.text,
             onBack = onBack,
             onApply = onApply,
             onTextChange = onTextChange
@@ -138,19 +134,22 @@ private fun EditorTabContent(
         when (selectedTab) {
             TextEditorTab.STYLE -> {
                 StyleOptions(
-                    selectedColor = selectedColor,
-                    selectedAlignment = selectedAlignment,
-                    fontSize = fontSize,
+                    selectedColor = textElement.color,
+                    selectedAlignment = textElement.alignment,
+                    fontSize = textElement.fontSize,
                     onColorSelected = onColorSelected,
                     onAlignmentSelected = onAlignmentSelected,
                     onFontSizeChange = onFontSizeChange
                 )
             }
             TextEditorTab.FONT -> {
-                FontOptions(selectedFont = selectedFont, onFontSelected = onFontSelected)
+                FontOptions(selectedFont = textElement.fontFamily, onFontSelected = onFontSelected)
             }
             TextEditorTab.POSITION -> {
-                PositionOptions()
+                PositionOptions(
+                    onPositionChange = onPositionChange,
+                    onCameraReset = onCameraReset
+                )
             }
         }
     }
@@ -367,7 +366,7 @@ private fun FontChip(font: FontOption, isSelected: Boolean, fontFamily: FontFami
 }
 
 @Composable
-private fun PositionOptions() {
+private fun PositionOptions(onPositionChange: (Direction) -> Unit, onCameraReset: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -375,8 +374,8 @@ private fun PositionOptions() {
         contentAlignment = Alignment.Center
     ) {
         DirectionalController(
-            onClick = {},
-            onCameraReset = {}
+            onClick = onPositionChange,
+            onCameraReset = onCameraReset
         )
     }
 }

@@ -5,12 +5,16 @@ import androidx.lifecycle.viewModelScope
 import com.itschristmas.card.cardeditor.model.Direction
 import com.itschristmas.card.cardeditor.model.EditorDialogState
 import com.itschristmas.card.cardeditor.model.PanelState
+import com.itschristmas.card.cardeditor.model.TempTextElementState
 import com.itschristmas.card.cardeditor.model.TempTransformState
 import com.itschristmas.domain.enum.AssetType
 import com.itschristmas.domain.enum.ElementType
 import com.itschristmas.domain.model.Asset
 import com.itschristmas.domain.model.CardElement
 import com.itschristmas.domain.model.CardElementWithAssetKeys
+import com.itschristmas.domain.model.ColorOption
+import com.itschristmas.domain.model.FontOption
+import com.itschristmas.domain.model.TextAlignmentOption
 import com.itschristmas.domain.repository.AssetRepository
 import com.itschristmas.domain.repository.CardElementRepository
 import com.itschristmas.domain.repository.CardRepository
@@ -95,8 +99,8 @@ class CardEditorViewModel @Inject constructor(
             is CardEditorIntent.AdjustDiscardAndExit -> {
                 handleAdjustDiscardAndExit()
             }
-            is CardEditorIntent.DirectionalClicked -> {
-                handleDirectionalClicked(intent.direction)
+            is CardEditorIntent.ObjectDirectionClicked -> {
+                handleObjectDirectionClicked(intent.direction)
             }
             is CardEditorIntent.ScaleChanged -> {
                 handleScaleChanged(intent.newScale)
@@ -106,6 +110,33 @@ class CardEditorViewModel @Inject constructor(
             }
             is CardEditorIntent.TransformResetClicked -> {
                 handleTransformResetClicked()
+            }
+            is CardEditorIntent.RequestDefaultText -> {
+                handleDefaultTextRequest()
+            }
+            is CardEditorIntent.TextChanged -> {
+                handleTextChanged(intent.newText)
+            }
+            is CardEditorIntent.AlignmentSelected -> {
+                handleAlignmentSelected(intent.newAlignment)
+            }
+            is CardEditorIntent.ColorSelected -> {
+                handleColorSelected(intent.newColor)
+            }
+            is CardEditorIntent.FontSizeChanged -> {
+                handleFontSizeChanged(intent.newSize)
+            }
+            is CardEditorIntent.FontSelected -> {
+                handleFontSelected(intent.newFont)
+            }
+            is CardEditorIntent.TextDirectionClicked -> {
+                handleTextDirectionClicked(intent.direction)
+            }
+            is CardEditorIntent.TextApplyClicked -> {
+            }
+            is CardEditorIntent.TextApplyAndExit -> {
+            }
+            is CardEditorIntent.TextDiscardAndExit -> {
             }
         }
     }
@@ -212,7 +243,7 @@ class CardEditorViewModel @Inject constructor(
         updateDialogState(EditorDialogState.NONE)
     }
 
-    private fun handleDirectionalClicked(direction: Direction) {
+    private fun handleObjectDirectionClicked(direction: Direction) {
         val tempState = _cardEditorState.value.tempTransformState ?: return
         _cardEditorState.update {
             it.copy(tempTransformState =
@@ -250,6 +281,83 @@ class CardEditorViewModel @Inject constructor(
                     scale = initialState?.scale ?: 1
                 )
             )
+        }
+    }
+
+    private fun handleDefaultTextRequest() {
+        val newTextElement = TempTextElementState()
+        _cardEditorState.update {
+            it.copy(
+                tempTextList = listOf(newTextElement),
+                selectedTextTempId = newTextElement.tempId
+            )
+        }
+    }
+
+    private fun handleTextChanged(newText: String) {
+        _cardEditorState.update {
+            val id = _cardEditorState.value.selectedTextTempId
+            val newList = _cardEditorState.value.tempTextList.map { item ->
+                if(item.tempId == id) item.copy(text = newText) else item
+            }
+            it.copy(tempTextList = newList)
+        }
+    }
+
+    private fun handleAlignmentSelected(newAlignment: TextAlignmentOption) {
+        _cardEditorState.update {
+            val id = _cardEditorState.value.selectedTextTempId
+            val newList = _cardEditorState.value.tempTextList.map { item ->
+                if(item.tempId == id) item.copy(alignment = newAlignment) else item
+            }
+            it.copy(tempTextList = newList)
+        }
+    }
+
+    private fun handleColorSelected(newColor: ColorOption) {
+        _cardEditorState.update {
+            val id = _cardEditorState.value.selectedTextTempId
+            val newList = _cardEditorState.value.tempTextList.map { item ->
+                if(item.tempId == id) item.copy(color = newColor) else item
+            }
+            it.copy(tempTextList = newList)
+        }
+    }
+
+    private fun handleFontSizeChanged(newSize: Float) {
+        _cardEditorState.update {
+            val id = _cardEditorState.value.selectedTextTempId
+            val newList = _cardEditorState.value.tempTextList.map { item ->
+                if(item.tempId == id) item.copy(fontSize = newSize) else item
+            }
+            it.copy(tempTextList = newList)
+        }
+    }
+
+    private fun handleFontSelected(newFont: FontOption) {
+        _cardEditorState.update {
+            val id = _cardEditorState.value.selectedTextTempId
+            val newList = _cardEditorState.value.tempTextList.map { item ->
+                if(item.tempId == id) item.copy(fontFamily = newFont) else item
+            }
+            it.copy(tempTextList = newList)
+        }
+    }
+
+    private fun handleTextDirectionClicked(direction: Direction) {
+        _cardEditorState.update {
+            val id = _cardEditorState.value.selectedTextTempId
+            val newList = _cardEditorState.value.tempTextList.map { item ->
+                if(item.tempId == id) {
+                    when (direction) {
+                        Direction.UP -> item.copy(posY = item.posY + 1)
+                        Direction.DOWN -> item.copy(posY = item.posY - 1)
+                        Direction.LEFT -> item.copy(posX = item.posX - 1)
+                        Direction.RIGHT -> item.copy(posX = item.posX + 1)
+                    }
+                } else item
+            }
+            it.copy(tempTextList = newList)
         }
     }
 

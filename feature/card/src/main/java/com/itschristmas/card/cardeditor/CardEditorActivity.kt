@@ -7,6 +7,8 @@ import android.view.ViewGroup
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -40,9 +42,22 @@ class CardEditorActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.cardEditorState.collect {
-                    updateUi(it)
+                launch {
+                    viewModel.cardEditorState.collect {
+                        updateUi(it)
+                    }
                 }
+                launch {
+                    viewModel.unityContainerHeightFractionFlow.collect {
+                        updateUnityContainerHeight(it)
+                    }
+                }
+            }
+        }
+
+        binding.composeContainerText.setContent {
+            ItsChristmasTheme {
+                CardEditorTextScreen()
             }
         }
 
@@ -92,16 +107,37 @@ class CardEditorActivity : AppCompatActivity() {
         binding.imgBtnTransformReset.setOnClickListener {
             viewModel.onIntent(CardEditorIntent.TransformResetClicked)
         }
+
+        binding.imgBtnAddText.setOnClickListener {
+            viewModel.onIntent(CardEditorIntent.AddText)
+        }
+
+        binding.imgBtnDeleteText.setOnClickListener {
+            val textId = viewModel.cardEditorState.value.selectedTextTempId ?: return@setOnClickListener
+            viewModel.onIntent(CardEditorIntent.DeleteText(textId))
+        }
+
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { _, insets ->
+            val imeVisible = insets.isVisible(WindowInsetsCompat.Type.ime())
+            viewModel.setImeVisible(imeVisible)
+            insets
+        }
+    }
+
+    private fun updateUnityContainerHeight(heightFraction: Float) {
+        if(layoutParams.matchConstraintPercentHeight != heightFraction) {
+            layoutParams.matchConstraintPercentHeight = heightFraction
+            binding.unityContainer.layoutParams = layoutParams
+        }
     }
 
     private fun updateUi(state: CardEditorState) {
         binding.imgBtnBack.isVisible = state.isAssetBrowserPanelActive
         binding.btnComplete.isVisible = state.isAssetBrowserPanelActive
         binding.containerObjectOption.isVisible = state.showObjectOptionContainer
+        binding.containerTextOption.isVisible = state.showTextOptionContainer
 
         updateTransformPanel(state)
-        updateUnityContainerHeight(state.unityContainerHeightFraction)
-
     }
 
     private fun updateTransformPanel(state: CardEditorState) {
@@ -112,13 +148,6 @@ class CardEditorActivity : AppCompatActivity() {
         binding.imgBtnTransformReset.isVisible = active && state.hasPendingTransform
         binding.imgObjectThumb.setImageResource(getDrawableIdByKey(this, temp?.thumbnailKey))
         binding.textElementKey.text = if(active) toBase62(temp.elementId) else ""
-    }
-
-    private fun updateUnityContainerHeight(heightFraction: Float) {
-        if(layoutParams.matchConstraintPercentHeight != heightFraction) {
-            layoutParams.matchConstraintPercentHeight = heightFraction
-            binding.unityContainer.layoutParams = layoutParams
-        }
     }
 
     override fun onResume() {

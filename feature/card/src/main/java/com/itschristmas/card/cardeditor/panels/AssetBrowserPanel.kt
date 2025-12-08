@@ -36,7 +36,9 @@ import com.itschristmas.designsystem.theme.SoftBlack
 import com.itschristmas.designsystem.theme.White
 import com.itschristmas.domain.model.Asset
 import com.itschristmas.card.R
+import com.itschristmas.card.cardeditor.common.BaseTabs
 import com.itschristmas.card.cardeditor.common.toBase62
+import com.itschristmas.card.cardeditor.model.BaseTabItems
 
 private const val COLUMNS = 3
 
@@ -53,7 +55,7 @@ fun AssetBrowserPanel(
     myObjects: List<CardElementWithAssetKeys> = emptyList(),
     selectedMyObject: Long? = null,
     selectedBackground: Long? = null,
-    onNextClicked: () -> Unit = {},
+    onAddTextClicked: () -> Unit = {},
     onObjectClicked: (Asset) -> Unit = {},
     onMyObjectClicked: (CardElementWithAssetKeys) -> Unit = {},
     onBackgroundClicked: (Long) -> Unit = {},
@@ -69,7 +71,7 @@ fun AssetBrowserPanel(
         selectedMyObject = selectedMyObject,
         selectedBackground = selectedBackground,
         onTabSelected = { selectedTab = it },
-        onNextClicked = onNextClicked,
+        onAddTextClicked = onAddTextClicked,
         onObjectClicked = onObjectClicked,
         onMyObjectClicked = onMyObjectClicked,
         onBackgroundClicked = onBackgroundClicked
@@ -89,7 +91,7 @@ fun AssetBrowserPanelContent(
     onObjectClicked: (Asset) -> Unit,
     onMyObjectClicked: (CardElementWithAssetKeys) -> Unit,
     onBackgroundClicked: (Long) -> Unit,
-    onNextClicked: () -> Unit
+    onAddTextClicked: () -> Unit
 ) {
     Column(
         modifier = modifier.fillMaxWidth().background(White)
@@ -98,7 +100,7 @@ fun AssetBrowserPanelContent(
         ControlHeader(
             selectedTab = selectedTab,
             onTabSelected = onTabSelected,
-            onNextClicked = onNextClicked
+            onAddTextClicked = onAddTextClicked
         )
 
         if (selectedTab == AssetBrowserTab.OBJECTS) {
@@ -127,7 +129,7 @@ fun AssetBrowserPanelContent(
 fun ControlHeader(
     selectedTab: AssetBrowserTab,
     onTabSelected: (AssetBrowserTab) -> Unit,
-    onNextClicked: () -> Unit
+    onAddTextClicked: () -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -137,60 +139,28 @@ fun ControlHeader(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         // "3D Object", "Background" 토글 버튼 그룹
-        ToggleButtons(selectedTab = selectedTab, onTabSelected = onTabSelected)
+        BaseTabs(
+            tabs = AssetBrowserTab.entries.map { BaseTabItems(it.name, it.resId) },
+            selectedTabId = selectedTab.name,
+            onTabSelected = { onTabSelected(AssetBrowserTab.valueOf(it)) }
+        )
 
-        // "NEXT >" 버튼
+        // "Add Text >" 버튼
         Row(
-            modifier = Modifier.clickable(onClick = onNextClicked),
+            modifier = Modifier.clickable(onClick = onAddTextClicked),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = stringResource(R.string.editor_label_next_button),
+                text = stringResource(R.string.editor_button_add_text),
                 style = MaterialTheme.typography.labelSmall,
                 fontSize = 14.sp
             )
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowForward,
-                contentDescription = stringResource(R.string.editor_cd_next_button),
+                contentDescription = stringResource(R.string.editor_cd_add_text_button),
                 modifier = Modifier.size(14.dp),
                 tint = SoftBlack
             )
-        }
-    }
-}
-
-@Composable
-fun ToggleButtons(
-    selectedTab: AssetBrowserTab,
-    onTabSelected: (AssetBrowserTab) -> Unit
-) {
-    Row(
-        modifier = Modifier
-            .clip(CircleShape)
-            .padding(vertical = 4.dp)
-    ) {
-        AssetBrowserTab.entries.forEachIndexed { index, item ->
-            val isSelected = selectedTab == item
-            val containerColor = if (isSelected) SoftBlack else Gray
-            val contentColor = if (isSelected) White else SoftBlack
-
-            Button(
-                onClick = { onTabSelected(item) },
-                shape = CircleShape,
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = containerColor,
-                    contentColor = contentColor
-                ),
-            ) {
-                Text(
-                    text = stringResource(item.resId),
-                    style = MaterialTheme.typography.labelSmall
-                )
-            }
-
-            if (index < AssetBrowserTab.entries.size - 1) {
-                Spacer(modifier = Modifier.width(8.dp))
-            }
         }
     }
 }

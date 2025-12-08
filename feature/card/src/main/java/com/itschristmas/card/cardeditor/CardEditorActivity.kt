@@ -55,6 +55,12 @@ class CardEditorActivity : AppCompatActivity() {
             }
         }
 
+        binding.composeContainerText.setContent {
+            ItsChristmasTheme {
+                CardEditorTextScreen()
+            }
+        }
+
         binding.composeContainer.setContent {
             ItsChristmasTheme {
                 CardEditorBottomScreen(cardId)
@@ -102,6 +108,15 @@ class CardEditorActivity : AppCompatActivity() {
             viewModel.onIntent(CardEditorIntent.TransformResetClicked)
         }
 
+        binding.imgBtnAddText.setOnClickListener {
+            viewModel.onIntent(CardEditorIntent.AddText)
+        }
+
+        binding.imgBtnDeleteText.setOnClickListener {
+            val textId = viewModel.cardEditorState.value.selectedTextTempId ?: return@setOnClickListener
+            viewModel.onIntent(CardEditorIntent.DeleteText(textId))
+        }
+
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { _, insets ->
             val imeVisible = insets.isVisible(WindowInsetsCompat.Type.ime())
             viewModel.setImeVisible(imeVisible)
@@ -120,6 +135,7 @@ class CardEditorActivity : AppCompatActivity() {
         binding.imgBtnBack.isVisible = state.isAssetBrowserPanelActive
         binding.btnComplete.isVisible = state.isAssetBrowserPanelActive
         binding.containerObjectOption.isVisible = state.showObjectOptionContainer
+        binding.containerTextOption.isVisible = state.showTextOptionContainer
 
         updateTransformPanel(state)
     }

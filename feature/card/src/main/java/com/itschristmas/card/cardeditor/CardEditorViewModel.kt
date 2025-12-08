@@ -72,7 +72,7 @@ class CardEditorViewModel @Inject constructor(
             is CardEditorIntent.BackgroundClicked -> {
                 handleBackgroundClicked(intent.assetId)
             }
-            is CardEditorIntent.AddTextClicked -> {
+            is CardEditorIntent.AddTextButtonClicked -> {
                 updatePanelState(PanelState.TEXT_EDITOR)
             }
             is CardEditorIntent.MyObjectClicked -> {
@@ -113,6 +113,15 @@ class CardEditorViewModel @Inject constructor(
             }
             is CardEditorIntent.RequestDefaultText -> {
                 handleDefaultTextRequest()
+            }
+            is CardEditorIntent.AddText -> {
+                handleAddText()
+            }
+            is CardEditorIntent.DeleteText -> {
+                handleDeleteText(intent.textId)
+            }
+            is CardEditorIntent.TextClicked -> {
+                handleTextClicked(intent.textId)
             }
             is CardEditorIntent.TextChanged -> {
                 handleTextChanged(intent.newText)
@@ -290,6 +299,39 @@ class CardEditorViewModel @Inject constructor(
             it.copy(
                 tempTextList = listOf(newTextElement),
                 selectedTextTempId = newTextElement.tempId
+            )
+        }
+    }
+
+    private fun handleAddText() {
+        val newTextElement = TempTextElementState()
+        _cardEditorState.update {
+            it.copy(
+                tempTextList = listOf(newTextElement) + it.tempTextList,
+                selectedTextTempId = newTextElement.tempId
+            )
+        }
+    }
+
+    private fun handleDeleteText(textId: Long) {
+        val oldList = _cardEditorState.value.tempTextList
+        val selectedText = oldList.find { it.tempId == textId } ?: return
+        val idx = oldList.indexOfFirst { it.tempId == textId }
+        val newSelected = oldList.getOrNull(idx - 1) ?: oldList.getOrNull(idx + 1)
+
+        _cardEditorState.update {
+            it.copy(
+                tempTextList = it.tempTextList - selectedText,
+                selectedTextTempId = newSelected?.tempId
+            )
+        }
+
+    }
+
+    private fun handleTextClicked(textId: Long) {
+        _cardEditorState.update {
+            it.copy(
+                selectedTextTempId = textId
             )
         }
     }

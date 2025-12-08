@@ -29,6 +29,9 @@ data class CardEditorState(
     val showObjectOptionContainer: Boolean
         get() = selectedMyObject != null && panelState == PanelState.ASSET_BROWSER
 
+    val showTextOptionContainer: Boolean
+        get() = panelState == PanelState.TEXT_EDITOR
+
     val unityContainerHeightFraction: Float
         get() = if (panelState == PanelState.TRANSFORM_CONTROL || panelState == PanelState.TEXT_EDITOR) 0.6f else 0.5f
 

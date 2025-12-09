@@ -346,7 +346,7 @@ class CardEditorViewModel @Inject constructor(
         _cardEditorState.update {
             val id = it.selectedTextTempId
             val newList = it.tempTextList.map { item ->
-                if(item.tempId == id) item.copy(text = newText) else item
+                if(item.tempId == id) item.copy(attributes = item.attributes.copy(content = newText)) else item
             }
             it.copy(tempTextList = newList)
         }
@@ -356,7 +356,7 @@ class CardEditorViewModel @Inject constructor(
         _cardEditorState.update {
             val id = it.selectedTextTempId
             val newList = it.tempTextList.map { item ->
-                if(item.tempId == id) item.copy(alignment = newAlignment) else item
+                if(item.tempId == id) item.copy(attributes = item.attributes.copy(alignment = newAlignment)) else item
             }
             it.copy(tempTextList = newList)
         }
@@ -366,7 +366,7 @@ class CardEditorViewModel @Inject constructor(
         _cardEditorState.update {
             val id = it.selectedTextTempId
             val newList = it.tempTextList.map { item ->
-                if(item.tempId == id) item.copy(color = newColor) else item
+                if(item.tempId == id) item.copy(attributes = item.attributes.copy(textColor = newColor)) else item
             }
             it.copy(tempTextList = newList)
         }
@@ -376,7 +376,7 @@ class CardEditorViewModel @Inject constructor(
         _cardEditorState.update {
             val id = it.selectedTextTempId
             val newList = it.tempTextList.map { item ->
-                if(item.tempId == id) item.copy(fontSize = newSize) else item
+                if(item.tempId == id) item.copy(attributes = item.attributes.copy(fontSize = newSize)) else item
             }
             it.copy(tempTextList = newList)
         }
@@ -386,7 +386,7 @@ class CardEditorViewModel @Inject constructor(
         _cardEditorState.update {
             val id = it.selectedTextTempId
             val newList = it.tempTextList.map { item ->
-                if(item.tempId == id) item.copy(fontFamily = newFont) else item
+                if(item.tempId == id) item.copy(attributes = item.attributes.copy(fontFamily = newFont)) else item
             }
             it.copy(tempTextList = newList)
         }

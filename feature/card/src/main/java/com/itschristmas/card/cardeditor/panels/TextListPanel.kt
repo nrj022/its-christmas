@@ -42,7 +42,7 @@ fun TextListPanel(
     ) {
         items(items = textList, key = { it.tempId }) { text ->
             TextChip(
-                text = text.text,
+                text = text.attributes.content,
                 isSelected = selectedTextId == text.tempId,
                 onClick = { onClick(text.tempId) }
             )

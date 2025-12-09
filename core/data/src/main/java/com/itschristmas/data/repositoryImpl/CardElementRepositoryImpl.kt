@@ -6,6 +6,7 @@ import com.itschristmas.data.mapper.toEntity
 import com.itschristmas.data.repositoryImpl.common.ioCatching
 import com.itschristmas.database.dao.CardElementDao
 import com.itschristmas.domain.model.CardElement
+import com.itschristmas.domain.model.TextAttributes
 import com.itschristmas.domain.repository.CardElementRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -58,28 +59,17 @@ class CardElementRepositoryImpl @Inject constructor(
             cardElementDao.updateElementTransform(elementId, posX, posY, scale)
         }
 
-    override suspend fun updateTextFontSize(elementId: Long, fontSize: Float): Result<Int> =
+    override suspend fun updateTextElement(elementId: Long, textAttributes: TextAttributes, posX: Int, posY: Int): Result<Int> =
         ioCatching {
-            cardElementDao.updateTextFontSize(elementId, fontSize)
-        }
-
-    override suspend fun updateTextColor(elementId: Long, textColor: String): Result<Int> =
-        ioCatching {
-            cardElementDao.updateTextColor(elementId, textColor)
-        }
-
-    override suspend fun updateTextContent(elementId: Long, textContent: String): Result<Int> =
-        ioCatching {
-            cardElementDao.updateTextContent(elementId, textContent)
-        }
-
-    override suspend fun updateTextFont(elementId: Long, fontFamily: String): Result<Int> =
-        ioCatching {
-            cardElementDao.updateTextFont(elementId, fontFamily)
-        }
-
-    override suspend fun updateTextAlign(elementId: Long, textAlign: String): Result<Int> =
-        ioCatching {
-            cardElementDao.updateTextAlign(elementId, textAlign)
+            cardElementDao.updateTextElement(
+                elementId = elementId,
+                textContent = textAttributes.content,
+                textAlign = textAttributes.alignment.name,
+                textColor = textAttributes.textColor.name,
+                fontSize = textAttributes.fontSize,
+                fontFamily = textAttributes.fontFamily.name,
+                posX = posX,
+                posY = posY
+            )
         }
 }

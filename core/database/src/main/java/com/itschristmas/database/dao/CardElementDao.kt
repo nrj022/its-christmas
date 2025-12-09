@@ -41,18 +41,10 @@ interface CardElementDao {
     @Query("UPDATE card_elements SET posX = :posX, posY = :posY, scale = :scale WHERE elementId = :elementId")
     suspend fun updateElementTransform(elementId: Long, posX: Int, posY: Int, scale: Int): Int
 
-    @Query("UPDATE card_elements SET fontSize = :fontSize WHERE elementId = :elementId and elementType = 'TEXT'")
-    suspend fun updateTextFontSize(elementId: Long, fontSize: Float): Int
-
-    @Query("UPDATE card_elements SET textColor = :textColor WHERE elementId = :elementId and elementType = 'TEXT'")
-    suspend fun updateTextColor(elementId: Long, textColor: String): Int
-
-    @Query("UPDATE card_elements SET textContent = :textContent WHERE elementId = :elementId and elementType = 'TEXT'")
-    suspend fun updateTextContent(elementId: Long, textContent: String): Int
-
-    @Query("UPDATE card_elements SET fontFamily = :fontFamily WHERE elementId = :elementId and elementType = 'TEXT'")
-    suspend fun updateTextFont(elementId: Long, fontFamily: String): Int
-
-    @Query("UPDATE card_elements SET textAlign = :textAlign WHERE elementId = :elementId and elementType = 'TEXT'")
-    suspend fun updateTextAlign(elementId: Long, textAlign: String): Int
+    @Query("""
+        UPDATE card_elements 
+        SET textContent = :textContent, textAlign = :textAlign, textColor = :textColor, fontSize = :fontSize, fontFamily = :fontFamily, posX = :posX, posY = :posY 
+        WHERE elementId = :elementId
+        """)
+    suspend fun updateTextElement(elementId: Long, textContent: String, textAlign: String, textColor: String, fontSize: Float, fontFamily: String, posX: Int, posY: Int): Int
 }

@@ -116,7 +116,7 @@ private fun EditorTabContent(
     ) {
         // 텍스트 입력, 적용, 뒤로 가기
         EditorHeader(
-            text = textElement.text,
+            text = textElement.attributes.content,
             onBack = onBack,
             onApply = onApply,
             onTextChange = onTextChange
@@ -134,16 +134,16 @@ private fun EditorTabContent(
         when (selectedTab) {
             TextEditorTab.STYLE -> {
                 StyleOptions(
-                    selectedColor = textElement.color,
-                    selectedAlignment = textElement.alignment,
-                    fontSize = textElement.fontSize,
+                    selectedColor = textElement.attributes.textColor,
+                    selectedAlignment = textElement.attributes.alignment,
+                    fontSize = textElement.attributes.fontSize,
                     onColorSelected = onColorSelected,
                     onAlignmentSelected = onAlignmentSelected,
                     onFontSizeChange = onFontSizeChange
                 )
             }
             TextEditorTab.FONT -> {
-                FontOptions(selectedFont = textElement.fontFamily, onFontSelected = onFontSelected)
+                FontOptions(selectedFont = textElement.attributes.fontFamily, onFontSelected = onFontSelected)
             }
             TextEditorTab.POSITION -> {
                 PositionOptions(

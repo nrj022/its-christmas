@@ -30,7 +30,7 @@ fun CardEditorBottomScreen(cardId: Long, viewModel: CardEditorViewModel = hiltVi
                 myObjects = state.myObjects,
                 selectedMyObject = state.selectedMyObjectIdx,
                 selectedBackground = state.selectedBackground,
-                onAddTextClicked = { viewModel.onIntent(CardEditorIntent.AddTextButtonClicked) },
+                onAddTextClicked = { viewModel.onIntent(CardEditorIntent.AddTextButtonClicked(cardId)) },
                 onObjectClicked = { viewModel.onIntent(CardEditorIntent.ObjectClicked(cardId, it)) },
                 onMyObjectClicked = { viewModel.onIntent(CardEditorIntent.MyObjectClicked(it)) },
                 onBackgroundClicked = { viewModel.onIntent(CardEditorIntent.BackgroundClicked(it)) }
@@ -65,7 +65,7 @@ fun CardEditorBottomScreen(cardId: Long, viewModel: CardEditorViewModel = hiltVi
                     onFontSelected = { viewModel.onIntent(CardEditorIntent.FontSelected(it)) },
                     onPositionChange = { viewModel.onIntent(CardEditorIntent.TextDirectionClicked(it)) },
                     onCameraReset = { viewModel.onIntent(CardEditorIntent.CameraResetClicked) },
-                    onApply = { viewModel.onIntent(CardEditorIntent.TextApplyClicked) },
+                    onApply = { viewModel.onIntent(CardEditorIntent.TextApplyClicked(cardId)) },
                     onBack = { viewModel.onIntent(CardEditorIntent.DialogStateChanged(EditorDialogState.UNSAVED_TEXT_CHANGES)) }
                 )
             }
@@ -89,9 +89,9 @@ fun CardEditorBottomScreen(cardId: Long, viewModel: CardEditorViewModel = hiltVi
         }
         EditorDialogState.UNSAVED_TEXT_CHANGES -> {
             UnsavedChangesDialog(
-                onApplyChanges = { },
-                onDiscardChanges = { },
-                onDismiss = { }
+                onApplyChanges = { viewModel.onIntent(CardEditorIntent.TextApplyAndExit(cardId)) },
+                onDiscardChanges = { viewModel.onIntent(CardEditorIntent.TextDiscardAndExit) },
+                onDismiss = { viewModel.onIntent(CardEditorIntent.DialogStateChanged(EditorDialogState.NONE)) }
             )
         }
         EditorDialogState.SET_CARD_TITLE -> {

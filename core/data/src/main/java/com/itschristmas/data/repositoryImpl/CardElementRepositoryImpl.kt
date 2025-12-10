@@ -33,9 +33,14 @@ class CardElementRepositoryImpl @Inject constructor(
             cardElementDao.deleteByCardId(cardId)
         }
 
-    override suspend fun deleteCardElementsById(elementId: Long): Result<Int> =
+    override suspend fun deleteCardElementById(elementId: Long): Result<Int> =
         ioCatching {
             cardElementDao.deleteElementById(elementId)
+        }
+
+    override suspend fun deleteCardElementsByIds(elementIds: List<Long>): Result<Int> =
+        ioCatching {
+            cardElementDao.deleteElementsByIds(elementIds)
         }
 
     override fun getObjectElementsWithAssetKeysByCardId(cardId: Long): Flow<Result<List<CardElementWithAssetKeys>>> {

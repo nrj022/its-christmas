@@ -40,6 +40,8 @@ class CardEditorViewModel @Inject constructor(
     private val _cardEditorState = MutableStateFlow(CardEditorState())
     val cardEditorState: StateFlow<CardEditorState> = _cardEditorState
 
+    private val _deletedTextElementIds: MutableSet<Long> = mutableSetOf()
+
     private val _imeVisible = MutableStateFlow(false)
     val imeVisible = _imeVisible.asStateFlow()
 
@@ -73,7 +75,7 @@ class CardEditorViewModel @Inject constructor(
                 handleBackgroundClicked(intent.assetId)
             }
             is CardEditorIntent.AddTextButtonClicked -> {
-                updatePanelState(PanelState.TEXT_EDITOR)
+                handleAddTextButtonClicked(intent.cardId)
             }
             is CardEditorIntent.MyObjectClicked -> {
                 handleMyObjectClicked(intent.element)
@@ -142,10 +144,13 @@ class CardEditorViewModel @Inject constructor(
                 handleTextDirectionClicked(intent.direction)
             }
             is CardEditorIntent.TextApplyClicked -> {
+                handleTextApplyClicked(intent.cardId)
             }
             is CardEditorIntent.TextApplyAndExit -> {
+                handleTextApplyAndExit(intent.cardId)
             }
             is CardEditorIntent.TextDiscardAndExit -> {
+                handleTextDiscardAndExit()
             }
         }
     }
@@ -193,6 +198,32 @@ class CardEditorViewModel @Inject constructor(
         }
     }
 
+    private fun handleAddTextButtonClicked(cardId: Long) {
+        updatePanelState(PanelState.TEXT_EDITOR)
+        viewModelScope.launch {
+            cardElementRepository.getTextElementsByCardId(cardId)
+                .onSuccess { result ->
+                    println(result.map { it.elementId to it.textAttributes?.content })
+                    val newList = result.mapNotNull { element ->
+                        element.textAttributes?.let { attr ->
+                            TempTextElementState(
+                                elementId = element.elementId,
+                                attributes = attr,
+                                posX = element.posX,
+                                posY = element.posY
+                            )
+                        }
+                    }.asReversed()
+                    _cardEditorState.update {
+                        it.copy(
+                            tempTextList = newList,
+                            selectedTextTempId = newList.firstOrNull()?.tempId
+                        )
+                    }
+                }
+        }
+    }
+
     private fun handleMyObjectClicked(element: CardElementWithAssetKeys) {
         _cardEditorState.update {
             it.copy(selectedMyObject = if (it.selectedMyObjectIdx == element.cardElement.elementId) null else element)
@@ -206,7 +237,7 @@ class CardEditorViewModel @Inject constructor(
     private fun handleDeleteMyObject() {
         viewModelScope.launch {
             _cardEditorState.value.selectedMyObjectIdx?.let {
-                cardElementRepository.deleteCardElementsById(it)
+                cardElementRepository.deleteCardElementById(it)
             }
             updateDialogState(EditorDialogState.NONE)
         }
@@ -332,6 +363,7 @@ class CardEditorViewModel @Inject constructor(
             )
         }
 
+        selectedText.elementId?.let { _deletedTextElementIds.add(it) }
     }
 
     private fun handleTextClicked(textId: Long) {
@@ -409,6 +441,23 @@ class CardEditorViewModel @Inject constructor(
         }
     }
 
+    private fun handleTextApplyClicked(cardId: Long) {
+        updateTextAttribute(cardId)
+    }
+
+    private fun handleTextApplyAndExit(cardId: Long) {
+        updateTextAttribute(cardId)
+        updateDialogState(EditorDialogState.NONE)
+        updatePanelState(PanelState.ASSET_BROWSER)
+        _cardEditorState.update { it.copy(tempTextList = emptyList(), selectedTextTempId = null) }
+    }
+
+    private fun handleTextDiscardAndExit() {
+        updateDialogState(EditorDialogState.NONE)
+        updatePanelState(PanelState.ASSET_BROWSER)
+        _cardEditorState.update { it.copy(tempTextList = emptyList(), selectedTextTempId = null) }
+    }
+
     private fun updatePanelState(panelState: PanelState) {
         _cardEditorState.update {
             it.copy(panelState = panelState)
@@ -449,6 +498,60 @@ class CardEditorViewModel @Inject constructor(
     private fun exitTransform() {
         updatePanelState(PanelState.ASSET_BROWSER)
         _cardEditorState.update { it.copy(tempTransformState = null) }
+    }
+
+    private fun updateTextAttribute(cardId: Long) {
+        viewModelScope.launch {
+            val (nonEmptyTextList, emptyTextList) = _cardEditorState.value.tempTextList
+                .partition { it.attributes.content.isNotBlank() }
+
+            val resultList = mutableListOf<TempTextElementState>()
+            nonEmptyTextList.forEach { text ->
+                text.elementId?.let {
+                    cardElementRepository.updateTextElement(
+                        elementId = text.elementId,
+                        textAttributes = text.attributes,
+                        posX = text.posX,
+                        posY = text.posY
+                    ).onSuccess {
+                        resultList.add(text)
+                    }
+                } ?: run {
+                    cardElementRepository.insertCardElement(
+                        CardElement(
+                            elementId = 0,
+                            cardId = cardId,
+                            elementType = ElementType.TEXT,
+                            posX = text.posX,
+                            posY = text.posY,
+                            textAttributes = text.attributes
+                        )
+                    ).onSuccess { id ->
+                        val newElement = text.copy(elementId = id)
+                        resultList.add(newElement)
+                    }
+                }
+            }
+
+            _cardEditorState.update {
+                val currentSelectedId = it.selectedTextTempId
+                val newSelectedId = when {
+                    currentSelectedId != null && resultList.any { text -> text.tempId == currentSelectedId } -> currentSelectedId
+                    resultList.isNotEmpty() -> resultList.first().tempId
+                    else -> null
+                }
+
+                it.copy(
+                    tempTextList = resultList,
+                    selectedTextTempId = newSelectedId
+                )
+            }
+
+            val toDelete = _deletedTextElementIds.toSet() + emptyTextList.mapNotNull { it.elementId }.toSet()
+
+            cardElementRepository.deleteCardElementsByIds(toDelete.toList())
+                .onSuccess { _deletedTextElementIds.clear() }
+        }
     }
 
     private fun getCardDataFromDB(cardId: Long) {

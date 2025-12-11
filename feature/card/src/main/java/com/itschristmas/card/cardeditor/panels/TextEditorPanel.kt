@@ -45,7 +45,6 @@ import com.itschristmas.card.cardeditor.common.DirectionalController
 import com.itschristmas.card.cardeditor.uimapper.icon
 import com.itschristmas.card.cardeditor.uimapper.rememberFontFamilies
 import com.itschristmas.card.cardeditor.model.BaseTabItems
-import com.itschristmas.card.cardeditor.model.TempTextElementState
 import com.itschristmas.designsystem.theme.Gray
 import com.itschristmas.designsystem.theme.ItsChristmasTheme
 import com.itschristmas.designsystem.theme.SoftBlack
@@ -54,6 +53,7 @@ import com.itschristmas.domain.model.ColorOption
 import com.itschristmas.domain.model.FontOption
 import com.itschristmas.domain.model.TextAlignmentOption
 import com.itschristmas.card.cardeditor.model.Direction
+import com.itschristmas.domain.model.TextElement
 
 // 토글 탭 목록 정의
 enum class TextEditorTab(val resId: Int) {
@@ -64,7 +64,7 @@ enum class TextEditorTab(val resId: Int) {
 
 @Composable
 fun TextEditorPanel(
-    textElement: TempTextElementState = TempTextElementState(),
+    textElement: TextElement = TextElement(),
     onTextChange: (String) -> Unit = {},
     onColorSelected: (ColorOption) -> Unit = {},
     onAlignmentSelected: (TextAlignmentOption) -> Unit = {},
@@ -95,7 +95,7 @@ fun TextEditorPanel(
 
 @Composable
 private fun EditorTabContent(
-    textElement: TempTextElementState,
+    textElement: TextElement,
     selectedTab: TextEditorTab,
     onTextChange: (String) -> Unit,
     onTabSelected: (TextEditorTab) -> Unit,

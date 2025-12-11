@@ -15,9 +15,13 @@ import com.itschristmas.domain.model.CardElementWithAssetKeys
 import com.itschristmas.domain.model.ColorOption
 import com.itschristmas.domain.model.FontOption
 import com.itschristmas.domain.model.TextAlignmentOption
+import com.itschristmas.domain.model.TextAttributes
+import com.itschristmas.domain.model.TextElement
 import com.itschristmas.domain.repository.AssetRepository
 import com.itschristmas.domain.repository.CardElementRepository
 import com.itschristmas.domain.repository.CardRepository
+import com.itschristmas.domain.usecase.UpdateTextParams
+import com.itschristmas.domain.usecase.UpdateTextUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -34,13 +38,14 @@ private const val TAG = "CardEditorViewModel"
 class CardEditorViewModel @Inject constructor(
     private val assetRepository: AssetRepository,
     private val cardElementRepository: CardElementRepository,
-    private val cardRepository: CardRepository
+    private val cardRepository: CardRepository,
+    private val updateTextUseCase: UpdateTextUseCase
 ) : ViewModel() {
 
     private val _cardEditorState = MutableStateFlow(CardEditorState())
     val cardEditorState: StateFlow<CardEditorState> = _cardEditorState
 
-    private val _deletedTextElementIds: MutableSet<Long> = mutableSetOf()
+    private var _deletedTextElementIds: MutableSet<Long> = mutableSetOf()
 
     private val _imeVisible = MutableStateFlow(false)
     val imeVisible = _imeVisible.asStateFlow()
@@ -203,14 +208,15 @@ class CardEditorViewModel @Inject constructor(
         viewModelScope.launch {
             cardElementRepository.getTextElementsByCardId(cardId)
                 .onSuccess { result ->
-                    println(result.map { it.elementId to it.textAttributes?.content })
                     val newList = result.mapNotNull { element ->
                         element.textAttributes?.let { attr ->
                             TempTextElementState(
-                                elementId = element.elementId,
-                                attributes = attr,
-                                posX = element.posX,
-                                posY = element.posY
+                                textElement = TextElement(
+                                    elementId = element.elementId,
+                                    attributes = attr,
+                                    posX = element.posX,
+                                    posY = element.posY
+                                )
                             )
                         }
                     }.asReversed()
@@ -363,7 +369,7 @@ class CardEditorViewModel @Inject constructor(
             )
         }
 
-        selectedText.elementId?.let { _deletedTextElementIds.add(it) }
+        selectedText.textElement.elementId?.let { _deletedTextElementIds.add(it) }
     }
 
     private fun handleTextClicked(textId: Long) {
@@ -502,55 +508,24 @@ class CardEditorViewModel @Inject constructor(
 
     private fun updateTextAttribute(cardId: Long) {
         viewModelScope.launch {
-            val (nonEmptyTextList, emptyTextList) = _cardEditorState.value.tempTextList
-                .partition { it.attributes.content.isNotBlank() }
-
-            val resultList = mutableListOf<TempTextElementState>()
-            nonEmptyTextList.forEach { text ->
-                text.elementId?.let {
-                    cardElementRepository.updateTextElement(
-                        elementId = text.elementId,
-                        textAttributes = text.attributes,
-                        posX = text.posX,
-                        posY = text.posY
-                    ).onSuccess {
-                        resultList.add(text)
-                    }
-                } ?: run {
-                    cardElementRepository.insertCardElement(
-                        CardElement(
-                            elementId = 0,
-                            cardId = cardId,
-                            elementType = ElementType.TEXT,
-                            posX = text.posX,
-                            posY = text.posY,
-                            textAttributes = text.attributes
-                        )
-                    ).onSuccess { id ->
-                        val newElement = text.copy(elementId = id)
-                        resultList.add(newElement)
-                    }
-                }
-            }
-
-            _cardEditorState.update {
-                val currentSelectedId = it.selectedTextTempId
-                val newSelectedId = when {
-                    currentSelectedId != null && resultList.any { text -> text.tempId == currentSelectedId } -> currentSelectedId
-                    resultList.isNotEmpty() -> resultList.first().tempId
-                    else -> null
-                }
-
-                it.copy(
-                    tempTextList = resultList,
-                    selectedTextTempId = newSelectedId
+            updateTextUseCase(
+                UpdateTextParams(
+                    cardId = cardId,
+                    updates = _cardEditorState.value.tempTextList.map { it.textElement },
+                    deletedIds = _deletedTextElementIds
                 )
+            ).onSuccess { result ->
+                _cardEditorState.update {
+                    val updatedList = (result.updatedElements + result.failedUpdates).map { text ->
+                        TempTextElementState(textElement = text)
+                    }
+                    it.copy(
+                        tempTextList = updatedList,
+                        selectedTextTempId = updatedList.firstOrNull()?.tempId,
+                    )
+                }
+                _deletedTextElementIds = result.deletedIds.toMutableSet()
             }
-
-            val toDelete = _deletedTextElementIds.toSet() + emptyTextList.mapNotNull { it.elementId }.toSet()
-
-            cardElementRepository.deleteCardElementsByIds(toDelete.toList())
-                .onSuccess { _deletedTextElementIds.clear() }
         }
     }
 

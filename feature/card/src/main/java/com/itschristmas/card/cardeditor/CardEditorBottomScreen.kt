@@ -52,12 +52,12 @@ fun CardEditorBottomScreen(cardId: Long, viewModel: CardEditorViewModel = hiltVi
         }
 
         PanelState.TEXT_EDITOR -> {
-            val textElement = state.selectedText
-            if(state.tempTextList.isEmpty() || textElement == null) {
+            val tempText = state.selectedText
+            if(state.tempTextList.isEmpty() || tempText == null) {
                 viewModel.onIntent(CardEditorIntent.RequestDefaultText)
             } else {
                 TextEditorPanel(
-                    textElement = textElement,
+                    textElement = tempText.textElement,
                     onTextChange = { viewModel.onIntent(CardEditorIntent.TextChanged(it)) },
                     onAlignmentSelected = { viewModel.onIntent(CardEditorIntent.AlignmentSelected(it)) },
                     onColorSelected = { viewModel.onIntent(CardEditorIntent.ColorSelected(it)) },

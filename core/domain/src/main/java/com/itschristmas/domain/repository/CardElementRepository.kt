@@ -2,6 +2,7 @@ package com.itschristmas.domain.repository
 
 import com.itschristmas.domain.model.CardElementWithAssetKeys
 import com.itschristmas.domain.model.CardElement
+import com.itschristmas.domain.model.TextAttributes
 import kotlinx.coroutines.flow.Flow
 
 interface CardElementRepository {
@@ -12,7 +13,9 @@ interface CardElementRepository {
 
     suspend fun deleteCardElementsByCardId(cardId: Long): Result<Int>
 
-    suspend fun deleteCardElementsById(elementId: Long): Result<Int>
+    suspend fun deleteCardElementById(elementId: Long): Result<Int>
+
+    suspend fun deleteCardElementsByIds(elementIds: List<Long>): Result<Int>
 
     fun getObjectElementsWithAssetKeysByCardId(cardId: Long): Flow<Result<List<CardElementWithAssetKeys>>>
 
@@ -20,13 +23,5 @@ interface CardElementRepository {
 
     suspend fun updateElementTransform(elementId: Long, posX: Int, posY: Int, scale: Int): Result<Int>
 
-    suspend fun updateTextFontSize(elementId: Long, fontSize: Float): Result<Int>
-
-    suspend fun updateTextColor(elementId: Long, textColor: String): Result<Int>
-
-    suspend fun updateTextContent(elementId: Long, textContent: String): Result<Int>
-
-    suspend fun updateTextFont(elementId: Long, fontFamily: String): Result<Int>
-
-    suspend fun updateTextAlign(elementId: Long, textAlign: String): Result<Int>
+    suspend fun updateTextElement(elementId: Long, textAttributes: TextAttributes, posX: Int, posY: Int): Result<Int>
 }

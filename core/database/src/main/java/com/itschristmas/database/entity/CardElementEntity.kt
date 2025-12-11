@@ -27,7 +27,6 @@ data class CardElementEntity(
     val textContent: String? = null,
     val fontFamily: String? = null,
     val fontSize: Float? = null,
-    val fontWeight: String? = null, // UnityFontWeight: NORMAL / BOLD
     val textColor: String? = null,
     val textAlign: String? = null,   // UnityTextAlign: LEFT / CENTER / RIGHT
 )

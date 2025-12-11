@@ -15,7 +15,7 @@ sealed class CardEditorIntent {
     data object GenerateCard: CardEditorIntent()
     data class ObjectClicked(val cardId: Long, val clickedObject: Asset): CardEditorIntent()
     data class BackgroundClicked(val assetId: Long): CardEditorIntent()
-    data object AddTextButtonClicked: CardEditorIntent()
+    data class AddTextButtonClicked(val cardId: Long): CardEditorIntent()
     data class MyObjectClicked(val element: CardElementWithAssetKeys): CardEditorIntent()
     data class DialogStateChanged(val dialogState: EditorDialogState): CardEditorIntent()
     data object DeleteMyObject: CardEditorIntent()
@@ -38,7 +38,7 @@ sealed class CardEditorIntent {
     data class FontSizeChanged(val newSize: Float): CardEditorIntent()
     data class FontSelected(val newFont: FontOption): CardEditorIntent()
     data class TextDirectionClicked(val direction: Direction): CardEditorIntent()
-    data object TextApplyClicked: CardEditorIntent()
-    data object TextApplyAndExit: CardEditorIntent()
+    data class TextApplyClicked(val cardId: Long): CardEditorIntent()
+    data class TextApplyAndExit(val cardId: Long): CardEditorIntent()
     data object TextDiscardAndExit: CardEditorIntent()
 }

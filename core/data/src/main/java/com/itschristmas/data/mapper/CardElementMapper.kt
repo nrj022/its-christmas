@@ -2,22 +2,22 @@ package com.itschristmas.data.mapper
 
 import com.itschristmas.database.entity.CardElementEntity
 import com.itschristmas.domain.enum.ElementType
-import com.itschristmas.domain.enum.UnityFontWeight
-import com.itschristmas.domain.enum.UnityTextAlign
 import com.itschristmas.domain.model.CardElement
-import com.itschristmas.domain.model.UnityTextStyle
+import com.itschristmas.domain.model.ColorOption
+import com.itschristmas.domain.model.FontOption
+import com.itschristmas.domain.model.TextAlignmentOption
+import com.itschristmas.domain.model.TextAttributes
 
 fun CardElementEntity.toDomain(): CardElement {
     val elementType = ElementType.valueOf(elementType)
-    val unityTextStyle = textContent?.let {
-        val default = UnityTextStyle()
-        UnityTextStyle(
-            textContent = it,
-            fontFamily = fontFamily ?: default.fontFamily,
+    val textAttributes = textContent?.let { text ->
+        val default = TextAttributes()
+        TextAttributes(
+            content = text,
+            fontFamily = fontFamily?.let { FontOption.valueOf(it) } ?: default.fontFamily,
             fontSize = fontSize ?: default.fontSize,
-            fontWeight = fontWeight?.let { UnityFontWeight.valueOf(it) } ?: default.fontWeight,
-            textColor = textColor ?: default.textColor,
-            textAlign = textAlign?.let { UnityTextAlign.valueOf(it) } ?: default.textAlign,
+            textColor = textColor?.let { ColorOption.valueOf(it) } ?: default.textColor,
+            alignment = textAlign?.let { TextAlignmentOption.valueOf(it) } ?: default.alignment,
         )
     }
 
@@ -33,7 +33,7 @@ fun CardElementEntity.toDomain(): CardElement {
         rotY = rotY,
         rotZ = rotZ,
         scale = scale,
-        unityTextStyle = unityTextStyle
+        textAttributes = textAttributes
     )
 }
 
@@ -50,11 +50,10 @@ fun CardElement.toEntity(): CardElementEntity {
         rotY = rotY,
         rotZ = rotZ,
         scale = scale,
-        textContent = unityTextStyle?.textContent,
-        fontFamily = unityTextStyle?.fontFamily,
-        fontSize = unityTextStyle?.fontSize,
-        fontWeight = unityTextStyle?.fontWeight?.name,
-        textColor = unityTextStyle?.textColor,
-        textAlign = unityTextStyle?.textAlign?.name,
+        textContent = textAttributes?.content,
+        fontFamily = textAttributes?.fontFamily?.name,
+        fontSize = textAttributes?.fontSize,
+        textColor = textAttributes?.textColor?.name,
+        textAlign = textAttributes?.alignment?.name,
     )
 }

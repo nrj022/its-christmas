@@ -9,8 +9,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import com.itschristmas.domain.model.TextAlignmentOption
 
 fun TextAlignmentOption.icon(): ImageVector = when (this) {
-    TextAlignmentOption.Start -> Icons.AutoMirrored.Filled.FormatAlignLeft
+    TextAlignmentOption.Right -> Icons.AutoMirrored.Filled.FormatAlignLeft
     TextAlignmentOption.Center -> Icons.Default.FormatAlignCenter
-    TextAlignmentOption.End -> Icons.AutoMirrored.Filled.FormatAlignRight
+    TextAlignmentOption.Left -> Icons.AutoMirrored.Filled.FormatAlignRight
     TextAlignmentOption.Justify -> Icons.Default.FormatAlignJustify
 }

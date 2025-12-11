@@ -21,5 +21,5 @@ data class CardElement(
     val scale: Int = 1,
 
     // Text fields (nullable)
-    val unityTextStyle: UnityTextStyle? = null
+    val textAttributes: TextAttributes? = null
 )

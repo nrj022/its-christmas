@@ -1,7 +1,9 @@
 package com.itschristmas.card.cardeditor
 
 import android.annotation.SuppressLint
+import android.content.res.Configuration
 import android.os.Bundle
+import android.util.Log
 import android.view.MotionEvent
 import android.view.ViewGroup
 import androidx.activity.viewModels
@@ -89,8 +91,6 @@ class CardEditorActivity : AppCompatActivity() {
             if (event.action == MotionEvent.ACTION_UP) v.performClick()
             true
         }
-
-        unityPlayer.windowFocusChanged(true)
     }
 
     private fun initListener() {
@@ -152,18 +152,60 @@ class CardEditorActivity : AppCompatActivity() {
         binding.textElementKey.text = if(active) toBase62(temp.elementId) else ""
     }
 
+    // Unity에서 호출하는 함수
+    fun onUnityMessage(jsonString: String) {
+        Log.d("UnityMsg", "Received: $jsonString")
+    }
+
+    override fun onStart() {
+        super.onStart()
+        unityPlayer.onStart()
+    }
+
     override fun onResume() {
         super.onResume()
-        unityPlayer.resume()
+        unityPlayer.onResume()
     }
 
     override fun onPause() {
-        unityPlayer.pause()
         super.onPause()
+        unityPlayer.onPause()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        unityPlayer.onStop()
     }
 
     override fun onDestroy() {
         unityPlayer.destroy()
         super.onDestroy()
+    }
+
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        unityPlayer.windowFocusChanged(hasFocus)
+    }
+
+    // Low Memory Unity
+    override fun onLowMemory() {
+        super.onLowMemory()
+        unityPlayer.onTrimMemory(UnityPlayerForActivityOrService.MemoryUsage.Critical)
+    }
+
+    // Trim Memory Unity
+    override fun onTrimMemory(level: Int) {
+        super.onTrimMemory(level)
+        when {
+            level >= TRIM_MEMORY_RUNNING_CRITICAL -> unityPlayer.onTrimMemory(UnityPlayerForActivityOrService.MemoryUsage.Critical)
+            level >= TRIM_MEMORY_RUNNING_LOW -> unityPlayer.onTrimMemory(UnityPlayerForActivityOrService.MemoryUsage.High)
+            else -> unityPlayer.onTrimMemory(UnityPlayerForActivityOrService.MemoryUsage.Medium)
+        }
+    }
+
+    // 레이아웃에 따른 Unity 맵핑
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        unityPlayer.configurationChanged(newConfig)
     }
 }

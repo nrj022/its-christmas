@@ -65,7 +65,7 @@ class CardEditorViewModelTest {
         val backgrounds = listOf(
             Asset(assetId = 10L, assetType = AssetType.BACKGROUND, unityKey = "bg1", thumbnailKey = "bgthumb1")
         )
-        val myObjects = listOf(
+        val spawnedObjects = listOf(
             CardElementWithAssetKeys(
                 cardElement = CardElement(
                     elementId = 1L,
@@ -84,7 +84,7 @@ class CardEditorViewModelTest {
         coEvery { assetRepository.getAssetsByType(AssetType.OBJECT) } returns Result.success(objects)
         coEvery { assetRepository.getAssetsByType(AssetType.BACKGROUND) } returns Result.success(backgrounds)
         every { cardElementRepository.getObjectElementsWithAssetKeysByCardId(1L) } returns 
-            flowOf(Result.success(myObjects))
+            flowOf(Result.success(spawnedObjects))
 
         // When
         viewModel.onIntent(CardEditorIntent.Init(1L))
@@ -93,10 +93,10 @@ class CardEditorViewModelTest {
         // Then
         viewModel.cardEditorState.test {
             val state = awaitItem()
-            assertEquals(10L, state.selectedBackground)
+            assertEquals(10L, state.selectedBackgroundId)
             assertEquals(1, state.objects.size)
             assertEquals(1, state.backgrounds.size)
-            assertEquals(1, state.myObjects.size)
+            assertEquals(1, state.spawnedObjects.size)
         }
     }
 
@@ -139,7 +139,7 @@ class CardEditorViewModelTest {
         // Then
         viewModel.cardEditorState.test {
             val state = awaitItem()
-            assertEquals(5L, state.selectedBackground)
+            assertEquals(5L, state.selectedBackgroundId)
         }
 
         // When - Click again to deselect
@@ -149,30 +149,30 @@ class CardEditorViewModelTest {
         // Then
         viewModel.cardEditorState.test {
             val state = awaitItem()
-            assertNull(state.selectedBackground)
+            assertNull(state.selectedBackgroundId)
         }
     }
 
     @Test
-    fun `onIntent MyObjectClicked toggles object selection`() = runTest {
+    fun `onIntent SpawnedObjectClicked toggles object selection`() = runTest {
         // When
-        viewModel.onIntent(CardEditorIntent.SelectMyObject(assetId = 10L))
+        viewModel.onIntent(CardEditorIntent.SelectSpawnedObject(assetId = 10L))
         testDispatcher.scheduler.advanceUntilIdle()
 
         // Then
         viewModel.cardEditorState.test {
             val state = awaitItem()
-            assertEquals(10L, state.selectedMyObject)
+            assertEquals(10L, state.selectedSpawnedObject)
         }
 
         // When - Click again to deselect
-        viewModel.onIntent(CardEditorIntent.SelectMyObject(assetId = 10L))
+        viewModel.onIntent(CardEditorIntent.SelectSpawnedObject(assetId = 10L))
         testDispatcher.scheduler.advanceUntilIdle()
 
         // Then
         viewModel.cardEditorState.test {
             val state = awaitItem()
-            assertNull(state.selectedMyObject)
+            assertNull(state.selectedSpawnedObject)
         }
     }
 
@@ -194,7 +194,7 @@ class CardEditorViewModelTest {
             val state = awaitItem()
             assertEquals(0, state.objects.size)
             assertEquals(0, state.backgrounds.size)
-            assertEquals(0, state.myObjects.size)
+            assertEquals(0, state.spawnedObjects.size)
         }
     }
 
@@ -216,12 +216,12 @@ class CardEditorViewModelTest {
             // State should remain in initial state
             assertEquals(0, state.objects.size)
             assertEquals(0, state.backgrounds.size)
-            assertEquals(0, state.myObjects.size)
+            assertEquals(0, state.spawnedObjects.size)
         }
     }
 
     @Test
-    fun `myObjects flow updates state when new elements are added`() = runTest {
+    fun `spawnedObject flow updates state when new elements are added`() = runTest {
         // Given
         val initialElements = listOf(
             CardElementWithAssetKeys(
@@ -247,8 +247,8 @@ class CardEditorViewModelTest {
         // Then
         viewModel.cardEditorState.test {
             val state = awaitItem()
-            assertEquals(1, state.myObjects.size)
-            assertEquals(1L, state.myObjects[0].cardElement.elementId)
+            assertEquals(1, state.spawnedObjects.size)
+            assertEquals(1L, state.spawnedObjects[0].cardElement.elementId)
         }
     }
 

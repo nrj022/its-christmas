@@ -15,9 +15,9 @@ data class CardEditorState(
     val cardTitle: String = "New Card",
     val objects: List<Asset> = emptyList(),
     val backgrounds: List<Asset> = emptyList(),
-    val myObjects: List<CardElementWithAssetKeys> = emptyList(),
-    val selectedBackground: Long? = null,
-    val selectedMyObject: CardElementWithAssetKeys? = null,
+    val spawnedObjects: List<CardElementWithAssetKeys> = emptyList(),
+    val selectedBackgroundId: Long? = null,
+    val selectedSpawnedObject: CardElementWithAssetKeys? = null,
     val selectedTextTempId: Long? = null,
 ) {
     val isAssetBrowserPanelActive: Boolean
@@ -27,7 +27,7 @@ data class CardEditorState(
         get() = panelType == PanelType.TRANSFORM_CONTROL
 
     val showObjectOptionContainer: Boolean
-        get() = selectedMyObject != null && panelType == PanelType.ASSET_BROWSER
+        get() = selectedSpawnedObject != null && panelType == PanelType.ASSET_BROWSER
 
     val showTextOptionContainer: Boolean
         get() = panelType == PanelType.TEXT_EDITOR
@@ -35,12 +35,12 @@ data class CardEditorState(
     val unityContainerHeightFraction: Float
         get() = if (panelType == PanelType.TRANSFORM_CONTROL || panelType == PanelType.TEXT_EDITOR) 0.6f else 0.5f
 
-    val selectedMyObjectIdx: Long?
-        get() = selectedMyObject?.cardElement?.elementId
+    val selectedSpawnedObjectId: Long?
+        get() = selectedSpawnedObject?.cardElement?.elementId
 
     val hasPendingTransform: Boolean
         get() = tempTransform?.let { temp ->
-            selectedMyObject?.let { selected ->
+            selectedSpawnedObject?.let { selected ->
                 temp.posX != selected.cardElement.posX ||
                 temp.posY != selected.cardElement.posY ||
                 temp.scale != selected.cardElement.scale

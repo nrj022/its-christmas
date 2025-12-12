@@ -17,8 +17,8 @@ sealed class CardEditorIntent {
 
     data class CreateObject(val cardId: Long, val clickedObject: Asset): CardEditorIntent()
     data class ChangeBackground(val assetId: Long): CardEditorIntent()
-    data class SelectMyObject(val element: CardElementWithAssetKeys): CardEditorIntent()
-    data object DeleteMyObject: CardEditorIntent()
+    data class SelectSpawnedObject(val element: CardElementWithAssetKeys): CardEditorIntent()
+    data object DeleteSpawnedObject: CardEditorIntent()
     data object EnterTransformMode: CardEditorIntent()
     data class EnterTextMode(val cardId: Long): CardEditorIntent()
 

@@ -17,7 +17,7 @@
     <string name="editor_title_asset_tab_background">Background</string>
     <string name="editor_button_add_text">Add Text</string>
     <string name="editor_cd_add_text_button">Add Text</string>
-    <string name="editor_title_my_objects_list">My Objects</string>
+    <string name="editor_title_spawned_objects_list">My Objects</string>
     <string name="editor_cd_asset">Asset</string>
 
     <string name="editor_title_text_tab_style">Style</string>

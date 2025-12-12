@@ -29,12 +29,12 @@ fun CardEditorBottomScreen(cardId: Long, viewModel: CardEditorViewModel = hiltVi
             AssetBrowserPanel(
                 objectItems = state.objects, // 임시 데이터
                 backgroundItems = state.backgrounds,  // 임시 데이터
-                myObjects = state.myObjects,
-                selectedMyObject = state.selectedMyObjectIdx,
-                selectedBackground = state.selectedBackground,
+                spawnedObjects = state.spawnedObjects,
+                selectedSpawnedObject = state.selectedSpawnedObjectId,
+                selectedBackground = state.selectedBackgroundId,
                 onAddTextClicked = { viewModel.onIntent(CardEditorIntent.EnterTextMode(cardId)) },
                 onObjectClicked = { viewModel.onIntent(CardEditorIntent.CreateObject(cardId, it)) },
-                onMyObjectClicked = { viewModel.onIntent(CardEditorIntent.SelectMyObject(it)) },
+                onSpawnedObjectClicked = { viewModel.onIntent(CardEditorIntent.SelectSpawnedObject(it)) },
                 onBackgroundClicked = { viewModel.onIntent(CardEditorIntent.ChangeBackground(it)) }
             )
 
@@ -78,7 +78,7 @@ fun CardEditorBottomScreen(cardId: Long, viewModel: CardEditorViewModel = hiltVi
         DialogState.NONE -> {}
         DialogState.DELETE_CONFIRM -> {
             ObjectDeleteConfirmDialog(
-                onDeleteObject = { viewModel.onIntent(CardEditorIntent.DeleteMyObject) },
+                onDeleteObject = { viewModel.onIntent(CardEditorIntent.DeleteSpawnedObject) },
                 onDismiss = { viewModel.onIntent(CardEditorIntent.ChangeDialogState(DialogState.NONE)) }
             )
         }

@@ -70,8 +70,8 @@ class CardEditorViewModel @Inject constructor(
                 intent.clickedObject
             )
             is CardEditorIntent.ChangeBackground -> handleChangeBackground(intent.assetId)
-            is CardEditorIntent.SelectMyObject -> handleSelectMyObject(intent.element)
-            is CardEditorIntent.DeleteMyObject -> handleDeleteMyObject()
+            is CardEditorIntent.SelectSpawnedObject -> handleSelectSpawnedObject(intent.element)
+            is CardEditorIntent.DeleteSpawnedObject -> handleDeleteSpawnedObject()
             is CardEditorIntent.EnterTransformMode -> handleEnterTransformMode()
             is CardEditorIntent.EnterTextMode -> handleEnterTextMode(intent.cardId)
 
@@ -108,8 +108,8 @@ class CardEditorViewModel @Inject constructor(
         getObjectsFromDB()
         getBackgroundsFromDB()
 
-        // MyObjects Flow 구독
-        loadMyObjectsFromDB(cardId)
+        // Spawned Objects Flow 구독
+        loadSpawnedObjectsFromDB(cardId)
     }
 
     private fun handleChangeTitle(newTitle: String) {
@@ -147,19 +147,19 @@ class CardEditorViewModel @Inject constructor(
 
     private fun handleChangeBackground(assetId: Long) {
         _cardEditorState.update {
-            it.copy(selectedBackground = if (it.selectedBackground == assetId) null else assetId)
+            it.copy(selectedBackgroundId = if (it.selectedBackgroundId == assetId) null else assetId)
         }
     }
 
-    private fun handleSelectMyObject(element: CardElementWithAssetKeys) {
+    private fun handleSelectSpawnedObject(element: CardElementWithAssetKeys) {
         _cardEditorState.update {
-            it.copy(selectedMyObject = if (it.selectedMyObjectIdx == element.cardElement.elementId) null else element)
+            it.copy(selectedSpawnedObject = if (it.selectedSpawnedObjectId == element.cardElement.elementId) null else element)
         }
     }
 
-    private fun handleDeleteMyObject() {
+    private fun handleDeleteSpawnedObject() {
         viewModelScope.launch {
-            _cardEditorState.value.selectedMyObjectIdx?.let {
+            _cardEditorState.value.selectedSpawnedObjectId?.let {
                 cardElementRepository.deleteCardElementById(it)
             }
             updateDialogState(DialogState.NONE)
@@ -167,7 +167,7 @@ class CardEditorViewModel @Inject constructor(
     }
 
     private fun handleEnterTransformMode() {
-        _cardEditorState.value.selectedMyObject?.let { obj ->
+        _cardEditorState.value.selectedSpawnedObject?.let { obj ->
             updatePanelType(PanelType.TRANSFORM_CONTROL)
             _cardEditorState.update {
                 it.copy(
@@ -261,7 +261,7 @@ class CardEditorViewModel @Inject constructor(
 
     private fun handleResetTransform() {
         val tempState = _cardEditorState.value.tempTransform ?: return
-        val initialState = _cardEditorState.value.selectedMyObject?.cardElement
+        val initialState = _cardEditorState.value.selectedSpawnedObject?.cardElement
 
         _cardEditorState.update {
             it.copy(tempTransform =
@@ -394,7 +394,7 @@ class CardEditorViewModel @Inject constructor(
 
     private fun updateTransform() {
         val tempState = _cardEditorState.value.tempTransform ?: return
-        val initialState = _cardEditorState.value.selectedMyObject ?: return
+        val initialState = _cardEditorState.value.selectedSpawnedObject ?: return
 
         viewModelScope.launch {
             cardElementRepository.updateElementTransform(
@@ -404,7 +404,7 @@ class CardEditorViewModel @Inject constructor(
                 scale = tempState.scale
             )
             _cardEditorState.update {
-                it.copy(selectedMyObject =
+                it.copy(selectedSpawnedObject =
                     initialState.copy(
                         cardElement = initialState.cardElement.copy(
                             posX = tempState.posX,
@@ -461,7 +461,7 @@ class CardEditorViewModel @Inject constructor(
         viewModelScope.launch {
             cardRepository.getCardById(cardId)
                 .onSuccess { card ->
-                    _cardEditorState.update { it.copy(selectedBackground = card.backgroundAssetId) }
+                    _cardEditorState.update { it.copy(selectedBackgroundId = card.backgroundAssetId) }
                 }
         }
     }
@@ -484,13 +484,13 @@ class CardEditorViewModel @Inject constructor(
         }
     }
 
-    private fun loadMyObjectsFromDB(cardId: Long) {
+    private fun loadSpawnedObjectsFromDB(cardId: Long) {
         viewModelScope.launch {
             cardElementRepository.getObjectElementsWithAssetKeysByCardId(cardId)
                 .collect { result ->
                     result.onSuccess {
                         _cardEditorState.update { state ->
-                            state.copy(myObjects = it.reversed())
+                            state.copy(spawnedObjects = it.reversed())
                         }
                     }
                 }

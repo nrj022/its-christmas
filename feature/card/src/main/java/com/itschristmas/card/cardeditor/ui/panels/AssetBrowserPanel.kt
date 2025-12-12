@@ -52,12 +52,12 @@ enum class AssetBrowserTab(val resId: Int) {
 fun AssetBrowserPanel(
     objectItems: List<Asset> = emptyList(),
     backgroundItems: List<Asset> = emptyList(),
-    myObjects: List<CardElementWithAssetKeys> = emptyList(),
-    selectedMyObject: Long? = null,
+    spawnedObjects: List<CardElementWithAssetKeys> = emptyList(),
+    selectedSpawnedObject: Long? = null,
     selectedBackground: Long? = null,
     onAddTextClicked: () -> Unit = {},
     onObjectClicked: (Asset) -> Unit = {},
-    onMyObjectClicked: (CardElementWithAssetKeys) -> Unit = {},
+    onSpawnedObjectClicked: (CardElementWithAssetKeys) -> Unit = {},
     onBackgroundClicked: (Long) -> Unit = {},
 ) {
 
@@ -67,13 +67,13 @@ fun AssetBrowserPanel(
         selectedTab = selectedTab,
         objectItems = objectItems,
         backgroundItems = backgroundItems,
-        myObjects = myObjects,
-        selectedMyObject = selectedMyObject,
+        spawnedObjects = spawnedObjects,
+        selectedSpawnedObject = selectedSpawnedObject,
         selectedBackground = selectedBackground,
         onTabSelected = { selectedTab = it },
         onAddTextClicked = onAddTextClicked,
         onObjectClicked = onObjectClicked,
-        onMyObjectClicked = onMyObjectClicked,
+        onSpawnedObjectClicked = onSpawnedObjectClicked,
         onBackgroundClicked = onBackgroundClicked
     )
 }
@@ -84,12 +84,12 @@ fun AssetBrowserPanelContent(
     selectedTab: AssetBrowserTab,
     objectItems: List<Asset>,
     backgroundItems: List<Asset>,
-    myObjects: List<CardElementWithAssetKeys>,
-    selectedMyObject: Long?,
+    spawnedObjects: List<CardElementWithAssetKeys>,
+    selectedSpawnedObject: Long?,
     selectedBackground: Long?,
     onTabSelected: (AssetBrowserTab) -> Unit,
     onObjectClicked: (Asset) -> Unit,
-    onMyObjectClicked: (CardElementWithAssetKeys) -> Unit,
+    onSpawnedObjectClicked: (CardElementWithAssetKeys) -> Unit,
     onBackgroundClicked: (Long) -> Unit,
     onAddTextClicked: () -> Unit
 ) {
@@ -104,11 +104,11 @@ fun AssetBrowserPanelContent(
         )
 
         if (selectedTab == AssetBrowserTab.OBJECTS) {
-            if(myObjects.isNotEmpty()) {
-                MyObjectList(
-                    elements = myObjects,
-                    selectedItemIndex = selectedMyObject,
-                    onItemClicked = { onMyObjectClicked(it) }
+            if(spawnedObjects.isNotEmpty()) {
+                SpawnedObjectRow(
+                    elements = spawnedObjects,
+                    selectedItemIndex = selectedSpawnedObject,
+                    onItemClicked = { onSpawnedObjectClicked(it) }
                 )
             }
             ClickableGrid(
@@ -166,7 +166,7 @@ fun ControlHeader(
 }
 
 @Composable
-fun MyObjectList(
+fun SpawnedObjectRow(
     elements: List<CardElementWithAssetKeys>,
     selectedItemIndex: Long?,
     onItemClicked: (CardElementWithAssetKeys) -> Unit
@@ -176,7 +176,7 @@ fun MyObjectList(
     Column {
         Text(
             modifier = Modifier.padding(horizontal = 20.dp).padding(bottom = 12.dp),
-            text = stringResource(R.string.editor_title_my_objects_list),
+            text = stringResource(R.string.editor_title_spawned_objects_list),
             style = MaterialTheme.typography.labelSmall,
             fontSize = 14.sp
         )
@@ -286,7 +286,7 @@ fun SelectableGrid(assets: List<Asset>, selectedItemIndex: Long?, onItemClicked:
 @Composable
 fun CardCreationScreenPreview() {
     AssetBrowserPanel(
-        myObjects = emptyList(),
+        spawnedObjects = emptyList(),
         objectItems = emptyList(),
         backgroundItems = emptyList()
     )

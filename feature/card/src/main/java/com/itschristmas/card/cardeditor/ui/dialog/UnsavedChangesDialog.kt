@@ -1,9 +1,9 @@
-package com.itschristmas.card.cardeditor.dialog
+package com.itschristmas.card.cardeditor.ui.dialog
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import com.itschristmas.card.R
-import com.itschristmas.card.cardeditor.common.BaseDialog
+import com.itschristmas.card.cardeditor.ui.common.BaseDialog
 
 @Composable
 fun UnsavedChangesDialog(

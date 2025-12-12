@@ -1,4 +1,4 @@
-package com.itschristmas.card.cardeditor.common
+package com.itschristmas.card.cardeditor.util
 
 import android.content.Context
 import com.itschristmas.card.R

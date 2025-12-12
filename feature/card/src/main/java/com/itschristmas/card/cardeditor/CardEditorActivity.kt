@@ -13,9 +13,11 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.itschristmas.card.cardeditor.common.getDrawableIdByKey
-import com.itschristmas.card.cardeditor.common.toBase62
+import com.itschristmas.card.cardeditor.util.getDrawableIdByKey
+import com.itschristmas.card.cardeditor.util.toBase62
 import com.itschristmas.card.cardeditor.model.EditorDialogState
+import com.itschristmas.card.cardeditor.ui.CardEditorBottomScreen
+import com.itschristmas.card.cardeditor.ui.CardEditorTextScreen
 import com.itschristmas.card.databinding.ActivityCardEditorBinding
 import com.itschristmas.designsystem.theme.ItsChristmasTheme
 import com.unity3d.player.UnityPlayerForActivityOrService

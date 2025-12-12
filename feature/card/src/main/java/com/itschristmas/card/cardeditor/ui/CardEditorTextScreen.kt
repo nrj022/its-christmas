@@ -1,10 +1,12 @@
-package com.itschristmas.card.cardeditor
+package com.itschristmas.card.cardeditor.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.itschristmas.card.cardeditor.panels.TextListPanel
+import com.itschristmas.card.cardeditor.CardEditorIntent
+import com.itschristmas.card.cardeditor.CardEditorViewModel
+import com.itschristmas.card.cardeditor.ui.panels.TextListPanel
 
 @Composable
 fun CardEditorTextScreen(viewModel: CardEditorViewModel = hiltViewModel()) {

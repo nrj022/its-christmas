@@ -1,18 +1,20 @@
-package com.itschristmas.card.cardeditor
+package com.itschristmas.card.cardeditor.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.itschristmas.card.cardeditor.CardEditorIntent
+import com.itschristmas.card.cardeditor.CardEditorViewModel
 import com.itschristmas.card.cardeditor.model.PanelState
-import com.itschristmas.card.cardeditor.panels.AssetBrowserPanel
-import com.itschristmas.card.cardeditor.panels.TransformControlPanel
+import com.itschristmas.card.cardeditor.ui.panels.AssetBrowserPanel
+import com.itschristmas.card.cardeditor.ui.panels.TransformControlPanel
 import com.itschristmas.card.cardeditor.model.EditorDialogState
-import com.itschristmas.card.cardeditor.dialog.ObjectDeleteConfirmDialog
-import com.itschristmas.card.cardeditor.dialog.SetCardTitleDialog
-import com.itschristmas.card.cardeditor.dialog.UnsavedChangesDialog
-import com.itschristmas.card.cardeditor.panels.TextEditorPanel
+import com.itschristmas.card.cardeditor.ui.dialog.ObjectDeleteConfirmDialog
+import com.itschristmas.card.cardeditor.ui.dialog.SetCardTitleDialog
+import com.itschristmas.card.cardeditor.ui.dialog.UnsavedChangesDialog
+import com.itschristmas.card.cardeditor.ui.panels.TextEditorPanel
 
 @Composable
 fun CardEditorBottomScreen(cardId: Long, viewModel: CardEditorViewModel = hiltViewModel()) {

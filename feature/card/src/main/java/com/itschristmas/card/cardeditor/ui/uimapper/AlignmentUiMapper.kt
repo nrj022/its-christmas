@@ -1,4 +1,4 @@
-package com.itschristmas.card.cardeditor.uimapper
+package com.itschristmas.card.cardeditor.ui.uimapper
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.FormatAlignLeft

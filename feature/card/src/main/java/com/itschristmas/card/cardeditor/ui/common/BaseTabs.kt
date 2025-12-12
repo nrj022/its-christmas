@@ -1,4 +1,4 @@
-package com.itschristmas.card.cardeditor.common
+package com.itschristmas.card.cardeditor.ui.common
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row

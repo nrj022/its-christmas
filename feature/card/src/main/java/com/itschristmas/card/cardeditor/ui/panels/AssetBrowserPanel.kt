@@ -1,4 +1,4 @@
-package com.itschristmas.card.cardeditor.panels
+package com.itschristmas.card.cardeditor.ui.panels
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -30,14 +30,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.itschristmas.domain.model.CardElementWithAssetKeys
-import com.itschristmas.card.cardeditor.common.getDrawableIdByKey
+import com.itschristmas.card.cardeditor.util.getDrawableIdByKey
 import com.itschristmas.designsystem.theme.Gray
 import com.itschristmas.designsystem.theme.SoftBlack
 import com.itschristmas.designsystem.theme.White
 import com.itschristmas.domain.model.Asset
 import com.itschristmas.card.R
-import com.itschristmas.card.cardeditor.common.BaseTabs
-import com.itschristmas.card.cardeditor.common.toBase62
+import com.itschristmas.card.cardeditor.ui.common.BaseTabs
+import com.itschristmas.card.cardeditor.util.toBase62
 import com.itschristmas.card.cardeditor.model.BaseTabItems
 
 private const val COLUMNS = 3

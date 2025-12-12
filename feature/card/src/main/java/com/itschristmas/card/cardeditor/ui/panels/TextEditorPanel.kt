@@ -1,4 +1,4 @@
-package com.itschristmas.card.cardeditor.panels
+package com.itschristmas.card.cardeditor.ui.panels
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -40,10 +40,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.itschristmas.card.R
-import com.itschristmas.card.cardeditor.common.BaseTabs
-import com.itschristmas.card.cardeditor.common.DirectionalController
-import com.itschristmas.card.cardeditor.uimapper.icon
-import com.itschristmas.card.cardeditor.uimapper.rememberFontFamilies
+import com.itschristmas.card.cardeditor.ui.common.BaseTabs
+import com.itschristmas.card.cardeditor.ui.common.DirectionalController
+import com.itschristmas.card.cardeditor.ui.uimapper.icon
+import com.itschristmas.card.cardeditor.ui.uimapper.rememberFontFamilies
 import com.itschristmas.card.cardeditor.model.BaseTabItems
 import com.itschristmas.designsystem.theme.Gray
 import com.itschristmas.designsystem.theme.ItsChristmasTheme

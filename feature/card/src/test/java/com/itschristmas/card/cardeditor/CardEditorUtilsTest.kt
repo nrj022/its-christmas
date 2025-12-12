@@ -1,6 +1,6 @@
 package com.itschristmas.card.cardeditor
 
-import com.itschristmas.card.cardeditor.common.toBase62
+import com.itschristmas.card.cardeditor.util.toBase62
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Test

@@ -38,7 +38,7 @@ import com.itschristmas.domain.model.Asset
 import com.itschristmas.card.R
 import com.itschristmas.card.cardeditor.ui.common.BaseTabs
 import com.itschristmas.card.cardeditor.util.toBase62
-import com.itschristmas.card.cardeditor.model.BaseTabItems
+import com.itschristmas.card.cardeditor.model.BaseTabItem
 
 private const val COLUMNS = 3
 
@@ -140,7 +140,7 @@ fun ControlHeader(
     ) {
         // "3D Object", "Background" 토글 버튼 그룹
         BaseTabs(
-            tabs = AssetBrowserTab.entries.map { BaseTabItems(it.name, it.resId) },
+            tabs = AssetBrowserTab.entries.map { BaseTabItem(it.name, it.resId) },
             selectedTabId = selectedTab.name,
             onTabSelected = { onTabSelected(AssetBrowserTab.valueOf(it)) }
         )

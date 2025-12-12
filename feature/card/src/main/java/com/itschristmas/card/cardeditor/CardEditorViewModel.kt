@@ -3,10 +3,10 @@ package com.itschristmas.card.cardeditor
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.itschristmas.card.cardeditor.model.Direction
-import com.itschristmas.card.cardeditor.model.EditorDialogState
-import com.itschristmas.card.cardeditor.model.PanelState
-import com.itschristmas.card.cardeditor.model.TempTextElementState
-import com.itschristmas.card.cardeditor.model.TempTransformState
+import com.itschristmas.card.cardeditor.model.DialogState
+import com.itschristmas.card.cardeditor.model.PanelType
+import com.itschristmas.card.cardeditor.model.TempTextElement
+import com.itschristmas.card.cardeditor.model.TempTransform
 import com.itschristmas.domain.enum.AssetType
 import com.itschristmas.domain.enum.ElementType
 import com.itschristmas.domain.model.Asset
@@ -55,7 +55,7 @@ class CardEditorViewModel @Inject constructor(
     }
 
     val unityContainerHeightFractionFlow = combine(cardEditorState, imeVisible) { state, ime ->
-        if(ime && state.panelState == PanelState.TEXT_EDITOR) 0.4f
+        if(ime && state.panelType == PanelType.TEXT_EDITOR) 0.4f
         else state.unityContainerHeightFraction
     }
 
@@ -174,7 +174,7 @@ class CardEditorViewModel @Inject constructor(
     }
 
     private fun handleCompleteClicked() {
-        updateDialogState(EditorDialogState.SET_CARD_TITLE)
+        updateDialogState(DialogState.SET_CARD_TITLE)
     }
 
     private fun handleGenerateCard() {
@@ -204,13 +204,13 @@ class CardEditorViewModel @Inject constructor(
     }
 
     private fun handleAddTextButtonClicked(cardId: Long) {
-        updatePanelState(PanelState.TEXT_EDITOR)
+        updatePanelType(PanelType.TEXT_EDITOR)
         viewModelScope.launch {
             cardElementRepository.getTextElementsByCardId(cardId)
                 .onSuccess { result ->
                     val newList = result.mapNotNull { element ->
                         element.textAttributes?.let { attr ->
-                            TempTextElementState(
+                            TempTextElement(
                                 textElement = TextElement(
                                     elementId = element.elementId,
                                     attributes = attr,
@@ -236,7 +236,7 @@ class CardEditorViewModel @Inject constructor(
         }
     }
 
-    private fun handleDialogStateChanged(dialogState: EditorDialogState) {
+    private fun handleDialogStateChanged(dialogState: DialogState) {
         updateDialogState(dialogState)
     }
 
@@ -245,16 +245,16 @@ class CardEditorViewModel @Inject constructor(
             _cardEditorState.value.selectedMyObjectIdx?.let {
                 cardElementRepository.deleteCardElementById(it)
             }
-            updateDialogState(EditorDialogState.NONE)
+            updateDialogState(DialogState.NONE)
         }
     }
 
     private fun handleAdjustClicked() {
         _cardEditorState.value.selectedMyObject?.let { obj ->
-            updatePanelState(PanelState.TRANSFORM_CONTROL)
+            updatePanelType(PanelType.TRANSFORM_CONTROL)
             _cardEditorState.update {
                 it.copy(
-                    tempTransformState = TempTransformState(
+                    tempTransform = TempTransform(
                         elementId = obj.cardElement.elementId,
                         thumbnailKey = obj.thumbnailKey,
                         posX = obj.cardElement.posX,
@@ -268,7 +268,7 @@ class CardEditorViewModel @Inject constructor(
 
     private fun handleAdjustCancelClicked() {
         if(_cardEditorState.value.hasPendingTransform) {
-            updateDialogState(EditorDialogState.UNSAVED_TRANSFORM_CHANGES)
+            updateDialogState(DialogState.UNSAVED_TRANSFORM_CHANGES)
         } else {
             exitTransform()
         }
@@ -281,18 +281,18 @@ class CardEditorViewModel @Inject constructor(
     private fun handleAdjustApplyAndExit() {
         updateTransform()
         exitTransform()
-        updateDialogState(EditorDialogState.NONE)
+        updateDialogState(DialogState.NONE)
     }
 
     private fun handleAdjustDiscardAndExit() {
         exitTransform()
-        updateDialogState(EditorDialogState.NONE)
+        updateDialogState(DialogState.NONE)
     }
 
     private fun handleObjectDirectionClicked(direction: Direction) {
-        val tempState = _cardEditorState.value.tempTransformState ?: return
+        val tempState = _cardEditorState.value.tempTransform ?: return
         _cardEditorState.update {
-            it.copy(tempTransformState =
+            it.copy(tempTransform =
                 tempState.copy(
                     posY = tempState.posY + direction.dy,
                     posX = tempState.posX + direction.dx
@@ -305,7 +305,7 @@ class CardEditorViewModel @Inject constructor(
         if(newScale < 1) return
 
         _cardEditorState.update {
-            it.copy(tempTransformState = it.tempTransformState?.copy(scale = newScale))
+            it.copy(tempTransform = it.tempTransform?.copy(scale = newScale))
         }
     }
 
@@ -314,11 +314,11 @@ class CardEditorViewModel @Inject constructor(
     }
 
     private fun handleTransformResetClicked() {
-        val tempState = _cardEditorState.value.tempTransformState ?: return
+        val tempState = _cardEditorState.value.tempTransform ?: return
         val initialState = _cardEditorState.value.selectedMyObject?.cardElement
 
         _cardEditorState.update {
-            it.copy(tempTransformState =
+            it.copy(tempTransform =
                 tempState.copy(
                     posX = initialState?.posX ?: 0,
                     posY = initialState?.posY ?: 0,
@@ -335,7 +335,7 @@ class CardEditorViewModel @Inject constructor(
                     it.copy(selectedTextTempId = it.tempTextList.first().tempId)
                 } else it
             } else {
-                val newTextElement = TempTextElementState()
+                val newTextElement = TempTextElement()
                 it.copy(
                     tempTextList = listOf(newTextElement),
                     selectedTextTempId = newTextElement.tempId
@@ -345,7 +345,7 @@ class CardEditorViewModel @Inject constructor(
     }
 
     private fun handleAddText() {
-        val newTextElement = TempTextElementState()
+        val newTextElement = TempTextElement()
         _cardEditorState.update {
             it.copy(
                 tempTextList = listOf(newTextElement) + it.tempTextList,
@@ -421,31 +421,31 @@ class CardEditorViewModel @Inject constructor(
 
     private fun handleTextApplyAndExit(cardId: Long) {
         updateTextAttribute(cardId)
-        updateDialogState(EditorDialogState.NONE)
-        updatePanelState(PanelState.ASSET_BROWSER)
+        updateDialogState(DialogState.NONE)
+        updatePanelType(PanelType.ASSET_BROWSER)
         _cardEditorState.update { it.copy(tempTextList = emptyList(), selectedTextTempId = null) }
     }
 
     private fun handleTextDiscardAndExit() {
-        updateDialogState(EditorDialogState.NONE)
-        updatePanelState(PanelState.ASSET_BROWSER)
+        updateDialogState(DialogState.NONE)
+        updatePanelType(PanelType.ASSET_BROWSER)
         _cardEditorState.update { it.copy(tempTextList = emptyList(), selectedTextTempId = null) }
     }
 
-    private fun updatePanelState(panelState: PanelState) {
+    private fun updatePanelType(panelType: PanelType) {
         _cardEditorState.update {
-            it.copy(panelState = panelState)
+            it.copy(panelType = panelType)
         }
     }
 
-    private fun updateDialogState(dialogState: EditorDialogState) {
+    private fun updateDialogState(dialogState: DialogState) {
         _cardEditorState.update {
-            it.copy(editorDialogState = dialogState)
+            it.copy(dialogState = dialogState)
         }
     }
 
     private fun updateTransform() {
-        val tempState = _cardEditorState.value.tempTransformState ?: return
+        val tempState = _cardEditorState.value.tempTransform ?: return
         val initialState = _cardEditorState.value.selectedMyObject ?: return
 
         viewModelScope.launch {
@@ -470,8 +470,8 @@ class CardEditorViewModel @Inject constructor(
     }
 
     private fun exitTransform() {
-        updatePanelState(PanelState.ASSET_BROWSER)
-        _cardEditorState.update { it.copy(tempTransformState = null) }
+        updatePanelType(PanelType.ASSET_BROWSER)
+        _cardEditorState.update { it.copy(tempTransform = null) }
     }
 
     private fun updateTempTextAttribute(newTextAttributes: TextAttributes.() -> TextAttributes) {
@@ -497,7 +497,7 @@ class CardEditorViewModel @Inject constructor(
             ).onSuccess { result ->
                 _cardEditorState.update {
                     val updatedList = (result.updatedElements + result.failedUpdates).map { text ->
-                        TempTextElementState(textElement = text)
+                        TempTextElement(textElement = text)
                     }
                     it.copy(
                         tempTextList = updatedList,

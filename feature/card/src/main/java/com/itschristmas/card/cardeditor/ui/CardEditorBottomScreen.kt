@@ -7,10 +7,10 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.itschristmas.card.cardeditor.CardEditorIntent
 import com.itschristmas.card.cardeditor.CardEditorViewModel
-import com.itschristmas.card.cardeditor.model.PanelState
+import com.itschristmas.card.cardeditor.model.PanelType
 import com.itschristmas.card.cardeditor.ui.panels.AssetBrowserPanel
 import com.itschristmas.card.cardeditor.ui.panels.TransformControlPanel
-import com.itschristmas.card.cardeditor.model.EditorDialogState
+import com.itschristmas.card.cardeditor.model.DialogState
 import com.itschristmas.card.cardeditor.ui.dialog.ObjectDeleteConfirmDialog
 import com.itschristmas.card.cardeditor.ui.dialog.SetCardTitleDialog
 import com.itschristmas.card.cardeditor.ui.dialog.UnsavedChangesDialog
@@ -24,8 +24,8 @@ fun CardEditorBottomScreen(cardId: Long, viewModel: CardEditorViewModel = hiltVi
         viewModel.onIntent(CardEditorIntent.Init(cardId))
     }
 
-    when (state.panelState) {
-        PanelState.ASSET_BROWSER ->
+    when (state.panelType) {
+        PanelType.ASSET_BROWSER ->
             AssetBrowserPanel(
                 objectItems = state.objects, // 임시 데이터
                 backgroundItems = state.backgrounds,  // 임시 데이터
@@ -38,9 +38,9 @@ fun CardEditorBottomScreen(cardId: Long, viewModel: CardEditorViewModel = hiltVi
                 onBackgroundClicked = { viewModel.onIntent(CardEditorIntent.BackgroundClicked(it)) }
             )
 
-        PanelState.TRANSFORM_CONTROL -> {
+        PanelType.TRANSFORM_CONTROL -> {
             TransformControlPanel(
-                scale = state.tempTransformState?.scale ?: 1,
+                scale = state.tempTransform?.scale ?: 1,
                 onScaleChange = { newScale ->
                     viewModel.onIntent(CardEditorIntent.ScaleChanged(newScale))
                 },
@@ -53,7 +53,7 @@ fun CardEditorBottomScreen(cardId: Long, viewModel: CardEditorViewModel = hiltVi
             )
         }
 
-        PanelState.TEXT_EDITOR -> {
+        PanelType.TEXT_EDITOR -> {
             val tempText = state.selectedText
             if(state.tempTextList.isEmpty() || tempText == null) {
                 viewModel.onIntent(CardEditorIntent.RequestDefaultText)
@@ -68,40 +68,40 @@ fun CardEditorBottomScreen(cardId: Long, viewModel: CardEditorViewModel = hiltVi
                     onPositionChange = { viewModel.onIntent(CardEditorIntent.TextDirectionClicked(it)) },
                     onCameraReset = { viewModel.onIntent(CardEditorIntent.CameraResetClicked) },
                     onApply = { viewModel.onIntent(CardEditorIntent.TextApplyClicked(cardId)) },
-                    onBack = { viewModel.onIntent(CardEditorIntent.DialogStateChanged(EditorDialogState.UNSAVED_TEXT_CHANGES)) }
+                    onBack = { viewModel.onIntent(CardEditorIntent.DialogStateChanged(DialogState.UNSAVED_TEXT_CHANGES)) }
                 )
             }
         }
     }
 
-    when(state.editorDialogState) {
-        EditorDialogState.NONE -> {}
-        EditorDialogState.DELETE_CONFIRM -> {
+    when(state.dialogState) {
+        DialogState.NONE -> {}
+        DialogState.DELETE_CONFIRM -> {
             ObjectDeleteConfirmDialog(
                 onDeleteObject = { viewModel.onIntent(CardEditorIntent.DeleteMyObject) },
-                onDismiss = { viewModel.onIntent(CardEditorIntent.DialogStateChanged(EditorDialogState.NONE)) }
+                onDismiss = { viewModel.onIntent(CardEditorIntent.DialogStateChanged(DialogState.NONE)) }
             )
         }
-        EditorDialogState.UNSAVED_TRANSFORM_CHANGES -> {
+        DialogState.UNSAVED_TRANSFORM_CHANGES -> {
             UnsavedChangesDialog(
                 onApplyChanges = { viewModel.onIntent(CardEditorIntent.AdjustApplyAndExit) },
                 onDiscardChanges = { viewModel.onIntent(CardEditorIntent.AdjustDiscardAndExit) },
-                onDismiss = { viewModel.onIntent(CardEditorIntent.DialogStateChanged(EditorDialogState.NONE)) }
+                onDismiss = { viewModel.onIntent(CardEditorIntent.DialogStateChanged(DialogState.NONE)) }
             )
         }
-        EditorDialogState.UNSAVED_TEXT_CHANGES -> {
+        DialogState.UNSAVED_TEXT_CHANGES -> {
             UnsavedChangesDialog(
                 onApplyChanges = { viewModel.onIntent(CardEditorIntent.TextApplyAndExit(cardId)) },
                 onDiscardChanges = { viewModel.onIntent(CardEditorIntent.TextDiscardAndExit) },
-                onDismiss = { viewModel.onIntent(CardEditorIntent.DialogStateChanged(EditorDialogState.NONE)) }
+                onDismiss = { viewModel.onIntent(CardEditorIntent.DialogStateChanged(DialogState.NONE)) }
             )
         }
-        EditorDialogState.SET_CARD_TITLE -> {
+        DialogState.SET_CARD_TITLE -> {
             SetCardTitleDialog(
                 cardTitle = state.cardTitle,
                 onTitleChange = { viewModel.onIntent(CardEditorIntent.CardTitleChanged(it)) },
                 onGenerateCard = { viewModel.onIntent(CardEditorIntent.GenerateCard) },
-                onDismiss = { viewModel.onIntent(CardEditorIntent.DialogStateChanged(EditorDialogState.NONE)) }
+                onDismiss = { viewModel.onIntent(CardEditorIntent.DialogStateChanged(DialogState.NONE)) }
             )
         }
     }

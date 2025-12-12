@@ -10,13 +10,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.itschristmas.card.cardeditor.model.BaseTabItems
+import com.itschristmas.card.cardeditor.model.BaseTabItem
 import com.itschristmas.designsystem.theme.Gray
 import com.itschristmas.designsystem.theme.SoftBlack
 import com.itschristmas.designsystem.theme.White
 
 @Composable
-fun BaseTabs(tabs: List<BaseTabItems>, selectedTabId: String, onTabSelected: (String) -> Unit) {
+fun BaseTabs(tabs: List<BaseTabItem>, selectedTabId: String, onTabSelected: (String) -> Unit) {
     Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
         tabs.forEach { item ->
             val isSelected = selectedTabId == item.id

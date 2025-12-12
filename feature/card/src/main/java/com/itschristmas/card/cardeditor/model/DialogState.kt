@@ -1,6 +1,6 @@
 package com.itschristmas.card.cardeditor.model
 
-enum class EditorDialogState {
+enum class DialogState {
     NONE,
     DELETE_CONFIRM,
     UNSAVED_TRANSFORM_CHANGES,

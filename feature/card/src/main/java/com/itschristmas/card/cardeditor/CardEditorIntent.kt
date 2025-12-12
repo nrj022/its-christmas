@@ -1,7 +1,7 @@
 package com.itschristmas.card.cardeditor
 
+import com.itschristmas.card.cardeditor.model.DialogState
 import com.itschristmas.card.cardeditor.model.Direction
-import com.itschristmas.card.cardeditor.model.EditorDialogState
 import com.itschristmas.domain.model.Asset
 import com.itschristmas.domain.model.CardElementWithAssetKeys
 import com.itschristmas.domain.model.ColorOption
@@ -17,7 +17,7 @@ sealed class CardEditorIntent {
     data class BackgroundClicked(val assetId: Long): CardEditorIntent()
     data class AddTextButtonClicked(val cardId: Long): CardEditorIntent()
     data class MyObjectClicked(val element: CardElementWithAssetKeys): CardEditorIntent()
-    data class DialogStateChanged(val dialogState: EditorDialogState): CardEditorIntent()
+    data class DialogStateChanged(val dialogState: DialogState): CardEditorIntent()
     data object DeleteMyObject: CardEditorIntent()
     data object AdjustClicked: CardEditorIntent()
     data object AdjustCancelClicked: CardEditorIntent()

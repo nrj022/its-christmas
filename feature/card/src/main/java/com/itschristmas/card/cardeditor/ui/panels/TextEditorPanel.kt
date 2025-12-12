@@ -44,7 +44,7 @@ import com.itschristmas.card.cardeditor.ui.common.BaseTabs
 import com.itschristmas.card.cardeditor.ui.common.DirectionalController
 import com.itschristmas.card.cardeditor.ui.uimapper.icon
 import com.itschristmas.card.cardeditor.ui.uimapper.rememberFontFamilies
-import com.itschristmas.card.cardeditor.model.BaseTabItems
+import com.itschristmas.card.cardeditor.model.BaseTabItem
 import com.itschristmas.designsystem.theme.Gray
 import com.itschristmas.designsystem.theme.ItsChristmasTheme
 import com.itschristmas.designsystem.theme.SoftBlack
@@ -125,7 +125,7 @@ private fun EditorTabContent(
 
         // "Style", "font", "Position" 탭
         BaseTabs(
-            tabs = TextEditorTab.entries.map { BaseTabItems(it.name, it.resId) },
+            tabs = TextEditorTab.entries.map { BaseTabItem(it.name, it.resId) },
             selectedTabId = selectedTab.name,
             onTabSelected = { onTabSelected(TextEditorTab.valueOf(it)) }
         )

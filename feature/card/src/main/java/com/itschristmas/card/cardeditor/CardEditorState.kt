@@ -1,17 +1,17 @@
 package com.itschristmas.card.cardeditor
 
-import com.itschristmas.card.cardeditor.model.EditorDialogState
-import com.itschristmas.card.cardeditor.model.PanelState
-import com.itschristmas.card.cardeditor.model.TempTextElementState
-import com.itschristmas.card.cardeditor.model.TempTransformState
+import com.itschristmas.card.cardeditor.model.DialogState
+import com.itschristmas.card.cardeditor.model.PanelType
+import com.itschristmas.card.cardeditor.model.TempTextElement
+import com.itschristmas.card.cardeditor.model.TempTransform
 import com.itschristmas.domain.model.CardElementWithAssetKeys
 import com.itschristmas.domain.model.Asset
 
 data class CardEditorState(
-    val panelState: PanelState = PanelState.ASSET_BROWSER,
-    val tempTransformState: TempTransformState? = null,
-    val tempTextList: List<TempTextElementState> = emptyList(),
-    val editorDialogState: EditorDialogState = EditorDialogState.NONE,
+    val panelType: PanelType = PanelType.ASSET_BROWSER,
+    val tempTransform: TempTransform? = null,
+    val tempTextList: List<TempTextElement> = emptyList(),
+    val dialogState: DialogState = DialogState.NONE,
     val cardTitle: String = "New Card",
     val objects: List<Asset> = emptyList(),
     val backgrounds: List<Asset> = emptyList(),
@@ -21,25 +21,25 @@ data class CardEditorState(
     val selectedTextTempId: Long? = null,
 ) {
     val isAssetBrowserPanelActive: Boolean
-        get() = panelState == PanelState.ASSET_BROWSER
+        get() = panelType == PanelType.ASSET_BROWSER
 
     val isTransformPanelActive: Boolean
-        get() = panelState == PanelState.TRANSFORM_CONTROL
+        get() = panelType == PanelType.TRANSFORM_CONTROL
 
     val showObjectOptionContainer: Boolean
-        get() = selectedMyObject != null && panelState == PanelState.ASSET_BROWSER
+        get() = selectedMyObject != null && panelType == PanelType.ASSET_BROWSER
 
     val showTextOptionContainer: Boolean
-        get() = panelState == PanelState.TEXT_EDITOR
+        get() = panelType == PanelType.TEXT_EDITOR
 
     val unityContainerHeightFraction: Float
-        get() = if (panelState == PanelState.TRANSFORM_CONTROL || panelState == PanelState.TEXT_EDITOR) 0.6f else 0.5f
+        get() = if (panelType == PanelType.TRANSFORM_CONTROL || panelType == PanelType.TEXT_EDITOR) 0.6f else 0.5f
 
     val selectedMyObjectIdx: Long?
         get() = selectedMyObject?.cardElement?.elementId
 
     val hasPendingTransform: Boolean
-        get() = tempTransformState?.let { temp ->
+        get() = tempTransform?.let { temp ->
             selectedMyObject?.let { selected ->
                 temp.posX != selected.cardElement.posX ||
                 temp.posY != selected.cardElement.posY ||
@@ -47,6 +47,6 @@ data class CardEditorState(
             } ?: false
         } ?: false
 
-    val selectedText: TempTextElementState?
+    val selectedText: TempTextElement?
         get() = selectedTextTempId?.let { id -> tempTextList.find { it.tempId == id } }
 }

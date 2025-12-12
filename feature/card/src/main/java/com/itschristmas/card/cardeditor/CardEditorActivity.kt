@@ -15,7 +15,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.itschristmas.card.cardeditor.util.getDrawableIdByKey
 import com.itschristmas.card.cardeditor.util.toBase62
-import com.itschristmas.card.cardeditor.model.EditorDialogState
+import com.itschristmas.card.cardeditor.model.DialogState
 import com.itschristmas.card.cardeditor.ui.CardEditorBottomScreen
 import com.itschristmas.card.cardeditor.ui.CardEditorTextScreen
 import com.itschristmas.card.databinding.ActivityCardEditorBinding
@@ -103,7 +103,7 @@ class CardEditorActivity : AppCompatActivity() {
         }
 
         binding.imgBtnDelete.setOnClickListener {
-            viewModel.onIntent(CardEditorIntent.DialogStateChanged(EditorDialogState.DELETE_CONFIRM))
+            viewModel.onIntent(CardEditorIntent.DialogStateChanged(DialogState.DELETE_CONFIRM))
         }
 
         binding.imgBtnTransformReset.setOnClickListener {
@@ -143,7 +143,7 @@ class CardEditorActivity : AppCompatActivity() {
     }
 
     private fun updateTransformPanel(state: CardEditorState) {
-        val temp = state.tempTransformState
+        val temp = state.tempTransform
         val active = state.isTransformPanelActive && temp != null
 
         binding.containerTransformOption.isVisible = active

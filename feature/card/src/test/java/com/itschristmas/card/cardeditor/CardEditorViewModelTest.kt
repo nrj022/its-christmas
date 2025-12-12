@@ -112,7 +112,7 @@ class CardEditorViewModelTest {
         coEvery { cardElementRepository.insertCardElement(any()) } returns Result.success(1L)
 
         // When
-        viewModel.onIntent(CardEditorIntent.ObjectClicked(cardId = 1L, clickedObject = asset))
+        viewModel.onIntent(CardEditorIntent.CreateObject(cardId = 1L, clickedObject = asset))
         testDispatcher.scheduler.advanceUntilIdle()
 
         // Then
@@ -133,7 +133,7 @@ class CardEditorViewModelTest {
     @Test
     fun `onIntent BackgroundClicked toggles background selection`() = runTest {
         // When
-        viewModel.onIntent(CardEditorIntent.BackgroundClicked(assetId = 5L))
+        viewModel.onIntent(CardEditorIntent.ChangeBackground(assetId = 5L))
         testDispatcher.scheduler.advanceUntilIdle()
 
         // Then
@@ -143,7 +143,7 @@ class CardEditorViewModelTest {
         }
 
         // When - Click again to deselect
-        viewModel.onIntent(CardEditorIntent.BackgroundClicked(assetId = 5L))
+        viewModel.onIntent(CardEditorIntent.ChangeBackground(assetId = 5L))
         testDispatcher.scheduler.advanceUntilIdle()
 
         // Then
@@ -156,7 +156,7 @@ class CardEditorViewModelTest {
     @Test
     fun `onIntent MyObjectClicked toggles object selection`() = runTest {
         // When
-        viewModel.onIntent(CardEditorIntent.MyObjectClicked(assetId = 10L))
+        viewModel.onIntent(CardEditorIntent.SelectMyObject(assetId = 10L))
         testDispatcher.scheduler.advanceUntilIdle()
 
         // Then
@@ -166,7 +166,7 @@ class CardEditorViewModelTest {
         }
 
         // When - Click again to deselect
-        viewModel.onIntent(CardEditorIntent.MyObjectClicked(assetId = 10L))
+        viewModel.onIntent(CardEditorIntent.SelectMyObject(assetId = 10L))
         testDispatcher.scheduler.advanceUntilIdle()
 
         // Then
@@ -260,8 +260,8 @@ class CardEditorViewModelTest {
         coEvery { cardElementRepository.insertCardElement(any()) } returns Result.success(1L)
 
         // When
-        viewModel.onIntent(CardEditorIntent.ObjectClicked(cardId = 1L, clickedObject = asset1))
-        viewModel.onIntent(CardEditorIntent.ObjectClicked(cardId = 1L, clickedObject = asset2))
+        viewModel.onIntent(CardEditorIntent.CreateObject(cardId = 1L, clickedObject = asset1))
+        viewModel.onIntent(CardEditorIntent.CreateObject(cardId = 1L, clickedObject = asset2))
         testDispatcher.scheduler.advanceUntilIdle()
 
         // Then

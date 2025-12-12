@@ -95,7 +95,7 @@ class CardEditorViewModelTest {
     @Test
     fun `handleBackgroundClicked toggles selection`() = runTest {
         val assetId = 10L
-        viewModel.onIntent(CardEditorIntent.BackgroundClicked(assetId))
+        viewModel.onIntent(CardEditorIntent.ChangeBackground(assetId))
         testDispatcher.scheduler.advanceUntilIdle()
 
         viewModel.cardEditorState.test {
@@ -105,7 +105,7 @@ class CardEditorViewModelTest {
         }
 
         // 클릭 시 해제되는지 확인
-        viewModel.onIntent(CardEditorIntent.BackgroundClicked(assetId))
+        viewModel.onIntent(CardEditorIntent.ChangeBackground(assetId))
         testDispatcher.scheduler.advanceUntilIdle()
         viewModel.cardEditorState.test {
             val state = awaitItem()
@@ -121,7 +121,7 @@ class CardEditorViewModelTest {
 
         coEvery { cardElementRepository.insertCardElement(any()) } returns Result.success(123L)
 
-        viewModel.onIntent(CardEditorIntent.ObjectClicked(cardId, clickedObject))
+        viewModel.onIntent(CardEditorIntent.CreateObject(cardId, clickedObject))
         testDispatcher.scheduler.advanceUntilIdle()
 
         // suspend 함수가 실제로 호출되었는지 검증

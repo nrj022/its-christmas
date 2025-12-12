@@ -32,24 +32,24 @@ fun CardEditorBottomScreen(cardId: Long, viewModel: CardEditorViewModel = hiltVi
                 myObjects = state.myObjects,
                 selectedMyObject = state.selectedMyObjectIdx,
                 selectedBackground = state.selectedBackground,
-                onAddTextClicked = { viewModel.onIntent(CardEditorIntent.AddTextButtonClicked(cardId)) },
-                onObjectClicked = { viewModel.onIntent(CardEditorIntent.ObjectClicked(cardId, it)) },
-                onMyObjectClicked = { viewModel.onIntent(CardEditorIntent.MyObjectClicked(it)) },
-                onBackgroundClicked = { viewModel.onIntent(CardEditorIntent.BackgroundClicked(it)) }
+                onAddTextClicked = { viewModel.onIntent(CardEditorIntent.EnterTextMode(cardId)) },
+                onObjectClicked = { viewModel.onIntent(CardEditorIntent.CreateObject(cardId, it)) },
+                onMyObjectClicked = { viewModel.onIntent(CardEditorIntent.SelectMyObject(it)) },
+                onBackgroundClicked = { viewModel.onIntent(CardEditorIntent.ChangeBackground(it)) }
             )
 
         PanelType.TRANSFORM_CONTROL -> {
             TransformControlPanel(
                 scale = state.tempTransform?.scale ?: 1,
                 onScaleChange = { newScale ->
-                    viewModel.onIntent(CardEditorIntent.ScaleChanged(newScale))
+                    viewModel.onIntent(CardEditorIntent.ChangeScale(newScale))
                 },
-                onCancel = { viewModel.onIntent(CardEditorIntent.AdjustCancelClicked) },
-                onApply = { viewModel.onIntent(CardEditorIntent.AdjustApplyClicked) },
+                onCancel = { viewModel.onIntent(CardEditorIntent.CancelTransform) },
+                onApply = { viewModel.onIntent(CardEditorIntent.ApplyTransform) },
                 onDirectionalClick = { direction ->
-                    viewModel.onIntent(CardEditorIntent.ObjectDirectionClicked(direction))
+                    viewModel.onIntent(CardEditorIntent.MoveObject(direction))
                 },
-                onCameraReset = { viewModel.onIntent(CardEditorIntent.CameraResetClicked) }
+                onCameraReset = { viewModel.onIntent(CardEditorIntent.ResetCamera) }
             )
         }
 
@@ -60,15 +60,15 @@ fun CardEditorBottomScreen(cardId: Long, viewModel: CardEditorViewModel = hiltVi
             } else {
                 TextEditorPanel(
                     textElement = tempText.textElement,
-                    onTextChange = { viewModel.onIntent(CardEditorIntent.TextChanged(it)) },
-                    onAlignmentSelected = { viewModel.onIntent(CardEditorIntent.AlignmentSelected(it)) },
-                    onColorSelected = { viewModel.onIntent(CardEditorIntent.ColorSelected(it)) },
-                    onFontSizeChange = { viewModel.onIntent(CardEditorIntent.FontSizeChanged(it)) },
-                    onFontSelected = { viewModel.onIntent(CardEditorIntent.FontSelected(it)) },
-                    onPositionChange = { viewModel.onIntent(CardEditorIntent.TextDirectionClicked(it)) },
-                    onCameraReset = { viewModel.onIntent(CardEditorIntent.CameraResetClicked) },
-                    onApply = { viewModel.onIntent(CardEditorIntent.TextApplyClicked(cardId)) },
-                    onBack = { viewModel.onIntent(CardEditorIntent.DialogStateChanged(DialogState.UNSAVED_TEXT_CHANGES)) }
+                    onTextChange = { viewModel.onIntent(CardEditorIntent.ChangeTextContent(it)) },
+                    onAlignmentSelected = { viewModel.onIntent(CardEditorIntent.SelectAlignment(it)) },
+                    onColorSelected = { viewModel.onIntent(CardEditorIntent.SelectColor(it)) },
+                    onFontSizeChange = { viewModel.onIntent(CardEditorIntent.ChangeFontSize(it)) },
+                    onFontSelected = { viewModel.onIntent(CardEditorIntent.SelectFont(it)) },
+                    onPositionChange = { viewModel.onIntent(CardEditorIntent.MoveText(it)) },
+                    onCameraReset = { viewModel.onIntent(CardEditorIntent.ResetCamera) },
+                    onApply = { viewModel.onIntent(CardEditorIntent.ApplyText(cardId)) },
+                    onBack = { viewModel.onIntent(CardEditorIntent.ChangeDialogState(DialogState.UNSAVED_TEXT_CHANGES)) }
                 )
             }
         }
@@ -79,29 +79,29 @@ fun CardEditorBottomScreen(cardId: Long, viewModel: CardEditorViewModel = hiltVi
         DialogState.DELETE_CONFIRM -> {
             ObjectDeleteConfirmDialog(
                 onDeleteObject = { viewModel.onIntent(CardEditorIntent.DeleteMyObject) },
-                onDismiss = { viewModel.onIntent(CardEditorIntent.DialogStateChanged(DialogState.NONE)) }
+                onDismiss = { viewModel.onIntent(CardEditorIntent.ChangeDialogState(DialogState.NONE)) }
             )
         }
         DialogState.UNSAVED_TRANSFORM_CHANGES -> {
             UnsavedChangesDialog(
-                onApplyChanges = { viewModel.onIntent(CardEditorIntent.AdjustApplyAndExit) },
-                onDiscardChanges = { viewModel.onIntent(CardEditorIntent.AdjustDiscardAndExit) },
-                onDismiss = { viewModel.onIntent(CardEditorIntent.DialogStateChanged(DialogState.NONE)) }
+                onApplyChanges = { viewModel.onIntent(CardEditorIntent.ApplyAndExitTransform) },
+                onDiscardChanges = { viewModel.onIntent(CardEditorIntent.DiscardAndExitTransform) },
+                onDismiss = { viewModel.onIntent(CardEditorIntent.ChangeDialogState(DialogState.NONE)) }
             )
         }
         DialogState.UNSAVED_TEXT_CHANGES -> {
             UnsavedChangesDialog(
-                onApplyChanges = { viewModel.onIntent(CardEditorIntent.TextApplyAndExit(cardId)) },
-                onDiscardChanges = { viewModel.onIntent(CardEditorIntent.TextDiscardAndExit) },
-                onDismiss = { viewModel.onIntent(CardEditorIntent.DialogStateChanged(DialogState.NONE)) }
+                onApplyChanges = { viewModel.onIntent(CardEditorIntent.ApplyAndExitText(cardId)) },
+                onDiscardChanges = { viewModel.onIntent(CardEditorIntent.DiscardAndExitText) },
+                onDismiss = { viewModel.onIntent(CardEditorIntent.ChangeDialogState(DialogState.NONE)) }
             )
         }
         DialogState.SET_CARD_TITLE -> {
             SetCardTitleDialog(
                 cardTitle = state.cardTitle,
-                onTitleChange = { viewModel.onIntent(CardEditorIntent.CardTitleChanged(it)) },
+                onTitleChange = { viewModel.onIntent(CardEditorIntent.ChangeTitle(it)) },
                 onGenerateCard = { viewModel.onIntent(CardEditorIntent.GenerateCard) },
-                onDismiss = { viewModel.onIntent(CardEditorIntent.DialogStateChanged(DialogState.NONE)) }
+                onDismiss = { viewModel.onIntent(CardEditorIntent.ChangeDialogState(DialogState.NONE)) }
             )
         }
     }

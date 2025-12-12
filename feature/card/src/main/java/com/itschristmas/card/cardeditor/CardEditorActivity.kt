@@ -95,19 +95,19 @@ class CardEditorActivity : AppCompatActivity() {
 
     private fun initListener() {
         binding.btnComplete.setOnClickListener {
-            viewModel.onIntent(CardEditorIntent.CompleteClicked)
+            viewModel.onIntent(CardEditorIntent.FinishEditing)
         }
 
         binding.btnAdjust.setOnClickListener {
-            viewModel.onIntent(CardEditorIntent.AdjustClicked)
+            viewModel.onIntent(CardEditorIntent.EnterTransformMode)
         }
 
         binding.imgBtnDelete.setOnClickListener {
-            viewModel.onIntent(CardEditorIntent.DialogStateChanged(DialogState.DELETE_CONFIRM))
+            viewModel.onIntent(CardEditorIntent.ChangeDialogState(DialogState.DELETE_CONFIRM))
         }
 
         binding.imgBtnTransformReset.setOnClickListener {
-            viewModel.onIntent(CardEditorIntent.TransformResetClicked)
+            viewModel.onIntent(CardEditorIntent.ResetTransform)
         }
 
         binding.imgBtnAddText.setOnClickListener {

@@ -16,6 +16,6 @@ fun CardEditorTextScreen(viewModel: CardEditorViewModel = hiltViewModel()) {
         textList = state.tempTextList,
         selectedTextId = state.selectedTextTempId ?: 0
     ) {
-        viewModel.onIntent(CardEditorIntent.TextClicked(it))
+        viewModel.onIntent(CardEditorIntent.SelectText(it))
     }
 }

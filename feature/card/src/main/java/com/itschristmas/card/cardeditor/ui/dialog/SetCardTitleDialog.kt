@@ -1,4 +1,4 @@
-package com.itschristmas.card.cardeditor.dialog
+package com.itschristmas.card.cardeditor.ui.dialog
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -14,7 +14,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.itschristmas.card.R
-import com.itschristmas.card.cardeditor.common.BaseDialog
+import com.itschristmas.card.cardeditor.ui.common.BaseDialog
 import com.itschristmas.designsystem.theme.Gray
 
 @Composable

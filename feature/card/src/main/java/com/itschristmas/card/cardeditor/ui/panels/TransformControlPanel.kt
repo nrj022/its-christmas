@@ -1,4 +1,4 @@
-package com.itschristmas.card.cardeditor.panels
+package com.itschristmas.card.cardeditor.ui.panels
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -16,7 +16,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.itschristmas.card.cardeditor.common.DirectionalController
+import com.itschristmas.card.cardeditor.ui.common.DirectionalController
 import com.itschristmas.card.cardeditor.model.Direction
 
 /**

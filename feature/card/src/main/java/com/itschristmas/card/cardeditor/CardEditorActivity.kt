@@ -13,9 +13,11 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.itschristmas.card.cardeditor.common.getDrawableIdByKey
-import com.itschristmas.card.cardeditor.common.toBase62
-import com.itschristmas.card.cardeditor.model.EditorDialogState
+import com.itschristmas.card.cardeditor.util.getDrawableIdByKey
+import com.itschristmas.card.cardeditor.util.toBase62
+import com.itschristmas.card.cardeditor.model.DialogState
+import com.itschristmas.card.cardeditor.ui.CardEditorBottomScreen
+import com.itschristmas.card.cardeditor.ui.CardEditorTextScreen
 import com.itschristmas.card.databinding.ActivityCardEditorBinding
 import com.itschristmas.designsystem.theme.ItsChristmasTheme
 import com.unity3d.player.UnityPlayerForActivityOrService
@@ -93,19 +95,19 @@ class CardEditorActivity : AppCompatActivity() {
 
     private fun initListener() {
         binding.btnComplete.setOnClickListener {
-            viewModel.onIntent(CardEditorIntent.CompleteClicked)
+            viewModel.onIntent(CardEditorIntent.FinishEditing)
         }
 
         binding.btnAdjust.setOnClickListener {
-            viewModel.onIntent(CardEditorIntent.AdjustClicked)
+            viewModel.onIntent(CardEditorIntent.EnterTransformMode)
         }
 
         binding.imgBtnDelete.setOnClickListener {
-            viewModel.onIntent(CardEditorIntent.DialogStateChanged(EditorDialogState.DELETE_CONFIRM))
+            viewModel.onIntent(CardEditorIntent.ChangeDialogState(DialogState.DELETE_CONFIRM))
         }
 
         binding.imgBtnTransformReset.setOnClickListener {
-            viewModel.onIntent(CardEditorIntent.TransformResetClicked)
+            viewModel.onIntent(CardEditorIntent.ResetTransform)
         }
 
         binding.imgBtnAddText.setOnClickListener {
@@ -141,7 +143,7 @@ class CardEditorActivity : AppCompatActivity() {
     }
 
     private fun updateTransformPanel(state: CardEditorState) {
-        val temp = state.tempTransformState
+        val temp = state.tempTransform
         val active = state.isTransformPanelActive && temp != null
 
         binding.containerTransformOption.isVisible = active

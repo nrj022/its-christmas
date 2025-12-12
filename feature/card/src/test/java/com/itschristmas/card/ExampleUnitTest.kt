@@ -84,10 +84,10 @@ class CardEditorViewModelTest {
             awaitItem()
             awaitItem()
             val finalState = awaitItem()
-            assertEquals(100L, finalState.selectedBackground)
+            assertEquals(100L, finalState.selectedBackgroundId)
             assertEquals(objects, finalState.objects)
             assertEquals(backgrounds, finalState.backgrounds)
-            assertEquals(cardElementsWithAssetKeys, finalState.myObjects)
+            assertEquals(cardElementsWithAssetKeys, finalState.spawnedObjects)
             cancelAndIgnoreRemainingEvents()
         }
     }
@@ -95,21 +95,21 @@ class CardEditorViewModelTest {
     @Test
     fun `handleBackgroundClicked toggles selection`() = runTest {
         val assetId = 10L
-        viewModel.onIntent(CardEditorIntent.BackgroundClicked(assetId))
+        viewModel.onIntent(CardEditorIntent.ChangeBackground(assetId))
         testDispatcher.scheduler.advanceUntilIdle()
 
         viewModel.cardEditorState.test {
             val state = awaitItem()
-            assertEquals(assetId, state.selectedBackground)
+            assertEquals(assetId, state.selectedBackgroundId)
             cancelAndIgnoreRemainingEvents()
         }
 
         // 클릭 시 해제되는지 확인
-        viewModel.onIntent(CardEditorIntent.BackgroundClicked(assetId))
+        viewModel.onIntent(CardEditorIntent.ChangeBackground(assetId))
         testDispatcher.scheduler.advanceUntilIdle()
         viewModel.cardEditorState.test {
             val state = awaitItem()
-            assertEquals(null, state.selectedBackground)
+            assertEquals(null, state.selectedBackgroundId)
             cancelAndIgnoreRemainingEvents()
         }
     }
@@ -121,7 +121,7 @@ class CardEditorViewModelTest {
 
         coEvery { cardElementRepository.insertCardElement(any()) } returns Result.success(123L)
 
-        viewModel.onIntent(CardEditorIntent.ObjectClicked(cardId, clickedObject))
+        viewModel.onIntent(CardEditorIntent.CreateObject(cardId, clickedObject))
         testDispatcher.scheduler.advanceUntilIdle()
 
         // suspend 함수가 실제로 호출되었는지 검증

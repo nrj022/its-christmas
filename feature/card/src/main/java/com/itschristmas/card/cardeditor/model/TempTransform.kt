@@ -1,6 +1,6 @@
 package com.itschristmas.card.cardeditor.model
 
-data class TempTransformState(
+data class TempTransform(
     val elementId: Long,
     val thumbnailKey: String,
     val posX: Int,

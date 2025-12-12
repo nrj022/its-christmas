@@ -1,4 +1,4 @@
-package com.itschristmas.card.cardeditor.panels
+package com.itschristmas.card.cardeditor.ui.panels
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
@@ -24,14 +24,14 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.itschristmas.card.cardeditor.model.TempTextElementState
+import com.itschristmas.card.cardeditor.model.TempTextElement
 import com.itschristmas.designsystem.theme.ItsChristmasTheme
 import com.itschristmas.designsystem.theme.SoftBlack
 import com.itschristmas.designsystem.theme.White
 
 @Composable
 fun TextListPanel(
-    textList: List<TempTextElementState> = emptyList(),
+    textList: List<TempTextElement> = emptyList(),
     selectedTextId: Long = 0,
     onClick: (Long) -> Unit = {}
 ) {

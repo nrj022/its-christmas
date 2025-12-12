@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -36,8 +37,12 @@ android {
 
 dependencies {
 
+    implementation(project(":unityLibrary:mobilenotifications.androidlib"))
     implementation(project(":core:database"))
     implementation(project(":core:domain"))
+
+    // Json
+    implementation(libs.kotlinx.serialization.json)
 
     // Hilt
     implementation(libs.google.hilt.android)

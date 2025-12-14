@@ -6,9 +6,11 @@ import com.itschristmas.card.cardeditor.model.TempTextElement
 import com.itschristmas.card.cardeditor.model.TempTransform
 import com.itschristmas.domain.model.CardElementWithAssetKeys
 import com.itschristmas.domain.model.Asset
+import com.itschristmas.domain.model.TextElement
 
 data class CardEditorState(
     val panelType: PanelType = PanelType.ASSET_BROWSER,
+    val isLoading: Boolean = true,
     val tempTransform: TempTransform? = null,
     val tempTextList: List<TempTextElement> = emptyList(),
     val dialogState: DialogState = DialogState.NONE,
@@ -16,6 +18,7 @@ data class CardEditorState(
     val objects: List<Asset> = emptyList(),
     val backgrounds: List<Asset> = emptyList(),
     val spawnedObjects: List<CardElementWithAssetKeys> = emptyList(),
+    val texts: List<TextElement> = emptyList(),
     val selectedBackgroundId: Long? = null,
     val selectedSpawnedObject: CardElementWithAssetKeys? = null,
     val selectedTextTempId: Long? = null,
@@ -43,6 +46,7 @@ data class CardEditorState(
             selectedSpawnedObject?.let { selected ->
                 temp.posX != selected.cardElement.posX ||
                 temp.posY != selected.cardElement.posY ||
+                temp.posZ != selected.cardElement.posZ ||
                 temp.scale != selected.cardElement.scale
             } ?: false
         } ?: false

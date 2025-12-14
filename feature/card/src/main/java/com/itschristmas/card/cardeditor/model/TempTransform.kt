@@ -3,7 +3,8 @@ package com.itschristmas.card.cardeditor.model
 data class TempTransform(
     val elementId: Long,
     val thumbnailKey: String,
-    val posX: Int,
-    val posY: Int,
+    val posX: Float,
+    val posY: Float,
+    val posZ: Float,
     val scale: Int
 )

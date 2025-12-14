@@ -2,18 +2,18 @@ package com.itschristmas.domain.usecase
 
 import com.itschristmas.domain.model.TextElement
 
-data class UpdateTextParams(
+data class SaveTextElementsParams(
     val cardId: Long,
     val updates: List<TextElement>,
     val deletedIds: Set<Long> = emptySet()
 )
 
-data class UpdateTextResult(
+data class SaveTextElementsResult(
     val updatedElements: List<TextElement>,
     val failedUpdates: List<TextElement> = emptyList(),
     val deletedIds: Set<Long> = emptySet()
 )
 
-interface UpdateTextUseCase {
-    suspend operator fun invoke(params: UpdateTextParams): Result<UpdateTextResult>
+interface SaveTextElementsUseCase {
+    suspend operator fun invoke(params: SaveTextElementsParams): Result<SaveTextElementsResult>
 }

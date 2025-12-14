@@ -42,12 +42,12 @@ interface CardElementDao {
     suspend fun getTextElementsByCardId(cardId: Long): List<CardElementEntity>
 
     @Query("UPDATE card_elements SET posX = :posX, posY = :posY, scale = :scale WHERE elementId = :elementId")
-    suspend fun updateElementTransform(elementId: Long, posX: Int, posY: Int, scale: Int): Int
+    suspend fun updateElementTransform(elementId: Long, posX: Float, posY: Float, scale: Int): Int
 
     @Query("""
         UPDATE card_elements 
         SET textContent = :textContent, textAlign = :textAlign, textColor = :textColor, fontSize = :fontSize, fontFamily = :fontFamily, posX = :posX, posY = :posY 
         WHERE elementId = :elementId
         """)
-    suspend fun updateTextElement(elementId: Long, textContent: String, textAlign: String, textColor: String, fontSize: Float, fontFamily: String, posX: Int, posY: Int): Int
+    suspend fun updateTextElement(elementId: Long, textContent: String, textAlign: String, textColor: String, fontSize: Float, fontFamily: String, posX: Float, posY: Float): Int
 }

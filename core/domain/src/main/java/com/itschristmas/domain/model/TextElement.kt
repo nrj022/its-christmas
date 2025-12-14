@@ -1,5 +1,7 @@
 package com.itschristmas.domain.model
 
+import kotlin.random.Random
+
 data class TextElement(
     val elementId: Long? = null,
     val attributes: TextAttributes = TextAttributes(
@@ -9,6 +11,7 @@ data class TextElement(
         fontSize = 14f,
         fontFamily = FontOption.PlaywriteUsTradGuides,
     ),
-    val posX: Int = 0,
-    val posY: Int = 0
+    val posX: Float = Random.nextDouble(-2.0, 2.0).toFloat(),
+    val posY: Float = Random.nextDouble(-2.0, 2.0).toFloat(),
+    val posZ: Float = 0f
 )

@@ -13,9 +13,9 @@ data class CardElementEntity(
     val elementType: String, // ElementType: OBJECT / TEXT
 
     // Transform
-    val posX: Int,
-    val posY: Int,
-    val posZ: Int = 0,
+    val posX: Float,
+    val posY: Float,
+    val posZ: Float = 0f,
 
     val rotX: Int = 0,
     val rotY: Int = 0,

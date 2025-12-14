@@ -1,7 +1,9 @@
 package com.itschristmas.card.cardeditor
 
 import android.annotation.SuppressLint
+import android.content.res.Configuration
 import android.os.Bundle
+import android.util.Log
 import android.view.MotionEvent
 import android.view.ViewGroup
 import androidx.activity.viewModels
@@ -20,9 +22,13 @@ import com.itschristmas.card.cardeditor.ui.CardEditorBottomScreen
 import com.itschristmas.card.cardeditor.ui.CardEditorTextScreen
 import com.itschristmas.card.databinding.ActivityCardEditorBinding
 import com.itschristmas.designsystem.theme.ItsChristmasTheme
+import com.itschristmas.domain.model.UnityMessage
+import com.itschristmas.domain.model.UnityMessageType
+import com.itschristmas.domain.model.UnityStatusType
 import com.unity3d.player.UnityPlayerForActivityOrService
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import kotlinx.serialization.json.Json
 
 @AndroidEntryPoint
 class CardEditorActivity : AppCompatActivity() {
@@ -89,8 +95,6 @@ class CardEditorActivity : AppCompatActivity() {
             if (event.action == MotionEvent.ACTION_UP) v.performClick()
             true
         }
-
-        unityPlayer.windowFocusChanged(true)
     }
 
     private fun initListener() {
@@ -138,6 +142,7 @@ class CardEditorActivity : AppCompatActivity() {
         binding.btnComplete.isVisible = state.isAssetBrowserPanelActive
         binding.containerObjectOption.isVisible = state.showObjectOptionContainer
         binding.containerTextOption.isVisible = state.showTextOptionContainer
+        binding.frameLoading.isVisible = state.isLoading
 
         updateTransformPanel(state)
     }
@@ -152,18 +157,83 @@ class CardEditorActivity : AppCompatActivity() {
         binding.textElementKey.text = if(active) toBase62(temp.elementId) else ""
     }
 
+    // Unity에서 호출하는 함수
+    fun onUnityMessage(jsonString: String) {
+        Log.d("UnityMsg", "Received: $jsonString")
+        try {
+            val message = Json.decodeFromString<UnityMessage>(jsonString)
+            // UI 스레드에서 처리 보장
+            runOnUiThread {
+                handleUnityMessage(message)
+            }
+        } catch (e: Exception) {
+            Log.e("UnityMsg", "Parsing Error: ${e.message}")
+        }
+    }
+
+    private fun handleUnityMessage(msg: UnityMessage) {
+        when (msg.type) {
+            UnityMessageType.LIFECYCLE -> {
+                if (msg.status == UnityStatusType.START) {
+                    viewModel.handleInitUnity()
+                    Log.i("UnityMsg", "Unity Started Ready!")
+                }
+            }
+            UnityMessageType.UPLOAD_GLB -> {
+                if (msg.status == UnityStatusType.SUCCESS) { } else { }
+            }
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        unityPlayer.onStart()
+    }
+
     override fun onResume() {
         super.onResume()
-        unityPlayer.resume()
+        unityPlayer.onResume()
     }
 
     override fun onPause() {
-        unityPlayer.pause()
         super.onPause()
+        unityPlayer.onPause()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        unityPlayer.onStop()
     }
 
     override fun onDestroy() {
         unityPlayer.destroy()
         super.onDestroy()
+    }
+
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        unityPlayer.windowFocusChanged(hasFocus)
+    }
+
+    // Low Memory Unity
+    override fun onLowMemory() {
+        super.onLowMemory()
+        unityPlayer.onTrimMemory(UnityPlayerForActivityOrService.MemoryUsage.Critical)
+    }
+
+    // Trim Memory Unity
+    override fun onTrimMemory(level: Int) {
+        super.onTrimMemory(level)
+        when {
+            level >= TRIM_MEMORY_RUNNING_CRITICAL -> unityPlayer.onTrimMemory(UnityPlayerForActivityOrService.MemoryUsage.Critical)
+            level >= TRIM_MEMORY_RUNNING_LOW -> unityPlayer.onTrimMemory(UnityPlayerForActivityOrService.MemoryUsage.High)
+            else -> unityPlayer.onTrimMemory(UnityPlayerForActivityOrService.MemoryUsage.Medium)
+        }
+    }
+
+    // 레이아웃에 따른 Unity 맵핑
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        unityPlayer.configurationChanged(newConfig)
     }
 }

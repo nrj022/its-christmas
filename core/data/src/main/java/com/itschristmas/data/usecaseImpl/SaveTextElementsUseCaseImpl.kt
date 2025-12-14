@@ -5,22 +5,22 @@ import com.itschristmas.domain.enum.ElementType
 import com.itschristmas.domain.model.CardElement
 import com.itschristmas.domain.model.TextElement
 import com.itschristmas.domain.repository.CardElementRepository
-import com.itschristmas.domain.usecase.UpdateTextParams
-import com.itschristmas.domain.usecase.UpdateTextResult
-import com.itschristmas.domain.usecase.UpdateTextUseCase
+import com.itschristmas.domain.usecase.SaveTextElementsParams
+import com.itschristmas.domain.usecase.SaveTextElementsResult
+import com.itschristmas.domain.usecase.SaveTextElementsUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-private const val TAG = "UpdateTextUseCaseImpl"
+private const val TAG = "SaveTextElementsUseCaseImpl"
 
-class UpdateTextUseCaseImpl @Inject constructor(
+class SaveTextElementsUseCaseImpl @Inject constructor(
     private val cardElementRepository: CardElementRepository,
     private val mutex: Mutex
-): UpdateTextUseCase {
-    override suspend fun invoke(params: UpdateTextParams): Result<UpdateTextResult> {
+): SaveTextElementsUseCase {
+    override suspend fun invoke(params: SaveTextElementsParams): Result<SaveTextElementsResult> {
         return runCatching { mutex.withLock {
             withContext(Dispatchers.IO) {
                 val (nonEmptyTextList, emptyTextList) = params.updates
@@ -72,7 +72,7 @@ class UpdateTextUseCaseImpl @Inject constructor(
                         Log.e(TAG, "deleteCardElementsByIds failed: $it")
                     }
 
-                UpdateTextResult(
+                SaveTextElementsResult(
                     updatedElements = updated,
                     failedUpdates = failedUpdates,
                     deletedIds = failedDeleteIds

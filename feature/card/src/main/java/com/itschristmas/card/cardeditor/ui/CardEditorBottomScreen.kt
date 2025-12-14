@@ -32,7 +32,7 @@ fun CardEditorBottomScreen(cardId: Long, viewModel: CardEditorViewModel = hiltVi
                 spawnedObjects = state.spawnedObjects,
                 selectedSpawnedObject = state.selectedSpawnedObjectId,
                 selectedBackground = state.selectedBackgroundId,
-                onAddTextClicked = { viewModel.onIntent(CardEditorIntent.EnterTextMode(cardId)) },
+                onAddTextClicked = { viewModel.onIntent(CardEditorIntent.EnterTextMode) },
                 onObjectClicked = { viewModel.onIntent(CardEditorIntent.CreateObject(cardId, it)) },
                 onSpawnedObjectClicked = { viewModel.onIntent(CardEditorIntent.SelectSpawnedObject(it)) },
                 onBackgroundClicked = { viewModel.onIntent(CardEditorIntent.ChangeBackground(it)) }
@@ -56,7 +56,9 @@ fun CardEditorBottomScreen(cardId: Long, viewModel: CardEditorViewModel = hiltVi
         PanelType.TEXT_EDITOR -> {
             val tempText = state.selectedText
             if(state.tempTextList.isEmpty() || tempText == null) {
-                viewModel.onIntent(CardEditorIntent.RequestDefaultText)
+                LaunchedEffect(state.panelType, state.tempTextList, state.selectedText) {
+                    viewModel.onIntent(CardEditorIntent.RequestDefaultText)
+                }
             } else {
                 TextEditorPanel(
                     textElement = tempText.textElement,
@@ -92,7 +94,7 @@ fun CardEditorBottomScreen(cardId: Long, viewModel: CardEditorViewModel = hiltVi
         DialogState.UNSAVED_TEXT_CHANGES -> {
             UnsavedChangesDialog(
                 onApplyChanges = { viewModel.onIntent(CardEditorIntent.ApplyAndExitText(cardId)) },
-                onDiscardChanges = { viewModel.onIntent(CardEditorIntent.DiscardAndExitText) },
+                onDiscardChanges = { viewModel.onIntent(CardEditorIntent.DiscardAndExitText(cardId)) },
                 onDismiss = { viewModel.onIntent(CardEditorIntent.ChangeDialogState(DialogState.NONE)) }
             )
         }

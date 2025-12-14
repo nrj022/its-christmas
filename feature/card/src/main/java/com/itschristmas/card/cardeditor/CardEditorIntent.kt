@@ -20,7 +20,7 @@ sealed class CardEditorIntent {
     data class SelectSpawnedObject(val element: CardElementWithAssetKeys): CardEditorIntent()
     data object DeleteSpawnedObject: CardEditorIntent()
     data object EnterTransformMode: CardEditorIntent()
-    data class EnterTextMode(val cardId: Long): CardEditorIntent()
+    data object EnterTextMode: CardEditorIntent()
 
     data object ResetCamera: CardEditorIntent()
 
@@ -46,5 +46,5 @@ sealed class CardEditorIntent {
     data class MoveText(val direction: Direction): CardEditorIntent()
     data class ApplyText(val cardId: Long): CardEditorIntent()
     data class ApplyAndExitText(val cardId: Long): CardEditorIntent()
-    data object DiscardAndExitText: CardEditorIntent()
+    data class DiscardAndExitText(val cardId: Long): CardEditorIntent()
 }

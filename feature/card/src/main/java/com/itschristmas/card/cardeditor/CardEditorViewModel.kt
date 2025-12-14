@@ -8,7 +8,6 @@ import com.itschristmas.card.cardeditor.model.PanelType
 import com.itschristmas.card.cardeditor.model.TempTextElement
 import com.itschristmas.card.cardeditor.model.TempTransform
 import com.itschristmas.domain.bridge.UnityBridge
-import com.itschristmas.domain.enum.AssetType
 import com.itschristmas.domain.enum.ElementType
 import com.itschristmas.domain.model.Asset
 import com.itschristmas.domain.model.CardElement
@@ -20,9 +19,10 @@ import com.itschristmas.domain.model.TextAttributes
 import com.itschristmas.domain.model.TextElement
 import com.itschristmas.domain.repository.AssetRepository
 import com.itschristmas.domain.repository.CardElementRepository
-import com.itschristmas.domain.repository.CardRepository
-import com.itschristmas.domain.usecase.UpdateTextParams
-import com.itschristmas.domain.usecase.UpdateTextUseCase
+import com.itschristmas.domain.usecase.GetTextElementsUseCase
+import com.itschristmas.domain.usecase.LoadCardEditorUseCase
+import com.itschristmas.domain.usecase.SaveTextElementsParams
+import com.itschristmas.domain.usecase.SaveTextElementsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -32,13 +32,15 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.Long
+import kotlin.onSuccess
 
 @HiltViewModel
 class CardEditorViewModel @Inject constructor(
     private val assetRepository: AssetRepository,
     private val cardElementRepository: CardElementRepository,
-    private val cardRepository: CardRepository,
-    private val updateTextUseCase: UpdateTextUseCase,
+    private val loadCardEditorUseCase: LoadCardEditorUseCase,
+    private val getTextsUseCase: GetTextElementsUseCase,
+    private val saveTextElementsUseCase: SaveTextElementsUseCase,
     private val unityBridge: UnityBridge
 ) : ViewModel() {
 
@@ -75,7 +77,7 @@ class CardEditorViewModel @Inject constructor(
             is CardEditorIntent.SelectSpawnedObject -> handleSelectSpawnedObject(intent.element)
             is CardEditorIntent.DeleteSpawnedObject -> handleDeleteSpawnedObject()
             is CardEditorIntent.EnterTransformMode -> handleEnterTransformMode()
-            is CardEditorIntent.EnterTextMode -> handleEnterTextMode(intent.cardId)
+            is CardEditorIntent.EnterTextMode -> handleEnterTextMode()
 
             is CardEditorIntent.ResetCamera -> handleResetCamera()
 
@@ -101,28 +103,45 @@ class CardEditorViewModel @Inject constructor(
             is CardEditorIntent.MoveText -> handleMoveText(intent.direction)
             is CardEditorIntent.ApplyText -> handleApplyText(intent.cardId)
             is CardEditorIntent.ApplyAndExitText -> handleApplyAndExitText(intent.cardId)
-            is CardEditorIntent.DiscardAndExitText -> handleDiscardAndExitText()
+            is CardEditorIntent.DiscardAndExitText -> handleDiscardAndExitText(intent.cardId)
+        }
+    }
+
+    private fun handleInit(cardId: Long) {
+        viewModelScope.launch {
+            loadCardEditorUseCase(cardId)
+                .onSuccess { result ->
+                    _cardEditorState.update {
+                        it.copy(
+                            selectedBackgroundId = result.cardData.backgroundAssetId,
+                            objects = result.objects,
+                            texts = result.texts,
+                            backgrounds = result.backgrounds
+                        )
+                    }
+                    launch {
+                        result.spawnedObjectsFlow.collect {
+                            it.onSuccess { objects ->
+                                _cardEditorState.update { state ->
+                                    state.copy(spawnedObjects = objects.asReversed())
+                                }
+                            }
+                        }
+                    }
+                }.onFailure {
+                    /* TODO */
+                }
         }
     }
 
     fun handleInitUnity() {
         unityBridge.initScene(
             _cardEditorState.value.spawnedObjects,
-            _cardEditorState.value.tempTextList.map { it.textElement }
+            _cardEditorState.value.texts
         )
         val bgAssetId = _cardEditorState.value.selectedBackgroundId
         bgAssetId?.let { unityChangeBackground(it) }
         _cardEditorState.update { it.copy(isLoading = false) }
-    }
-
-    private fun handleInit(cardId: Long) {
-        getCardDataFromDB(cardId)
-        getObjectsFromDB()
-        getBackgroundsFromDB()
-
-        getTextsFromDB(cardId)
-        // Spawned Objects Flow 구독
-        loadSpawnedObjectsFromDB(cardId)
     }
 
     private fun handleChangeTitle(newTitle: String) {
@@ -215,9 +234,33 @@ class CardEditorViewModel @Inject constructor(
         }
     }
 
-    private fun handleEnterTextMode(cardId: Long) {
+    private fun handleEnterTextMode() {
+        val texts = _cardEditorState.value.texts
+        val newList = texts.map { element ->
+            TempTextElement(
+                textElement = TextElement(
+                    elementId = element.elementId,
+                    attributes = element.attributes,
+                    posX = element.posX,
+                    posY = element.posY
+                )
+            )
+        }.asReversed()
+        _cardEditorState.update {
+            it.copy(
+                tempTextList = newList,
+                selectedTextTempId = newList.firstOrNull()?.tempId
+            )
+        }
         updatePanelType(PanelType.TEXT_EDITOR)
-        getTextsFromDB(cardId)  // 제거 ?
+
+        unityBridge.clearAllTexts()
+        newList.forEach {
+            unityBridge.createText(
+                tempId = it.tempId,
+                textElement = it.textElement
+            )
+        }
     }
 
 
@@ -260,11 +303,11 @@ class CardEditorViewModel @Inject constructor(
     }
 
     private fun handleApplyTransform() {
-        updateTransform()
+        saveTransformChanges()
     }
 
     private fun handleApplyAndExitTransform() {
-        updateTransform()
+        saveTransformChanges()
         exitTransform()
         updateDialogState(DialogState.NONE)
     }
@@ -400,22 +443,27 @@ class CardEditorViewModel @Inject constructor(
     }
 
     private fun handleApplyText(cardId: Long) {
-        updateTextAttribute(cardId)
+        saveTextChanges(cardId)
     }
 
     private fun handleApplyAndExitText(cardId: Long) {
-        updateTextAttribute(cardId)
-        updateDialogState(DialogState.NONE)
-        updatePanelType(PanelType.ASSET_BROWSER)
-        _cardEditorState.update { it.copy(tempTextList = emptyList(), selectedTextTempId = null) }
+        saveTextChanges(cardId, true)
+        exitTextEditor()
     }
 
-    private fun handleDiscardAndExitText() {
-        updateDialogState(DialogState.NONE)
-        updatePanelType(PanelType.ASSET_BROWSER)
-        _cardEditorState.update { it.copy(tempTextList = emptyList(), selectedTextTempId = null) }
+    private fun handleDiscardAndExitText(cardId: Long) {
+        viewModelScope.launch {
+            getTextsUseCase(cardId)
+                .onSuccess { result ->
+                    _cardEditorState.update { it.copy(texts = result) }
+                    unityBridge.replaceAllTexts(result)
+                }
+        }
+        exitTextEditor()
     }
 
+
+    /* 공통 함수 */
     private fun updatePanelType(panelType: PanelType) {
         _cardEditorState.update { it.copy(panelType = panelType) }
     }
@@ -424,7 +472,6 @@ class CardEditorViewModel @Inject constructor(
         _cardEditorState.update { it.copy(dialogState = dialogState) }
     }
 
-    private fun updateTransform() {
     private fun updateTempTextAttribute(textId: Long, newTextAttributes: TextAttributes.() -> TextAttributes) {
         _cardEditorState.update {
             val newList = it.tempTextList.map { item ->
@@ -436,6 +483,7 @@ class CardEditorViewModel @Inject constructor(
         }
     }
 
+    private fun saveTransformChanges() {
         val tempState = _cardEditorState.value.tempTransform ?: return
         val initialState = _cardEditorState.value.selectedSpawnedObject ?: return
 
@@ -445,17 +493,49 @@ class CardEditorViewModel @Inject constructor(
                 posX = tempState.posX,
                 posY = tempState.posY,
                 scale = tempState.scale
-            )
-            _cardEditorState.update {
-                it.copy(selectedSpawnedObject =
-                    initialState.copy(
-                        cardElement = initialState.cardElement.copy(
-                            posX = tempState.posX,
-                            posY = tempState.posY,
-                            scale = tempState.scale
+            ).onSuccess {
+                _cardEditorState.update {
+                    it.copy(selectedSpawnedObject =
+                        initialState.copy(
+                            cardElement = initialState.cardElement.copy(
+                                posX = tempState.posX,
+                                posY = tempState.posY,
+                                scale = tempState.scale
+                            )
                         )
                     )
+                }
+            }
+        }
+    }
+
+    private fun saveTextChanges(cardId: Long, shouldFinishEditing: Boolean = false) {
+        viewModelScope.launch {
+            saveTextElementsUseCase(
+                SaveTextElementsParams(
+                    cardId = cardId,
+                    updates = _cardEditorState.value.tempTextList.map { it.textElement },
+                    deletedIds = _deletedTextElementIds
                 )
+            ).onSuccess { result ->
+                if(!shouldFinishEditing) {
+                    _cardEditorState.update {
+                        val mergedList =
+                            (result.updatedElements + result.failedUpdates).map { text ->
+                                TempTextElement(textElement = text)
+                            }
+                        it.copy(
+                            tempTextList = mergedList,
+                            selectedTextTempId = mergedList.firstOrNull()?.tempId,
+                        )
+                    }
+                    _deletedTextElementIds = result.deletedIds.toMutableSet()
+                } else {
+                    _cardEditorState.update {
+                        it.copy(texts = result.updatedElements)
+                    }
+                    unityBridge.replaceAllTexts(result.updatedElements)
+                }
             }
         }
     }
@@ -465,38 +545,13 @@ class CardEditorViewModel @Inject constructor(
         _cardEditorState.update { it.copy(tempTransform = null) }
     }
 
-    private fun updateTempTextAttribute(newTextAttributes: TextAttributes.() -> TextAttributes) {
-        _cardEditorState.update {
-            val id = it.selectedTextTempId
-            val newList = it.tempTextList.map { item ->
-                if(item.tempId == id) {
-                    item.copy(textElement = item.textElement.copy(attributes = item.textElement.attributes.newTextAttributes()))
-                } else item
-            }
-            it.copy(tempTextList = newList)
-        }
-    }
+    private fun exitTextEditor() {
+        updateDialogState(DialogState.NONE)
+        updatePanelType(PanelType.ASSET_BROWSER)
 
-    private fun updateTextAttribute(cardId: Long) {
-        viewModelScope.launch {
-            updateTextUseCase(
-                UpdateTextParams(
-                    cardId = cardId,
-                    updates = _cardEditorState.value.tempTextList.map { it.textElement },
-                    deletedIds = _deletedTextElementIds
-                )
-            ).onSuccess { result ->
-                _cardEditorState.update {
-                    val updatedList = (result.updatedElements + result.failedUpdates).map { text ->
-                        TempTextElement(textElement = text)
-                    }
-                    it.copy(
-                        tempTextList = updatedList,
-                        selectedTextTempId = updatedList.firstOrNull()?.tempId,
-                    )
-                }
-                _deletedTextElementIds = result.deletedIds.toMutableSet()
-            }
+        _cardEditorState.update { it.copy(tempTextList = emptyList(), selectedTextTempId = null) }
+        _deletedTextElementIds = mutableSetOf()
+    }
 
     private fun unityChangeBackground(assetId: Long) {
         viewModelScope.launch {
@@ -516,72 +571,5 @@ class CardEditorViewModel @Inject constructor(
 
         unityBridge.updatePosition(initialState.elementId, initialPosX, initialPosY)
         unityBridge.updateScale(initialState.elementId, initialScale)
-    }
-
-    // DB 데이터 로드
-    private fun getCardDataFromDB(cardId: Long) {
-        viewModelScope.launch {
-            cardRepository.getCardById(cardId)
-                .onSuccess { card ->
-                    _cardEditorState.update { it.copy(selectedBackgroundId = card.backgroundAssetId) }
-                }
-        }
-    }
-
-    private fun getObjectsFromDB() {
-        viewModelScope.launch {
-            assetRepository.getAssetsByType(AssetType.OBJECT)
-                .onSuccess { objects ->
-                    _cardEditorState.update { it.copy(objects = objects) }
-                }
-        }
-    }
-
-    private fun getBackgroundsFromDB() {
-        viewModelScope.launch {
-            assetRepository.getAssetsByType(AssetType.BACKGROUND)
-                .onSuccess { backgrounds ->
-                    _cardEditorState.update { it.copy(backgrounds = backgrounds) }
-                }
-        }
-    }
-
-    private fun getTextsFromDB(cardId: Long) {
-        viewModelScope.launch {
-            cardElementRepository.getTextElementsByCardId(cardId)
-                .onSuccess { result ->
-                    val newList = result.mapNotNull { element ->
-                        element.textAttributes?.let { attr ->
-                            TempTextElement(
-                                textElement = TextElement(
-                                    elementId = element.elementId,
-                                    attributes = attr,
-                                    posX = element.posX,
-                                    posY = element.posY
-                                )
-                            )
-                        }
-                    }.asReversed()
-                    _cardEditorState.update {
-                        it.copy(
-                            tempTextList = newList,
-                            selectedTextTempId = newList.firstOrNull()?.tempId
-                        )
-                    }
-                }
-        }
-    }
-
-    private fun loadSpawnedObjectsFromDB(cardId: Long) {
-        viewModelScope.launch {
-            cardElementRepository.getObjectElementsWithAssetKeysByCardId(cardId)
-                .collect { result ->
-                    result.onSuccess {
-                        _cardEditorState.update { state ->
-                            state.copy(spawnedObjects = it.reversed())
-                        }
-                    }
-                }
-        }
     }
 }

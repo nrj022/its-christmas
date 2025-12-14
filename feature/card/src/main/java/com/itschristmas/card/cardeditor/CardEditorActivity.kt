@@ -175,6 +175,7 @@ class CardEditorActivity : AppCompatActivity() {
         when (msg.type) {
             UnityMessageType.LIFECYCLE -> {
                 if (msg.status == UnityStatusType.START) {
+                    viewModel.handleInitUnity()
                     Log.i("UnityMsg", "Unity Started Ready!")
                 }
             }

@@ -35,7 +35,7 @@ fun CardEditorBottomScreen(cardId: Long, viewModel: CardEditorViewModel = hiltVi
                 onAddTextClicked = { viewModel.onIntent(CardEditorIntent.EnterTextMode) },
                 onObjectClicked = { viewModel.onIntent(CardEditorIntent.CreateObject(cardId, it)) },
                 onSpawnedObjectClicked = { viewModel.onIntent(CardEditorIntent.SelectSpawnedObject(it)) },
-                onBackgroundClicked = { viewModel.onIntent(CardEditorIntent.ChangeBackground(it)) }
+                onBackgroundClicked = { viewModel.onIntent(CardEditorIntent.ChangeBackground(cardId, it)) }
             )
 
         PanelType.TRANSFORM_CONTROL -> {

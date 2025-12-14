@@ -19,6 +19,7 @@ import com.itschristmas.domain.model.TextAttributes
 import com.itschristmas.domain.model.TextElement
 import com.itschristmas.domain.repository.AssetRepository
 import com.itschristmas.domain.repository.CardElementRepository
+import com.itschristmas.domain.repository.CardRepository
 import com.itschristmas.domain.usecase.GetTextElementsUseCase
 import com.itschristmas.domain.usecase.LoadCardEditorUseCase
 import com.itschristmas.domain.usecase.SaveTextElementsParams
@@ -36,6 +37,7 @@ import kotlin.onSuccess
 
 @HiltViewModel
 class CardEditorViewModel @Inject constructor(
+    private val cardRepository: CardRepository,
     private val assetRepository: AssetRepository,
     private val cardElementRepository: CardElementRepository,
     private val loadCardEditorUseCase: LoadCardEditorUseCase,
@@ -73,7 +75,7 @@ class CardEditorViewModel @Inject constructor(
                 intent.cardId,
                 intent.clickedObject
             )
-            is CardEditorIntent.ChangeBackground -> handleChangeBackground(intent.assetId)
+            is CardEditorIntent.ChangeBackground -> handleChangeBackground(intent.cardId,intent.assetId)
             is CardEditorIntent.SelectSpawnedObject -> handleSelectSpawnedObject(intent.element)
             is CardEditorIntent.DeleteSpawnedObject -> handleDeleteSpawnedObject()
             is CardEditorIntent.EnterTransformMode -> handleEnterTransformMode()
@@ -183,9 +185,15 @@ class CardEditorViewModel @Inject constructor(
         }
     }
 
-    private fun handleChangeBackground(assetId: Long) {
+    private fun handleChangeBackground(cardId: Long, assetId: Long) {
+        val currentBackgroundId = _cardEditorState.value.selectedBackgroundId
+        if (currentBackgroundId == assetId) return
+
+        viewModelScope.launch {
+            cardRepository.updateBackgroundAssetId(cardId, assetId)
+        }
         _cardEditorState.update {
-            it.copy(selectedBackgroundId = if (it.selectedBackgroundId == assetId) null else assetId)
+            it.copy(selectedBackgroundId = assetId)
         }
         unityChangeBackground(assetId)
     }

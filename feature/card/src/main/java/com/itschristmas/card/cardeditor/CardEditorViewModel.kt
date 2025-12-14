@@ -142,26 +142,22 @@ class CardEditorViewModel @Inject constructor(
 
     private fun handleCreateObject(cardId: Long, clickedObject: Asset) {
         viewModelScope.launch {
-            cardElementRepository.insertCardElement(
-                CardElement(
-                    elementId = 0,
-                    cardId = cardId,
-                    assetId = clickedObject.assetId,
-                    elementType = ElementType.OBJECT,
-                    posX = 0f,
-                    posY = 0f,
-                    posZ = 0f,
-                    scale = 1
-                )
-            ).onSuccess { id ->
-                unityBridge.createObject(
-                    unityKey = clickedObject.unityKey,
-                    elementId = id,
-                    posX = 0.0,
-                    posY = 0.0,
-                    posZ = 0.0,
-                    scale = 1
-                )
+            val newElement = CardElement(
+                elementId = 0,
+                cardId = cardId,
+                assetId = clickedObject.assetId,
+                elementType = ElementType.OBJECT,
+            )
+            cardElementRepository.insertCardElement(newElement)
+                .onSuccess { id ->
+                    unityBridge.createObject(
+                        unityKey = clickedObject.unityKey,
+                        elementId = id,
+                        posX = newElement.posX,
+                        posY = newElement.posY,
+                        posZ = newElement.posZ,
+                        scale = newElement.scale
+                    )
             }
         }
     }

@@ -44,6 +44,7 @@ data class CardEditorState(
             selectedSpawnedObject?.let { selected ->
                 temp.posX != selected.cardElement.posX ||
                 temp.posY != selected.cardElement.posY ||
+                temp.posZ != selected.cardElement.posZ ||
                 temp.scale != selected.cardElement.scale
             } ?: false
         } ?: false

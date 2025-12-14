@@ -1,13 +1,15 @@
 package com.itschristmas.data.bridgeimpl
 
-import com.itschristmas.data.dto.ColorDto
 import com.itschristmas.data.dto.ObjectDto
 import com.itschristmas.data.dto.SceneDto
 import com.itschristmas.data.dto.TextDto
+import com.itschristmas.data.dto.TextListDto
 import com.itschristmas.data.dto.UpdateDto
 import com.itschristmas.data.dto.Vector3Dto
+import com.itschristmas.data.mapper.toDto
 import com.itschristmas.domain.bridge.UnityBridge
 import com.itschristmas.domain.model.CardElementWithAssetKeys
+import com.itschristmas.domain.model.RgbaColor
 import com.itschristmas.domain.model.TextElement
 import com.unity3d.player.UnityPlayer
 import kotlinx.serialization.json.Json
@@ -27,9 +29,9 @@ class UnityBridgeImpl @Inject constructor(): UnityBridge {
                         id = "${it.cardElement.elementId}",
                         prefabName = it.unityKey,
                         position = Vector3Dto(
-                            x = it.cardElement.posX.toFloat(),
-                            y = it.cardElement.posY.toFloat(),
-                            z = it.cardElement.posZ.toFloat()
+                            x = it.cardElement.posX,
+                            y = it.cardElement.posY,
+                            z = it.cardElement.posZ
                         ),
                         scale = it.cardElement.scale
                   )},
@@ -37,19 +39,14 @@ class UnityBridgeImpl @Inject constructor(): UnityBridge {
                     TextDto(
                         id = "${it.elementId}",
                         position = Vector3Dto(
-                            x = it.posX.toFloat(),
-                            y = it.posY.toFloat(),
+                            x = it.posX,
+                            y = it.posY,
                             z = 0f
                         ),
                         textContent = it.attributes.content,
                         fontFamilyName = it.attributes.fontFamily.key,
                         fontSize = it.attributes.fontSize,
-                        color = ColorDto(
-                            r = it.attributes.textColor.rgbaColor.r,
-                            g = it.attributes.textColor.rgbaColor.g,
-                            b = it.attributes.textColor.rgbaColor.b,
-                            a = it.attributes.textColor.rgbaColor.a,
-                        ),
+                        color = it.attributes.textColor.rgbaColor.toDto(),
                         textAlignInt = it.attributes.alignment.alignCode,
                     )
                 }
@@ -65,16 +62,16 @@ class UnityBridgeImpl @Inject constructor(): UnityBridge {
     override fun createObject(
         unityKey: String,
         elementId: Long,
-        posX: Double,
-        posY: Double,
-        posZ: Double,
+        posX: Float,
+        posY: Float,
+        posZ: Float,
         scale: Int
     ) {
         val jsonString = Json.encodeToString(
             ObjectDto(
                 id = "$elementId",
                 prefabName = unityKey,
-                position = Vector3Dto(posX.toFloat(), posY.toFloat(), posZ.toFloat()),
+                position = Vector3Dto(posX, posY, posZ),
                 scale = scale,
             )
         )
@@ -82,28 +79,18 @@ class UnityBridgeImpl @Inject constructor(): UnityBridge {
     }
 
     override fun createText(
-        elementId: Long,
-        textContent: String,
-        posX: Double,
-        posY: Double,
-        posZ: Double,
-        fontFamilyName: String,
-        fontSize: Float,
-        colorR: Float,
-        colorG: Float,
-        colorB: Float,
-        colorA: Float,
-        textAlignInt: Int,
+        tempId: Long?,
+        textElement: TextElement
     ) {
         val jsonString = Json.encodeToString(
             TextDto(
-                id = "$elementId",
-                position = Vector3Dto(posX.toFloat(), posY.toFloat(), posZ.toFloat()),
-                textContent = textContent,
-                fontFamilyName = fontFamilyName,
-                fontSize = fontSize,
-                color = ColorDto(colorR, colorG, colorB, colorA),
-                textAlignInt = textAlignInt
+                id = "${tempId ?: textElement.elementId}",
+                position = Vector3Dto(textElement.posX, textElement.posY, textElement.posZ),
+                textContent = textElement.attributes.content,
+                fontFamilyName = textElement.attributes.fontFamily.key,
+                fontSize = textElement.attributes.fontSize,
+                color = textElement.attributes.textColor.rgbaColor.toDto(),
+                textAlignInt = textElement.attributes.alignment.alignCode
             )
         )
         UnityPlayer.UnitySendMessage("AndroidMessageHandler", "CreateTextFromAndroid", jsonString)
@@ -144,20 +131,14 @@ class UnityBridgeImpl @Inject constructor(): UnityBridge {
         UnityPlayer.UnitySendMessage("AndroidMessageHandler", "UpdateFontSizeFromAndroid", jsonString)
     }
 
-    override fun updateTextColor(
-        elementId: Long,
-        colorR: Float,
-        colorG: Float,
-        colorB: Float,
-        colorA: Float
-    ) {
+    override fun updateTextColor(elementId: Long, rgbaColor: RgbaColor) {
         val jsonString = Json.encodeToString(
             UpdateDto(
                 id = "$elementId",
-                value = ColorDto(colorR, colorG, colorB, colorA)
+                value = rgbaColor.toDto()
             )
         )
-        UnityPlayer.UnitySendMessage("AndroidMessageHandler", "UpdateTextColor", jsonString)
+        UnityPlayer.UnitySendMessage("AndroidMessageHandler", "UpdateTextColorFromAndroid", jsonString)
     }
 
     override fun updateTextContent(elementId: Long, textContent: String) {
@@ -167,7 +148,7 @@ class UnityBridgeImpl @Inject constructor(): UnityBridge {
                 value = textContent
             )
         )
-        UnityPlayer.UnitySendMessage("AndroidMessageHandler", "UpdateTextContent", jsonString)
+        UnityPlayer.UnitySendMessage("AndroidMessageHandler", "UpdateTextContentFromAndroid", jsonString)
     }
 
     override fun updateFont(elementId: Long, fontFamilyName: String) {
@@ -177,7 +158,7 @@ class UnityBridgeImpl @Inject constructor(): UnityBridge {
                 value = fontFamilyName
             )
         )
-        UnityPlayer.UnitySendMessage("AndroidMessageHandler", "UpdateFont", jsonString)
+        UnityPlayer.UnitySendMessage("AndroidMessageHandler", "UpdateFontFromAndroid", jsonString)
     }
 
     override fun updateTextAlign(elementId: Long, textAlignInt: Int) {
@@ -187,7 +168,7 @@ class UnityBridgeImpl @Inject constructor(): UnityBridge {
                 value = textAlignInt
             )
         )
-        UnityPlayer.UnitySendMessage("AndroidMessageHandler", "UpdateTextAlign", jsonString)
+        UnityPlayer.UnitySendMessage("AndroidMessageHandler", "UpdateTextAlignFromAndroid", jsonString)
     }
 
     override fun selectObject(elementId: Long) {

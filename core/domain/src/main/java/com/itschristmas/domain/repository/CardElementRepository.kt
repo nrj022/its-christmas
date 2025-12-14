@@ -21,7 +21,7 @@ interface CardElementRepository {
 
     suspend fun getTextElementsByCardId(cardId: Long): Result<List<CardElement>>
 
-    suspend fun updateElementTransform(elementId: Long, posX: Int, posY: Int, scale: Int): Result<Int>
+    suspend fun updateElementTransform(elementId: Long, posX: Float, posY: Float, scale: Int): Result<Int>
 
-    suspend fun updateTextElement(elementId: Long, textAttributes: TextAttributes, posX: Int, posY: Int): Result<Int>
+    suspend fun updateTextElement(elementId: Long, textAttributes: TextAttributes, posX: Float, posY: Float): Result<Int>
 }

@@ -1,6 +1,7 @@
 package com.itschristmas.domain.bridge
 
 import com.itschristmas.domain.model.CardElementWithAssetKeys
+import com.itschristmas.domain.model.RgbaColor
 import com.itschristmas.domain.model.TextElement
 
 interface UnityBridge {
@@ -14,32 +15,22 @@ interface UnityBridge {
     fun createObject(
         unityKey: String,
         elementId: Long,
-        posX: Double,
-        posY: Double,
-        posZ: Double,
+        posX: Float,
+        posY: Float,
+        posZ: Float,
         scale: Int
     )
 
     fun createText(
-        elementId: Long,
-        textContent: String,
-        posX: Double,
-        posY: Double,
-        posZ: Double,
-        fontFamilyName: String,
-        fontSize: Float,
-        colorR: Float,
-        colorG: Float,
-        colorB: Float,
-        colorA: Float,
-        textAlignInt: Int,
+        tempId: Long? = null,
+        textElement: TextElement
     )
 
     fun updatePosition(
         elementId: Long,
         posX: Float,
         posY: Float,
-        posZ: Float = 1f,
+        posZ: Float = 0f,
     )
 
     fun updateScale(elementId: Long, scale: Int)
@@ -48,13 +39,7 @@ interface UnityBridge {
 
     fun updateFontSize(elementId: Long, fontSize: Float)
 
-    fun updateTextColor(
-        elementId: Long,
-        colorR: Float,
-        colorG: Float,
-        colorB: Float,
-        colorA: Float
-    )
+    fun updateTextColor(elementId: Long, rgbaColor: RgbaColor)
 
     fun updateFont(elementId: Long, fontFamilyName: String)
 

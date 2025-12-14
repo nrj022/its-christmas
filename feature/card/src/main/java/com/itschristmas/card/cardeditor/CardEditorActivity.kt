@@ -22,9 +22,13 @@ import com.itschristmas.card.cardeditor.ui.CardEditorBottomScreen
 import com.itschristmas.card.cardeditor.ui.CardEditorTextScreen
 import com.itschristmas.card.databinding.ActivityCardEditorBinding
 import com.itschristmas.designsystem.theme.ItsChristmasTheme
+import com.itschristmas.domain.model.UnityMessage
+import com.itschristmas.domain.model.UnityMessageType
+import com.itschristmas.domain.model.UnityStatusType
 import com.unity3d.player.UnityPlayerForActivityOrService
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import kotlinx.serialization.json.Json
 
 @AndroidEntryPoint
 class CardEditorActivity : AppCompatActivity() {
@@ -138,6 +142,7 @@ class CardEditorActivity : AppCompatActivity() {
         binding.btnComplete.isVisible = state.isAssetBrowserPanelActive
         binding.containerObjectOption.isVisible = state.showObjectOptionContainer
         binding.containerTextOption.isVisible = state.showTextOptionContainer
+        binding.frameLoading.isVisible = state.isLoading
 
         updateTransformPanel(state)
     }
@@ -155,6 +160,28 @@ class CardEditorActivity : AppCompatActivity() {
     // Unity에서 호출하는 함수
     fun onUnityMessage(jsonString: String) {
         Log.d("UnityMsg", "Received: $jsonString")
+        try {
+            val message = Json.decodeFromString<UnityMessage>(jsonString)
+            // UI 스레드에서 처리 보장
+            runOnUiThread {
+                handleUnityMessage(message)
+            }
+        } catch (e: Exception) {
+            Log.e("UnityMsg", "Parsing Error: ${e.message}")
+        }
+    }
+
+    private fun handleUnityMessage(msg: UnityMessage) {
+        when (msg.type) {
+            UnityMessageType.LIFECYCLE -> {
+                if (msg.status == UnityStatusType.START) {
+                    Log.i("UnityMsg", "Unity Started Ready!")
+                }
+            }
+            UnityMessageType.UPLOAD_GLB -> {
+                if (msg.status == UnityStatusType.SUCCESS) { } else { }
+            }
+        }
     }
 
     override fun onStart() {

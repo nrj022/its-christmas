@@ -7,6 +7,7 @@ import com.itschristmas.card.cardeditor.model.DialogState
 import com.itschristmas.card.cardeditor.model.PanelType
 import com.itschristmas.card.cardeditor.model.TempTextElement
 import com.itschristmas.card.cardeditor.model.TempTransform
+import com.itschristmas.domain.bridge.UnityBridge
 import com.itschristmas.domain.enum.AssetType
 import com.itschristmas.domain.enum.ElementType
 import com.itschristmas.domain.model.Asset
@@ -37,7 +38,8 @@ class CardEditorViewModel @Inject constructor(
     private val assetRepository: AssetRepository,
     private val cardElementRepository: CardElementRepository,
     private val cardRepository: CardRepository,
-    private val updateTextUseCase: UpdateTextUseCase
+    private val updateTextUseCase: UpdateTextUseCase,
+    private val unityBridge: UnityBridge
 ) : ViewModel() {
 
     private val _cardEditorState = MutableStateFlow(CardEditorState())
@@ -103,11 +105,20 @@ class CardEditorViewModel @Inject constructor(
         }
     }
 
+    fun handleInitUnity() {
+        unityBridge.initScene(
+            _cardEditorState.value.spawnedObjects,
+            _cardEditorState.value.tempTextList.map { it.textElement }
+        )
+        _cardEditorState.update { it.copy(isLoading = false) }
+    }
+
     private fun handleInit(cardId: Long) {
         getCardDataFromDB(cardId)
         getObjectsFromDB()
         getBackgroundsFromDB()
 
+        getTextsFromDB(cardId)
         // Spawned Objects Flow 구독
         loadSpawnedObjectsFromDB(cardId)
     }
@@ -137,11 +148,21 @@ class CardEditorViewModel @Inject constructor(
                     cardId = cardId,
                     assetId = clickedObject.assetId,
                     elementType = ElementType.OBJECT,
-                    posX = 0,
-                    posY = 0,
+                    posX = 0f,
+                    posY = 0f,
+                    posZ = 0f,
                     scale = 1
                 )
-            )
+            ).onSuccess { id ->
+                unityBridge.createObject(
+                    unityKey = clickedObject.unityKey,
+                    elementId = id,
+                    posX = 0.0,
+                    posY = 0.0,
+                    posZ = 0.0,
+                    scale = 1
+                )
+            }
         }
     }
 
@@ -149,18 +170,35 @@ class CardEditorViewModel @Inject constructor(
         _cardEditorState.update {
             it.copy(selectedBackgroundId = if (it.selectedBackgroundId == assetId) null else assetId)
         }
+        viewModelScope.launch {
+            assetRepository.getAssetById(assetId)
+                .onSuccess { asset ->
+                    unityBridge.changeBackground(asset.unityKey)
+                }
+        }
     }
 
     private fun handleSelectSpawnedObject(element: CardElementWithAssetKeys) {
+        val alreadySelected = _cardEditorState.value.selectedSpawnedObjectId == element.cardElement.elementId
+
         _cardEditorState.update {
             it.copy(selectedSpawnedObject = if (it.selectedSpawnedObjectId == element.cardElement.elementId) null else element)
+        }
+
+        if (alreadySelected) {
+            unityBridge.clearSelection()
+        } else {
+            unityBridge.selectObject(element.cardElement.elementId)
         }
     }
 
     private fun handleDeleteSpawnedObject() {
         viewModelScope.launch {
-            _cardEditorState.value.selectedSpawnedObjectId?.let {
-                cardElementRepository.deleteCardElementById(it)
+            _cardEditorState.value.selectedSpawnedObjectId?.let { id ->
+                cardElementRepository.deleteCardElementById(id)
+                    .onSuccess { row ->
+                        if(row > 0) unityBridge.deleteObject(id)
+                    }
             }
             updateDialogState(DialogState.NONE)
         }
@@ -176,6 +214,7 @@ class CardEditorViewModel @Inject constructor(
                         thumbnailKey = obj.thumbnailKey,
                         posX = obj.cardElement.posX,
                         posY = obj.cardElement.posY,
+                        posZ = obj.cardElement.posZ,
                         scale = obj.cardElement.scale
                     )
                 )
@@ -185,55 +224,38 @@ class CardEditorViewModel @Inject constructor(
 
     private fun handleEnterTextMode(cardId: Long) {
         updatePanelType(PanelType.TEXT_EDITOR)
-        viewModelScope.launch {
-            cardElementRepository.getTextElementsByCardId(cardId)
-                .onSuccess { result ->
-                    val newList = result.mapNotNull { element ->
-                        element.textAttributes?.let { attr ->
-                            TempTextElement(
-                                textElement = TextElement(
-                                    elementId = element.elementId,
-                                    attributes = attr,
-                                    posX = element.posX,
-                                    posY = element.posY
-                                )
-                            )
-                        }
-                    }.asReversed()
-                    _cardEditorState.update {
-                        it.copy(
-                            tempTextList = newList,
-                            selectedTextTempId = newList.firstOrNull()?.tempId
-                        )
-                    }
-                }
-        }
+        getTextsFromDB(cardId)  // 제거 ?
     }
 
 
     private fun handleResetCamera() {
-
+        unityBridge.clearSelection()
     }
 
     /* 오브젝트 조정 */
     private fun handleMoveObject(direction: Direction) {
         val tempState = _cardEditorState.value.tempTransform ?: return
+        val updatedPosX = tempState.posX + direction.dx
+        val updatedPosY = tempState.posY + direction.dy
+
         _cardEditorState.update {
             it.copy(tempTransform =
-                tempState.copy(
-                    posY = tempState.posY + direction.dy,
-                    posX = tempState.posX + direction.dx
-                )
+                tempState.copy(posX = updatedPosX, posY = updatedPosY)
             )
         }
+
+        unityBridge.updatePosition(tempState.elementId, updatedPosX.toFloat(), updatedPosY.toFloat())
     }
 
     private fun handleChangeScale(newScale: Int) {
+        val tempState = _cardEditorState.value.tempTransform ?: return
         if(newScale < 1) return
 
         _cardEditorState.update {
-            it.copy(tempTransform = it.tempTransform?.copy(scale = newScale))
+            it.copy(tempTransform = tempState.copy(scale = newScale))
         }
+
+        unityBridge.updateScale(tempState.elementId, newScale)
     }
 
     private fun handleCancelTransform() {
@@ -256,6 +278,7 @@ class CardEditorViewModel @Inject constructor(
 
     private fun handleDiscardAndExitTransform() {
         exitTransform()
+        unityResetTransform()
         updateDialogState(DialogState.NONE)
     }
 
@@ -266,29 +289,35 @@ class CardEditorViewModel @Inject constructor(
         _cardEditorState.update {
             it.copy(tempTransform =
                 tempState.copy(
-                    posX = initialState?.posX ?: 0,
-                    posY = initialState?.posY ?: 0,
+                    posX = initialState?.posX ?: 0f,
+                    posY = initialState?.posY ?: 0f,
                     scale = initialState?.scale ?: 1
                 )
             )
         }
+
+        unityResetTransform()
     }
 
     /* 텍스트 편집 */
     private fun handleRequestDefaultText() {
-        _cardEditorState.update {
-            if (it.tempTextList.isNotEmpty()) {
-                if (it.selectedTextTempId == null) {
-                    it.copy(selectedTextTempId = it.tempTextList.first().tempId)
-                } else it
-            } else {
-                val newTextElement = TempTextElement()
-                it.copy(
-                    tempTextList = listOf(newTextElement),
-                    selectedTextTempId = newTextElement.tempId
-                )
-            }
+        if (_cardEditorState.value.tempTextList.isNotEmpty() && _cardEditorState.value.selectedTextTempId == null) {
+            _cardEditorState.update { it.copy(selectedTextTempId = it.tempTextList.first().tempId) }
+            return
         }
+
+        val newTextElement = TempTextElement()
+        _cardEditorState.update {
+            it.copy(
+                tempTextList = listOf(newTextElement),
+                selectedTextTempId = newTextElement.tempId
+            )
+        }
+
+        unityBridge.createText(
+            tempId = newTextElement.tempId,
+            textElement = newTextElement.textElement
+        )
     }
 
     private fun handleAddText() {
@@ -299,6 +328,11 @@ class CardEditorViewModel @Inject constructor(
                 selectedTextTempId = newTextElement.tempId
             )
         }
+
+        unityBridge.createText(
+            tempId = newTextElement.tempId,
+            textElement = newTextElement.textElement
+        )
     }
 
     private fun handleDeleteText(textId: Long) {
@@ -318,31 +352,33 @@ class CardEditorViewModel @Inject constructor(
     }
 
     private fun handleSelectText(textId: Long) {
-        _cardEditorState.update {
-            it.copy(
-                selectedTextTempId = textId
-            )
-        }
+        _cardEditorState.update { it.copy(selectedTextTempId = textId) }
+        unityBridge.selectObject(textId)
     }
 
     private fun handleChangeTextContent(newText: String) {
         updateTempTextAttribute { copy(content = newText) }
+        unityBridge.updateTextContent(_cardEditorState.value.selectedTextTempId ?: 0, newText)
     }
 
     private fun handleSelectAlignment(newAlignment: TextAlignmentOption) {
         updateTempTextAttribute { copy(alignment = newAlignment) }
+        unityBridge.updateTextAlign(_cardEditorState.value.selectedTextTempId ?: 0, newAlignment.alignCode)
     }
 
     private fun handleSelectColor(newColor: ColorOption) {
         updateTempTextAttribute { copy(textColor = newColor) }
+        unityBridge.updateTextColor(_cardEditorState.value.selectedTextTempId ?: 0, newColor.rgbaColor)
     }
 
     private fun handleChangeFontSize(newSize: Float) {
         updateTempTextAttribute { copy(fontSize = newSize) }
+        unityBridge.updateFontSize(_cardEditorState.value.selectedTextTempId ?: 0, newSize)
     }
 
     private fun handleSelectFont(newFont: FontOption) {
         updateTempTextAttribute { copy(fontFamily = newFont) }
+        unityBridge.updateFont(_cardEditorState.value.selectedTextTempId ?: 0, newFont.key)
     }
 
     private fun handleMoveText(direction: Direction) {
@@ -379,17 +415,12 @@ class CardEditorViewModel @Inject constructor(
         _cardEditorState.update { it.copy(tempTextList = emptyList(), selectedTextTempId = null) }
     }
 
-
     private fun updatePanelType(panelType: PanelType) {
-        _cardEditorState.update {
-            it.copy(panelType = panelType)
-        }
+        _cardEditorState.update { it.copy(panelType = panelType) }
     }
 
     private fun updateDialogState(dialogState: DialogState) {
-        _cardEditorState.update {
-            it.copy(dialogState = dialogState)
-        }
+        _cardEditorState.update { it.copy(dialogState = dialogState) }
     }
 
     private fun updateTransform() {
@@ -457,6 +488,18 @@ class CardEditorViewModel @Inject constructor(
         }
     }
 
+    private fun unityResetTransform() {
+        val initialState = _cardEditorState.value.selectedSpawnedObject?.cardElement ?: return
+
+        val initialPosX = initialState.posX
+        val initialPosY = initialState.posY
+        val initialScale = initialState.scale
+
+        unityBridge.updatePosition(initialState.elementId, initialPosX.toFloat(), initialPosY.toFloat())
+        unityBridge.updateScale(initialState.elementId, initialScale)
+    }
+
+    // DB 데이터 로드
     private fun getCardDataFromDB(cardId: Long) {
         viewModelScope.launch {
             cardRepository.getCardById(cardId)
@@ -480,6 +523,32 @@ class CardEditorViewModel @Inject constructor(
             assetRepository.getAssetsByType(AssetType.BACKGROUND)
                 .onSuccess { backgrounds ->
                     _cardEditorState.update { it.copy(backgrounds = backgrounds) }
+                }
+        }
+    }
+
+    private fun getTextsFromDB(cardId: Long) {
+        viewModelScope.launch {
+            cardElementRepository.getTextElementsByCardId(cardId)
+                .onSuccess { result ->
+                    val newList = result.mapNotNull { element ->
+                        element.textAttributes?.let { attr ->
+                            TempTextElement(
+                                textElement = TextElement(
+                                    elementId = element.elementId,
+                                    attributes = attr,
+                                    posX = element.posX,
+                                    posY = element.posY
+                                )
+                            )
+                        }
+                    }.asReversed()
+                    _cardEditorState.update {
+                        it.copy(
+                            tempTextList = newList,
+                            selectedTextTempId = newList.firstOrNull()?.tempId
+                        )
+                    }
                 }
         }
     }

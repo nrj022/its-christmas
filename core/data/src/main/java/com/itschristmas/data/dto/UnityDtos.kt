@@ -34,6 +34,11 @@ data class ObjectDto(
 )
 
 @Serializable
+data class TextListDto(
+    val texts: List<TextDto>
+)
+
+@Serializable
 data class TextDto(
     val id: String,
     val position: Vector3Dto,

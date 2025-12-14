@@ -171,6 +171,31 @@ class UnityBridgeImpl @Inject constructor(): UnityBridge {
         UnityPlayer.UnitySendMessage("AndroidMessageHandler", "UpdateTextAlignFromAndroid", jsonString)
     }
 
+    override fun replaceAllTexts(textElements: List<TextElement>) {
+        val jsonString = Json.encodeToString(
+            TextListDto(
+                texts = textElements.mapNotNull {
+                    it.elementId?.let { id ->
+                        TextDto(
+                            id = "$id",
+                            position = Vector3Dto(it.posX, it.posY, it.posZ),
+                            textContent = it.attributes.content,
+                            fontFamilyName = it.attributes.fontFamily.key,
+                            fontSize = it.attributes.fontSize,
+                            color = it.attributes.textColor.rgbaColor.toDto(),
+                            textAlignInt = it.attributes.alignment.alignCode
+                        )
+                    }
+                }
+            )
+        )
+        UnityPlayer.UnitySendMessage("AndroidMessageHandler", "ReplaceAllTextsFromAndroid", jsonString)
+    }
+
+    override fun clearAllTexts() {
+        UnityPlayer.UnitySendMessage("ObjectManager", "ClearAllTexts", "")
+    }
+
     override fun selectObject(elementId: Long) {
         UnityPlayer.UnitySendMessage("ObjectManager", "SelectObject", "$elementId")
     }

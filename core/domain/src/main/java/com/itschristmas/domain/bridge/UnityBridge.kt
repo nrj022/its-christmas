@@ -45,6 +45,10 @@ interface UnityBridge {
 
     fun updateTextAlign(elementId: Long, textAlignInt: Int)
 
+    fun replaceAllTexts(textElements: List<TextElement>)
+
+    fun clearAllTexts()
+
     fun selectObject(elementId: Long)
 
     fun clearSelection()

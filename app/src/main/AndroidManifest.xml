@@ -13,20 +13,22 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ItsChristmas">
         <activity
-            android:name="com.itschristmas.card.cardeditor.CardEditorActivity"
-            android:exported="true"
-            android:theme="@style/Theme.ItsChristmas" >
-        </activity>
-        <activity
             android:name="com.itschristmas.main.ui.MainActivity"
             android:exported="true"
             android:theme="@style/Theme.ItsChristmas">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="com.itschristmas.card.cardeditor.CardEditorActivity"
+            android:exported="false"
+            android:theme="@style/Theme.ItsChristmas" >
+        </activity>
+        <activity
+            android:name="com.itschristmas.card.cardshare.CardShareActivity"
+            android:exported="false" />
     </application>
 
 </manifest>

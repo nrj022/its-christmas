@@ -54,4 +54,8 @@ interface UnityBridge {
     fun clearSelection()
 
     fun deleteObject(elementId: Long)
+
+    fun exportAndUpload()
+
+    fun getGlbDownloadUrl(fileName: String)
 }

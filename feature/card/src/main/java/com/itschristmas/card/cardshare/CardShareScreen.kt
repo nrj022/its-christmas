@@ -26,15 +26,14 @@ import com.itschristmas.designsystem.theme.White
 import com.itschristmas.card.R
 
 @Composable
-fun CardShareScreen(
-) {
+fun CardShareScreen(cardUrl: String) {
     val context = LocalContext.current
 
     CardShareContent(
-        cardUrl = "https://its-christmas-1f0ea.firebaseapp.com/",
+        cardUrl = cardUrl,
         onBackClicked = {},
         onCompleteClicked = {},
-        onShareClicked = { context.shareCard("https://")}
+        onShareClicked = { context.shareCard(cardUrl)}
     )
 }
 

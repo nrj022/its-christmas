@@ -1,11 +1,13 @@
 package com.itschristmas.card.cardeditor
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import android.view.MotionEvent
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -20,6 +22,7 @@ import com.itschristmas.card.cardeditor.util.toBase62
 import com.itschristmas.card.cardeditor.model.DialogState
 import com.itschristmas.card.cardeditor.ui.CardEditorBottomScreen
 import com.itschristmas.card.cardeditor.ui.CardEditorTextScreen
+import com.itschristmas.card.cardshare.CardShareActivity
 import com.itschristmas.card.databinding.ActivityCardEditorBinding
 import com.itschristmas.designsystem.theme.ItsChristmasTheme
 import com.itschristmas.domain.model.UnityMessage
@@ -37,12 +40,13 @@ class CardEditorActivity : AppCompatActivity() {
     private lateinit var unityPlayer: UnityPlayerForActivityOrService
     private lateinit var layoutParams: ConstraintLayout.LayoutParams
     private val viewModel: CardEditorViewModel by viewModels()
+    private var cardId: Long = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityCardEditorBinding.inflate(layoutInflater)
         layoutParams = binding.unityContainer.layoutParams as ConstraintLayout.LayoutParams
-        val cardId = intent.getLongExtra("cardId", 1)
+        cardId = intent.getLongExtra("cardId", 1)
 
         setContentView(binding.root)
         initUnity()
@@ -58,6 +62,18 @@ class CardEditorActivity : AppCompatActivity() {
                 launch {
                     viewModel.unityContainerHeightFractionFlow.collect {
                         updateUnityContainerHeight(it)
+                    }
+                }
+                launch {
+                    viewModel.cardEditorSideEffect.collect {
+                        when(it) {
+                            is CardEditorSideEffect.NavigateToCardShare -> {
+                                navigateToCardShare(it.cardUrl)
+                            }
+                            is CardEditorSideEffect.ShowToast -> {
+                                Toast.makeText(this@CardEditorActivity, it.message, Toast.LENGTH_SHORT).show()
+                            }
+                        }
                     }
                 }
             }
@@ -157,6 +173,12 @@ class CardEditorActivity : AppCompatActivity() {
         binding.textElementKey.text = if(active) toBase62(temp.elementId) else ""
     }
 
+    private fun navigateToCardShare(cardUrl: String) {
+        val intent = Intent(this@CardEditorActivity, CardShareActivity::class.java)
+        intent.putExtra("cardUrl", cardUrl)
+        startActivity(intent)
+    }
+
     // Unity에서 호출하는 함수
     fun onUnityMessage(jsonString: String) {
         Log.d("UnityMsg", "Received: $jsonString")
@@ -180,7 +202,9 @@ class CardEditorActivity : AppCompatActivity() {
                 }
             }
             UnityMessageType.UPLOAD_GLB -> {
-                if (msg.status == UnityStatusType.SUCCESS) { } else { }
+            }
+            UnityMessageType.GET_DOWNLOAD_URL -> {
+                viewModel.onIntent(CardEditorIntent.ExportGlbResult(cardId, msg.status, msg.data))
             }
         }
     }

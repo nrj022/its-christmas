@@ -1,5 +1,6 @@
 package com.itschristmas.card.cardeditor
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.itschristmas.card.cardeditor.model.Direction
@@ -7,6 +8,8 @@ import com.itschristmas.card.cardeditor.model.DialogState
 import com.itschristmas.card.cardeditor.model.PanelType
 import com.itschristmas.card.cardeditor.model.TempTextElement
 import com.itschristmas.card.cardeditor.model.TempTransform
+import com.itschristmas.card.cardeditor.util.extractFileNameAndToken
+import com.itschristmas.card.cardeditor.util.generateCardUrl
 import com.itschristmas.domain.bridge.UnityBridge
 import com.itschristmas.domain.enum.ElementType
 import com.itschristmas.domain.model.Asset
@@ -17,6 +20,7 @@ import com.itschristmas.domain.model.FontOption
 import com.itschristmas.domain.model.TextAlignmentOption
 import com.itschristmas.domain.model.TextAttributes
 import com.itschristmas.domain.model.TextElement
+import com.itschristmas.domain.model.UnityStatusType
 import com.itschristmas.domain.repository.AssetRepository
 import com.itschristmas.domain.repository.CardElementRepository
 import com.itschristmas.domain.repository.CardRepository
@@ -25,7 +29,9 @@ import com.itschristmas.domain.usecase.LoadCardEditorUseCase
 import com.itschristmas.domain.usecase.SaveTextElementsParams
 import com.itschristmas.domain.usecase.SaveTextElementsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
@@ -34,6 +40,8 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.Long
 import kotlin.onSuccess
+
+private const val TAG = "CardEditorViewModel"
 
 @HiltViewModel
 class CardEditorViewModel @Inject constructor(
@@ -48,6 +56,10 @@ class CardEditorViewModel @Inject constructor(
 
     private val _cardEditorState = MutableStateFlow(CardEditorState())
     val cardEditorState: StateFlow<CardEditorState> = _cardEditorState
+
+    private val _cardEditorSideEffect = MutableSharedFlow<CardEditorSideEffect>()
+    val cardEditorSideEffect: SharedFlow<CardEditorSideEffect> = _cardEditorSideEffect
+
 
     private var _deletedTextElementIds: MutableSet<Long> = mutableSetOf()
 
@@ -68,7 +80,8 @@ class CardEditorViewModel @Inject constructor(
             is CardEditorIntent.Init -> handleInit(intent.cardId)
             is CardEditorIntent.ChangeTitle -> handleChangeTitle(intent.newTitle)
             is CardEditorIntent.FinishEditing -> handleFinishEditing()
-            is CardEditorIntent.GenerateCard -> handleGenerateCard()
+            is CardEditorIntent.ExportGlbAndUpload -> handleExportGlbAndUpload()
+            is CardEditorIntent.ExportGlbResult -> handleExportGlbResult(intent.cardId, intent.unityStatusType, intent.result)
             is CardEditorIntent.ChangeDialogState -> handleChangeDialogState(intent.dialogState)
 
             is CardEditorIntent.CreateObject -> handleCreateObject(
@@ -154,8 +167,39 @@ class CardEditorViewModel @Inject constructor(
         updateDialogState(DialogState.SET_CARD_TITLE)
     }
 
-    private fun handleGenerateCard() {
-        /* TODO */
+    private fun handleExportGlbAndUpload() {
+        updateDialogState(DialogState.NONE)
+        _cardEditorState.update { it.copy(isLoading = true) }
+        unityBridge.exportAndUpload()
+    }
+
+    private fun handleExportGlbResult(cardId: Long, unityStatusType: UnityStatusType, result: String) {
+        viewModelScope.launch {
+            val state = _cardEditorState.value
+            when (unityStatusType) {
+                UnityStatusType.SUCCESS -> {
+                    val (fileName, token) = extractFileNameAndToken(result)
+                    val selectedBg = state.backgrounds.firstOrNull { it.assetId == state.selectedBackgroundId }
+
+                    cardRepository.updateGlb(cardId, fileName, token)
+
+                    val cardUrl = generateCardUrl(
+                        cardTitle = state.cardTitle,
+                        fileName = fileName,
+                        token = token,
+                        bgFileName = selectedBg?.firebaseFileName ?: "",
+                        bgToken = selectedBg?.firebaseToken ?: ""
+                    )
+
+                    _cardEditorSideEffect.emit(CardEditorSideEffect.NavigateToCardShare(cardUrl))
+                }
+                else -> {
+                    _cardEditorSideEffect.emit(CardEditorSideEffect.ShowToast("Oops! Card creation failed. Please try again."))
+                    Log.e(TAG, "handleExportGlbResult: $result")
+                }
+            }
+            _cardEditorState.update { it.copy(isLoading = false) }
+        }
     }
 
     private fun handleChangeDialogState(dialogState: DialogState) {

@@ -1,7 +1,7 @@
 package com.itschristmas.domain.repository
 
 import com.itschristmas.domain.model.Card
-import com.itschristmas.domain.model.GlbAndBgFirebaseKey
+import com.itschristmas.domain.model.GlbAndBgFirebase
 
 interface CardRepository {
 
@@ -9,9 +9,9 @@ interface CardRepository {
 
     suspend fun getCardById(cardId: Long): Result<Card>
 
-    suspend fun getGlbAndBgFirebaseKey(cardId: Long): Result<GlbAndBgFirebaseKey>
+    suspend fun getGlbAndBgFirebase(cardId: Long): Result<GlbAndBgFirebase>
 
     suspend fun updateBackgroundAssetId(cardId: Long, backgroundAssetId: Long): Result<Int>
 
-    suspend fun updateGlbKey(cardId: Long, glbKey: String): Result<Int>
+    suspend fun updateGlb(cardId: Long, glbFileName: String, glbToken: String): Result<Int>
 }

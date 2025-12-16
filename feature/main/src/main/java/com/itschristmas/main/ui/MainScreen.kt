@@ -1,34 +1,52 @@
 package com.itschristmas.main.ui
 
+import android.os.Build.VERSION.SDK_INT
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil.ImageLoader
+import coil.compose.AsyncImage
+import coil.decode.GifDecoder
+import coil.decode.ImageDecoderDecoder
+import com.itschristmas.designsystem.theme.Gray
+import com.itschristmas.designsystem.theme.ItsChristmasTheme
+import com.itschristmas.designsystem.theme.SoftBlack
+import com.itschristmas.designsystem.theme.White
 import com.itschristmas.main.R
 
 val halloweenImages = listOf(
@@ -37,51 +55,121 @@ val halloweenImages = listOf(
     R.drawable.img_sample,
     R.drawable.img_sample,
     R.drawable.img_sample,
-    R.drawable.img_sample,
 )
 @Composable
 fun MainScreen() {
-    Scaffold(
-        containerColor = Color.Transparent,
-        floatingActionButton = {
-            NewCardFab(onClick = { /* TODO: Handle new card creation */ })
+    CardContent(
+        cardImages = emptyList(),
+        onCreateClicked = { }
+    )
+}
+
+@Composable
+fun CardContent(modifier: Modifier = Modifier, cardImages: List<Int>, onCreateClicked: () -> Unit) {
+    Column(
+        modifier = modifier.fillMaxSize().navigationBarsPadding(),
+    ) {
+        PreviewGifImage()
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        Column(modifier = Modifier.padding(horizontal = 16.dp)) {
+            CreateCardButton(onClick = onCreateClicked)
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            if(cardImages.isEmpty()) {
+                EmptyCardSection()
+            } else {
+                CardGrid(cardImages = cardImages)
+            }
         }
-    ) { paddingValues ->
-        CardContent(
-            modifier = Modifier.padding(paddingValues).padding(horizontal = 16.dp),
-            cardImages = halloweenImages
+    }
+}
+
+@Composable
+fun PreviewGifImage() {
+    val gifEnabledLoader = ImageLoader.Builder(LocalContext.current)
+        .components {
+            if ( SDK_INT >= 28 ) {
+                add(ImageDecoderDecoder.Factory())
+            } else {
+                add(GifDecoder.Factory())
+            }
+        }.build()
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .fillMaxHeight(0.55f)
+            .clip(RoundedCornerShape(
+                bottomStart = 50.dp,
+                bottomEnd = 50.dp,
+                topStart = 0.dp,
+                topEnd = 0.dp
+            ))
+            .background(Gray),
+        contentAlignment = Alignment.Center
+    ) {
+        AsyncImage(
+            modifier = Modifier.fillMaxSize(),
+            imageLoader = gifEnabledLoader,
+            model = R.drawable.gif_sample_scene,
+            contentScale = ContentScale.Crop,
+            contentDescription = stringResource(R.string.main_cd_async_image)
+        )
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(SoftBlack.copy(alpha = 0.3f))
+        )
+        Text(
+            modifier = Modifier.padding(top = 20.dp),
+            style = MaterialTheme.typography.titleLarge,
+            color = White,
+            text = stringResource(R.string.main_title_design_card_prompt)
         )
     }
 }
 
 @Composable
-fun CardContent(modifier: Modifier = Modifier, cardImages: List<Int>) {
-    Column(
-        modifier = modifier.fillMaxSize()
+fun CreateCardButton(onClick: () -> Unit) {
+    Button(
+        onClick = onClick,
+        modifier = Modifier.fillMaxWidth(),
+        colors = ButtonColors(
+            containerColor = SoftBlack,
+            contentColor = White,
+            disabledContainerColor = Gray,
+            disabledContentColor = White
+        )
     ) {
-        ScreenTitle(text = "My Cards")
-        CardGrid(cardImages = cardImages)
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(vertical = 10.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = stringResource(R.string.main_button_create),
+                style = MaterialTheme.typography.labelSmall
+            )
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.ArrowForward,
+                contentDescription = stringResource(R.string.main_cd_arrow_forward_icon),
+                modifier = Modifier.size(14.dp)
+            )
+        }
     }
-}
-
-@Composable
-fun ScreenTitle(text: String, modifier: Modifier = Modifier) {
-    Text(
-        text = text,
-        style = MaterialTheme.typography.titleLarge,
-        color = MaterialTheme.colorScheme.onBackground,
-        modifier = modifier.padding(horizontal = 16.dp, vertical = 24.dp)
-    )
 }
 
 @Composable
 fun CardGrid(cardImages: List<Int>, modifier: Modifier = Modifier) {
     LazyVerticalStaggeredGrid(
         columns = StaggeredGridCells.Fixed(2),
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier.fillMaxSize().navigationBarsPadding(),
         contentPadding = PaddingValues(8.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        verticalItemSpacing = 8.dp
+        horizontalArrangement = Arrangement.spacedBy(18.dp),
+        verticalItemSpacing = 20.dp
     ) {
         items(cardImages) { imageRes ->
             CardItem(imageRes = imageRes)
@@ -92,13 +180,13 @@ fun CardGrid(cardImages: List<Int>, modifier: Modifier = Modifier) {
 @Composable
 fun CardItem(imageRes: Int, modifier: Modifier = Modifier) {
     Card(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth().height(120.dp),
         shape = CardDefaults.shape,
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Image(
             painter = painterResource(id = imageRes),
-            contentDescription = "Halloween card image",
+            contentDescription = stringResource(R.string.main_cd_card),
             contentScale = ContentScale.Crop,
             modifier = Modifier.fillMaxSize()
         )
@@ -106,27 +194,39 @@ fun CardItem(imageRes: Int, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun NewCardFab(onClick: () -> Unit, modifier: Modifier = Modifier) {
-    ExtendedFloatingActionButton(
-        onClick = onClick,
-        shape = RoundedCornerShape(40.dp),
-        containerColor = MaterialTheme.colorScheme.primary,
-        contentColor = MaterialTheme.colorScheme.onPrimary
+fun EmptyCardSection(modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
+
+        Spacer(modifier = Modifier.weight(0.3f))
         Icon(
-            imageVector = Icons.Filled.Add,
-            contentDescription = "Create New Card"
+            painter = painterResource(id = R.drawable.ic_card_star),
+            tint = Gray,
+            contentDescription = stringResource(R.string.main_cd_empty_card_icon)
         )
-        Spacer(Modifier.width(8.dp))
+        Spacer(modifier = Modifier.height(20.dp))
         Text(
-            text = "New Card",
-            style = MaterialTheme.typography.labelSmall
+            text = stringResource(R.string.main_text_notice_empty_card_1),
+            style = MaterialTheme.typography.labelSmall,
+            color = Gray
         )
+        Spacer(modifier = Modifier.height(6.dp))
+        Text(
+            text = stringResource(R.string.main_text_notice_empty_card_2),
+            style = MaterialTheme.typography.labelSmall,
+            color = Gray
+        )
+        Spacer(modifier = Modifier.weight(0.7f))
     }
 }
 
 @Preview(showSystemUi = true)
 @Composable
 fun MainScreenPreview() {
-    MainScreen()
+    ItsChristmasTheme {
+        MainScreen()
+    }
 }

@@ -42,6 +42,10 @@ dependencies {
 
     implementation(project(":core:designsystem"))
 
+    // Coil for gif
+    implementation(libs.coil.compose)
+    implementation(libs.coil.gif)
+
     // Hilt
     implementation(libs.google.hilt.android)
     ksp(libs.google.hilt.compiler)

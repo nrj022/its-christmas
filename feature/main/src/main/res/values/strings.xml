@@ -1,0 +1,10 @@
+<resources>
+    <string name="main_cd_async_image">Card Creation Preview</string>
+    <string name="main_title_design_card_prompt">Design Your Own 3D Card!</string>
+    <string name="main_button_create">Create new card</string>
+    <string name="main_cd_arrow_forward_icon">Arrow Forward</string>
+    <string name="main_cd_card">Card Preview Image</string>
+    <string name="main_cd_empty_card_icon">Empty Card</string>
+    <string name="main_text_notice_empty_card_1">You don\'t have any cards yet!</string>
+    <string name="main_text_notice_empty_card_2">Create your first 3D card now.</string>
+</resources>

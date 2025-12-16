@@ -22,7 +22,6 @@ import com.itschristmas.card.cardeditor.util.toBase62
 import com.itschristmas.card.cardeditor.model.DialogState
 import com.itschristmas.card.cardeditor.ui.CardEditorBottomScreen
 import com.itschristmas.card.cardeditor.ui.CardEditorTextScreen
-import com.itschristmas.card.cardeditor.util.extractFileNameAndToken
 import com.itschristmas.card.cardshare.CardShareActivity
 import com.itschristmas.card.databinding.ActivityCardEditorBinding
 import com.itschristmas.designsystem.theme.ItsChristmasTheme

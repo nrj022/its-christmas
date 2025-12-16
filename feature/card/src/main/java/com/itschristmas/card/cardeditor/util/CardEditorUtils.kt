@@ -26,3 +26,10 @@ fun toBase62(num: Long): String {
 
     return result.reverse().toString()
 }
+
+fun extractFileNameAndToken(url: String): Pair<String, String> {
+    val fileName = url.substringAfter("%2F").substringBefore("?")
+    val token = url.substringAfter("token=")
+
+    return fileName to token
+}

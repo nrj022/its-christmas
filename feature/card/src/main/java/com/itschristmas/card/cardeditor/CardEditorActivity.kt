@@ -37,12 +37,13 @@ class CardEditorActivity : AppCompatActivity() {
     private lateinit var unityPlayer: UnityPlayerForActivityOrService
     private lateinit var layoutParams: ConstraintLayout.LayoutParams
     private val viewModel: CardEditorViewModel by viewModels()
+    private var cardId: Long = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityCardEditorBinding.inflate(layoutInflater)
         layoutParams = binding.unityContainer.layoutParams as ConstraintLayout.LayoutParams
-        val cardId = intent.getLongExtra("cardId", 1)
+        cardId = intent.getLongExtra("cardId", 1)
 
         setContentView(binding.root)
         initUnity()
@@ -180,7 +181,10 @@ class CardEditorActivity : AppCompatActivity() {
                 }
             }
             UnityMessageType.UPLOAD_GLB -> {
-                if (msg.status == UnityStatusType.SUCCESS) { } else { }
+            }
+            UnityMessageType.GET_DOWNLOAD_URL -> {
+                viewModel.onIntent(CardEditorIntent.ExportGlbResult(cardId, msg.status, msg.data))
+                }
             }
         }
     }

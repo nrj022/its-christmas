@@ -7,6 +7,7 @@ import com.itschristmas.card.cardeditor.model.DialogState
 import com.itschristmas.card.cardeditor.model.PanelType
 import com.itschristmas.card.cardeditor.model.TempTextElement
 import com.itschristmas.card.cardeditor.model.TempTransform
+import com.itschristmas.card.cardeditor.util.extractFileNameAndToken
 import com.itschristmas.domain.bridge.UnityBridge
 import com.itschristmas.domain.enum.ElementType
 import com.itschristmas.domain.model.Asset
@@ -17,6 +18,7 @@ import com.itschristmas.domain.model.FontOption
 import com.itschristmas.domain.model.TextAlignmentOption
 import com.itschristmas.domain.model.TextAttributes
 import com.itschristmas.domain.model.TextElement
+import com.itschristmas.domain.model.UnityStatusType
 import com.itschristmas.domain.repository.AssetRepository
 import com.itschristmas.domain.repository.CardElementRepository
 import com.itschristmas.domain.repository.CardRepository
@@ -68,7 +70,8 @@ class CardEditorViewModel @Inject constructor(
             is CardEditorIntent.Init -> handleInit(intent.cardId)
             is CardEditorIntent.ChangeTitle -> handleChangeTitle(intent.newTitle)
             is CardEditorIntent.FinishEditing -> handleFinishEditing()
-            is CardEditorIntent.GenerateCard -> handleGenerateCard()
+            is CardEditorIntent.ExportGlbAndUpload -> handleExportGlbAndUpload()
+            is CardEditorIntent.ExportGlbResult -> handleExportGlbResult(intent.cardId, intent.unityStatusType, intent.glbDownloadUrl)
             is CardEditorIntent.ChangeDialogState -> handleChangeDialogState(intent.dialogState)
 
             is CardEditorIntent.CreateObject -> handleCreateObject(
@@ -154,8 +157,23 @@ class CardEditorViewModel @Inject constructor(
         updateDialogState(DialogState.SET_CARD_TITLE)
     }
 
-    private fun handleGenerateCard() {
-        /* TODO */
+    private fun handleExportGlbAndUpload() {
+        updateDialogState(DialogState.NONE)
+        _cardEditorState.update { it.copy(isLoading = true) }
+        unityBridge.exportAndUpload()
+    }
+
+    private fun handleExportGlbResult(cardId: Long, unityStatusType: UnityStatusType, glbDownloadUrl: String) {
+        viewModelScope.launch {
+            when (unityStatusType) {
+                UnityStatusType.SUCCESS -> {
+                    val (fileName, token) = extractFileNameAndToken(glbDownloadUrl)
+                    cardRepository.updateGlb(cardId, fileName, token)
+                }
+                else -> {}
+            }
+            _cardEditorState.update { it.copy(isLoading = false) }
+        }
     }
 
     private fun handleChangeDialogState(dialogState: DialogState) {

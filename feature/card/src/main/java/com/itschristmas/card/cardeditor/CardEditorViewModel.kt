@@ -8,6 +8,7 @@ import com.itschristmas.card.cardeditor.model.PanelType
 import com.itschristmas.card.cardeditor.model.TempTextElement
 import com.itschristmas.card.cardeditor.model.TempTransform
 import com.itschristmas.card.cardeditor.util.extractFileNameAndToken
+import com.itschristmas.card.cardeditor.util.generateCardUrl
 import com.itschristmas.domain.bridge.UnityBridge
 import com.itschristmas.domain.enum.ElementType
 import com.itschristmas.domain.model.Asset
@@ -27,7 +28,9 @@ import com.itschristmas.domain.usecase.LoadCardEditorUseCase
 import com.itschristmas.domain.usecase.SaveTextElementsParams
 import com.itschristmas.domain.usecase.SaveTextElementsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
@@ -50,6 +53,10 @@ class CardEditorViewModel @Inject constructor(
 
     private val _cardEditorState = MutableStateFlow(CardEditorState())
     val cardEditorState: StateFlow<CardEditorState> = _cardEditorState
+
+    private val _cardEditorSideEffect = MutableSharedFlow<CardEditorSideEffect>()
+    val cardEditorSideEffect: SharedFlow<CardEditorSideEffect> = _cardEditorSideEffect
+
 
     private var _deletedTextElementIds: MutableSet<Long> = mutableSetOf()
 
@@ -165,10 +172,23 @@ class CardEditorViewModel @Inject constructor(
 
     private fun handleExportGlbResult(cardId: Long, unityStatusType: UnityStatusType, glbDownloadUrl: String) {
         viewModelScope.launch {
+            val state = _cardEditorState.value
             when (unityStatusType) {
                 UnityStatusType.SUCCESS -> {
                     val (fileName, token) = extractFileNameAndToken(glbDownloadUrl)
+                    val selectedBg = state.backgrounds.firstOrNull { it.assetId == state.selectedBackgroundId }
+
                     cardRepository.updateGlb(cardId, fileName, token)
+
+                    val cardUrl = generateCardUrl(
+                        cardTitle = state.cardTitle,
+                        fileName = fileName,
+                        token = token,
+                        bgFileName = selectedBg?.firebaseFileName ?: "",
+                        bgToken = selectedBg?.firebaseToken ?: ""
+                    )
+
+                    _cardEditorSideEffect.emit(CardEditorSideEffect.NavigateToCardShare(cardUrl))
                 }
                 else -> {}
             }

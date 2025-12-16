@@ -189,6 +189,7 @@
         android:background="#80000000"
         android:visibility="gone"
         android:clickable="true"
+        android:elevation="10dp"
         android:focusable="true">
 
         <ProgressBar

@@ -1,5 +1,6 @@
 package com.itschristmas.card.cardeditor
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.itschristmas.card.cardeditor.model.Direction
@@ -40,6 +41,8 @@ import javax.inject.Inject
 import kotlin.Long
 import kotlin.onSuccess
 
+private const val TAG = "CardEditorViewModel"
+
 @HiltViewModel
 class CardEditorViewModel @Inject constructor(
     private val cardRepository: CardRepository,
@@ -78,7 +81,7 @@ class CardEditorViewModel @Inject constructor(
             is CardEditorIntent.ChangeTitle -> handleChangeTitle(intent.newTitle)
             is CardEditorIntent.FinishEditing -> handleFinishEditing()
             is CardEditorIntent.ExportGlbAndUpload -> handleExportGlbAndUpload()
-            is CardEditorIntent.ExportGlbResult -> handleExportGlbResult(intent.cardId, intent.unityStatusType, intent.glbDownloadUrl)
+            is CardEditorIntent.ExportGlbResult -> handleExportGlbResult(intent.cardId, intent.unityStatusType, intent.result)
             is CardEditorIntent.ChangeDialogState -> handleChangeDialogState(intent.dialogState)
 
             is CardEditorIntent.CreateObject -> handleCreateObject(
@@ -170,12 +173,12 @@ class CardEditorViewModel @Inject constructor(
         unityBridge.exportAndUpload()
     }
 
-    private fun handleExportGlbResult(cardId: Long, unityStatusType: UnityStatusType, glbDownloadUrl: String) {
+    private fun handleExportGlbResult(cardId: Long, unityStatusType: UnityStatusType, result: String) {
         viewModelScope.launch {
             val state = _cardEditorState.value
             when (unityStatusType) {
                 UnityStatusType.SUCCESS -> {
-                    val (fileName, token) = extractFileNameAndToken(glbDownloadUrl)
+                    val (fileName, token) = extractFileNameAndToken(result)
                     val selectedBg = state.backgrounds.firstOrNull { it.assetId == state.selectedBackgroundId }
 
                     cardRepository.updateGlb(cardId, fileName, token)
@@ -190,7 +193,10 @@ class CardEditorViewModel @Inject constructor(
 
                     _cardEditorSideEffect.emit(CardEditorSideEffect.NavigateToCardShare(cardUrl))
                 }
-                else -> {}
+                else -> {
+                    _cardEditorSideEffect.emit(CardEditorSideEffect.ShowToast("Oops! Card creation failed. Please try again."))
+                    Log.e(TAG, "handleExportGlbResult: $result")
+                }
             }
             _cardEditorState.update { it.copy(isLoading = false) }
         }

@@ -14,7 +14,7 @@ sealed class CardEditorIntent {
     data class ChangeTitle(val newTitle: String): CardEditorIntent()
     data object FinishEditing: CardEditorIntent()
     data object ExportGlbAndUpload: CardEditorIntent()
-    data class ExportGlbResult(val cardId: Long, val unityStatusType: UnityStatusType, val glbDownloadUrl: String): CardEditorIntent()
+    data class ExportGlbResult(val cardId: Long, val unityStatusType: UnityStatusType, val result: String): CardEditorIntent()
     data class ChangeDialogState(val dialogState: DialogState): CardEditorIntent()
 
     data class CreateObject(val cardId: Long, val clickedObject: Asset): CardEditorIntent()

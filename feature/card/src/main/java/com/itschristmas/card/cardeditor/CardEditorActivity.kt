@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.MotionEvent
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -69,6 +70,9 @@ class CardEditorActivity : AppCompatActivity() {
                         when(it) {
                             is CardEditorSideEffect.NavigateToCardShare -> {
                                 navigateToCardShare(it.cardUrl)
+                            }
+                            is CardEditorSideEffect.ShowToast -> {
+                                Toast.makeText(this@CardEditorActivity, it.message, Toast.LENGTH_SHORT).show()
                             }
                         }
                     }

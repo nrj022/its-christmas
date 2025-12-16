@@ -5,7 +5,7 @@ import com.itschristmas.data.mapper.toEntity
 import com.itschristmas.data.repositoryImpl.common.ioCatching
 import com.itschristmas.database.dao.CardDao
 import com.itschristmas.domain.model.Card
-import com.itschristmas.domain.model.GlbAndBgFirebaseKey
+import com.itschristmas.domain.model.GlbAndBgFirebase
 import com.itschristmas.domain.repository.CardRepository
 import javax.inject.Inject
 
@@ -23,7 +23,7 @@ class CardRepositoryImpl @Inject constructor(
             cardDao.getCardById(cardId).toDomain()
         }
 
-    override suspend fun getGlbAndBgFirebaseKey(cardId: Long): Result<GlbAndBgFirebaseKey> =
+    override suspend fun getGlbAndBgFirebase(cardId: Long): Result<GlbAndBgFirebase> =
         ioCatching {
             cardDao.getGlbAndBgFirebaseKey(cardId).toDomain()
         }
@@ -33,8 +33,8 @@ class CardRepositoryImpl @Inject constructor(
             cardDao.updateBackgroundAssetId(cardId, backgroundAssetId)
         }
 
-    override suspend fun updateGlbKey(cardId: Long, glbKey: String): Result<Int> =
+    override suspend fun updateGlb(cardId: Long, glbFileName: String, glbToken: String): Result<Int> =
         ioCatching {
-            cardDao.updateGlbKey(cardId, glbKey)
+            cardDao.updateGlb(cardId, glbFileName, glbToken)
         }
 }

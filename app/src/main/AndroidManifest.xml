@@ -23,7 +23,7 @@
         </activity>
         <activity
             android:name="com.itschristmas.card.cardeditor.CardEditorActivity"
-            android:exported="true"
+            android:exported="false"
             android:theme="@style/Theme.ItsChristmas" >
         </activity>
         <activity

@@ -30,6 +30,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -39,6 +41,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.ImageLoader
 import coil.compose.AsyncImage
 import coil.decode.GifDecoder
@@ -47,25 +52,25 @@ import com.itschristmas.designsystem.theme.Gray
 import com.itschristmas.designsystem.theme.ItsChristmasTheme
 import com.itschristmas.designsystem.theme.SoftBlack
 import com.itschristmas.designsystem.theme.White
+import com.itschristmas.domain.model.Card
 import com.itschristmas.main.R
 
-val halloweenImages = listOf(
-    R.drawable.img_sample,
-    R.drawable.img_sample,
-    R.drawable.img_sample,
-    R.drawable.img_sample,
-    R.drawable.img_sample,
-)
 @Composable
-fun MainScreen() {
-    CardContent(
-        cardImages = emptyList(),
+fun MainScreen(viewModel: MainViewModel = hiltViewModel()) {
+    val cards by viewModel.cardList.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        viewModel.getAllCardsFromDB()
+    }
+
+    MainContent(
+        cards = cards,
         onCreateClicked = { }
     )
 }
 
 @Composable
-fun CardContent(modifier: Modifier = Modifier, cardImages: List<Int>, onCreateClicked: () -> Unit) {
+fun MainContent(modifier: Modifier = Modifier, cards: List<Card>, onCreateClicked: () -> Unit) {
     Column(
         modifier = modifier.fillMaxSize().navigationBarsPadding(),
     ) {
@@ -78,10 +83,10 @@ fun CardContent(modifier: Modifier = Modifier, cardImages: List<Int>, onCreateCl
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            if(cardImages.isEmpty()) {
+            if(cards.isEmpty()) {
                 EmptyCardSection()
             } else {
-                CardGrid(cardImages = cardImages)
+                CardGrid(cards = cards)
             }
         }
     }
@@ -163,7 +168,7 @@ fun CreateCardButton(onClick: () -> Unit) {
 }
 
 @Composable
-fun CardGrid(cardImages: List<Int>, modifier: Modifier = Modifier) {
+fun CardGrid(cards: List<Card>, modifier: Modifier = Modifier) {
     LazyVerticalStaggeredGrid(
         columns = StaggeredGridCells.Fixed(2),
         modifier = modifier.fillMaxSize().navigationBarsPadding(),
@@ -171,25 +176,47 @@ fun CardGrid(cardImages: List<Int>, modifier: Modifier = Modifier) {
         horizontalArrangement = Arrangement.spacedBy(18.dp),
         verticalItemSpacing = 20.dp
     ) {
-        items(cardImages) { imageRes ->
-            CardItem(imageRes = imageRes)
+        items(cards) { card ->
+            CardItem(
+                cardTitle = card.title ?: "",
+                createdAt = card.createdAt.toString(),
+                imageRes = -1)
         }
     }
 }
 
 @Composable
-fun CardItem(imageRes: Int, modifier: Modifier = Modifier) {
+fun CardItem(cardTitle: String, createdAt: String, imageRes: Int, modifier: Modifier = Modifier) {
     Card(
         modifier = modifier.fillMaxWidth().height(120.dp),
         shape = CardDefaults.shape,
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
-        Image(
-            painter = painterResource(id = imageRes),
-            contentDescription = stringResource(R.string.main_cd_card),
-            contentScale = ContentScale.Crop,
-            modifier = Modifier.fillMaxSize()
-        )
+        Box(contentAlignment = Alignment.Center) {
+            Image(
+                modifier = Modifier.fillMaxSize(),
+                painter = painterResource(id = imageRes),
+                contentDescription = stringResource(R.string.main_cd_card),
+                contentScale = ContentScale.Crop
+            )
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(White.copy(alpha = 0.6f)),
+            )
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(
+                    text = cardTitle,
+                    style = MaterialTheme.typography.labelSmall
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = createdAt,
+                    style = MaterialTheme.typography.labelSmall,
+                    fontSize = 8.sp
+                )
+            }
+        }
     }
 }
 

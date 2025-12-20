@@ -172,8 +172,6 @@ fun SpawnedObjectRow(
     selectedItemIndex: Long?,
     onItemClicked: (CardElementWithAssetKeys) -> Unit
 ) {
-    val context = LocalContext.current
-
     Column {
         Text(
             modifier = Modifier.padding(horizontal = 20.dp).padding(bottom = 12.dp),

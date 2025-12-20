@@ -22,7 +22,6 @@ object DatabaseModule {
     fun provideAppDatabase(
         @ApplicationContext context: Context,
         assetDaoProvider: Provider<AssetDao>,
-        cardDaoProvider: Provider<CardDao>
     ): AppDatabase {
         return Room.databaseBuilder(
             context,
@@ -30,7 +29,7 @@ object DatabaseModule {
             "app_database.db"
         )
         .fallbackToDestructiveMigration()   // DB 스키마 변경 시 기존 데이터 삭제 후 다시 생성 - TODO 마이그레이션 추가
-        .addCallback(AppDatabaseCallback(assetDaoProvider, cardDaoProvider))    // TODO: 초기 데이터 설정 방식 sqLite로 변경
+        .addCallback(AppDatabaseCallback(assetDaoProvider))
         .build()
     }
 

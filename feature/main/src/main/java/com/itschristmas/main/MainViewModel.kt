@@ -1,4 +1,4 @@
-package com.itschristmas.main.ui
+package com.itschristmas.main
 
 import android.util.Log
 import androidx.lifecycle.ViewModel

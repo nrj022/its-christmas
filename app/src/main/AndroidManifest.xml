@@ -13,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ItsChristmas">
         <activity
-            android:name="com.itschristmas.main.ui.MainActivity"
+            android:name="com.itschristmas.main.MainActivity"
             android:exported="true"
             android:theme="@style/Theme.ItsChristmas">
             <intent-filter>

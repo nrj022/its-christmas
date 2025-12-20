@@ -1,4 +1,4 @@
-package com.itschristmas.main.ui
+package com.itschristmas.main
 
 import android.os.Build.VERSION.SDK_INT
 import androidx.compose.foundation.Image
@@ -48,12 +48,12 @@ import coil.ImageLoader
 import coil.compose.AsyncImage
 import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
+import com.itschristmas.card.cardeditor.CardEditorActivity
 import com.itschristmas.designsystem.theme.Gray
 import com.itschristmas.designsystem.theme.ItsChristmasTheme
 import com.itschristmas.designsystem.theme.SoftBlack
 import com.itschristmas.designsystem.theme.White
 import com.itschristmas.domain.model.Card
-import com.itschristmas.main.R
 
 @Composable
 fun MainScreen(viewModel: MainViewModel = hiltViewModel()) {
@@ -195,7 +195,7 @@ fun CardItem(cardTitle: String, createdAt: String, imageRes: Int, modifier: Modi
         Box(contentAlignment = Alignment.Center) {
             Image(
                 modifier = Modifier.fillMaxSize(),
-                painter = painterResource(id = imageRes),
+                painter = painterResource(id = R.drawable.thumb_bg_006),
                 contentDescription = stringResource(R.string.main_cd_card),
                 contentScale = ContentScale.Crop
             )

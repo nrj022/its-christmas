@@ -8,12 +8,11 @@ data class CardEntity(
     @PrimaryKey(autoGenerate = true)
     val cardId: Long = 0,
 
-    val title: String? = null,
-    val glbFileName: String? = null,
-    val glbToken: String? = null,
-    val thumbnailPath: String? = null,
+    val title: String,
+    val glbFileName: String?,
+    val glbToken: String?,
     val backgroundAssetId: Long,
-    val isDraft: Boolean = true,
+    val isDraft: Boolean,
     val createdAt: Long,
     val updatedAt: Long
 )

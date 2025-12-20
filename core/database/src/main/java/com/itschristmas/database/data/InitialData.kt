@@ -23,14 +23,4 @@ object InitialData {
             AssetEntity(assetType = "BACKGROUND", unityKey = "bg_006", thumbnailKey = "thumb_bg_006", firebaseFileName = "bg_006.env", firebaseToken = "6bf80f47-da18-4333-a241-b1a87a4850f2")
         )
     }
-
-    /* 임시 데이터 // TODO: 추후 제거 예정 */
-    fun getInitialCard(): CardEntity {
-        return CardEntity(
-            cardId = 1,
-            backgroundAssetId = 1,
-            createdAt = System.currentTimeMillis(),
-            updatedAt = System.currentTimeMillis()
-        )
-    }
 }

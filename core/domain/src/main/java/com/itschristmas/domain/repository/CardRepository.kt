@@ -7,6 +7,8 @@ interface CardRepository {
 
     suspend fun insertCard(card: Card): Result<Long>
 
+    suspend fun getAllCards(): Result<List<Card>>
+
     suspend fun getCardById(cardId: Long): Result<Card>
 
     suspend fun getGlbAndBgFirebase(cardId: Long): Result<GlbAndBgFirebase>

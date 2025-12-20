@@ -41,10 +41,17 @@ android {
 dependencies {
 
     implementation(project(":core:designsystem"))
+    implementation(project(":core:domain"))
+    implementation(project(":feature:card"))
+
+    // Coil for gif
+    implementation(libs.coil.compose)
+    implementation(libs.coil.gif)
 
     // Hilt
     implementation(libs.google.hilt.android)
     ksp(libs.google.hilt.compiler)
+    implementation(libs.androidx.hilt.navigation.compose)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

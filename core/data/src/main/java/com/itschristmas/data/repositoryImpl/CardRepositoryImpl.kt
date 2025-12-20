@@ -18,6 +18,11 @@ class CardRepositoryImpl @Inject constructor(
             cardDao.insertCard(card.toEntity())
         }
 
+    override suspend fun getAllCards(): Result<List<Card>> =
+        ioCatching {
+            cardDao.getAllCards().map { it.toDomain() }
+        }
+
     override suspend fun getCardById(cardId: Long): Result<Card> =
         ioCatching {
             cardDao.getCardById(cardId).toDomain()

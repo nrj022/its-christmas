@@ -13,6 +13,7 @@ import com.itschristmas.card.cardeditor.util.generateCardUrl
 import com.itschristmas.domain.bridge.UnityBridge
 import com.itschristmas.domain.enum.ElementType
 import com.itschristmas.domain.model.Asset
+import com.itschristmas.domain.model.Card
 import com.itschristmas.domain.model.CardElement
 import com.itschristmas.domain.model.CardElementWithAssetKeys
 import com.itschristmas.domain.model.ColorOption
@@ -123,8 +124,16 @@ class CardEditorViewModel @Inject constructor(
     }
 
     private fun handleInit(cardId: Long) {
+        var initCardId = cardId
         viewModelScope.launch {
-            loadCardEditorUseCase(cardId)
+            if(initCardId < 0) {
+                cardRepository.insertCard(Card())
+                    .onSuccess { id -> initCardId = id}
+                    .onFailure {
+                        /* TODO */
+                    }
+            }
+            loadCardEditorUseCase(initCardId)
                 .onSuccess { result ->
                     _cardEditorState.update {
                         it.copy(

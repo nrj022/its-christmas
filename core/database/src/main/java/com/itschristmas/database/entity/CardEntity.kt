@@ -11,7 +11,6 @@ data class CardEntity(
     val title: String,
     val glbFileName: String?,
     val glbToken: String?,
-    val thumbnailPath: String?,
     val backgroundAssetId: Long,
     val isDraft: Boolean,
     val createdAt: Long,

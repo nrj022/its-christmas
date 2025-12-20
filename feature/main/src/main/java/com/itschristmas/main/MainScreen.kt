@@ -1,8 +1,10 @@
 package com.itschristmas.main
 
+import android.content.Intent
 import android.os.Build.VERSION.SDK_INT
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -53,40 +55,47 @@ import com.itschristmas.designsystem.theme.Gray
 import com.itschristmas.designsystem.theme.ItsChristmasTheme
 import com.itschristmas.designsystem.theme.SoftBlack
 import com.itschristmas.designsystem.theme.White
-import com.itschristmas.domain.model.Card
+import com.itschristmas.designsystem.util.DrawableResProvider
+import com.itschristmas.main.model.CardItem
+import com.itschristmas.main.util.formatRelativeTime
 
 @Composable
 fun MainScreen(viewModel: MainViewModel = hiltViewModel()) {
-    val cards by viewModel.cardList.collectAsStateWithLifecycle()
+    val cardItems by viewModel.cardList.collectAsStateWithLifecycle()
+    val context = LocalContext.current
 
-    LaunchedEffect(Unit) {
-        viewModel.getAllCardsFromDB()
-    }
+    LaunchedEffect(Unit) { viewModel.loadCards() }
 
     MainContent(
-        cards = cards,
-        onCreateClicked = { }
+        cardItems = cardItems,
+        onCardClick = { id ->
+            val intent = Intent(context, CardEditorActivity::class.java)
+            intent.putExtra("cardId", id)
+            context.startActivity(intent)
+        }
     )
 }
 
 @Composable
-fun MainContent(modifier: Modifier = Modifier, cards: List<Card>, onCreateClicked: () -> Unit) {
+fun MainContent(modifier: Modifier = Modifier, cardItems: List<CardItem>, onCardClick: (Long) -> Unit) {
     Column(
-        modifier = modifier.fillMaxSize().navigationBarsPadding(),
+        modifier = modifier
+            .fillMaxSize()
+            .navigationBarsPadding(),
     ) {
         PreviewGifImage()
 
         Spacer(modifier = Modifier.height(20.dp))
 
         Column(modifier = Modifier.padding(horizontal = 16.dp)) {
-            CreateCardButton(onClick = onCreateClicked)
+            CreateCardButton(onClick = { onCardClick(-1) })
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            if(cards.isEmpty()) {
+            if(cardItems.isEmpty()) {
                 EmptyCardSection()
             } else {
-                CardGrid(cards = cards)
+                CardGrid(cardItems = cardItems, onCardClick = onCardClick)
             }
         }
     }
@@ -107,12 +116,14 @@ fun PreviewGifImage() {
         modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight(0.55f)
-            .clip(RoundedCornerShape(
-                bottomStart = 50.dp,
-                bottomEnd = 50.dp,
-                topStart = 0.dp,
-                topEnd = 0.dp
-            ))
+            .clip(
+                RoundedCornerShape(
+                    bottomStart = 50.dp,
+                    bottomEnd = 50.dp,
+                    topStart = 0.dp,
+                    topEnd = 0.dp
+                )
+            )
             .background(Gray),
         contentAlignment = Alignment.Center
     ) {
@@ -150,7 +161,9 @@ fun CreateCardButton(onClick: () -> Unit) {
         )
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth().padding(vertical = 10.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 10.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
@@ -168,27 +181,34 @@ fun CreateCardButton(onClick: () -> Unit) {
 }
 
 @Composable
-fun CardGrid(cards: List<Card>, modifier: Modifier = Modifier) {
+fun CardGrid(cardItems: List<CardItem>, onCardClick: (Long) -> Unit) {
     LazyVerticalStaggeredGrid(
         columns = StaggeredGridCells.Fixed(2),
-        modifier = modifier.fillMaxSize().navigationBarsPadding(),
+        modifier = Modifier
+            .fillMaxSize()
+            .navigationBarsPadding(),
         contentPadding = PaddingValues(8.dp),
         horizontalArrangement = Arrangement.spacedBy(18.dp),
         verticalItemSpacing = 20.dp
     ) {
-        items(cards) { card ->
+        items(cardItems) { item ->
             CardItem(
-                cardTitle = card.title ?: "",
-                createdAt = card.createdAt.toString(),
-                imageRes = -1)
+                cardTitle = item.card.title,
+                createdAt = formatRelativeTime(item.card.createdAt),
+                thumbnailKey = item.thumbnailKey,
+                onClick = { onCardClick(item.card.cardId) }
+            )
         }
     }
 }
 
 @Composable
-fun CardItem(cardTitle: String, createdAt: String, imageRes: Int, modifier: Modifier = Modifier) {
+fun CardItem(cardTitle: String, createdAt: String, thumbnailKey: String?, onClick: () -> Unit) {
     Card(
-        modifier = modifier.fillMaxWidth().height(120.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(120.dp)
+            .clickable { onClick() },
         shape = CardDefaults.shape,
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {

@@ -123,8 +123,16 @@ class CardEditorViewModel @Inject constructor(
     }
 
     private fun handleInit(cardId: Long) {
+        var initCardId = cardId
         viewModelScope.launch {
-            loadCardEditorUseCase(cardId)
+            if(initCardId < 0) {
+                cardRepository.insertCard(Card())
+                    .onSuccess { id -> initCardId = id}
+                    .onFailure {
+                        /* TODO */
+                    }
+            }
+            loadCardEditorUseCase(initCardId)
                 .onSuccess { result ->
                     _cardEditorState.update {
                         it.copy(

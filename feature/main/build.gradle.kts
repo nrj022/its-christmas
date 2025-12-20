@@ -42,6 +42,7 @@ dependencies {
 
     implementation(project(":core:designsystem"))
     implementation(project(":core:domain"))
+    implementation(project(":feature:card"))
 
     // Coil for gif
     implementation(libs.coil.compose)

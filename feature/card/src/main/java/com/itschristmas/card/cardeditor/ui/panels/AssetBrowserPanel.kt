@@ -30,7 +30,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.itschristmas.domain.model.CardElementWithAssetKeys
-import com.itschristmas.card.cardeditor.util.getDrawableIdByKey
 import com.itschristmas.designsystem.theme.Gray
 import com.itschristmas.designsystem.theme.SoftBlack
 import com.itschristmas.designsystem.theme.White
@@ -39,6 +38,8 @@ import com.itschristmas.card.R
 import com.itschristmas.card.cardeditor.ui.common.BaseTabs
 import com.itschristmas.card.cardeditor.util.toBase62
 import com.itschristmas.card.cardeditor.model.BaseTabItem
+import com.itschristmas.card.cardeditor.util.getDrawableIdByKey
+import com.itschristmas.designsystem.util.DrawableResProvider
 
 private const val COLUMNS = 3
 
@@ -197,7 +198,7 @@ fun SpawnedObjectRow(
                         .clip(RoundedCornerShape(10.dp))
                 ) {
                     Image(
-                        painter = painterResource(id = getDrawableIdByKey(context, element.thumbnailKey)),
+                        painter = painterResource(id = DrawableResProvider.getDrawableIdByKey(element.thumbnailKey)),
                         contentScale = ContentScale.Crop,
                         contentDescription = stringResource(R.string.editor_cd_asset),
                         modifier = Modifier

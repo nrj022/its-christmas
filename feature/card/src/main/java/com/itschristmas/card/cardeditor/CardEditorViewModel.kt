@@ -13,6 +13,7 @@ import com.itschristmas.card.cardeditor.util.generateCardUrl
 import com.itschristmas.domain.bridge.UnityBridge
 import com.itschristmas.domain.enum.ElementType
 import com.itschristmas.domain.model.Asset
+import com.itschristmas.domain.model.Card
 import com.itschristmas.domain.model.CardElement
 import com.itschristmas.domain.model.CardElementWithAssetKeys
 import com.itschristmas.domain.model.ColorOption

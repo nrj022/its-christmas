@@ -17,7 +17,6 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.itschristmas.card.cardeditor.util.getDrawableIdByKey
 import com.itschristmas.card.cardeditor.util.toBase62
 import com.itschristmas.card.cardeditor.model.DialogState
 import com.itschristmas.card.cardeditor.ui.CardEditorBottomScreen
@@ -25,6 +24,7 @@ import com.itschristmas.card.cardeditor.ui.CardEditorTextScreen
 import com.itschristmas.card.cardshare.CardShareActivity
 import com.itschristmas.card.databinding.ActivityCardEditorBinding
 import com.itschristmas.designsystem.theme.ItsChristmasTheme
+import com.itschristmas.designsystem.util.DrawableResProvider
 import com.itschristmas.domain.model.UnityMessage
 import com.itschristmas.domain.model.UnityMessageType
 import com.itschristmas.domain.model.UnityStatusType
@@ -169,7 +169,7 @@ class CardEditorActivity : AppCompatActivity() {
 
         binding.containerTransformOption.isVisible = active
         binding.imgBtnTransformReset.isVisible = active && state.hasPendingTransform
-        binding.imgObjectThumb.setImageResource(getDrawableIdByKey(this, temp?.thumbnailKey))
+        binding.imgObjectThumb.setImageResource(DrawableResProvider.getDrawableIdByKey(temp?.thumbnailKey))
         binding.textElementKey.text = if(active) toBase62(temp.elementId) else ""
     }
 

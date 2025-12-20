@@ -215,7 +215,7 @@ fun CardItem(cardTitle: String, createdAt: String, thumbnailKey: String?, onClic
         Box(contentAlignment = Alignment.Center) {
             Image(
                 modifier = Modifier.fillMaxSize(),
-                painter = painterResource(id = R.drawable.thumb_bg_006),
+                painter = painterResource(DrawableResProvider.getDrawableIdByKey(thumbnailKey)),
                 contentDescription = stringResource(R.string.main_cd_card),
                 contentScale = ContentScale.Crop
             )

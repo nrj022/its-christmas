@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.MotionEvent
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -17,10 +18,10 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.itschristmas.card.cardeditor.util.toBase62
 import com.itschristmas.card.cardeditor.model.DialogState
 import com.itschristmas.card.cardeditor.ui.CardEditorBottomScreen
 import com.itschristmas.card.cardeditor.ui.CardEditorTextScreen
+import com.itschristmas.card.cardeditor.util.toBase62
 import com.itschristmas.card.cardshare.CardShareActivity
 import com.itschristmas.card.databinding.ActivityCardEditorBinding
 import com.itschristmas.designsystem.theme.ItsChristmasTheme
@@ -90,6 +91,12 @@ class CardEditorActivity : AppCompatActivity() {
                 CardEditorBottomScreen(cardId)
             }
         }
+
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                Toast.makeText(this@CardEditorActivity, "Please use the buttons at the top to finish editing", Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -114,6 +121,8 @@ class CardEditorActivity : AppCompatActivity() {
     }
 
     private fun initListener() {
+        binding.imgBtnBack.setOnClickListener { finish() }
+
         binding.btnComplete.setOnClickListener {
             viewModel.onIntent(CardEditorIntent.FinishEditing)
         }

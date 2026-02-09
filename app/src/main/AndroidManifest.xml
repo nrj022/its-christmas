@@ -24,6 +24,7 @@
         <activity
             android:name="com.itschristmas.card.cardeditor.CardEditorActivity"
             android:exported="false"
+            android:process=":unity_process"
             android:theme="@style/Theme.ItsChristmas" >
         </activity>
         <activity

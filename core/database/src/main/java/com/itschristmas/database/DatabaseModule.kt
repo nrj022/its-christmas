@@ -29,6 +29,7 @@ object DatabaseModule {
             "app_database.db"
         )
         .fallbackToDestructiveMigration()   // DB 스키마 변경 시 기존 데이터 삭제 후 다시 생성 - TODO 마이그레이션 추가
+        .enableMultiInstanceInvalidation()
         .addCallback(AppDatabaseCallback(assetDaoProvider))
         .build()
     }

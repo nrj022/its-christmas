@@ -1,6 +1,5 @@
 package com.itschristmas.main
 
-import android.content.Intent
 import android.os.Build.VERSION.SDK_INT
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -50,7 +49,6 @@ import coil.ImageLoader
 import coil.compose.AsyncImage
 import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
-import com.itschristmas.card.cardeditor.CardEditorActivity
 import com.itschristmas.designsystem.theme.Gray
 import com.itschristmas.designsystem.theme.ItsChristmasTheme
 import com.itschristmas.designsystem.theme.SoftBlack
@@ -60,19 +58,12 @@ import com.itschristmas.main.model.CardItem
 import com.itschristmas.main.util.formatRelativeTime
 
 @Composable
-fun MainScreen(viewModel: MainViewModel = hiltViewModel()) {
+fun MainScreen(viewModel: MainViewModel = hiltViewModel(), onCardClick: (Long) -> Unit = {}) {
     val cardItems by viewModel.cardList.collectAsStateWithLifecycle()
-    val context = LocalContext.current
-
-    LaunchedEffect(Unit) { viewModel.loadCards() }
 
     MainContent(
         cardItems = cardItems,
-        onCardClick = { id ->
-            val intent = Intent(context, CardEditorActivity::class.java)
-            intent.putExtra("cardId", id)
-            context.startActivity(intent)
-        }
+        onCardClick = onCardClick
     )
 }
 

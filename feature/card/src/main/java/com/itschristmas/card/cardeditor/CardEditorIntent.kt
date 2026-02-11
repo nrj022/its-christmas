@@ -36,7 +36,7 @@ sealed class CardEditorIntent {
     data object ResetTransform: CardEditorIntent()
 
     /* 텍스트 편집 */
-    data object RequestDefaultText: CardEditorIntent()
+    data object MissingTextSelection: CardEditorIntent()
     data object AddText: CardEditorIntent()
     data class DeleteText(val textId: Long): CardEditorIntent()
     data class SelectText(val textId: Long): CardEditorIntent()

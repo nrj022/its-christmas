@@ -107,7 +107,7 @@ class CardEditorViewModel @Inject constructor(
             is CardEditorIntent.ResetTransform -> handleResetTransform()
 
             /* 텍스트 편집 */
-            is CardEditorIntent.RequestDefaultText -> handleRequestDefaultText()
+            is CardEditorIntent.MissingTextSelection -> handleMissingTextSelection()
             is CardEditorIntent.AddText -> handleAddText()
             is CardEditorIntent.DeleteText -> handleDeleteText(intent.textId)
             is CardEditorIntent.SelectText -> handleSelectText(intent.textId)
@@ -397,24 +397,11 @@ class CardEditorViewModel @Inject constructor(
     }
 
     /* 텍스트 편집 */
-    private fun handleRequestDefaultText() {
+    private fun handleMissingTextSelection() {
         if (_cardEditorState.value.tempTextList.isNotEmpty() && _cardEditorState.value.selectedTextTempId == null) {
             _cardEditorState.update { it.copy(selectedTextTempId = it.tempTextList.first().tempId) }
             return
         }
-
-        val newTextElement = TempTextElement()
-        _cardEditorState.update {
-            it.copy(
-                tempTextList = listOf(newTextElement),
-                selectedTextTempId = newTextElement.tempId
-            )
-        }
-
-        unityBridge.createText(
-            tempId = newTextElement.tempId,
-            textElement = newTextElement.textElement
-        )
     }
 
     private fun handleAddText() {
@@ -446,6 +433,8 @@ class CardEditorViewModel @Inject constructor(
         }
 
         selectedText.textElement.elementId?.let { _deletedTextElementIds.add(it) }
+
+        unityBridge.deleteObject(selectedText.tempId)
     }
 
     private fun handleSelectText(textId: Long) {

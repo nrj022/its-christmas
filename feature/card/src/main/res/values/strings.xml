@@ -26,6 +26,7 @@
     <string name="editor_button_back">Back</string>
     <string name="editor_placeholder_text">New Text</string>
     <string name="editor_cd_align_icon">Align %s</string>
+    <string name="editor_content_empty_text">No text added.\nTap \'+\' to add your first text!</string>
 
     <string name="editor_dialog_button_delete">Delete</string>
     <string name="editor_dialog_button_save">Yes</string>

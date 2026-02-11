@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <application
         android:name=".MainApplication"
@@ -19,17 +18,28 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="itschristmas" android:host="main" />
             </intent-filter>
         </activity>
         <activity
             android:name="com.itschristmas.card.cardeditor.CardEditorActivity"
-            android:exported="false"
+            android:exported="true"
             android:process=":unity_process"
             android:theme="@style/Theme.ItsChristmas" >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="itschristmas" android:host="card" android:pathPrefix="/editor" />
+            </intent-filter>
         </activity>
         <activity
             android:name="com.itschristmas.card.cardshare.CardShareActivity"
-            android:exported="false" />
+            android:exported="false" >
+        </activity>
     </application>
 
 </manifest>

@@ -1,7 +1,5 @@
 package com.itschristmas.card.cardshare
 
-import android.content.Context
-import android.content.Intent
 import android.view.ViewGroup
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -14,7 +12,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -26,22 +23,13 @@ import com.itschristmas.designsystem.theme.White
 import com.itschristmas.card.R
 
 @Composable
-fun CardShareScreen(cardUrl: String) {
-    val context = LocalContext.current
-
+fun CardShareScreen(cardUrl: String, onBackClicked: () -> Unit = {}, onCompleteClicked: () -> Unit = {}, onShareClicked: () -> Unit = {}) {
     CardShareContent(
         cardUrl = cardUrl,
-        onBackClicked = {},
-        onCompleteClicked = {},
-        onShareClicked = { context.shareCard(cardUrl)}
+        onBackClicked = onBackClicked,
+        onCompleteClicked = onCompleteClicked,
+        onShareClicked = onShareClicked
     )
-}
-
-private fun Context.shareCard(cardUrl: String) {
-    val intent = Intent(Intent.ACTION_SEND)
-    intent.putExtra(Intent.EXTRA_TEXT, cardUrl)
-    intent.type = "text/plain"
-    startActivity(Intent.createChooser(intent, null))
 }
 
 @Composable

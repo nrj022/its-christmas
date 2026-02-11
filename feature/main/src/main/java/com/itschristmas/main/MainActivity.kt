@@ -6,9 +6,9 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-import com.itschristmas.card.cardeditor.CardEditorActivity
 import com.itschristmas.designsystem.theme.ItsChristmasTheme
 import dagger.hilt.android.AndroidEntryPoint
+import androidx.core.net.toUri
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -21,10 +21,8 @@ class MainActivity : ComponentActivity() {
         setContent {
             ItsChristmasTheme {
                 MainScreen { id ->
-                    val intent = Intent().apply {
-                        setClass(this@MainActivity, CardEditorActivity::class.java)
-                        putExtra("cardId", id)
-                    }
+                    val intent = Intent(Intent.ACTION_VIEW, "itschristmas://card/editor".toUri())
+                    intent.putExtra("cardId", id)
                     startActivity(intent)
                 }
             }

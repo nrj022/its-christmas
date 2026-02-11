@@ -433,6 +433,8 @@ class CardEditorViewModel @Inject constructor(
         }
 
         selectedText.textElement.elementId?.let { _deletedTextElementIds.add(it) }
+
+        unityBridge.deleteObject(selectedText.tempId)
     }
 
     private fun handleSelectText(textId: Long) {

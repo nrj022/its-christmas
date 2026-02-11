@@ -55,24 +55,21 @@ fun CardEditorBottomScreen(cardId: Long, viewModel: CardEditorViewModel = hiltVi
 
         PanelType.TEXT_EDITOR -> {
             val tempText = state.selectedText
-            if(state.tempTextList.isEmpty() || tempText == null) {
-                LaunchedEffect(state.panelType, state.tempTextList, state.selectedText) {
-                    viewModel.onIntent(CardEditorIntent.RequestDefaultText)
-                }
-            } else {
-                TextEditorPanel(
-                    textElement = tempText.textElement,
-                    onTextChange = { viewModel.onIntent(CardEditorIntent.ChangeTextContent(it)) },
-                    onAlignmentSelected = { viewModel.onIntent(CardEditorIntent.SelectAlignment(it)) },
-                    onColorSelected = { viewModel.onIntent(CardEditorIntent.SelectColor(it)) },
-                    onFontSizeChange = { viewModel.onIntent(CardEditorIntent.ChangeFontSize(it)) },
-                    onFontSelected = { viewModel.onIntent(CardEditorIntent.SelectFont(it)) },
-                    onPositionChange = { viewModel.onIntent(CardEditorIntent.MoveText(it)) },
-                    onCameraReset = { viewModel.onIntent(CardEditorIntent.ResetCamera) },
-                    onApply = { viewModel.onIntent(CardEditorIntent.ApplyText(cardId)) },
-                    onBack = { viewModel.onIntent(CardEditorIntent.ChangeDialogState(DialogState.UNSAVED_TEXT_CHANGES)) }
-                )
+            if(tempText == null) {
+                viewModel.onIntent(CardEditorIntent.MissingTextSelection)
             }
+            TextEditorPanel(
+                textElement = tempText?.textElement,
+                onTextChange = { viewModel.onIntent(CardEditorIntent.ChangeTextContent(it)) },
+                onAlignmentSelected = { viewModel.onIntent(CardEditorIntent.SelectAlignment(it)) },
+                onColorSelected = { viewModel.onIntent(CardEditorIntent.SelectColor(it)) },
+                onFontSizeChange = { viewModel.onIntent(CardEditorIntent.ChangeFontSize(it)) },
+                onFontSelected = { viewModel.onIntent(CardEditorIntent.SelectFont(it)) },
+                onPositionChange = { viewModel.onIntent(CardEditorIntent.MoveText(it)) },
+                onCameraReset = { viewModel.onIntent(CardEditorIntent.ResetCamera) },
+                onApply = { viewModel.onIntent(CardEditorIntent.ApplyText(cardId)) },
+                onBack = { viewModel.onIntent(CardEditorIntent.ChangeDialogState(DialogState.UNSAVED_TEXT_CHANGES)) }
+            )
         }
     }
 

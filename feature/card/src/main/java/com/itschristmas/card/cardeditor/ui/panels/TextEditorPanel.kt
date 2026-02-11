@@ -35,6 +35,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -64,7 +65,7 @@ enum class TextEditorTab(val resId: Int) {
 
 @Composable
 fun TextEditorPanel(
-    textElement: TextElement = TextElement(),
+    textElement: TextElement? = null,
     onTextChange: (String) -> Unit = {},
     onColorSelected: (ColorOption) -> Unit = {},
     onAlignmentSelected: (TextAlignmentOption) -> Unit = {},
@@ -95,7 +96,7 @@ fun TextEditorPanel(
 
 @Composable
 private fun EditorTabContent(
-    textElement: TextElement,
+    textElement: TextElement?,
     selectedTab: TextEditorTab,
     onTextChange: (String) -> Unit,
     onTabSelected: (TextEditorTab) -> Unit,
@@ -110,17 +111,25 @@ private fun EditorTabContent(
 ) {
     Column(
         modifier = Modifier
+            .fillMaxHeight()
             .background(White)
             .padding(horizontal = 16.dp)
             .padding(top = 12.dp)
     ) {
         // 텍스트 입력, 적용, 뒤로 가기
         EditorHeader(
-            text = textElement.attributes.content,
+            text = textElement?.attributes?.content ?: "",
+            hasText = textElement != null,
             onBack = onBack,
             onApply = onApply,
             onTextChange = onTextChange
         )
+
+        if (textElement == null) {
+            EmptyEditorContent()
+            return@Column
+        }
+
         Spacer(Modifier.height(18.dp))
 
         // "Style", "font", "Position" 탭
@@ -158,6 +167,7 @@ private fun EditorTabContent(
 @Composable
 private fun EditorHeader(
     text: String,
+    hasText: Boolean,
     onBack: () -> Unit,
     onApply: () -> Unit,
     onTextChange: (String) -> Unit,
@@ -182,6 +192,9 @@ private fun EditorHeader(
                 )
             }
         }
+
+        if(!hasText) return@Row
+
         BasicTextField(
             modifier = Modifier
                 .weight(1f)
@@ -377,6 +390,22 @@ private fun PositionOptions(onPositionChange: (Direction) -> Unit, onCameraReset
             onClick = onPositionChange,
             onCameraReset = onCameraReset
         )
+    }
+}
+
+@Composable
+private fun EmptyEditorContent() {
+    Column (
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Spacer(modifier = Modifier.weight(1f))
+        Text(
+            text = stringResource(R.string.editor_content_empty_text),
+            style = MaterialTheme.typography.labelSmall,
+            textAlign = TextAlign.Center
+        )
+        Spacer(modifier = Modifier.weight(2f))
     }
 }
 

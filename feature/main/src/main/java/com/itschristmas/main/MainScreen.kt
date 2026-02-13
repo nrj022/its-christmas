@@ -31,7 +31,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -53,7 +52,7 @@ import com.itschristmas.designsystem.theme.Gray
 import com.itschristmas.designsystem.theme.ItsChristmasTheme
 import com.itschristmas.designsystem.theme.SoftBlack
 import com.itschristmas.designsystem.theme.White
-import com.itschristmas.designsystem.util.DrawableResProvider
+import com.itschristmas.designsystem.util.DrawableResProvider.getBgThumbByKey
 import com.itschristmas.main.model.CardItem
 import com.itschristmas.main.util.formatRelativeTime
 
@@ -206,7 +205,7 @@ fun CardItem(cardTitle: String, createdAt: String, thumbnailKey: String?, onClic
         Box(contentAlignment = Alignment.Center) {
             Image(
                 modifier = Modifier.fillMaxSize(),
-                painter = painterResource(DrawableResProvider.getDrawableIdByKey(thumbnailKey)),
+                painter = painterResource(getBgThumbByKey(thumbnailKey)),
                 contentDescription = stringResource(R.string.main_cd_card),
                 contentScale = ContentScale.Crop
             )

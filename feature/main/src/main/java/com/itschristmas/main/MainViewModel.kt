@@ -3,7 +3,6 @@ package com.itschristmas.main
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.itschristmas.domain.enum.AssetType
 import com.itschristmas.domain.model.Asset
 import com.itschristmas.domain.repository.AssetRepository
 import com.itschristmas.domain.repository.CardRepository
@@ -28,21 +27,15 @@ class MainViewModel @Inject constructor(
     private var backgroundList = emptyList<Asset>()
 
     init {
+        loadBackgrounds()
+
         viewModelScope.launch {
-            loadBackgrounds()
             loadCards()
         }
     }
 
-    suspend fun loadBackgrounds() {
-        if(backgroundList.isNotEmpty()) return
-        assetRepository.getAssetsByType(AssetType.BACKGROUND)
-            .onSuccess {
-                backgroundList = it
-            }
-            .onFailure {
-                Log.e(TAG, "loadBackgrounds: $it")
-            }
+    fun loadBackgrounds() {
+        backgroundList = assetRepository.getInitialBackgrounds()
     }
 
     suspend fun loadCards() {

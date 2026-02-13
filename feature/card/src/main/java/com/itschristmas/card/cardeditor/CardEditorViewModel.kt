@@ -159,12 +159,14 @@ class CardEditorViewModel @Inject constructor(
     }
 
     fun handleInitUnity() {
+        val bgAssetId = _cardEditorState.value.selectedBackgroundId
+
         unityBridge.initScene(
             _cardEditorState.value.spawnedObjects,
             _cardEditorState.value.texts
         )
-        val bgAssetId = _cardEditorState.value.selectedBackgroundId
-        bgAssetId?.let { unityChangeBackground(it) }
+        unityChangeBackground(bgAssetId)
+
         _cardEditorState.update { it.copy(isLoading = false) }
     }
 

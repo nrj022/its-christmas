@@ -3,7 +3,6 @@ package com.itschristmas.main
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.itschristmas.domain.enum.AssetType
 import com.itschristmas.domain.model.Asset
 import com.itschristmas.domain.repository.AssetRepository
 import com.itschristmas.domain.repository.CardRepository
@@ -28,40 +27,27 @@ class MainViewModel @Inject constructor(
     private var backgroundList = emptyList<Asset>()
 
     init {
+        loadBackgrounds()
+    }
+
+    fun loadBackgrounds() {
+        backgroundList = assetRepository.getInitialBackgrounds()
+    }
+
+    fun loadCards() {
         viewModelScope.launch {
-            loadBackgrounds()
-            loadCards()
-        }
-    }
-
-    suspend fun loadBackgrounds() {
-        if(backgroundList.isNotEmpty()) return
-        assetRepository.getAssetsByType(AssetType.BACKGROUND)
-            .onSuccess {
-                backgroundList = it
-            }
-            .onFailure {
-                Log.e(TAG, "loadBackgrounds: $it")
-            }
-    }
-
-    suspend fun loadCards() {
-        cardRepository.getAllCards()
-            .onSuccess { cards ->
-                _cardList.value = cards.map {
-                    val thumbnailKey = backgroundList.find { bg -> bg.assetId == it.backgroundAssetId }?.thumbnailKey
-                    CardItem(it, thumbnailKey)
+            cardRepository.getAllCards()
+                .onSuccess { cards ->
+                    _cardList.value = cards.map {
+                        val thumbnailKey =
+                            backgroundList.find { bg -> bg.assetId == it.backgroundAssetId }?.thumbnailKey
+                        CardItem(it, thumbnailKey)
+                    }
                 }
-            }
-            .onFailure {
-                Log.e(TAG, "getAllCardsFromDB: $it")
-                // 에러 처리
-            }
-    }
-
-    fun reloadCards() {
-        viewModelScope.launch {
-            loadCards()
+                .onFailure {
+                    Log.e(TAG, "getAllCardsFromDB: $it")
+                    // 에러 처리
+                }
         }
     }
 }

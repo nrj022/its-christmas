@@ -5,6 +5,8 @@ import com.itschristmas.domain.model.Asset
 
 interface AssetRepository {
 
+    fun getInitialBackgrounds(): List<Asset>
+
     suspend fun getAssetsByType(assetType: AssetType): Result<List<Asset>>
 
     suspend fun getAssetById(assetId: Long): Result<Asset>

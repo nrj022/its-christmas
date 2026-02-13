@@ -8,10 +8,10 @@ import com.itschristmas.database.entity.AssetEntity
 
 @Dao
 interface AssetDao {
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(assets: List<AssetEntity>): List<Long>
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAsset(asset: AssetEntity): Long
 
     @Query("SELECT * FROM assets")

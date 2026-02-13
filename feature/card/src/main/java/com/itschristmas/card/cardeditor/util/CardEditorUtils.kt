@@ -6,11 +6,11 @@ import com.itschristmas.card.R
 private const val base62Chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
 private const val baseCardUrl = "https://its-christmas-1f0ea.web.app"
 
-fun getDrawableIdByKey(context: Context, key: String?): Int {
-    if (key == null) return R.drawable.img_placeholder
+fun getObjectThumbByKey(context: Context, key: String?): Int {
+    if (key == null) return R.drawable.thumb_m_placeholder
 
     val id = context.resources.getIdentifier(key, "drawable", context.packageName)
-    return if(id != 0) id else R.drawable.img_placeholder
+    return if(id != 0) id else R.drawable.thumb_m_placeholder
 }
 
 fun toBase62(num: Long): String {

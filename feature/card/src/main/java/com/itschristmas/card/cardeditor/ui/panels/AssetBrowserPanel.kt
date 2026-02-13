@@ -38,8 +38,8 @@ import com.itschristmas.card.R
 import com.itschristmas.card.cardeditor.ui.common.BaseTabs
 import com.itschristmas.card.cardeditor.util.toBase62
 import com.itschristmas.card.cardeditor.model.BaseTabItem
-import com.itschristmas.card.cardeditor.util.getDrawableIdByKey
-import com.itschristmas.designsystem.util.DrawableResProvider
+import com.itschristmas.card.cardeditor.util.getObjectThumbByKey
+import com.itschristmas.designsystem.util.DrawableResProvider.getBgThumbByKey
 
 private const val COLUMNS = 3
 
@@ -112,12 +112,12 @@ fun AssetBrowserPanelContent(
                     onItemClicked = { onSpawnedObjectClicked(it) }
                 )
             }
-            ClickableGrid(
+            ObjectClickableGrid(
                 assets = objectItems,
                 onItemClicked = { onObjectClicked(it) }
             )
         } else {
-            SelectableGrid(
+            BackgroundSelectableGrid(
                 assets = backgroundItems,
                 selectedItemIndex = selectedBackground,
                 onItemClicked = { onBackgroundClicked(it) }
@@ -172,6 +172,8 @@ fun SpawnedObjectRow(
     selectedItemIndex: Long?,
     onItemClicked: (CardElementWithAssetKeys) -> Unit
 ) {
+    val context = LocalContext.current
+
     Column {
         Text(
             modifier = Modifier.padding(horizontal = 20.dp).padding(bottom = 12.dp),
@@ -196,7 +198,7 @@ fun SpawnedObjectRow(
                         .clip(RoundedCornerShape(10.dp))
                 ) {
                     Image(
-                        painter = painterResource(id = DrawableResProvider.getDrawableIdByKey(element.thumbnailKey)),
+                        painter = painterResource(id = getObjectThumbByKey(context, element.thumbnailKey)),
                         contentScale = ContentScale.Crop,
                         contentDescription = stringResource(R.string.editor_cd_asset),
                         modifier = Modifier
@@ -224,7 +226,7 @@ fun SpawnedObjectRow(
 }
 
 @Composable
-fun ClickableGrid(assets: List<Asset>, onItemClicked: (Asset) -> Unit) {
+fun ObjectClickableGrid(assets: List<Asset>, onItemClicked: (Asset) -> Unit) {
     val context = LocalContext.current
 
     LazyVerticalGrid(
@@ -236,7 +238,7 @@ fun ClickableGrid(assets: List<Asset>, onItemClicked: (Asset) -> Unit) {
     ) {
         items(assets, key = { it.assetId }) { asset ->
             Image(
-                painter = painterResource(id = getDrawableIdByKey(context, asset.thumbnailKey)),
+                painter = painterResource(id = getObjectThumbByKey(context, asset.thumbnailKey)),
                 contentScale = ContentScale.Crop,
                 contentDescription = stringResource(R.string.editor_cd_asset),
                 modifier = Modifier
@@ -251,9 +253,7 @@ fun ClickableGrid(assets: List<Asset>, onItemClicked: (Asset) -> Unit) {
 }
 
 @Composable
-fun SelectableGrid(assets: List<Asset>, selectedItemIndex: Long?, onItemClicked: (Long) -> Unit) {
-    val context = LocalContext.current
-
+fun BackgroundSelectableGrid(assets: List<Asset>, selectedItemIndex: Long, onItemClicked: (Long) -> Unit) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(COLUMNS),
         modifier = Modifier.padding(horizontal = 16.dp),
@@ -263,7 +263,7 @@ fun SelectableGrid(assets: List<Asset>, selectedItemIndex: Long?, onItemClicked:
     ) {
         items(items = assets, key = { it.assetId }) { asset ->
             Image(
-                painter = painterResource(id = getDrawableIdByKey(context, asset.thumbnailKey)),
+                painter = painterResource(id = getBgThumbByKey(asset.thumbnailKey)),
                 contentScale = ContentScale.Crop,
                 contentDescription = stringResource(R.string.editor_cd_asset),
                 modifier = Modifier

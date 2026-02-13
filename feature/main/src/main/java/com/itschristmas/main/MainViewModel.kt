@@ -28,33 +28,26 @@ class MainViewModel @Inject constructor(
 
     init {
         loadBackgrounds()
-
-        viewModelScope.launch {
-            loadCards()
-        }
     }
 
     fun loadBackgrounds() {
         backgroundList = assetRepository.getInitialBackgrounds()
     }
 
-    suspend fun loadCards() {
-        cardRepository.getAllCards()
-            .onSuccess { cards ->
-                _cardList.value = cards.map {
-                    val thumbnailKey = backgroundList.find { bg -> bg.assetId == it.backgroundAssetId }?.thumbnailKey
-                    CardItem(it, thumbnailKey)
-                }
-            }
-            .onFailure {
-                Log.e(TAG, "getAllCardsFromDB: $it")
-                // 에러 처리
-            }
-    }
-
-    fun reloadCards() {
+    fun loadCards() {
         viewModelScope.launch {
-            loadCards()
+            cardRepository.getAllCards()
+                .onSuccess { cards ->
+                    _cardList.value = cards.map {
+                        val thumbnailKey =
+                            backgroundList.find { bg -> bg.assetId == it.backgroundAssetId }?.thumbnailKey
+                        CardItem(it, thumbnailKey)
+                    }
+                }
+                .onFailure {
+                    Log.e(TAG, "getAllCardsFromDB: $it")
+                    // 에러 처리
+                }
         }
     }
 }

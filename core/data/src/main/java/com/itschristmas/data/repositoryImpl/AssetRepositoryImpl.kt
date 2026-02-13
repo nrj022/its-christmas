@@ -3,6 +3,7 @@ package com.itschristmas.data.repositoryImpl
 import com.itschristmas.data.mapper.toDomain
 import com.itschristmas.data.repositoryImpl.common.ioCatching
 import com.itschristmas.database.dao.AssetDao
+import com.itschristmas.database.data.InitialData
 import com.itschristmas.domain.enum.AssetType
 import com.itschristmas.domain.model.Asset
 import com.itschristmas.domain.repository.AssetRepository
@@ -11,6 +12,9 @@ import javax.inject.Inject
 class AssetRepositoryImpl @Inject constructor(
     private val assetDao: AssetDao
 ) : AssetRepository {
+
+    override fun getInitialBackgrounds(): List<Asset> =
+        InitialData.getInitialBackgrounds().map { it.toDomain() }
 
     override suspend fun getAssetsByType(assetType: AssetType): Result<List<Asset>> =
         ioCatching { assetDao.getByType(assetType.name).map { it.toDomain() } }

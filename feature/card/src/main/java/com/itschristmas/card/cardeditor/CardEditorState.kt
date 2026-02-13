@@ -19,7 +19,7 @@ data class CardEditorState(
     val backgrounds: List<Asset> = emptyList(),
     val spawnedObjects: List<CardElementWithAssetKeys> = emptyList(),
     val texts: List<TextElement> = emptyList(),
-    val selectedBackgroundId: Long? = null,
+    val selectedBackgroundId: Long = 1,
     val selectedSpawnedObject: CardElementWithAssetKeys? = null,
     val selectedTextTempId: Long? = null,
 ) {

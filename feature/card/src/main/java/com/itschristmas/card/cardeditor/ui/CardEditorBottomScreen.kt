@@ -48,8 +48,7 @@ fun CardEditorBottomScreen(cardId: Long, viewModel: CardEditorViewModel = hiltVi
                 onApply = { viewModel.onIntent(CardEditorIntent.ApplyTransform) },
                 onDirectionalClick = { direction ->
                     viewModel.onIntent(CardEditorIntent.MoveObject(direction))
-                },
-                onCameraReset = { viewModel.onIntent(CardEditorIntent.ResetCamera) }
+                }
             )
         }
 
@@ -66,7 +65,6 @@ fun CardEditorBottomScreen(cardId: Long, viewModel: CardEditorViewModel = hiltVi
                 onFontSizeChange = { viewModel.onIntent(CardEditorIntent.ChangeFontSize(it)) },
                 onFontSelected = { viewModel.onIntent(CardEditorIntent.SelectFont(it)) },
                 onPositionChange = { viewModel.onIntent(CardEditorIntent.MoveText(it)) },
-                onCameraReset = { viewModel.onIntent(CardEditorIntent.ResetCamera) },
                 onApply = { viewModel.onIntent(CardEditorIntent.ApplyText(cardId)) },
                 onBack = { viewModel.onIntent(CardEditorIntent.ChangeDialogState(DialogState.UNSAVED_TEXT_CHANGES)) }
             )

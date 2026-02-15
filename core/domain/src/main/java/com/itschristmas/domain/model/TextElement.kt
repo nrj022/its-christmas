@@ -11,7 +11,7 @@ data class TextElement(
         fontSize = 14f,
         fontFamily = FontOption.PlaywriteUsTradGuides,
     ),
-    val posX: Float = Random.nextDouble(-2.0, 2.0).toFloat(),
-    val posY: Float = Random.nextDouble(-2.0, 2.0).toFloat(),
-    val posZ: Float = 0f
+    val posX: Float = Random.nextInt(-20, 21) / 10f,
+    val posY: Float = Random.nextInt(-20, 21) / 10f,
+    val posZ: Float = Random.nextInt(-10, 11) / 10f
 )

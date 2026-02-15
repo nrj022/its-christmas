@@ -305,7 +305,8 @@ class CardEditorViewModel @Inject constructor(
                     elementId = element.elementId,
                     attributes = element.attributes,
                     posX = element.posX,
-                    posY = element.posY
+                    posY = element.posY,
+                    posZ = element.posZ
                 )
             )
         }.asReversed()
@@ -336,14 +337,15 @@ class CardEditorViewModel @Inject constructor(
         val tempState = _cardEditorState.value.tempTransform ?: return
         val updatedPosX = tempState.posX + direction.dx
         val updatedPosY = tempState.posY + direction.dy
+        val updatedPosZ = tempState.posZ + direction.dz
 
         _cardEditorState.update {
             it.copy(tempTransform =
-                tempState.copy(posX = updatedPosX, posY = updatedPosY)
+                tempState.copy(posX = updatedPosX, posY = updatedPosY, posZ = updatedPosZ)
             )
         }
 
-        unityBridge.updatePosition(tempState.elementId, updatedPosX, updatedPosY)
+        unityBridge.updatePosition(tempState.elementId, updatedPosX, updatedPosY, updatedPosZ)
     }
 
     private fun handleChangeScale(newScale: Int) {
@@ -390,6 +392,7 @@ class CardEditorViewModel @Inject constructor(
                 tempState.copy(
                     posX = initialState?.posX ?: 0f,
                     posY = initialState?.posY ?: 0f,
+                    posZ = initialState?.posZ ?: 0f,
                     scale = initialState?.scale ?: 1
                 )
             )
@@ -481,11 +484,13 @@ class CardEditorViewModel @Inject constructor(
                 if(item.tempId == textId) {
                     val newPosX = item.textElement.posX + direction.dx
                     val newPosY = item.textElement.posY + direction.dy
-                    unityBridge.updatePosition(textId, newPosX, newPosY)
+                    val newPosZ = item.textElement.posZ + direction.dz
+                    unityBridge.updatePosition(textId, newPosX, newPosY, newPosZ)
                     item.copy(
                         textElement = item.textElement.copy(
                             posX = newPosX,
-                            posY = newPosY
+                            posY = newPosY,
+                            posZ = newPosZ
                         )
                     )
                 } else item
@@ -544,6 +549,7 @@ class CardEditorViewModel @Inject constructor(
                 elementId = tempState.elementId,
                 posX = tempState.posX,
                 posY = tempState.posY,
+                posZ = tempState.posZ,
                 scale = tempState.scale
             ).onSuccess {
                 _cardEditorState.update {
@@ -552,6 +558,7 @@ class CardEditorViewModel @Inject constructor(
                             cardElement = initialState.cardElement.copy(
                                 posX = tempState.posX,
                                 posY = tempState.posY,
+                                posZ = tempState.posZ,
                                 scale = tempState.scale
                             )
                         )
@@ -619,9 +626,10 @@ class CardEditorViewModel @Inject constructor(
 
         val initialPosX = initialState.posX
         val initialPosY = initialState.posY
+        val initialPosZ = initialState.posZ
         val initialScale = initialState.scale
 
-        unityBridge.updatePosition(initialState.elementId, initialPosX, initialPosY)
+        unityBridge.updatePosition(initialState.elementId, initialPosX, initialPosY, initialPosZ)
         unityBridge.updateScale(initialState.elementId, initialScale)
     }
 }

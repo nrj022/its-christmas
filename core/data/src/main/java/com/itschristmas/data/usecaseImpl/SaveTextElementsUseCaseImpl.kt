@@ -36,7 +36,8 @@ class SaveTextElementsUseCaseImpl @Inject constructor(
                             elementId = id,
                             textAttributes = text.attributes,
                             posX = text.posX,
-                            posY = text.posY
+                            posY = text.posY,
+                            posZ = text.posZ
                         ).onSuccess {
                             updated += text
                         }.onFailure {
@@ -51,6 +52,7 @@ class SaveTextElementsUseCaseImpl @Inject constructor(
                                 elementType = ElementType.TEXT,
                                 posX = text.posX,
                                 posY = text.posY,
+                                posZ = text.posZ,
                                 textAttributes = text.attributes
                             )
                         ).onSuccess { id ->

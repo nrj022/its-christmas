@@ -21,7 +21,8 @@ class GetTextElementsUseCaseImpl @Inject constructor(
                             elementId = element.elementId,
                             attributes = attr,
                             posX = element.posX,
-                            posY = element.posY
+                            posY = element.posY,
+                            posZ = element.posZ
                         )
                     }
                 }

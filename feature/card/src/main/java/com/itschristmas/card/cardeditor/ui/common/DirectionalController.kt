@@ -2,6 +2,8 @@ package com.itschristmas.card.cardeditor.ui.common
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,6 +13,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -26,6 +29,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.itschristmas.card.cardeditor.model.Direction
 import com.itschristmas.designsystem.theme.ItsChristmasTheme
+import kotlinx.coroutines.delay
 
 enum class Axis(val label: String) {
     XY("x/y"), YZ("y/z")
@@ -92,10 +96,24 @@ fun DirectionalController(
 private fun ControlButton(
     modifier: Modifier = Modifier,
     direction: Direction,
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     onClick: (Direction) -> Unit
 ) {
+    val isPressed by interactionSource.collectIsPressedAsState()
+
+    LaunchedEffect(isPressed) {
+        if(!isPressed) return@LaunchedEffect
+
+        delay(300L)
+        while(true) {
+            onClick(direction)
+            delay(20L)
+        }
+    }
+
     IconButton(
         onClick = { onClick(direction) },
+        interactionSource = interactionSource,
         modifier = modifier
             .semantics { contentDescription = "$direction Button" }
             .fillMaxSize(0.3f)

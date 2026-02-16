@@ -42,13 +42,14 @@ class CardEditorActivity : AppCompatActivity() {
     private lateinit var unityPlayer: UnityPlayerForActivityOrService
     private lateinit var layoutParams: ConstraintLayout.LayoutParams
     private val viewModel: CardEditorViewModel by viewModels()
-    private var cardId: Long = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityCardEditorBinding.inflate(layoutInflater)
         layoutParams = binding.unityContainer.layoutParams as ConstraintLayout.LayoutParams
-        cardId = intent.getLongExtra("cardId", -1)
+
+        val cardId = intent.getLongExtra("cardId", -1)
+        viewModel.onIntent(CardEditorIntent.Init(cardId))
 
         setContentView(binding.root)
         initUnity()
@@ -89,7 +90,7 @@ class CardEditorActivity : AppCompatActivity() {
 
         binding.composeContainer.setContent {
             ItsChristmasTheme {
-                CardEditorBottomScreen(cardId)
+                CardEditorBottomScreen()
             }
         }
 
@@ -225,7 +226,7 @@ class CardEditorActivity : AppCompatActivity() {
             UnityMessageType.UPLOAD_GLB -> {
             }
             UnityMessageType.GET_DOWNLOAD_URL -> {
-                viewModel.onIntent(CardEditorIntent.ExportGlbResult(cardId, msg.status, msg.data))
+                viewModel.onIntent(CardEditorIntent.ExportGlbResult(msg.status, msg.data))
             }
         }
     }

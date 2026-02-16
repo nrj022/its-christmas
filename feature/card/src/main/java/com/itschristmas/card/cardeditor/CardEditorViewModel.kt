@@ -55,6 +55,8 @@ class CardEditorViewModel @Inject constructor(
     private val unityBridge: UnityBridge
 ) : ViewModel() {
 
+    private var _cardId: Long = -1L
+
     private val _cardEditorState = MutableStateFlow(CardEditorState())
     val cardEditorState: StateFlow<CardEditorState> = _cardEditorState
 
@@ -82,14 +84,11 @@ class CardEditorViewModel @Inject constructor(
             is CardEditorIntent.ChangeTitle -> handleChangeTitle(intent.newTitle)
             is CardEditorIntent.FinishEditing -> handleFinishEditing()
             is CardEditorIntent.ExportGlbAndUpload -> handleExportGlbAndUpload()
-            is CardEditorIntent.ExportGlbResult -> handleExportGlbResult(intent.cardId, intent.unityStatusType, intent.result)
+            is CardEditorIntent.ExportGlbResult -> handleExportGlbResult(intent.unityStatusType, intent.result)
             is CardEditorIntent.ChangeDialogState -> handleChangeDialogState(intent.dialogState)
 
-            is CardEditorIntent.CreateObject -> handleCreateObject(
-                intent.cardId,
-                intent.clickedObject
-            )
-            is CardEditorIntent.ChangeBackground -> handleChangeBackground(intent.cardId,intent.assetId)
+            is CardEditorIntent.CreateObject -> handleCreateObject(intent.clickedObject)
+            is CardEditorIntent.ChangeBackground -> handleChangeBackground(intent.assetId)
             is CardEditorIntent.SelectSpawnedObject -> handleSelectSpawnedObject(intent.element)
             is CardEditorIntent.DeleteSpawnedObject -> handleDeleteSpawnedObject()
             is CardEditorIntent.EnterTransformMode -> handleEnterTransformMode()
@@ -118,23 +117,23 @@ class CardEditorViewModel @Inject constructor(
             is CardEditorIntent.ChangeFontSize -> handleChangeFontSize(intent.newSize)
             is CardEditorIntent.SelectFont -> handleSelectFont(intent.newFont)
             is CardEditorIntent.MoveText -> handleMoveText(intent.direction)
-            is CardEditorIntent.ApplyText -> handleApplyText(intent.cardId)
-            is CardEditorIntent.ApplyAndExitText -> handleApplyAndExitText(intent.cardId)
-            is CardEditorIntent.DiscardAndExitText -> handleDiscardAndExitText(intent.cardId)
+            is CardEditorIntent.ApplyText -> handleApplyText()
+            is CardEditorIntent.ApplyAndExitText -> handleApplyAndExitText()
+            is CardEditorIntent.DiscardAndExitText -> handleDiscardAndExitText()
         }
     }
 
     private fun handleInit(cardId: Long) {
-        var initCardId = cardId
+        _cardId = cardId
         viewModelScope.launch {
-            if(initCardId < 0) {
+            if(_cardId < 0) {
                 cardRepository.insertCard(Card())
-                    .onSuccess { id -> initCardId = id}
+                    .onSuccess { id -> _cardId = id}
                     .onFailure {
                         /* TODO */
                     }
             }
-            loadCardEditorUseCase(initCardId)
+            loadCardEditorUseCase(_cardId)
                 .onSuccess { result ->
                     _cardEditorState.update {
                         it.copy(
@@ -185,7 +184,7 @@ class CardEditorViewModel @Inject constructor(
         unityBridge.exportAndUpload()
     }
 
-    private fun handleExportGlbResult(cardId: Long, unityStatusType: UnityStatusType, result: String) {
+    private fun handleExportGlbResult(unityStatusType: UnityStatusType, result: String) {
         viewModelScope.launch {
             val state = _cardEditorState.value
             when (unityStatusType) {
@@ -193,7 +192,7 @@ class CardEditorViewModel @Inject constructor(
                     val (fileName, token) = extractFileNameAndToken(result)
                     val selectedBg = state.backgrounds.firstOrNull { it.assetId == state.selectedBackgroundId }
 
-                    cardRepository.updateGlb(cardId, fileName, token)
+                    cardRepository.updateGlb(_cardId, fileName, token)
 
                     val cardUrl = generateCardUrl(
                         cardTitle = state.cardTitle,
@@ -219,11 +218,11 @@ class CardEditorViewModel @Inject constructor(
     }
 
 
-    private fun handleCreateObject(cardId: Long, clickedObject: Asset) {
+    private fun handleCreateObject(clickedObject: Asset) {
         viewModelScope.launch {
             val newElement = CardElement(
                 elementId = 0,
-                cardId = cardId,
+                cardId = _cardId,
                 assetId = clickedObject.assetId,
                 elementType = ElementType.OBJECT,
             )
@@ -241,12 +240,12 @@ class CardEditorViewModel @Inject constructor(
         }
     }
 
-    private fun handleChangeBackground(cardId: Long, assetId: Long) {
+    private fun handleChangeBackground(assetId: Long) {
         val currentBackgroundId = _cardEditorState.value.selectedBackgroundId
         if (currentBackgroundId == assetId) return
 
         viewModelScope.launch {
-            cardRepository.updateBackgroundAssetId(cardId, assetId)
+            cardRepository.updateBackgroundAssetId(_cardId, assetId)
         }
         _cardEditorState.update {
             it.copy(selectedBackgroundId = assetId)
@@ -513,18 +512,18 @@ class CardEditorViewModel @Inject constructor(
         }
     }
 
-    private fun handleApplyText(cardId: Long) {
-        saveTextChanges(cardId)
+    private fun handleApplyText() {
+        saveTextChanges()
     }
 
-    private fun handleApplyAndExitText(cardId: Long) {
-        saveTextChanges(cardId, true)
+    private fun handleApplyAndExitText() {
+        saveTextChanges(true)
         exitTextEditor()
     }
 
-    private fun handleDiscardAndExitText(cardId: Long) {
+    private fun handleDiscardAndExitText() {
         viewModelScope.launch {
-            getTextsUseCase(cardId)
+            getTextsUseCase(_cardId)
                 .onSuccess { result ->
                     _cardEditorState.update { it.copy(texts = result) }
                     unityBridge.replaceAllTexts(result)
@@ -582,11 +581,11 @@ class CardEditorViewModel @Inject constructor(
         }
     }
 
-    private fun saveTextChanges(cardId: Long, shouldFinishEditing: Boolean = false) {
+    private fun saveTextChanges(shouldFinishEditing: Boolean = false) {
         viewModelScope.launch {
             saveTextElementsUseCase(
                 SaveTextElementsParams(
-                    cardId = cardId,
+                    cardId = _cardId,
                     updates = _cardEditorState.value.tempTextList.map { it.textElement },
                     deletedIds = _deletedTextElementIds
                 )

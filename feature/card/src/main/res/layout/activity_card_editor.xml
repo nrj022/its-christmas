@@ -75,12 +75,26 @@
             android:id="@+id/img_btn_delete_text"
             android:layout_width="48dp"
             android:layout_height="48dp"
+            android:layout_marginEnd="12dp"
             android:background="@drawable/bg_circle_black_30_border_white"
             android:contentDescription="@string/editor_cd_delete_text"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/img_btn_camera_focus_reset"
             app:layout_constraintBottom_toBottomOf="parent"
             app:srcCompat="@drawable/ic_trash_bin"
             app:tint="#FFFFFF" />
+
+        <ImageButton
+            android:id="@+id/img_btn_camera_focus_reset"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/bg_circle_black_30_border_white"
+            android:contentDescription="@string/editor_cd_transform_reset_img_button"
+            android:elevation="2dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:srcCompat="@drawable/ic_fit_screen"
+            app:tint="#FFFFFF" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -128,12 +142,24 @@
             android:id="@+id/img_btn_transform_reset"
             android:layout_width="48dp"
             android:layout_height="48dp"
+            android:layout_marginEnd="12dp"
+            android:background="@drawable/bg_circle_white"
+            android:contentDescription="@string/editor_cd_transform_reset_img_button"
+            android:elevation="2dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/img_btn_camera_focus_controller"
+            app:srcCompat="@drawable/ic_reset" />
+
+        <ImageButton
+            android:id="@+id/img_btn_camera_focus_controller"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:background="@drawable/bg_circle_white"
             android:contentDescription="@string/editor_cd_transform_reset_img_button"
             android:elevation="2dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:srcCompat="@drawable/ic_reset" />
+            app:srcCompat="@drawable/ic_fit_screen" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -105,6 +105,7 @@ class CardEditorViewModel @Inject constructor(
             is CardEditorIntent.ApplyAndExitTransform -> handleApplyAndExitTransform()
             is CardEditorIntent.DiscardAndExitTransform -> handleDiscardAndExitTransform()
             is CardEditorIntent.ResetTransform -> handleResetTransform()
+            is CardEditorIntent.CameraFocus -> handleCameraFocus()
 
             /* 텍스트 편집 */
             is CardEditorIntent.MissingTextSelection -> handleMissingTextSelection()
@@ -399,6 +400,19 @@ class CardEditorViewModel @Inject constructor(
         }
 
         unityResetTransform()
+    }
+
+    private fun handleCameraFocus() {
+        val cameraFocus = _cardEditorState.value.isTransformCameraFocus
+
+        if(cameraFocus) {
+            unityBridge.clearSelection()
+        } else {
+            val elementId = _cardEditorState.value.selectedSpawnedObject?.cardElement?.elementId ?: return
+            unityBridge.selectObject(elementId)
+        }
+
+        _cardEditorState.update { it.copy(isTransformCameraFocus = !cameraFocus) }
     }
 
     /* 텍스트 편집 */

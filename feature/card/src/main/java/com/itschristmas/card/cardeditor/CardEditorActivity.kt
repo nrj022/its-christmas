@@ -23,6 +23,7 @@ import com.itschristmas.card.cardeditor.ui.CardEditorBottomScreen
 import com.itschristmas.card.cardeditor.ui.CardEditorTextScreen
 import com.itschristmas.card.cardeditor.util.getObjectThumbByKey
 import com.itschristmas.card.cardeditor.util.toBase62
+import com.itschristmas.card.R
 import com.itschristmas.card.cardshare.CardShareActivity
 import com.itschristmas.card.databinding.ActivityCardEditorBinding
 import com.itschristmas.designsystem.theme.ItsChristmasTheme
@@ -139,6 +140,10 @@ class CardEditorActivity : AppCompatActivity() {
             viewModel.onIntent(CardEditorIntent.ResetTransform)
         }
 
+        binding.imgBtnCameraFocusController.setOnClickListener {
+            viewModel.onIntent(CardEditorIntent.CameraFocus)
+        }
+
         binding.imgBtnAddText.setOnClickListener {
             viewModel.onIntent(CardEditorIntent.AddText)
         }
@@ -146,6 +151,10 @@ class CardEditorActivity : AppCompatActivity() {
         binding.imgBtnDeleteText.setOnClickListener {
             val textId = viewModel.cardEditorState.value.selectedTextTempId ?: return@setOnClickListener
             viewModel.onIntent(CardEditorIntent.DeleteText(textId))
+        }
+
+        binding.imgBtnCameraFocusReset.setOnClickListener {
+            viewModel.onIntent(CardEditorIntent.ResetCamera)
         }
 
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { _, insets ->
@@ -177,6 +186,9 @@ class CardEditorActivity : AppCompatActivity() {
         val active = state.isTransformPanelActive && temp != null
 
         binding.containerTransformOption.isVisible = active
+        binding.imgBtnCameraFocusController.isVisible = active
+        binding.imgBtnCameraFocusController.setImageResource(
+            if(state.isTransformCameraFocus) R.drawable.ic_fit_screen else R.drawable.ic_target)
         binding.imgBtnTransformReset.isVisible = active && state.hasPendingTransform
         binding.imgObjectThumb.setImageResource(getObjectThumbByKey(this, temp?.thumbnailKey))
         binding.textElementKey.text = if(active) toBase62(temp.elementId) else ""

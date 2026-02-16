@@ -11,6 +11,7 @@ import com.itschristmas.domain.model.TextElement
 data class CardEditorState(
     val panelType: PanelType = PanelType.ASSET_BROWSER,
     val isLoading: Boolean = true,
+    val isTransformCameraFocus: Boolean = true,
     val tempTransform: TempTransform? = null,
     val tempTextList: List<TempTextElement> = emptyList(),
     val dialogState: DialogState = DialogState.NONE,

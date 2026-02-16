@@ -1,7 +1,6 @@
 package com.itschristmas.card.cardeditor.ui
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -17,12 +16,8 @@ import com.itschristmas.card.cardeditor.ui.dialog.UnsavedChangesDialog
 import com.itschristmas.card.cardeditor.ui.panels.TextEditorPanel
 
 @Composable
-fun CardEditorBottomScreen(cardId: Long, viewModel: CardEditorViewModel = hiltViewModel()) {
+fun CardEditorBottomScreen(viewModel: CardEditorViewModel = hiltViewModel()) {
     val state by viewModel.cardEditorState.collectAsStateWithLifecycle()
-
-    LaunchedEffect(Unit) {
-        viewModel.onIntent(CardEditorIntent.Init(cardId))
-    }
 
     when (state.panelType) {
         PanelType.ASSET_BROWSER ->
@@ -33,9 +28,9 @@ fun CardEditorBottomScreen(cardId: Long, viewModel: CardEditorViewModel = hiltVi
                 selectedSpawnedObject = state.selectedSpawnedObjectId,
                 selectedBackground = state.selectedBackgroundId,
                 onAddTextClicked = { viewModel.onIntent(CardEditorIntent.EnterTextMode) },
-                onObjectClicked = { viewModel.onIntent(CardEditorIntent.CreateObject(cardId, it)) },
+                onObjectClicked = { viewModel.onIntent(CardEditorIntent.CreateObject(it)) },
                 onSpawnedObjectClicked = { viewModel.onIntent(CardEditorIntent.SelectSpawnedObject(it)) },
-                onBackgroundClicked = { viewModel.onIntent(CardEditorIntent.ChangeBackground(cardId, it)) }
+                onBackgroundClicked = { viewModel.onIntent(CardEditorIntent.ChangeBackground(it)) }
             )
 
         PanelType.TRANSFORM_CONTROL -> {
@@ -65,7 +60,7 @@ fun CardEditorBottomScreen(cardId: Long, viewModel: CardEditorViewModel = hiltVi
                 onFontSizeChange = { viewModel.onIntent(CardEditorIntent.ChangeFontSize(it)) },
                 onFontSelected = { viewModel.onIntent(CardEditorIntent.SelectFont(it)) },
                 onPositionChange = { viewModel.onIntent(CardEditorIntent.MoveText(it)) },
-                onApply = { viewModel.onIntent(CardEditorIntent.ApplyText(cardId)) },
+                onApply = { viewModel.onIntent(CardEditorIntent.ApplyText) },
                 onBack = { viewModel.onIntent(CardEditorIntent.ChangeDialogState(DialogState.UNSAVED_TEXT_CHANGES)) }
             )
         }
@@ -88,8 +83,8 @@ fun CardEditorBottomScreen(cardId: Long, viewModel: CardEditorViewModel = hiltVi
         }
         DialogState.UNSAVED_TEXT_CHANGES -> {
             UnsavedChangesDialog(
-                onApplyChanges = { viewModel.onIntent(CardEditorIntent.ApplyAndExitText(cardId)) },
-                onDiscardChanges = { viewModel.onIntent(CardEditorIntent.DiscardAndExitText(cardId)) },
+                onApplyChanges = { viewModel.onIntent(CardEditorIntent.ApplyAndExitText) },
+                onDiscardChanges = { viewModel.onIntent(CardEditorIntent.DiscardAndExitText) },
                 onDismiss = { viewModel.onIntent(CardEditorIntent.ChangeDialogState(DialogState.NONE)) }
             )
         }

@@ -30,7 +30,7 @@ interface UnityBridge {
         elementId: Long,
         posX: Float,
         posY: Float,
-        posZ: Float = 0f,
+        posZ: Float
     )
 
     fun updateScale(elementId: Long, scale: Int)

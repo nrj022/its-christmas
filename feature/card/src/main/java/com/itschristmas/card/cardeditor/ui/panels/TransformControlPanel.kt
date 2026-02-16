@@ -33,7 +33,6 @@ fun TransformControlPanel(
     scale: Int = 1,
     onScaleChange: (Int) -> Unit = {},
     onDirectionalClick: (Direction) -> Unit = {},
-    onCameraReset: () -> Unit = {},
     onCancel: () -> Unit = {},
     onApply: () -> Unit = {},
 ) {
@@ -55,7 +54,7 @@ fun TransformControlPanel(
             horizontalArrangement = Arrangement.spacedBy(40.dp) // 방향키와 수량 조절기 사이 간격
         ) {
             // 2-1. 방향키 컨트롤러
-            DirectionalController(onClick = onDirectionalClick, onCameraReset = onCameraReset)
+            DirectionalController(onClick = onDirectionalClick)
 
             // 2-2. Scale 조절기
             ScaleController(

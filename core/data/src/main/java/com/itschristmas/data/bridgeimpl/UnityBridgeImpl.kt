@@ -41,7 +41,7 @@ class UnityBridgeImpl @Inject constructor(): UnityBridge {
                         position = Vector3Dto(
                             x = it.posX,
                             y = it.posY,
-                            z = 0f
+                            z = it.posZ
                         ),
                         textContent = it.attributes.content,
                         fontFamilyName = it.attributes.fontFamily.key,

@@ -72,7 +72,6 @@ fun TextEditorPanel(
     onFontSizeChange: (Float) -> Unit = {},
     onFontSelected: (FontOption) -> Unit = {},
     onPositionChange: (Direction) -> Unit = { },
-    onCameraReset: () -> Unit = {},
     onApply: () -> Unit = {},
     onBack: () -> Unit = {}
 ) {
@@ -88,7 +87,6 @@ fun TextEditorPanel(
         onFontSizeChange = onFontSizeChange,
         onFontSelected = onFontSelected,
         onPositionChange = onPositionChange,
-        onCameraReset = onCameraReset,
         onApply = onApply,
         onBack = onBack
     )
@@ -105,7 +103,6 @@ private fun EditorTabContent(
     onFontSizeChange: (Float) -> Unit,
     onFontSelected: (FontOption) -> Unit,
     onPositionChange: (Direction) -> Unit,
-    onCameraReset: () -> Unit,
     onApply: () -> Unit,
     onBack: () -> Unit
 ) {
@@ -155,10 +152,7 @@ private fun EditorTabContent(
                 FontOptions(selectedFont = textElement.attributes.fontFamily, onFontSelected = onFontSelected)
             }
             TextEditorTab.POSITION -> {
-                PositionOptions(
-                    onPositionChange = onPositionChange,
-                    onCameraReset = onCameraReset
-                )
+                PositionOptions(onPositionChange = onPositionChange)
             }
         }
     }
@@ -379,7 +373,7 @@ private fun FontChip(font: FontOption, isSelected: Boolean, fontFamily: FontFami
 }
 
 @Composable
-private fun PositionOptions(onPositionChange: (Direction) -> Unit, onCameraReset: () -> Unit) {
+private fun PositionOptions(onPositionChange: (Direction) -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -388,7 +382,6 @@ private fun PositionOptions(onPositionChange: (Direction) -> Unit, onCameraReset
     ) {
         DirectionalController(
             onClick = onPositionChange,
-            onCameraReset = onCameraReset
         )
     }
 }

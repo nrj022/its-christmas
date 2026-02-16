@@ -41,13 +41,13 @@ interface CardElementDao {
     @Query("SELECT * FROM card_elements WHERE cardId = :cardId and elementType = 'TEXT'")
     suspend fun getTextElementsByCardId(cardId: Long): List<CardElementEntity>
 
-    @Query("UPDATE card_elements SET posX = :posX, posY = :posY, scale = :scale WHERE elementId = :elementId")
-    suspend fun updateElementTransform(elementId: Long, posX: Float, posY: Float, scale: Int): Int
+    @Query("UPDATE card_elements SET posX = :posX, posY = :posY, posZ = :posZ, scale = :scale WHERE elementId = :elementId")
+    suspend fun updateElementTransform(elementId: Long, posX: Float, posY: Float, posZ: Float, scale: Int): Int
 
     @Query("""
         UPDATE card_elements 
-        SET textContent = :textContent, textAlign = :textAlign, textColor = :textColor, fontSize = :fontSize, fontFamily = :fontFamily, posX = :posX, posY = :posY 
+        SET textContent = :textContent, textAlign = :textAlign, textColor = :textColor, fontSize = :fontSize, fontFamily = :fontFamily, posX = :posX, posY = :posY, posZ = :posZ
         WHERE elementId = :elementId
         """)
-    suspend fun updateTextElement(elementId: Long, textContent: String, textAlign: String, textColor: String, fontSize: Float, fontFamily: String, posX: Float, posY: Float): Int
+    suspend fun updateTextElement(elementId: Long, textContent: String, textAlign: String, textColor: String, fontSize: Float, fontFamily: String, posX: Float, posY: Float, posZ: Float): Int
 }

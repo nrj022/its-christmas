@@ -34,6 +34,7 @@ sealed class CardEditorIntent {
     data object ApplyAndExitTransform: CardEditorIntent()
     data object DiscardAndExitTransform: CardEditorIntent()
     data object ResetTransform: CardEditorIntent()
+    data object CameraFocus: CardEditorIntent()
 
     /* 텍스트 편집 */
     data object MissingTextSelection: CardEditorIntent()

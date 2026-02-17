@@ -184,7 +184,7 @@ fun CardGrid(cardItems: List<CardItem>, onCardClick: (Long) -> Unit) {
         items(cardItems) { item ->
             CardItem(
                 cardTitle = item.card.title,
-                createdAt = formatRelativeTime(item.card.createdAt),
+                updatedAt = formatRelativeTime(item.card.updatedAt),
                 thumbnailKey = item.thumbnailKey,
                 onClick = { onCardClick(item.card.cardId) }
             )
@@ -193,7 +193,7 @@ fun CardGrid(cardItems: List<CardItem>, onCardClick: (Long) -> Unit) {
 }
 
 @Composable
-fun CardItem(cardTitle: String, createdAt: String, thumbnailKey: String?, onClick: () -> Unit) {
+fun CardItem(cardTitle: String, updatedAt: String, thumbnailKey: String?, onClick: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -221,7 +221,7 @@ fun CardItem(cardTitle: String, createdAt: String, thumbnailKey: String?, onClic
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = createdAt,
+                    text = updatedAt,
                     style = MaterialTheme.typography.labelSmall,
                     fontSize = 8.sp
                 )

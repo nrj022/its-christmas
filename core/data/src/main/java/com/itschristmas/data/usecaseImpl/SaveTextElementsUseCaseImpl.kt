@@ -33,6 +33,7 @@ class SaveTextElementsUseCaseImpl @Inject constructor(
                 nonEmptyTextList.forEach { text ->
                     text.elementId?.let { id ->
                         cardElementRepository.updateTextElement(
+                            cardId = params.cardId,
                             elementId = id,
                             textAttributes = text.attributes,
                             posX = text.posX,
@@ -68,7 +69,7 @@ class SaveTextElementsUseCaseImpl @Inject constructor(
                     addAll(emptyTextList.mapNotNull { it.elementId })
                 }.toList()
 
-                cardElementRepository.deleteCardElementsByIds(toDelete)
+                cardElementRepository.deleteCardElementsByIds(params.cardId, toDelete)
                     .onFailure {
                         failedDeleteIds.addAll(toDelete)
                         Log.e(TAG, "deleteCardElementsByIds failed: $it")

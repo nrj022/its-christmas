@@ -42,7 +42,7 @@ class MainViewModel @Inject constructor(
                         val thumbnailKey =
                             backgroundList.find { bg -> bg.assetId == it.backgroundAssetId }?.thumbnailKey
                         CardItem(it, thumbnailKey)
-                    }.sortedBy { it.card.updatedAt }.reversed()
+                    }
                 }
                 .onFailure {
                     Log.e(TAG, "getAllCardsFromDB: $it")

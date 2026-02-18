@@ -7,8 +7,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface CardElementRepository {
 
-    suspend fun insertCardElements(cardElements: List<CardElement>): Result<List<Long>>
-
     suspend fun insertCardElement(cardElement: CardElement): Result<Long>
 
     suspend fun deleteCardElementsByCardId(cardId: Long): Result<Int>

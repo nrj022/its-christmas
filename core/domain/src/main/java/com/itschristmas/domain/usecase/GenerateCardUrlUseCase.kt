@@ -1,8 +1,9 @@
 package com.itschristmas.domain.usecase
 
 import android.net.Uri
+import javax.inject.Inject
 
-class GenerateCardUrlUseCase {
+class GenerateCardUrlUseCase @Inject constructor() {
 
     private val baseCardUrl = "https://its-christmas-1f0ea.web.app"
 

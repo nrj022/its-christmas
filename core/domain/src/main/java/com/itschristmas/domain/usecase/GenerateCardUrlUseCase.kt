@@ -13,6 +13,7 @@ class GenerateCardUrlUseCase {
         bgFileName: String,
         bgToken: String
     ): String {
-        return "$baseCardUrl?title=$cardTitle&glb=$fileName&glbToken=$token&bg=$bgFileName&bgToken=$bgToken"
+        val encodedTitle = Uri.encode(cardTitle)
+        return "$baseCardUrl?title=$encodedTitle&glb=$fileName&glbToken=$token&bg=$bgFileName&bgToken=$bgToken"
     }
 }

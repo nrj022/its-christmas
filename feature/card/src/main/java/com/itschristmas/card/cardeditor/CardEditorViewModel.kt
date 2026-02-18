@@ -9,7 +9,6 @@ import com.itschristmas.card.cardeditor.model.PanelType
 import com.itschristmas.card.cardeditor.model.TempTextElement
 import com.itschristmas.card.cardeditor.model.TempTransform
 import com.itschristmas.card.cardeditor.util.extractFileNameAndToken
-import com.itschristmas.card.cardeditor.util.generateCardUrl
 import com.itschristmas.domain.bridge.UnityBridge
 import com.itschristmas.domain.enum.ElementType
 import com.itschristmas.domain.model.Asset
@@ -25,6 +24,7 @@ import com.itschristmas.domain.model.UnityStatusType
 import com.itschristmas.domain.repository.AssetRepository
 import com.itschristmas.domain.repository.CardElementRepository
 import com.itschristmas.domain.repository.CardRepository
+import com.itschristmas.domain.usecase.GenerateCardUrlUseCase
 import com.itschristmas.domain.usecase.GetTextElementsUseCase
 import com.itschristmas.domain.usecase.LoadCardEditorUseCase
 import com.itschristmas.domain.usecase.SaveTextElementsParams
@@ -52,6 +52,7 @@ class CardEditorViewModel @Inject constructor(
     private val loadCardEditorUseCase: LoadCardEditorUseCase,
     private val getTextsUseCase: GetTextElementsUseCase,
     private val saveTextElementsUseCase: SaveTextElementsUseCase,
+    private val generateCardUrl: GenerateCardUrlUseCase,
     private val unityBridge: UnityBridge
 ) : ViewModel() {
 

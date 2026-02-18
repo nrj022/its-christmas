@@ -12,9 +12,6 @@ import kotlinx.coroutines.flow.Flow
 interface CardElementDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAll(cardElements: List<CardElementEntity>): List<Long>
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertElement(cardElement: CardElementEntity): Long
 
     @Query("DELETE FROM card_elements")

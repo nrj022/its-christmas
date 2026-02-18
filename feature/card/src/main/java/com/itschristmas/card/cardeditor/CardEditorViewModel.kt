@@ -270,7 +270,7 @@ class CardEditorViewModel @Inject constructor(
     private fun handleDeleteSpawnedObject() {
         viewModelScope.launch {
             _cardEditorState.value.selectedSpawnedObjectId?.let { id ->
-                cardElementRepository.deleteCardElementById(id)
+                cardElementRepository.deleteCardElementById(_cardId, id)
                     .onSuccess { row ->
                         if(row > 0) unityBridge.deleteObject(id)
                     }
@@ -559,6 +559,7 @@ class CardEditorViewModel @Inject constructor(
 
         viewModelScope.launch {
             cardElementRepository.updateElementTransform(
+                cardId = _cardId,
                 elementId = tempState.elementId,
                 posX = tempState.posX,
                 posY = tempState.posY,

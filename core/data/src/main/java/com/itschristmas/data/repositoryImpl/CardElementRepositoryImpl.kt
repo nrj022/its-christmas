@@ -1,9 +1,12 @@
 package com.itschristmas.data.repositoryImpl
 
+import androidx.room.withTransaction
 import com.itschristmas.domain.model.CardElementWithAssetKeys
 import com.itschristmas.data.mapper.toDomain
 import com.itschristmas.data.mapper.toEntity
 import com.itschristmas.data.repositoryImpl.common.ioCatching
+import com.itschristmas.database.AppDatabase
+import com.itschristmas.database.dao.CardDao
 import com.itschristmas.database.dao.CardElementDao
 import com.itschristmas.domain.model.CardElement
 import com.itschristmas.domain.model.TextAttributes
@@ -16,31 +19,41 @@ import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class CardElementRepositoryImpl @Inject constructor(
+    private val db: AppDatabase,
+    private val cardDao: CardDao,
     private val cardElementDao: CardElementDao
 ): CardElementRepository {
-    override suspend fun insertCardElements(cardElements: List<CardElement>): Result<List<Long>> =
-        ioCatching {
-            cardElementDao.insertAll(cardElements.map { it.toEntity() })
-        }
 
     override suspend fun insertCardElement(cardElement: CardElement): Result<Long> =
         ioCatching {
-            cardElementDao.insertElement(cardElement.toEntity())
+            db.withTransaction {
+                cardDao.refreshUpdatedAt(cardElement.cardId)
+                cardElementDao.insertElement(cardElement.toEntity())
+            }
         }
 
     override suspend fun deleteCardElementsByCardId(cardId: Long): Result<Int> =
         ioCatching {
-            cardElementDao.deleteByCardId(cardId)
+            db.withTransaction {
+                cardDao.refreshUpdatedAt(cardId)
+                cardElementDao.deleteByCardId(cardId)
+            }
         }
 
-    override suspend fun deleteCardElementById(elementId: Long): Result<Int> =
+    override suspend fun deleteCardElementById(cardId: Long, elementId: Long): Result<Int> =
         ioCatching {
-            cardElementDao.deleteElementById(elementId)
+            db.withTransaction {
+                cardDao.refreshUpdatedAt(cardId)
+                cardElementDao.deleteElementById(elementId)
+            }
         }
 
-    override suspend fun deleteCardElementsByIds(elementIds: List<Long>): Result<Int> =
+    override suspend fun deleteCardElementsByIds(cardId: Long, elementIds: List<Long>): Result<Int> =
         ioCatching {
-            cardElementDao.deleteElementsByIds(elementIds)
+            db.withTransaction {
+                cardDao.refreshUpdatedAt(cardId)
+                cardElementDao.deleteElementsByIds(elementIds)
+            }
         }
 
     override fun getObjectElementsWithAssetKeysByCardId(cardId: Long): Flow<Result<List<CardElementWithAssetKeys>>> {
@@ -59,23 +72,29 @@ class CardElementRepositoryImpl @Inject constructor(
             cardElementDao.getTextElementsByCardId(cardId).map { it.toDomain() }
         }
 
-    override suspend fun updateElementTransform(elementId: Long, posX: Float, posY: Float, posZ: Float, scale: Int): Result<Int> =
+    override suspend fun updateElementTransform(cardId: Long, elementId: Long, posX: Float, posY: Float, posZ: Float, scale: Int): Result<Int> =
         ioCatching {
-            cardElementDao.updateElementTransform(elementId, posX, posY, posZ, scale)
+            db.withTransaction {
+                cardDao.refreshUpdatedAt(cardId)
+                cardElementDao.updateElementTransform(elementId, posX, posY, posZ, scale)
+            }
         }
 
-    override suspend fun updateTextElement(elementId: Long, textAttributes: TextAttributes, posX: Float, posY: Float, posZ: Float): Result<Int> =
+    override suspend fun updateTextElement(cardId: Long, elementId: Long, textAttributes: TextAttributes, posX: Float, posY: Float, posZ: Float): Result<Int> =
         ioCatching {
-            cardElementDao.updateTextElement(
-                elementId = elementId,
-                textContent = textAttributes.content,
-                textAlign = textAttributes.alignment.name,
-                textColor = textAttributes.textColor.name,
-                fontSize = textAttributes.fontSize,
-                fontFamily = textAttributes.fontFamily.name,
-                posX = posX,
-                posY = posY,
-                posZ = posZ
-            )
+            db.withTransaction {
+                cardDao.refreshUpdatedAt(cardId)
+                cardElementDao.updateTextElement(
+                    elementId = elementId,
+                    textContent = textAttributes.content,
+                    textAlign = textAttributes.alignment.name,
+                    textColor = textAttributes.textColor.name,
+                    fontSize = textAttributes.fontSize,
+                    fontFamily = textAttributes.fontFamily.name,
+                    posX = posX,
+                    posY = posY,
+                    posZ = posZ
+                )
+            }
         }
 }

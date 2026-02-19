@@ -9,7 +9,6 @@ import com.itschristmas.card.cardeditor.model.PanelType
 import com.itschristmas.card.cardeditor.model.TempTextElement
 import com.itschristmas.card.cardeditor.model.TempTransform
 import com.itschristmas.card.cardeditor.util.extractFileNameAndToken
-import com.itschristmas.card.cardeditor.util.generateCardUrl
 import com.itschristmas.domain.bridge.UnityBridge
 import com.itschristmas.domain.enum.ElementType
 import com.itschristmas.domain.model.Asset
@@ -25,6 +24,7 @@ import com.itschristmas.domain.model.UnityStatusType
 import com.itschristmas.domain.repository.AssetRepository
 import com.itschristmas.domain.repository.CardElementRepository
 import com.itschristmas.domain.repository.CardRepository
+import com.itschristmas.domain.usecase.GenerateCardUrlUseCase
 import com.itschristmas.domain.usecase.GetTextElementsUseCase
 import com.itschristmas.domain.usecase.LoadCardEditorUseCase
 import com.itschristmas.domain.usecase.SaveTextElementsParams
@@ -52,6 +52,7 @@ class CardEditorViewModel @Inject constructor(
     private val loadCardEditorUseCase: LoadCardEditorUseCase,
     private val getTextsUseCase: GetTextElementsUseCase,
     private val saveTextElementsUseCase: SaveTextElementsUseCase,
+    private val generateCardUrl: GenerateCardUrlUseCase,
     private val unityBridge: UnityBridge
 ) : ViewModel() {
 
@@ -186,30 +187,24 @@ class CardEditorViewModel @Inject constructor(
 
     private fun handleExportGlbResult(unityStatusType: UnityStatusType, result: String) {
         viewModelScope.launch {
-            val state = _cardEditorState.value
-            when (unityStatusType) {
-                UnityStatusType.SUCCESS -> {
-                    val (fileName, token) = extractFileNameAndToken(result)
-                    val selectedBg = state.backgrounds.firstOrNull { it.assetId == state.selectedBackgroundId }
+            try {
+                if(unityStatusType != UnityStatusType.SUCCESS) error("Export glb failed from Unity")
 
-                    cardRepository.updateGlb(_cardId, fileName, token)
+                val (fileName, token) = extractFileNameAndToken(result)
+                cardRepository.updateGlb(_cardId, fileName, token).getOrThrow()
 
-                    val cardUrl = generateCardUrl(
-                        cardTitle = state.cardTitle,
-                        fileName = fileName,
-                        token = token,
-                        bgFileName = selectedBg?.firebaseFileName ?: "",
-                        bgToken = selectedBg?.firebaseToken ?: ""
-                    )
+                val cardUrl = generateCardUrl(_cardId)
+                if(cardUrl.isBlank()) error("Generated card url is blank")
 
-                    _cardEditorSideEffect.emit(CardEditorSideEffect.NavigateToCardShare(cardUrl))
-                }
-                else -> {
-                    _cardEditorSideEffect.emit(CardEditorSideEffect.ShowToast("Oops! Card creation failed. Please try again."))
-                    Log.e(TAG, "handleExportGlbResult: $result")
-                }
+                _cardEditorSideEffect.emit(CardEditorSideEffect.NavigateToCardShare(cardUrl))
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Throwable) {
+                Log.e(TAG, "handleExportGlbResult: $e")
+                _cardEditorSideEffect.emit(CardEditorSideEffect.ShowToast("Oops! Card generation failed. Please try again."))
+            } finally {
+                _cardEditorState.update { it.copy(isLoading = false) }
             }
-            _cardEditorState.update { it.copy(isLoading = false) }
         }
     }
 

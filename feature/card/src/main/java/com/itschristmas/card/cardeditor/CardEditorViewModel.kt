@@ -187,21 +187,23 @@ class CardEditorViewModel @Inject constructor(
 
     private fun handleExportGlbResult(unityStatusType: UnityStatusType, result: String) {
         viewModelScope.launch {
-            when (unityStatusType) {
-                UnityStatusType.SUCCESS -> {
-                    val (fileName, token) = extractFileNameAndToken(result)
-                    cardRepository.updateGlb(_cardId, fileName, token)
+            try {
+                if(unityStatusType != UnityStatusType.SUCCESS) error("Export glb failed from Unity")
 
-                    val cardUrl = generateCardUrl(_cardId)
+                val (fileName, token) = extractFileNameAndToken(result)
+                cardRepository.updateGlb(_cardId, fileName, token).getOrThrow()
 
-                    _cardEditorSideEffect.emit(CardEditorSideEffect.NavigateToCardShare(cardUrl))
-                }
-                else -> {
-                    _cardEditorSideEffect.emit(CardEditorSideEffect.ShowToast("Oops! Card creation failed. Please try again."))
-                    Log.e(TAG, "handleExportGlbResult: $result")
-                }
+                val cardUrl = generateCardUrl(_cardId)
+                if(cardUrl.isBlank()) error("Generated card url is blank")
+
+                _cardEditorSideEffect.emit(CardEditorSideEffect.NavigateToCardShare(cardUrl))
+
+            } catch (e: Throwable) {
+                Log.e(TAG, "handleExportGlbResult: $e")
+                _cardEditorSideEffect.emit(CardEditorSideEffect.ShowToast("Oops! Card generation failed. Please try again."))
+            } finally {
+                _cardEditorState.update { it.copy(isLoading = false) }
             }
-            _cardEditorState.update { it.copy(isLoading = false) }
         }
     }
 

@@ -1,8 +1,10 @@
 package com.itschristmas.data.di
 
+import com.itschristmas.data.usecaseImpl.GenerateCardUrlUseCaseImpl
 import com.itschristmas.data.usecaseImpl.GetTextElementsUseCaseImpl
 import com.itschristmas.data.usecaseImpl.LoadCardEditorUseCaseImpl
 import com.itschristmas.data.usecaseImpl.SaveTextElementsUseCaseImpl
+import com.itschristmas.domain.usecase.GenerateCardUrlUseCase
 import com.itschristmas.domain.usecase.GetTextElementsUseCase
 import com.itschristmas.domain.usecase.LoadCardEditorUseCase
 import com.itschristmas.domain.usecase.SaveTextElementsUseCase
@@ -14,6 +16,11 @@ import dagger.hilt.components.SingletonComponent
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class UseCaseModule {
+
+    @Binds
+    abstract fun bindGenerateCardUrlUseCase(
+        generateCardUrlUseCaseImpl: GenerateCardUrlUseCaseImpl
+    ): GenerateCardUrlUseCase
 
     @Binds
     abstract fun bindLoadCardEditorUseCase(

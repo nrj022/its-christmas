@@ -187,21 +187,12 @@ class CardEditorViewModel @Inject constructor(
 
     private fun handleExportGlbResult(unityStatusType: UnityStatusType, result: String) {
         viewModelScope.launch {
-            val state = _cardEditorState.value
             when (unityStatusType) {
                 UnityStatusType.SUCCESS -> {
                     val (fileName, token) = extractFileNameAndToken(result)
-                    val selectedBg = state.backgrounds.firstOrNull { it.assetId == state.selectedBackgroundId }
-
                     cardRepository.updateGlb(_cardId, fileName, token)
 
-                    val cardUrl = generateCardUrl(
-                        cardTitle = state.cardTitle,
-                        fileName = fileName,
-                        token = token,
-                        bgFileName = selectedBg?.firebaseFileName ?: "",
-                        bgToken = selectedBg?.firebaseToken ?: ""
-                    )
+                    val cardUrl = generateCardUrl(_cardId)
 
                     _cardEditorSideEffect.emit(CardEditorSideEffect.NavigateToCardShare(cardUrl))
                 }

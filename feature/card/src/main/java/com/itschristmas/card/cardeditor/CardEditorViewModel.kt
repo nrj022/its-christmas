@@ -197,7 +197,8 @@ class CardEditorViewModel @Inject constructor(
                 if(cardUrl.isBlank()) error("Generated card url is blank")
 
                 _cardEditorSideEffect.emit(CardEditorSideEffect.NavigateToCardShare(cardUrl))
-
+            } catch (e: CancellationException) {
+                throw e
             } catch (e: Throwable) {
                 Log.e(TAG, "handleExportGlbResult: $e")
                 _cardEditorSideEffect.emit(CardEditorSideEffect.ShowToast("Oops! Card generation failed. Please try again."))

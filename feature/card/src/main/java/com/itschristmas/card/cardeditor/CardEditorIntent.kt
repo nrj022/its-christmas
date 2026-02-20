@@ -12,6 +12,11 @@ import com.itschristmas.domain.model.UnityStatusType
 sealed class CardEditorIntent {
     data class Init(val cardId: Long): CardEditorIntent()
     data class ChangeTitle(val newTitle: String): CardEditorIntent()
+
+    data object OpenCardLinkDetail: CardEditorIntent()
+    data object SaveTitle: CardEditorIntent()
+    data object CopyCardLink: CardEditorIntent()
+
     data object FinishEditing: CardEditorIntent()
     data object ExportGlbAndUpload: CardEditorIntent()
     data class ExportGlbResult(val unityStatusType: UnityStatusType, val result: String): CardEditorIntent()

@@ -28,6 +28,9 @@ data class CardEditorState(
     val isAssetBrowserPanelActive: Boolean
         get() = panelType == PanelType.ASSET_BROWSER
 
+    val showLinkDetailButton: Boolean
+        get() = panelType == PanelType.ASSET_BROWSER && cardUrl.isNotBlank()
+
     val isTransformPanelActive: Boolean
         get() = panelType == PanelType.TRANSFORM_CONTROL
 

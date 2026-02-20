@@ -1,8 +1,11 @@
 package com.itschristmas.card.cardeditor
 
 import android.annotation.SuppressLint
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Intent
 import android.content.res.Configuration
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.MotionEvent
@@ -76,6 +79,12 @@ class CardEditorActivity : AppCompatActivity() {
                             is CardEditorSideEffect.ShowToast -> {
                                 Toast.makeText(this@CardEditorActivity, it.message, Toast.LENGTH_SHORT).show()
                             }
+                            is CardEditorSideEffect.CopyCardLink -> {
+                                val clipboard = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+                                clipboard.setPrimaryClip(ClipData.newPlainText("", it.cardUrl))
+                                if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2)
+                                    Toast.makeText(this@CardEditorActivity, "Copied to clipboard", Toast.LENGTH_SHORT).show()
+                            }
                         }
                     }
                 }
@@ -124,6 +133,10 @@ class CardEditorActivity : AppCompatActivity() {
 
     private fun initListener() {
         binding.imgBtnBack.setOnClickListener { finish() }
+
+        binding.imgBtnLink.setOnClickListener {
+            viewModel.onIntent(CardEditorIntent.OpenCardLinkDetail)
+        }
 
         binding.btnComplete.setOnClickListener {
             viewModel.onIntent(CardEditorIntent.FinishEditing)
@@ -175,6 +188,7 @@ class CardEditorActivity : AppCompatActivity() {
     private fun updateUi(state: CardEditorState) {
         binding.imgBtnBack.isVisible = state.isAssetBrowserPanelActive
         binding.btnComplete.isVisible = state.isAssetBrowserPanelActive
+        binding.imgBtnLink.isVisible = state.showLinkDetailButton
         binding.containerObjectOption.isVisible = state.showObjectOptionContainer
         binding.containerTextOption.isVisible = state.showTextOptionContainer
         binding.frameLoading.isVisible = state.isLoading

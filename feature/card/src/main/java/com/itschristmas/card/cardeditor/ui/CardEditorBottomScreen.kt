@@ -10,6 +10,7 @@ import com.itschristmas.card.cardeditor.model.PanelType
 import com.itschristmas.card.cardeditor.ui.panels.AssetBrowserPanel
 import com.itschristmas.card.cardeditor.ui.panels.TransformControlPanel
 import com.itschristmas.card.cardeditor.model.DialogState
+import com.itschristmas.card.cardeditor.ui.dialog.CardInfoDialog
 import com.itschristmas.card.cardeditor.ui.dialog.ObjectDeleteConfirmDialog
 import com.itschristmas.card.cardeditor.ui.dialog.SetCardTitleDialog
 import com.itschristmas.card.cardeditor.ui.dialog.UnsavedChangesDialog
@@ -85,6 +86,15 @@ fun CardEditorBottomScreen(viewModel: CardEditorViewModel = hiltViewModel()) {
             UnsavedChangesDialog(
                 onApplyChanges = { viewModel.onIntent(CardEditorIntent.ApplyAndExitText) },
                 onDiscardChanges = { viewModel.onIntent(CardEditorIntent.DiscardAndExitText) },
+                onDismiss = { viewModel.onIntent(CardEditorIntent.ChangeDialogState(DialogState.NONE)) }
+            )
+        }
+        DialogState.CARD_LINK_DETAIL -> {
+            CardInfoDialog(
+                cardTitle = state.cardTitle,
+                onTitleChange = { viewModel.onIntent(CardEditorIntent.ChangeTitle(it)) },
+                onTitleSave = { viewModel.onIntent(CardEditorIntent.SaveTitle) },
+                onCopyLink = { viewModel.onIntent(CardEditorIntent.CopyCardLink) },
                 onDismiss = { viewModel.onIntent(CardEditorIntent.ChangeDialogState(DialogState.NONE)) }
             )
         }

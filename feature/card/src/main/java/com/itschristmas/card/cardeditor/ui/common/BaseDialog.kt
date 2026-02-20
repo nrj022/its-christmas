@@ -49,9 +49,11 @@ fun BaseDialog(
             }
         },
         dismissButton = {
-            TextButton(onClick = onDismiss) {
-                Text(text = dismissLabel, style = MaterialTheme.typography.labelSmall)
-            }
+            if(dismissLabel.isNotBlank()) {
+                TextButton(onClick = onDismiss) {
+                    Text(text = dismissLabel, style = MaterialTheme.typography.labelSmall)
+                }
+            } else null
         },
         onDismissRequest = onDismissRequest
     )

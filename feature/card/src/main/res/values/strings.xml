@@ -31,13 +31,18 @@
     <string name="editor_dialog_button_delete">Delete</string>
     <string name="editor_dialog_button_save">Yes</string>
     <string name="editor_dialog_button_generate">Generate 3D Card</string>
-
+    <string name="editor_dialog_button_title_save">Save</string>
+    <string name="editor_dialog_button_link_copy"> Link</string>
+    Copy
     <string name="editor_dialog_title_delete">Delete This Object?</string>
     <string name="editor_dialog_title_set_card_title">Set the title of your card!</string>
     <string name="editor_dialog_title_unsaved_changes">You have unsaved changes.</string>
+    <string name="editor_dialog_title_link_detail">Copy Card Link</string>
 
     <string name="editor_dialog_placeholder_card_title">Enter the title</string>
     <string name="editor_dialog_content_unsaved_changes">Do you want to save before leaving?</string>
+    <string name="editor_dialog_content_link_detail">Do you want to save before leaving?</string>
+    <string name="editor_dialog_text_exclude_new_edit">Excludes new edits</string>
 
     <string name="share_label_complete_button">Complete</string>
     <string name="share_label_share_button">Share</string>

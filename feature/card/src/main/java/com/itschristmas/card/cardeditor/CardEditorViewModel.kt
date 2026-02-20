@@ -202,6 +202,7 @@ class CardEditorViewModel @Inject constructor(
     }
 
     private fun handleExportGlbAndUpload() {
+        saveCardTitle()
         updateDialogState(DialogState.NONE)
         _cardEditorState.update { it.copy(isLoading = true) }
         unityBridge.exportAndUpload()

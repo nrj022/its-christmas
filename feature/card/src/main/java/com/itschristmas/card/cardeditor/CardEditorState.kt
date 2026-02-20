@@ -15,6 +15,7 @@ data class CardEditorState(
     val tempTransform: TempTransform? = null,
     val tempTextList: List<TempTextElement> = emptyList(),
     val dialogState: DialogState = DialogState.NONE,
+    val originalCardTitle: String = "New Card",
     val cardTitle: String = "New Card",
     val cardUrl: String = "",
     val objects: List<Asset> = emptyList(),
@@ -33,6 +34,9 @@ data class CardEditorState(
 
     val isTransformPanelActive: Boolean
         get() = panelType == PanelType.TRANSFORM_CONTROL
+
+    val isTitleChanged: Boolean
+        get() = originalCardTitle != cardTitle
 
     val showObjectOptionContainer: Boolean
         get() = selectedSpawnedObject != null && panelType == PanelType.ASSET_BROWSER

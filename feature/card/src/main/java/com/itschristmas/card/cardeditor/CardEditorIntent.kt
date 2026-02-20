@@ -16,6 +16,7 @@ sealed class CardEditorIntent {
     data object OpenCardLinkDetail: CardEditorIntent()
     data object SaveTitle: CardEditorIntent()
     data object CopyCardLink: CardEditorIntent()
+    data object ResetTitle: CardEditorIntent()
 
     data object FinishEditing: CardEditorIntent()
     data object ExportGlbAndUpload: CardEditorIntent()

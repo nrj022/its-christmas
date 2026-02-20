@@ -34,11 +34,15 @@ import com.itschristmas.designsystem.theme.White
 @Composable
 fun CardInfoDialog(
     cardTitle: String = "",
+    isTitleChanged: Boolean = false,
     onTitleChange: (String) -> Unit,
     onTitleSave: () -> Unit,
     onCopyLink: () -> Unit,
     onDismiss: () -> Unit
 ) {
+    val containerColor = if (isTitleChanged) SoftBlack else Gray
+    val contentColor = if (isTitleChanged) White else SoftBlack
+
     BaseDialog(
         title = stringResource(R.string.editor_dialog_title_link_detail),
         confirmLabel = "Confirm",
@@ -73,11 +77,12 @@ fun CardInfoDialog(
                     )
                 )
                 Button(
+                    enabled = isTitleChanged,
                     onClick = onTitleSave,
                     shape = CircleShape,
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = SoftBlack,
-                        contentColor = White
+                        containerColor = containerColor,
+                        contentColor = contentColor
                     ),
                 ) {
                     Text(
@@ -121,5 +126,10 @@ fun CardInfoDialog(
 @Composable
 @Preview(showBackground = true)
 private fun CardInfoDialogPreview() {
-    CardInfoDialog("", {}, {}, {}, {})
+    CardInfoDialog(
+        onTitleChange = {},
+        onTitleSave = {},
+        onDismiss = {},
+        onCopyLink = {}
+    )
 }

@@ -92,10 +92,14 @@ fun CardEditorBottomScreen(viewModel: CardEditorViewModel = hiltViewModel()) {
         DialogState.CARD_LINK_DETAIL -> {
             CardInfoDialog(
                 cardTitle = state.cardTitle,
+                isTitleChanged = state.isTitleChanged,
                 onTitleChange = { viewModel.onIntent(CardEditorIntent.ChangeTitle(it)) },
                 onTitleSave = { viewModel.onIntent(CardEditorIntent.SaveTitle) },
                 onCopyLink = { viewModel.onIntent(CardEditorIntent.CopyCardLink) },
-                onDismiss = { viewModel.onIntent(CardEditorIntent.ChangeDialogState(DialogState.NONE)) }
+                onDismiss = {
+                    viewModel.onIntent(CardEditorIntent.ResetTitle)
+                    viewModel.onIntent(CardEditorIntent.ChangeDialogState(DialogState.NONE))
+                }
             )
         }
         DialogState.SET_CARD_TITLE -> {
@@ -103,7 +107,10 @@ fun CardEditorBottomScreen(viewModel: CardEditorViewModel = hiltViewModel()) {
                 cardTitle = state.cardTitle,
                 onTitleChange = { viewModel.onIntent(CardEditorIntent.ChangeTitle(it)) },
                 onGenerateCard = { viewModel.onIntent(CardEditorIntent.ExportGlbAndUpload) },
-                onDismiss = { viewModel.onIntent(CardEditorIntent.ChangeDialogState(DialogState.NONE)) }
+                onDismiss = {
+                    viewModel.onIntent(CardEditorIntent.ResetTitle)
+                    viewModel.onIntent(CardEditorIntent.ChangeDialogState(DialogState.NONE))
+                }
             )
         }
     }

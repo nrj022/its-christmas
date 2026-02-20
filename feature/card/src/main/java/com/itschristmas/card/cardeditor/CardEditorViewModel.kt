@@ -87,6 +87,7 @@ class CardEditorViewModel @Inject constructor(
 
             is CardEditorIntent.OpenCardLinkDetail -> handleOpenCardLinkDetail()
             is CardEditorIntent.SaveTitle -> handleSaveTitle()
+            is CardEditorIntent.ResetTitle -> handleResetTitle()
             is CardEditorIntent.CopyCardLink -> handleCopyCardLink()
 
             is CardEditorIntent.FinishEditing -> handleFinishEditing()
@@ -144,6 +145,7 @@ class CardEditorViewModel @Inject constructor(
                 .onSuccess { result ->
                     _cardEditorState.update {
                         it.copy(
+                            originalCardTitle = result.cardData.title,
                             cardTitle = result.cardData.title,
                             cardUrl = result.cardUrl,
                             selectedBackgroundId = result.cardData.backgroundAssetId,
@@ -189,6 +191,10 @@ class CardEditorViewModel @Inject constructor(
 
     private fun handleSaveTitle() {
         saveCardTitle()
+    }
+
+    private fun handleResetTitle() {
+        _cardEditorState.update { it.copy(cardTitle = it.originalCardTitle) }
     }
 
     private fun handleCopyCardLink() {
@@ -572,9 +578,12 @@ class CardEditorViewModel @Inject constructor(
     }
 
     private fun saveCardTitle() {
+        val title = _cardEditorState.value.cardTitle
         viewModelScope.launch {
-            cardRepository.updateCardTitle(_cardId, _cardEditorState.value.cardTitle)
-                .onFailure {
+            cardRepository.updateCardTitle(_cardId, title)
+                .onSuccess {
+                    _cardEditorState.update { it.copy(originalCardTitle = title) }
+                }.onFailure {
                     Log.e(TAG, "handleSaveTitle: $it")
                     _cardEditorSideEffect.emit(CardEditorSideEffect.ShowToast("Oops! Card title update failed. Please try again."))
                 }

@@ -315,7 +315,8 @@ class CardEditorViewModel @Inject constructor(
                         posY = obj.cardElement.posY,
                         posZ = obj.cardElement.posZ,
                         scale = obj.cardElement.scale
-                    )
+                    ),
+                    isTransformCameraFocus = true
                 )
             }
         }

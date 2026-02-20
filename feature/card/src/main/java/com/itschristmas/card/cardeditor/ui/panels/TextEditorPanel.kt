@@ -207,7 +207,8 @@ private fun EditorHeader(
                     if (text.isEmpty()) {
                         Text(
                             text = stringResource(R.string.editor_placeholder_text),
-                            style = MaterialTheme.typography.labelSmall
+                            style = MaterialTheme.typography.labelSmall,
+                            color = White
                         )
                     }
                     innerTextField()

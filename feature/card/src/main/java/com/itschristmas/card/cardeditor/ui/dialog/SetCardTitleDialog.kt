@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import com.itschristmas.card.R
 import com.itschristmas.card.cardeditor.ui.common.BaseDialog
 import com.itschristmas.designsystem.theme.Gray
+import com.itschristmas.designsystem.theme.White
 
 @Composable
 fun SetCardTitleDialog(
@@ -42,7 +43,8 @@ fun SetCardTitleDialog(
             placeholder = {
                 Text(
                     text = stringResource(R.string.editor_dialog_placeholder_card_title),
-                    style = MaterialTheme.typography.labelSmall
+                    style = MaterialTheme.typography.labelSmall,
+                    color = White
                 )
             },
             singleLine = true,

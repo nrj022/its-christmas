@@ -16,6 +16,7 @@ data class CardEditorState(
     val tempTextList: List<TempTextElement> = emptyList(),
     val dialogState: DialogState = DialogState.NONE,
     val cardTitle: String = "New Card",
+    val cardUrl: String = "",
     val objects: List<Asset> = emptyList(),
     val backgrounds: List<Asset> = emptyList(),
     val spawnedObjects: List<CardElementWithAssetKeys> = emptyList(),

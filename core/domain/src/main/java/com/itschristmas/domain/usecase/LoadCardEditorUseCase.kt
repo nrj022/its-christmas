@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.Flow
 
 data class LoadCardEditorResult(
     val cardData: Card,
+    val cardUrl: String,
     val objects: List<Asset>,
     val backgrounds: List<Asset>,
     val texts: List<TextElement>,

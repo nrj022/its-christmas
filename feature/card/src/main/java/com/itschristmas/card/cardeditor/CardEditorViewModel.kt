@@ -138,6 +138,8 @@ class CardEditorViewModel @Inject constructor(
                 .onSuccess { result ->
                     _cardEditorState.update {
                         it.copy(
+                            cardTitle = result.cardData.title,
+                            cardUrl = result.cardUrl,
                             selectedBackgroundId = result.cardData.backgroundAssetId,
                             objects = result.objects,
                             texts = result.texts,

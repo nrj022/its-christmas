@@ -93,11 +93,11 @@ fun CardInfoDialog(
             }
             Row(
                 modifier = Modifier.padding(top = 10.dp),
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 Row(
                     modifier = Modifier
-                        .weight(1f)
                         .clickable { onCopyLink() }
                         .padding(10.dp),
                     horizontalArrangement = Arrangement.spacedBy(10.dp),

@@ -32,7 +32,7 @@
     <string name="editor_dialog_button_save">Yes</string>
     <string name="editor_dialog_button_generate">Generate 3D Card</string>
     <string name="editor_dialog_button_title_save">Save</string>
-    <string name="editor_dialog_button_link_copy"> Link</string>
+    <string name="editor_dialog_button_link_copy">Copy Link</string>
     Copy
     <string name="editor_dialog_title_delete">Delete This Object?</string>
     <string name="editor_dialog_title_set_card_title">Set the title of your card!</string>

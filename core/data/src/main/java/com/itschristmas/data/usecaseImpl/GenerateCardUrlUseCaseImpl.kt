@@ -18,13 +18,19 @@ class GenerateCardUrlUseCaseImpl @Inject constructor(
         val card = cardRepository.getCardById(cardId).getOrNull() ?: return ""
         val bg = assetRepository.getAssetById(card.backgroundAssetId).getOrNull() ?: return ""
 
-        val encodedTitle = encode(card.title, "UTF-8")
-        val encodedGlb = encode(card.glbFileName, "UTF-8")
-        val encodedGlbToken = encode(card.glbToken, "UTF-8")
-        val encodedBg = encode(bg.firebaseFileName, "UTF-8")
-        val encodedBgToken = encode(bg.firebaseToken, "UTF-8")
+        val glb = card.glbFileName ?: return ""
+        val glbToken = card.glbToken ?: return ""
+        val bgFile = bg.firebaseFileName ?: return ""
+        val bgToken = bg.firebaseToken ?: return ""
 
-        val url = "$baseCardUrl?title=${encodedTitle}&glb=${encodedGlb}&glbToken=${encodedGlbToken}&bg=${encodedBg}&bgToken=${encodedBgToken}"
-        return url
+        return run {
+            val encodedTitle = encode(card.title, "UTF-8")
+            val encodedGlb = encode(glb, "UTF-8")
+            val encodedGlbToken = encode(glbToken, "UTF-8")
+            val encodedBg = encode(bgFile, "UTF-8")
+            val encodedBgToken = encode(bgToken, "UTF-8")
+
+            "$baseCardUrl?title=$encodedTitle&glb=$encodedGlb&glbToken=$encodedGlbToken&bg=$encodedBg&bgToken=$encodedBgToken"
+        }
     }
 }

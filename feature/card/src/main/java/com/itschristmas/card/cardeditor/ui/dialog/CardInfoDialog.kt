@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -28,8 +27,6 @@ import androidx.compose.ui.unit.dp
 import com.itschristmas.card.R
 import com.itschristmas.card.cardeditor.ui.common.BaseDialog
 import com.itschristmas.designsystem.theme.Gray
-import com.itschristmas.designsystem.theme.SoftBlack
-import com.itschristmas.designsystem.theme.White
 
 @Composable
 fun CardInfoDialog(
@@ -40,12 +37,9 @@ fun CardInfoDialog(
     onCopyLink: () -> Unit,
     onDismiss: () -> Unit
 ) {
-    val containerColor = if (isTitleChanged) SoftBlack else Gray
-    val contentColor = if (isTitleChanged) White else SoftBlack
-
     BaseDialog(
         title = stringResource(R.string.editor_dialog_title_link_detail),
-        confirmLabel = "Confirm",
+        confirmLabel = stringResource(R.string.common_button_confirm),
         onConfirm = onDismiss,
         onDismissRequest = onDismiss
     ) {
@@ -67,7 +61,6 @@ fun CardInfoDialog(
                         )
                     },
                     singleLine = true,
-                    maxLines = 1,
                     colors = TextFieldDefaults.colors(
                         focusedIndicatorColor = Color.Transparent,
                         unfocusedIndicatorColor = Color.Transparent,
@@ -80,10 +73,6 @@ fun CardInfoDialog(
                     enabled = isTitleChanged,
                     onClick = onTitleSave,
                     shape = CircleShape,
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = containerColor,
-                        contentColor = contentColor
-                    ),
                 ) {
                     Text(
                         text = stringResource(R.string.editor_dialog_button_title_save),

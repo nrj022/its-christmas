@@ -35,7 +35,7 @@ class CardRepositoryImpl @Inject constructor(
 
     override suspend fun updateCardTitle(cardId: Long, title: String): Result<Int> =
         ioCatching {
-            cardDao.updatedTitle(cardId, title)
+            cardDao.updateTitle(cardId, title)
         }
 
     override suspend fun updateBackgroundAssetId(cardId: Long, backgroundAssetId: Long): Result<Int> =

@@ -83,7 +83,7 @@ class CardEditorActivity : AppCompatActivity() {
                                 val clipboard = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
                                 clipboard.setPrimaryClip(ClipData.newPlainText("", it.cardUrl))
                                 if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2)
-                                    Toast.makeText(this@CardEditorActivity, "Copied to clipboard", Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(this@CardEditorActivity, getString(R.string.editor_msg_copy_success), Toast.LENGTH_SHORT).show()
                             }
                         }
                     }
@@ -105,7 +105,7 @@ class CardEditorActivity : AppCompatActivity() {
 
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                Toast.makeText(this@CardEditorActivity, "Please use the buttons at the top to finish editing", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@CardEditorActivity, getString(R.string.editor_msg_block_system_back), Toast.LENGTH_SHORT).show()
             }
         })
     }

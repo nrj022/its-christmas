@@ -13,6 +13,8 @@ interface CardRepository {
 
     suspend fun getGlbAndBgFirebase(cardId: Long): Result<GlbAndBgFirebase>
 
+    suspend fun updateCardTitle(cardId: Long, title: String): Result<Int>
+
     suspend fun updateBackgroundAssetId(cardId: Long, backgroundAssetId: Long): Result<Int>
 
     suspend fun updateGlb(cardId: Long, glbFileName: String, glbToken: String): Result<Int>

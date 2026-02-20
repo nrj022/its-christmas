@@ -25,6 +25,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.itschristmas.card.cardeditor.model.TempTextElement
+import com.itschristmas.card.cardeditor.ui.uimapper.rememberFontFamilies
 import com.itschristmas.designsystem.theme.ItsChristmasTheme
 import com.itschristmas.designsystem.theme.SoftBlack
 import com.itschristmas.designsystem.theme.White
@@ -43,6 +44,7 @@ fun TextListPanel(
         items(items = textList, key = { it.tempId }) { text ->
             TextChip(
                 text = text.textElement.attributes.content,
+                fontFamily = text.textElement.attributes.fontFamily.key,
                 isSelected = selectedTextId == text.tempId,
                 onClick = { onClick(text.tempId) }
             )
@@ -53,9 +55,12 @@ fun TextListPanel(
 @Composable
 fun TextChip(
     text: String,
+    fontFamily: String,
     isSelected: Boolean,
     onClick: () -> Unit
 ) {
+    val fontFamilies = rememberFontFamilies()
+
     Card(
         modifier = Modifier
             .width(80.dp)
@@ -73,6 +78,7 @@ fun TextChip(
             Text(
                 text = text,
                 style = MaterialTheme.typography.labelSmall,
+                fontFamily = fontFamilies[fontFamily],
                 color = if (isSelected) White else SoftBlack,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,

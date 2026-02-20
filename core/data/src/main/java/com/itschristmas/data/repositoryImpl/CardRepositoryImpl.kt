@@ -33,6 +33,11 @@ class CardRepositoryImpl @Inject constructor(
             cardDao.getGlbAndBgFirebaseKey(cardId).toDomain()
         }
 
+    override suspend fun updateCardTitle(cardId: Long, title: String): Result<Int> =
+        ioCatching {
+            cardDao.updateTitle(cardId, title)
+        }
+
     override suspend fun updateBackgroundAssetId(cardId: Long, backgroundAssetId: Long): Result<Int> =
         ioCatching {
             cardDao.updateBackgroundAssetId(cardId, backgroundAssetId)

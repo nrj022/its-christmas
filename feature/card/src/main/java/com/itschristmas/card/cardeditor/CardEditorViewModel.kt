@@ -30,6 +30,7 @@ import com.itschristmas.domain.usecase.LoadCardEditorUseCase
 import com.itschristmas.domain.usecase.SaveTextElementsParams
 import com.itschristmas.domain.usecase.SaveTextElementsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -83,6 +84,12 @@ class CardEditorViewModel @Inject constructor(
         when (intent) {
             is CardEditorIntent.Init -> handleInit(intent.cardId)
             is CardEditorIntent.ChangeTitle -> handleChangeTitle(intent.newTitle)
+
+            is CardEditorIntent.OpenCardLinkDetail -> handleOpenCardLinkDetail()
+            is CardEditorIntent.SaveTitle -> handleSaveTitle()
+            is CardEditorIntent.ResetTitle -> handleResetTitle()
+            is CardEditorIntent.CopyCardLink -> handleCopyCardLink()
+
             is CardEditorIntent.FinishEditing -> handleFinishEditing()
             is CardEditorIntent.ExportGlbAndUpload -> handleExportGlbAndUpload()
             is CardEditorIntent.ExportGlbResult -> handleExportGlbResult(intent.unityStatusType, intent.result)
@@ -138,6 +145,9 @@ class CardEditorViewModel @Inject constructor(
                 .onSuccess { result ->
                     _cardEditorState.update {
                         it.copy(
+                            originalCardTitle = result.cardData.title,
+                            cardTitle = result.cardData.title,
+                            cardUrl = result.cardUrl,
                             selectedBackgroundId = result.cardData.backgroundAssetId,
                             objects = result.objects,
                             texts = result.texts,
@@ -175,11 +185,30 @@ class CardEditorViewModel @Inject constructor(
         _cardEditorState.update { it.copy(cardTitle = newTitle) }
     }
 
+    private fun handleOpenCardLinkDetail() {
+        updateDialogState(DialogState.CARD_LINK_DETAIL)
+    }
+
+    private fun handleSaveTitle() {
+        saveCardTitle()
+    }
+
+    private fun handleResetTitle() {
+        _cardEditorState.update { it.copy(cardTitle = it.originalCardTitle) }
+    }
+
+    private fun handleCopyCardLink() {
+        viewModelScope.launch {
+            _cardEditorSideEffect.emit(CardEditorSideEffect.CopyCardLink(_cardEditorState.value.cardUrl))
+        }
+    }
+
     private fun handleFinishEditing() {
         updateDialogState(DialogState.SET_CARD_TITLE)
     }
 
     private fun handleExportGlbAndUpload() {
+        saveCardTitle()
         updateDialogState(DialogState.NONE)
         _cardEditorState.update { it.copy(isLoading = true) }
         unityBridge.exportAndUpload()
@@ -545,6 +574,19 @@ class CardEditorViewModel @Inject constructor(
                 } else item
             }
             it.copy(tempTextList = newList)
+        }
+    }
+
+    private fun saveCardTitle() {
+        val title = _cardEditorState.value.cardTitle
+        viewModelScope.launch {
+            cardRepository.updateCardTitle(_cardId, title)
+                .onSuccess {
+                    _cardEditorState.update { it.copy(originalCardTitle = title) }
+                }.onFailure {
+                    Log.e(TAG, "handleSaveTitle: $it")
+                    _cardEditorSideEffect.emit(CardEditorSideEffect.ShowToast("Oops! Card title update failed. Please try again."))
+                }
         }
     }
 

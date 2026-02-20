@@ -94,7 +94,7 @@ fun CardInfoDialog(
                 ) {
                     Icon(
                         imageVector = ImageVector.vectorResource(id = R.drawable.ic_copy),
-                        contentDescription = "",
+                        contentDescription = null,
                         modifier = Modifier.size(14.dp),
                     )
                     Text(

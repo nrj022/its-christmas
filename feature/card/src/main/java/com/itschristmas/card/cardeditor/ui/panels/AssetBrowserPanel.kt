@@ -157,7 +157,7 @@ fun ControlHeader(
             )
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowForward,
-                contentDescription = stringResource(R.string.editor_cd_add_text_button),
+                contentDescription = null,
                 modifier = Modifier.size(14.dp),
                 tint = SoftBlack
             )

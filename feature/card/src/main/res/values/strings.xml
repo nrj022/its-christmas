@@ -11,6 +11,7 @@
     <string name="editor_cd_link_button">Link Detail</string>
     <string name="editor_cd_delete_img_button">Delete Element</string>
     <string name="editor_cd_transform_reset_img_button">Reset Transform</string>
+    <string name="editor_cd_camera_reset_img_button">Reset Camera</string>
     <string name="editor_cd_object_thumb_img">Object Thumbnail</string>
     <string name="editor_button_adjust">Adjust</string>
     <string name="editor_button_complete">Complete</string>
@@ -23,7 +24,6 @@
     <string name="editor_title_asset_tab_objects">3D Object</string>
     <string name="editor_title_asset_tab_background">Background</string>
     <string name="editor_button_add_text">Edit Text</string>
-    <string name="editor_cd_add_text_button">Edit Text</string>
     <string name="editor_title_spawned_objects_list">My Objects</string>
     <string name="editor_cd_asset">Asset</string>
 
@@ -51,7 +51,6 @@
     <string name="editor_dialog_text_exclude_new_edit">Excludes new edits</string>
 
     <string name="share_label_share_button">Share</string>
-    <string name="share_cd_share_button">Share</string>
     <string name="share_cd_home_button">Home</string>
 
 </resources>

@@ -140,12 +140,13 @@ private fun BoxScope.ShareButton(onShareClicked: () -> Unit) {
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_share),
-                    contentDescription = stringResource(R.string.share_cd_share_button),
+                    contentDescription = null,
                     tint = SoftBlack
                 )
                 Text(
                     text = stringResource(R.string.share_label_share_button),
-                    fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.labelSmall,
+                    fontWeight = FontWeight.Bold
                 )
             }
         }

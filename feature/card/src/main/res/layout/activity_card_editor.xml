@@ -168,7 +168,7 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:background="@drawable/bg_circle_white"
-            android:contentDescription="@string/editor_cd_transform_reset_img_button"
+            android:contentDescription="@string/editor_cd_camera_reset_img_button"
             android:elevation="2dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

@@ -8,7 +8,7 @@ plugins {
 }
 
 android {
-    namespace = "com.itschristmas.card"
+    namespace = "com.zcard.card"
     compileSdk = 36
 
     defaultConfig {
@@ -49,7 +49,7 @@ dependencies {
         fileTree(
             mapOf(
                 "dir" to (findProject(":unityLibrary")?.projectDir?.resolve("libs")
-                    ?: file("D:/Unity/its-christmas-unity/AndroidBuild/unityLibrary/libs")),
+                    ?: file("D:/Unity/z-card-unity/AndroidBuild/unityLibrary/libs")),
                 "include" to listOf("*.jar")
             )
         )

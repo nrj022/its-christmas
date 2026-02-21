@@ -7,11 +7,11 @@ plugins {
 }
 
 android {
-    namespace = "com.itschristmas.android"
+    namespace = "com.zcard.android"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.itschristmas.android"
+        applicationId = "com.zcard.android"
         minSdk = 26
         targetSdk = 36
         versionCode = 1

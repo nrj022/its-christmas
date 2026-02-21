@@ -1,14 +1,14 @@
-rootProject.name = "It\'s Christmas"
+rootProject.name = "Z Card"
 include(":app")
 include(":unityLibrary")
 project(":unityLibrary").projectDir =
-    File("D:\\Unity\\its-christmas-unity\\AndroidBuild\\unityLibrary")
+    File("D:\\Unity\\z-card-unity\\AndroidBuild\\unityLibrary")
 include(":unityLibrary:mobilenotifications.androidlib")
 project(":unityLibrary:mobilenotifications.androidlib").projectDir =
-    File("D:\\Unity\\its-christmas-unity\\AndroidBuild\\unityLibrary\\mobilenotifications.androidlib")
+    File("D:\\Unity\\z-card-unity\\AndroidBuild\\unityLibrary\\mobilenotifications.androidlib")
 include(":unityLibrary:FirebaseApp.androidlib")
 project(":unityLibrary:FirebaseApp.androidlib").projectDir =
-    File("D:\\Unity\\its-christmas-unity\\AndroidBuild\\unityLibrary\\FirebaseApp.androidlib")
+    File("D:\\Unity\\z-card-unity\\AndroidBuild\\unityLibrary\\FirebaseApp.androidlib")
 
 pluginManagement {
     repositories {
@@ -31,7 +31,7 @@ dependencyResolutionManagement {
             dirs("${project(":unityLibrary").projectDir}/libs")
         }
         // Unity GeneratedLocalRepo 경로 추가
-        maven { url = uri("D:/Unity/its-christmas-unity/Assets/GeneratedLocalRepo/Firebase/m2repository") }
+        maven { url = uri("D:/Unity/z-card-unity/Assets/GeneratedLocalRepo/Firebase/m2repository") }
 
         google()
         mavenCentral()

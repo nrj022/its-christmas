@@ -7,7 +7,7 @@ plugins {
 }
 
 android {
-    namespace = "com.itschristmas.data"
+    namespace = "com.zcard.data"
     compileSdk = 36
 
     defaultConfig {

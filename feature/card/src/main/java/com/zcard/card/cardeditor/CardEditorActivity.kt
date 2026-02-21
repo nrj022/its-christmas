@@ -1,0 +1,299 @@
+package com.zcard.card.cardeditor
+
+import android.annotation.SuppressLint
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Intent
+import android.content.res.Configuration
+import android.os.Build
+import android.os.Bundle
+import android.util.Log
+import android.view.MotionEvent
+import android.view.ViewGroup
+import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.isVisible
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import com.zcard.card.cardeditor.model.DialogState
+import com.zcard.card.cardeditor.ui.CardEditorBottomScreen
+import com.zcard.card.cardeditor.ui.CardEditorTextScreen
+import com.zcard.card.cardeditor.util.getObjectThumbByKey
+import com.zcard.card.cardeditor.util.toBase62
+import com.zcard.card.R
+import com.zcard.card.cardshare.CardShareActivity
+import com.zcard.card.databinding.ActivityCardEditorBinding
+import com.zcard.designsystem.theme.ZCardTheme
+import com.zcard.domain.model.UnityMessage
+import com.zcard.domain.model.UnityMessageType
+import com.zcard.domain.model.UnityStatusType
+import com.unity3d.player.UnityPlayerForActivityOrService
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
+import kotlinx.serialization.json.Json
+
+@AndroidEntryPoint
+class CardEditorActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityCardEditorBinding
+    private lateinit var unityPlayer: UnityPlayerForActivityOrService
+    private lateinit var layoutParams: ConstraintLayout.LayoutParams
+    private val viewModel: CardEditorViewModel by viewModels()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityCardEditorBinding.inflate(layoutInflater)
+        layoutParams = binding.unityContainer.layoutParams as ConstraintLayout.LayoutParams
+
+        val cardId = intent.getLongExtra("cardId", -1)
+        viewModel.onIntent(CardEditorIntent.Init(cardId))
+
+        setContentView(binding.root)
+        initUnity()
+        initListener()
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    viewModel.cardEditorState.collect {
+                        updateUi(it)
+                    }
+                }
+                launch {
+                    viewModel.unityContainerHeightFractionFlow.collect {
+                        updateUnityContainerHeight(it)
+                    }
+                }
+                launch {
+                    viewModel.cardEditorSideEffect.collect {
+                        when(it) {
+                            is CardEditorSideEffect.NavigateToCardShare -> {
+                                navigateToCardShare(it.cardUrl)
+                            }
+                            is CardEditorSideEffect.ShowToast -> {
+                                Toast.makeText(this@CardEditorActivity, it.message, Toast.LENGTH_SHORT).show()
+                            }
+                            is CardEditorSideEffect.CopyCardLink -> {
+                                val clipboard = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+                                clipboard.setPrimaryClip(ClipData.newPlainText("", it.cardUrl))
+                                if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2)
+                                    Toast.makeText(this@CardEditorActivity, getString(R.string.editor_msg_copy_success), Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        binding.composeContainerText.setContent {
+            ZCardTheme {
+                CardEditorTextScreen()
+            }
+        }
+
+        binding.composeContainer.setContent {
+            ZCardTheme {
+                CardEditorBottomScreen()
+            }
+        }
+
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                Toast.makeText(this@CardEditorActivity, getString(R.string.editor_msg_block_system_back), Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private fun initUnity() {
+        unityPlayer = UnityPlayerForActivityOrService(this)
+        (unityPlayer.view.parent as? ViewGroup)?.removeView(unityPlayer.view)
+
+        binding.unityContainer.addView(
+            unityPlayer.view,
+            ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
+            )
+        )
+
+        unityPlayer.view.setOnTouchListener(null)
+        binding.unityContainer.setOnTouchListener { v, event ->
+            unityPlayer.injectEvent(event)
+            if (event.action == MotionEvent.ACTION_UP) v.performClick()
+            true
+        }
+    }
+
+    private fun initListener() {
+        binding.imgBtnBack.setOnClickListener { finish() }
+
+        binding.imgBtnLink.setOnClickListener {
+            viewModel.onIntent(CardEditorIntent.OpenCardLinkDetail)
+        }
+
+        binding.btnComplete.setOnClickListener {
+            viewModel.onIntent(CardEditorIntent.FinishEditing)
+        }
+
+        binding.btnAdjust.setOnClickListener {
+            viewModel.onIntent(CardEditorIntent.EnterTransformMode)
+        }
+
+        binding.imgBtnDelete.setOnClickListener {
+            viewModel.onIntent(CardEditorIntent.ChangeDialogState(DialogState.DELETE_CONFIRM))
+        }
+
+        binding.imgBtnTransformReset.setOnClickListener {
+            viewModel.onIntent(CardEditorIntent.ResetTransform)
+        }
+
+        binding.imgBtnCameraFocusController.setOnClickListener {
+            viewModel.onIntent(CardEditorIntent.CameraFocus)
+        }
+
+        binding.imgBtnAddText.setOnClickListener {
+            viewModel.onIntent(CardEditorIntent.AddText)
+        }
+
+        binding.imgBtnDeleteText.setOnClickListener {
+            val textId = viewModel.cardEditorState.value.selectedTextTempId ?: return@setOnClickListener
+            viewModel.onIntent(CardEditorIntent.DeleteText(textId))
+        }
+
+        binding.imgBtnCameraFocusReset.setOnClickListener {
+            viewModel.onIntent(CardEditorIntent.ResetCamera)
+        }
+
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { _, insets ->
+            val imeVisible = insets.isVisible(WindowInsetsCompat.Type.ime())
+            viewModel.setImeVisible(imeVisible)
+            insets
+        }
+    }
+
+    private fun updateUnityContainerHeight(heightFraction: Float) {
+        if(layoutParams.matchConstraintPercentHeight != heightFraction) {
+            layoutParams.matchConstraintPercentHeight = heightFraction
+            binding.unityContainer.layoutParams = layoutParams
+        }
+    }
+
+    private fun updateUi(state: CardEditorState) {
+        binding.imgBtnBack.isVisible = state.isAssetBrowserPanelActive
+        binding.btnComplete.isVisible = state.isAssetBrowserPanelActive
+        binding.imgBtnLink.isVisible = state.showLinkDetailButton
+        binding.containerObjectOption.isVisible = state.showObjectOptionContainer
+        binding.containerTextOption.isVisible = state.showTextOptionContainer
+        binding.frameLoading.isVisible = state.isLoading
+
+        updateTransformPanel(state)
+    }
+
+    private fun updateTransformPanel(state: CardEditorState) {
+        val temp = state.tempTransform
+        val active = state.isTransformPanelActive && temp != null
+
+        binding.containerTransformOption.isVisible = active
+        binding.imgBtnCameraFocusController.isVisible = active
+        binding.imgBtnCameraFocusController.setImageResource(
+            if(state.isTransformCameraFocus) R.drawable.ic_fit_screen else R.drawable.ic_target)
+        binding.imgBtnTransformReset.isVisible = active && state.hasPendingTransform
+        binding.imgObjectThumb.setImageResource(getObjectThumbByKey(this, temp?.thumbnailKey))
+        binding.textElementKey.text = if(active) toBase62(temp.elementId) else ""
+    }
+
+    private fun navigateToCardShare(cardUrl: String) {
+        val intent = Intent(this@CardEditorActivity, CardShareActivity::class.java)
+        intent.putExtra("cardUrl", cardUrl)
+        startActivity(intent)
+    }
+
+    // Unity에서 호출하는 함수
+    fun onUnityMessage(jsonString: String) {
+        Log.d("UnityMsg", "Received: $jsonString")
+        try {
+            val message = Json.decodeFromString<UnityMessage>(jsonString)
+            // UI 스레드에서 처리 보장
+            runOnUiThread {
+                handleUnityMessage(message)
+            }
+        } catch (e: Exception) {
+            Log.e("UnityMsg", "Parsing Error: ${e.message}")
+        }
+    }
+
+    private fun handleUnityMessage(msg: UnityMessage) {
+        when (msg.type) {
+            UnityMessageType.LIFECYCLE -> {
+                if (msg.status == UnityStatusType.START) {
+                    viewModel.handleInitUnity()
+                    Log.i("UnityMsg", "Unity Started Ready!")
+                }
+            }
+            UnityMessageType.UPLOAD_GLB -> {
+            }
+            UnityMessageType.GET_DOWNLOAD_URL -> {
+                viewModel.onIntent(CardEditorIntent.ExportGlbResult(msg.status, msg.data))
+            }
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        unityPlayer.onStart()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        unityPlayer.onResume()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        unityPlayer.onPause()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        unityPlayer.onStop()
+    }
+
+    override fun onDestroy() {
+        unityPlayer.destroy()
+        super.onDestroy()
+    }
+
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        unityPlayer.windowFocusChanged(hasFocus)
+    }
+
+    // Low Memory Unity
+    override fun onLowMemory() {
+        super.onLowMemory()
+        unityPlayer.onTrimMemory(UnityPlayerForActivityOrService.MemoryUsage.Critical)
+    }
+
+    // Trim Memory Unity
+    override fun onTrimMemory(level: Int) {
+        super.onTrimMemory(level)
+        when {
+            level >= TRIM_MEMORY_RUNNING_CRITICAL -> unityPlayer.onTrimMemory(UnityPlayerForActivityOrService.MemoryUsage.Critical)
+            level >= TRIM_MEMORY_RUNNING_LOW -> unityPlayer.onTrimMemory(UnityPlayerForActivityOrService.MemoryUsage.High)
+            else -> unityPlayer.onTrimMemory(UnityPlayerForActivityOrService.MemoryUsage.Medium)
+        }
+    }
+
+    // 레이아웃에 따른 Unity 맵핑
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        unityPlayer.configurationChanged(newConfig)
+    }
+}

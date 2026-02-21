@@ -86,12 +86,14 @@ private fun TopActionRow(
             Text(
                 text = stringResource(R.string.common_button_cancel),
                 style = MaterialTheme.typography.labelSmall,
+                color = SoftBlack
             )
         }
         TextButton(onClick = onApply) {
             Text(
                 text = stringResource(R.string.common_button_apply),
                 style = MaterialTheme.typography.labelSmall,
+                color = SoftBlack
             )
         }
     }

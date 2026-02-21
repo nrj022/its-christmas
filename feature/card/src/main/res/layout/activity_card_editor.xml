@@ -51,6 +51,7 @@
         android:contentDescription="@string/editor_cd_complete_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        android:textColor="@color/soft_black"
         android:textAllCaps="false"
         android:text="@string/editor_button_complete" />
 
@@ -203,6 +204,7 @@
             android:layout_height="48dp"
             android:background="@drawable/bg_rounded_rect_white"
             android:backgroundTint="#FFFFFF"
+            android:textColor="@color/soft_black"
             android:text="@string/editor_button_adjust"
             android:textAllCaps="false"
             app:layout_constraintBottom_toBottomOf="parent"

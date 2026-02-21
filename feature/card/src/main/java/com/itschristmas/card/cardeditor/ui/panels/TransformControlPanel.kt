@@ -28,7 +28,6 @@ import com.itschristmas.designsystem.theme.White
  * @param scale 현재 수량 (가운데 숫자)
  * @param onScaleChange 수량 변경 시 호출되는 콜백 (+, - 버튼)
  * @param onDirectionalClick 방향키 클릭 시 호출되는 콜백
- * @param onCameraReset 가운데 원(원래 상태로) 클릭 시 호출되는 콜백
  * @param onCancel 'Cancel' 버튼 클릭 시 호출되는 콜백
  * @param onApply 'Apply' 버튼 클릭 시 호출되는 콜백
  */

@@ -8,7 +8,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.itschristmas.designsystem.R
 
-val customFont = FontFamily(Font(R.font.irish_grover_regular))
+val customFont = FontFamily(Font(R.font.sniglet_regular))
 val Typography = Typography(
     titleLarge = TextStyle(
         fontFamily = customFont,

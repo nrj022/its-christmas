@@ -6,5 +6,7 @@
     <style name="Base.Theme.ItsChristmas" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="android:fontFamily">@font/sniglet_regular</item>
+        <item name="android:textColorPrimary">@color/soft_black</item>
     </style>
 </resources>

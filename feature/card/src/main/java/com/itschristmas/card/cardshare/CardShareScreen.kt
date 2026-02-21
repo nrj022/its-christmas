@@ -60,7 +60,7 @@ fun TopSection(onBackClicked: () -> Unit, onCompleteClicked: () -> Unit) {
     ) {
         BackButton(onBackClicked)
 
-        CompleteButton(onCompleteClicked)
+        HomeButton(onCompleteClicked)
     }
 }
 
@@ -79,15 +79,15 @@ fun BackButton(onBackClicked: () -> Unit) {
 }
 
 @Composable
-fun CompleteButton(onCompleteClicked: () -> Unit) {
-    Button(
+fun HomeButton(onCompleteClicked: () -> Unit) {
+    IconButton(
         onClick = onCompleteClicked,
-        shape = MaterialTheme.shapes.extraLarge,
-        colors = ButtonDefaults.buttonColors(containerColor = White, contentColor = SoftBlack),
+        modifier = Modifier.background(White.copy(alpha = 0.7f), CircleShape)
     ) {
-        Text(
-            text = stringResource(R.string.share_label_complete_button),
-            fontWeight = FontWeight.Bold,
+        Icon(
+            painter = painterResource(id = R.drawable.ic_home),
+            contentDescription = stringResource(R.string.share_cd_home_button),
+            tint = SoftBlack
         )
     }
 }

@@ -50,8 +50,8 @@
     <string name="editor_dialog_content_unsaved_changes">Do you want to save before leaving?</string>
     <string name="editor_dialog_text_exclude_new_edit">Excludes new edits</string>
 
-    <string name="share_label_complete_button">Complete</string>
     <string name="share_label_share_button">Share</string>
     <string name="share_cd_share_button">Share</string>
+    <string name="share_cd_home_button">Home</string>
 
 </resources>

@@ -10,14 +10,18 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.itschristmas.card.cardeditor.ui.common.DirectionalController
 import com.itschristmas.card.cardeditor.model.Direction
+import com.itschristmas.card.R
+import com.itschristmas.designsystem.theme.Gray
+import com.itschristmas.designsystem.theme.SoftBlack
+import com.itschristmas.designsystem.theme.White
 
 /**
  * 이미지에 표시된 컨트롤러 전체 UI
@@ -39,7 +43,7 @@ fun TransformControlPanel(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White)
+            .background(White)
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -80,10 +84,16 @@ private fun TopActionRow(
         verticalAlignment = Alignment.CenterVertically
     ) {
         TextButton(onClick = onCancel) {
-            Text(text = "Cancel", color = Color.Black, fontSize = 16.sp)
+            Text(
+                text = stringResource(R.string.common_button_cancel),
+                style = MaterialTheme.typography.labelSmall,
+            )
         }
         TextButton(onClick = onApply) {
-            Text(text = "Apply", color = Color.Black, fontSize = 16.sp)
+            Text(
+                text = stringResource(R.string.common_button_apply),
+                style = MaterialTheme.typography.labelSmall,
+            )
         }
     }
 }
@@ -105,7 +115,7 @@ private fun ScaleController(
         // + 버튼
         ScaleAdjustButton(
             icon = Icons.Default.Add,
-            contentDescription = "Increase scale",
+            contentDescription = stringResource(R.string.editor_cd_increase_scale),
             onClick = { onScaleChange(scale + 1) }
         )
 
@@ -119,7 +129,7 @@ private fun ScaleController(
         // - 버튼
         ScaleAdjustButton(
             icon = Icons.Default.Remove,
-            contentDescription = "Decrease scale",
+            contentDescription = stringResource(R.string.editor_cd_decrease_scale),
             onClick = { onScaleChange(scale - 1) }
         )
     }
@@ -140,8 +150,8 @@ private fun ScaleAdjustButton(
         modifier = modifier.size(48.dp),
         shape = RoundedCornerShape(12.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = Color.LightGray.copy(alpha = 0.5f),
-            contentColor = Color.Black
+            containerColor = Gray.copy(alpha = 0.5f),
+            contentColor = SoftBlack
         ),
         contentPadding = PaddingValues(0.dp)
     ) {

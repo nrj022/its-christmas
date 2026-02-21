@@ -17,11 +17,13 @@
     <string name="editor_cd_complete_button">Complete Editing Card</string>
     <string name="editor_cd_add_text">New Text</string>
     <string name="editor_cd_delete_text">Delete Text</string>
+    <string name="editor_cd_increase_scale">Increase scale</string>
+    <string name="editor_cd_decrease_scale">Decrease scale</string>
 
     <string name="editor_title_asset_tab_objects">3D Object</string>
     <string name="editor_title_asset_tab_background">Background</string>
-    <string name="editor_button_add_text">Add Text</string>
-    <string name="editor_cd_add_text_button">Add Text</string>
+    <string name="editor_button_add_text">Edit Text</string>
+    <string name="editor_cd_add_text_button">Edit Text</string>
     <string name="editor_title_spawned_objects_list">My Objects</string>
     <string name="editor_cd_asset">Asset</string>
 

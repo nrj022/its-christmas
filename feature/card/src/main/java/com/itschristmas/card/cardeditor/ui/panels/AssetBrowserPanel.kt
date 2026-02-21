@@ -154,7 +154,6 @@ fun ControlHeader(
             Text(
                 text = stringResource(R.string.editor_button_add_text),
                 style = MaterialTheme.typography.labelSmall,
-                fontSize = 14.sp
             )
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowForward,

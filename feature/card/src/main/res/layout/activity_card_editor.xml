@@ -51,6 +51,7 @@
         android:contentDescription="@string/editor_cd_complete_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        android:textColor="@color/soft_black"
         android:textAllCaps="false"
         android:text="@string/editor_button_complete" />
 
@@ -143,7 +144,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="28dp"
                 android:background="@drawable/bg_rounded_rect_black_10"
-                android:fontFamily="@font/irish_grover_regular"
                 android:gravity="center"
                 android:padding="4dp"
                 android:textAlignment="center"
@@ -168,7 +168,7 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:background="@drawable/bg_circle_white"
-            android:contentDescription="@string/editor_cd_transform_reset_img_button"
+            android:contentDescription="@string/editor_cd_camera_reset_img_button"
             android:elevation="2dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -204,7 +204,7 @@
             android:layout_height="48dp"
             android:background="@drawable/bg_rounded_rect_white"
             android:backgroundTint="#FFFFFF"
-            android:fontFamily="@font/irish_grover_regular"
+            android:textColor="@color/soft_black"
             android:text="@string/editor_button_adjust"
             android:textAllCaps="false"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -236,7 +236,8 @@
             style="?android:attr/progressBarStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"/>
+            android:layout_gravity="center"
+            android:indeterminateTint="@color/gray"/>
     </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

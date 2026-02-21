@@ -183,6 +183,7 @@ private fun EditorHeader(
                 Text(
                     text = stringResource(R.string.editor_button_back),
                     style = MaterialTheme.typography.labelSmall,
+                    color = SoftBlack
                 )
             }
         }

@@ -154,11 +154,10 @@ fun ControlHeader(
             Text(
                 text = stringResource(R.string.editor_button_add_text),
                 style = MaterialTheme.typography.labelSmall,
-                fontSize = 14.sp
             )
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowForward,
-                contentDescription = stringResource(R.string.editor_cd_add_text_button),
+                contentDescription = null,
                 modifier = Modifier.size(14.dp),
                 tint = SoftBlack
             )

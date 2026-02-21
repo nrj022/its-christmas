@@ -23,34 +23,34 @@ import com.itschristmas.designsystem.theme.White
 import com.itschristmas.card.R
 
 @Composable
-fun CardShareScreen(cardUrl: String, onBackClicked: () -> Unit = {}, onCompleteClicked: () -> Unit = {}, onShareClicked: () -> Unit = {}) {
+fun CardShareScreen(cardUrl: String, onBackClicked: () -> Unit = {}, onHomeClicked: () -> Unit = {}, onShareClicked: () -> Unit = {}) {
     CardShareContent(
         cardUrl = cardUrl,
         onBackClicked = onBackClicked,
-        onCompleteClicked = onCompleteClicked,
+        onHomeClicked = onHomeClicked,
         onShareClicked = onShareClicked
     )
 }
 
 @Composable
-fun CardShareContent(
+private fun CardShareContent(
     cardUrl: String = "",
     onBackClicked: () -> Unit = {},
-    onCompleteClicked: () -> Unit = {},
+    onHomeClicked: () -> Unit = {},
     onShareClicked: () -> Unit = {}
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
 
         CardShareWebView(cardUrl)
 
-        TopSection(onBackClicked, onCompleteClicked)
+        TopSection(onBackClicked, onHomeClicked)
 
         ShareButton(onShareClicked)
     }
 }
 
 @Composable
-fun TopSection(onBackClicked: () -> Unit, onCompleteClicked: () -> Unit) {
+private fun TopSection(onBackClicked: () -> Unit, onCompleteClicked: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -60,12 +60,12 @@ fun TopSection(onBackClicked: () -> Unit, onCompleteClicked: () -> Unit) {
     ) {
         BackButton(onBackClicked)
 
-        CompleteButton(onCompleteClicked)
+        HomeButton(onCompleteClicked)
     }
 }
 
 @Composable
-fun BackButton(onBackClicked: () -> Unit) {
+private fun BackButton(onBackClicked: () -> Unit) {
     IconButton(
         onClick = onBackClicked,
         modifier = Modifier.background(White.copy(alpha = 0.7f), CircleShape)
@@ -79,21 +79,21 @@ fun BackButton(onBackClicked: () -> Unit) {
 }
 
 @Composable
-fun CompleteButton(onCompleteClicked: () -> Unit) {
-    Button(
-        onClick = onCompleteClicked,
-        shape = MaterialTheme.shapes.extraLarge,
-        colors = ButtonDefaults.buttonColors(containerColor = White, contentColor = SoftBlack),
+private fun HomeButton(onHomeClicked: () -> Unit) {
+    IconButton(
+        onClick = onHomeClicked,
+        modifier = Modifier.background(White.copy(alpha = 0.7f), CircleShape)
     ) {
-        Text(
-            text = stringResource(R.string.share_label_complete_button),
-            fontWeight = FontWeight.Bold,
+        Icon(
+            painter = painterResource(id = R.drawable.ic_home),
+            contentDescription = stringResource(R.string.share_cd_home_button),
+            tint = SoftBlack
         )
     }
 }
 
 @Composable
-fun CardShareWebView(cardUrl: String) {
+private fun CardShareWebView(cardUrl: String) {
     AndroidView(
         factory = { context ->
             val webView = WebView(context)
@@ -121,7 +121,7 @@ fun CardShareWebView(cardUrl: String) {
 }
 
 @Composable
-fun BoxScope.ShareButton(onShareClicked: () -> Unit) {
+private fun BoxScope.ShareButton(onShareClicked: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -135,16 +135,18 @@ fun BoxScope.ShareButton(onShareClicked: () -> Unit) {
             colors = ButtonDefaults.buttonColors(containerColor = White, contentColor = SoftBlack),
         ) {
             Row(
-                horizontalArrangement = Arrangement.spacedBy(4.dp)
+                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_share),
-                    contentDescription = stringResource(R.string.share_cd_share_button),
+                    contentDescription = null,
                     tint = SoftBlack
                 )
                 Text(
                     text = stringResource(R.string.share_label_share_button),
-                    fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.labelSmall,
+                    fontWeight = FontWeight.Bold
                 )
             }
         }
@@ -153,6 +155,6 @@ fun BoxScope.ShareButton(onShareClicked: () -> Unit) {
 
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
-fun CardShareScreenPreview() {
+private fun CardShareScreenPreview() {
     CardShareContent()
 }

@@ -17,7 +17,7 @@ class CardShareActivity : AppCompatActivity() {
                 CardShareScreen(
                     cardUrl = cardUrl,
                     onBackClicked = ::finish,
-                    onCompleteClicked = ::navigationToMain,
+                    onHomeClicked = ::navigationToMain,
                     onShareClicked = { shareCardLink(cardUrl) }
                 )
             }

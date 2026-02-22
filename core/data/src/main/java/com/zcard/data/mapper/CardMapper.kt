@@ -5,6 +5,7 @@ import com.zcard.domain.model.Card
 
 fun CardEntity.toDomain(): Card = Card(
     cardId = cardId,
+    exportId = exportId,
     title = title,
     glbFileName = glbFileName,
     glbToken = glbToken,
@@ -16,6 +17,7 @@ fun CardEntity.toDomain(): Card = Card(
 
 fun Card.toEntity(): CardEntity = CardEntity(
     cardId = cardId,
+    exportId = exportId,
     title = title,
     glbFileName = glbFileName,
     glbToken = glbToken,

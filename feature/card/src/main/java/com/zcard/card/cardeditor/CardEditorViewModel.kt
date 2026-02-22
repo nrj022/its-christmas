@@ -61,6 +61,7 @@ class CardEditorViewModel @Inject constructor(
 ) : ViewModel() {
 
     private var _cardId: Long = -1L
+    private var _exportId: Long = -1L
 
     private val _cardEditorState = MutableStateFlow(CardEditorState())
     val cardEditorState: StateFlow<CardEditorState> = _cardEditorState
@@ -139,6 +140,7 @@ class CardEditorViewModel @Inject constructor(
             initCardEditorUseCase(cardId)
                 .onSuccess { result ->
                     _cardId = result.cardData.cardId
+                    _exportId = result.cardData.exportId
                     _cardEditorState.update {
                         it.copy(
                             originalCardTitle = result.cardData.title,
@@ -211,8 +213,11 @@ class CardEditorViewModel @Inject constructor(
     private fun handleExportGlbAndUpload() {
         saveCardTitle()
         updateDialogState(DialogState.NONE)
+
+        if(_exportId == -1L) return
+        unityBridge.exportAndUpload(_exportId)
+
         _cardEditorState.update { it.copy(isLoading = true) }
-        unityBridge.exportAndUpload()
     }
 
     private fun handleExportGlbResult(unityStatusType: UnityStatusType, result: String) {

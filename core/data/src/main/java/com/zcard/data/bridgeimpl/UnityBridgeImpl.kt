@@ -211,8 +211,4 @@ class UnityBridgeImpl @Inject constructor(): UnityBridge {
     override fun exportAndUpload() {
         UnityPlayer.UnitySendMessage("GlbExportManager", "ExportAndUpload", "")
     }
-
-    override fun getGlbDownloadUrl(fileName: String) {
-        UnityPlayer.UnitySendMessage("GlbExportManager", "GetGlbDownloadUrl", fileName)
-    }
 }

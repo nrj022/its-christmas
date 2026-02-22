@@ -5,8 +5,7 @@ import kotlinx.serialization.Serializable
 
 enum class UnityMessageType {
     LIFECYCLE,
-    UPLOAD_GLB,
-    GET_DOWNLOAD_URL
+    UPLOAD_GLB
 }
 
 enum class UnityStatusType {

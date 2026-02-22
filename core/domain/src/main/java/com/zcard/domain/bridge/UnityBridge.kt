@@ -57,5 +57,4 @@ interface UnityBridge {
 
     fun exportAndUpload()
 
-    fun getGlbDownloadUrl(fileName: String)
 }

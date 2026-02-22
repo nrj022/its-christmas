@@ -12,7 +12,6 @@ import com.zcard.card.cardeditor.util.extractFileNameAndToken
 import com.zcard.domain.bridge.UnityBridge
 import com.zcard.domain.enum.ElementType
 import com.zcard.domain.model.Asset
-import com.zcard.domain.model.Card
 import com.zcard.domain.model.CardElement
 import com.zcard.domain.model.CardElementWithAssetKeys
 import com.zcard.domain.model.ColorOption
@@ -26,17 +25,21 @@ import com.zcard.domain.repository.CardElementRepository
 import com.zcard.domain.repository.CardRepository
 import com.zcard.domain.usecase.GenerateCardUrlUseCase
 import com.zcard.domain.usecase.GetTextElementsUseCase
-import com.zcard.domain.usecase.LoadCardEditorUseCase
+import com.zcard.domain.usecase.InitCardEditorUseCase
 import com.zcard.domain.usecase.SaveTextElementsParams
 import com.zcard.domain.usecase.SaveTextElementsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -50,7 +53,7 @@ class CardEditorViewModel @Inject constructor(
     private val cardRepository: CardRepository,
     private val assetRepository: AssetRepository,
     private val cardElementRepository: CardElementRepository,
-    private val loadCardEditorUseCase: LoadCardEditorUseCase,
+    private val initCardEditorUseCase: InitCardEditorUseCase,
     private val getTextsUseCase: GetTextElementsUseCase,
     private val saveTextElementsUseCase: SaveTextElementsUseCase,
     private val generateCardUrl: GenerateCardUrlUseCase,
@@ -132,17 +135,10 @@ class CardEditorViewModel @Inject constructor(
     }
 
     private fun handleInit(cardId: Long) {
-        _cardId = cardId
         viewModelScope.launch {
-            if(_cardId < 0) {
-                cardRepository.insertCard(Card())
-                    .onSuccess { id -> _cardId = id}
-                    .onFailure {
-                        /* TODO */
-                    }
-            }
-            loadCardEditorUseCase(_cardId)
+            initCardEditorUseCase(cardId)
                 .onSuccess { result ->
+                    _cardId = result.cardData.cardId
                     _cardEditorState.update {
                         it.copy(
                             originalCardTitle = result.cardData.title,
@@ -154,19 +150,24 @@ class CardEditorViewModel @Inject constructor(
                             backgrounds = result.backgrounds
                         )
                     }
-                    launch {
-                        result.spawnedObjectsFlow.collect {
-                            it.onSuccess { objects ->
-                                _cardEditorState.update { state ->
-                                    state.copy(spawnedObjects = objects.asReversed())
-                                }
-                            }
-                        }
-                    }
+                    observeSpawnedObjects(result.spawnedObjectsFlow)
                 }.onFailure {
-                    /* TODO */
+                    Log.e(TAG, "handleInit: Load Card Failed\n$it")
+                    delay(1000L)    // UX 개선 및 SideEffect 놓침 방지
+                    _cardEditorSideEffect.emit(CardEditorSideEffect.ShowToast("Oops! Failed to load card. Please try again."))
+                    _cardEditorSideEffect.emit(CardEditorSideEffect.Finish)
                 }
         }
+    }
+
+    private fun observeSpawnedObjects(flow: Flow<Result<List<CardElementWithAssetKeys>>>) {
+        flow.onEach { result ->
+            result.onSuccess { objects ->
+                _cardEditorState.update {
+                    it.copy(spawnedObjects = objects.asReversed())
+                }
+            }
+        }.launchIn(viewModelScope)
     }
 
     fun handleInitUnity() {

@@ -76,6 +76,7 @@ class CardEditorActivity : AppCompatActivity() {
                             is CardEditorSideEffect.NavigateToCardShare -> {
                                 navigateToCardShare(it.cardUrl)
                             }
+                            is CardEditorSideEffect.Finish -> finish()
                             is CardEditorSideEffect.ShowToast -> {
                                 Toast.makeText(this@CardEditorActivity, it.message, Toast.LENGTH_SHORT).show()
                             }

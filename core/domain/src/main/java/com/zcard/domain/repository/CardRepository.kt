@@ -1,7 +1,6 @@
 package com.zcard.domain.repository
 
 import com.zcard.domain.model.Card
-import com.zcard.domain.model.GlbAndBgFirebase
 
 interface CardRepository {
 

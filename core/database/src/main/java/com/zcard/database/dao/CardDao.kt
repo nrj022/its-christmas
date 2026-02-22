@@ -3,7 +3,6 @@ package com.zcard.database.dao
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
-import com.zcard.database.dto.GlbAndBgFirebaseDto
 import com.zcard.database.entity.CardEntity
 
 @Dao

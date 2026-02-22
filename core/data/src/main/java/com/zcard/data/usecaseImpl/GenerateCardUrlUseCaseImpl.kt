@@ -20,17 +20,15 @@ class GenerateCardUrlUseCaseImpl @Inject constructor(
 
         val glb = card.glbFileName ?: return ""
         val glbToken = card.glbToken ?: return ""
-        val bgFile = bg.firebaseFileName ?: return ""
-        val bgToken = bg.firebaseToken ?: return ""
+        val bgFile = bg.unityKey
 
         return run {
             val encodedTitle = encode(card.title, "UTF-8")
             val encodedGlb = encode(glb, "UTF-8")
             val encodedGlbToken = encode(glbToken, "UTF-8")
             val encodedBg = encode(bgFile, "UTF-8")
-            val encodedBgToken = encode(bgToken, "UTF-8")
 
-            "$baseCardUrl?title=$encodedTitle&glb=$encodedGlb&glbToken=$encodedGlbToken&bg=$encodedBg&bgToken=$encodedBgToken"
+            "$baseCardUrl?title=$encodedTitle&glb=$encodedGlb&glbToken=$encodedGlbToken&bg=$encodedBg"
         }
     }
 }

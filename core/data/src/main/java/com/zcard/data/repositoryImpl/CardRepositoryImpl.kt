@@ -5,7 +5,6 @@ import com.zcard.data.mapper.toEntity
 import com.zcard.data.repositoryImpl.common.ioCatching
 import com.zcard.database.dao.CardDao
 import com.zcard.domain.model.Card
-import com.zcard.domain.model.GlbAndBgFirebase
 import com.zcard.domain.repository.CardRepository
 import javax.inject.Inject
 
@@ -26,11 +25,6 @@ class CardRepositoryImpl @Inject constructor(
     override suspend fun getCardById(cardId: Long): Result<Card> =
         ioCatching {
             cardDao.getCardById(cardId).toDomain()
-        }
-
-    override suspend fun getGlbAndBgFirebase(cardId: Long): Result<GlbAndBgFirebase> =
-        ioCatching {
-            cardDao.getGlbAndBgFirebaseKey(cardId).toDomain()
         }
 
     override suspend fun updateCardTitle(cardId: Long, title: String): Result<Int> =

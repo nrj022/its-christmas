@@ -28,11 +28,6 @@ class CardRepositoryImpl @Inject constructor(
             cardDao.getCardById(cardId).toDomain()
         }
 
-    override suspend fun getGlbAndBgFirebase(cardId: Long): Result<GlbAndBgFirebase> =
-        ioCatching {
-            cardDao.getGlbAndBgFirebaseKey(cardId).toDomain()
-        }
-
     override suspend fun updateCardTitle(cardId: Long, title: String): Result<Int> =
         ioCatching {
             cardDao.updateTitle(cardId, title)

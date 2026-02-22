@@ -8,8 +8,6 @@ fun AssetEntity.toDomain(): Asset {
     return Asset(
         assetId = assetId,
         assetType = AssetType.valueOf(assetType),
-        firebaseFileName = firebaseFileName,
-        firebaseToken = firebaseToken,
         unityKey = unityKey,
         thumbnailKey = thumbnailKey,
     )

@@ -11,8 +11,6 @@ interface CardRepository {
 
     suspend fun getCardById(cardId: Long): Result<Card>
 
-    suspend fun getGlbAndBgFirebase(cardId: Long): Result<GlbAndBgFirebase>
-
     suspend fun updateCardTitle(cardId: Long, title: String): Result<Int>
 
     suspend fun updateBackgroundAssetId(cardId: Long, backgroundAssetId: Long): Result<Int>

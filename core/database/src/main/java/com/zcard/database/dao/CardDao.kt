@@ -18,16 +18,6 @@ interface CardDao {
     @Query("SELECT * FROM cards WHERE cardId = :cardId")
     suspend fun getCardById(cardId: Long): CardEntity
 
-    @Query(
-        """
-        SELECT cards.glbFileName AS glbFileName, cards.glbToken AS glbToken, assets.firebaseFileName AS backgroundFileName, assets.firebaseToken AS backgroundToken
-        FROM cards 
-        JOIN assets ON cards.backgroundAssetId = assets.assetId 
-        WHERE cards.cardId = :cardId
-        """
-    )
-    suspend fun getGlbAndBgFirebaseKey(cardId: Long): GlbAndBgFirebaseDto
-
     @Query("UPDATE cards SET updatedAt = :updatedAt WHERE cardId = :cardId")
     suspend fun refreshUpdatedAt(cardId: Long, updatedAt: Long = System.currentTimeMillis()): Int
 

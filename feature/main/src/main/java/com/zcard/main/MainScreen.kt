@@ -120,7 +120,7 @@ fun PreviewGifImage() {
         AsyncImage(
             modifier = Modifier.fillMaxSize(),
             imageLoader = gifEnabledLoader,
-            model = R.drawable.gif_sample_scene,
+            model = R.drawable.gif_happy_2026,
             contentScale = ContentScale.Crop,
             contentDescription = stringResource(R.string.main_cd_async_image)
         )

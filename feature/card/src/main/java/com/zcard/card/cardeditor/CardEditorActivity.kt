@@ -76,6 +76,7 @@ class CardEditorActivity : AppCompatActivity() {
                             is CardEditorSideEffect.NavigateToCardShare -> {
                                 navigateToCardShare(it.cardUrl)
                             }
+                            is CardEditorSideEffect.Finish -> finish()
                             is CardEditorSideEffect.ShowToast -> {
                                 Toast.makeText(this@CardEditorActivity, it.message, Toast.LENGTH_SHORT).show()
                             }
@@ -238,9 +239,9 @@ class CardEditorActivity : AppCompatActivity() {
                 }
             }
             UnityMessageType.UPLOAD_GLB -> {
-            }
-            UnityMessageType.GET_DOWNLOAD_URL -> {
-                viewModel.onIntent(CardEditorIntent.ExportGlbResult(msg.status, msg.data))
+                if(msg.status != UnityStatusType.START) {
+                    viewModel.onIntent(CardEditorIntent.ExportGlbResult(msg.status, msg.data))
+                }
             }
         }
     }

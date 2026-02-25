@@ -208,11 +208,7 @@ class UnityBridgeImpl @Inject constructor(): UnityBridge {
         UnityPlayer.UnitySendMessage("ObjectManager", "DeleteObject", "$elementId")
     }
 
-    override fun exportAndUpload() {
-        UnityPlayer.UnitySendMessage("GlbExportManager", "ExportAndUpload", "")
-    }
-
-    override fun getGlbDownloadUrl(fileName: String) {
-        UnityPlayer.UnitySendMessage("GlbExportManager", "GetGlbDownloadUrl", fileName)
+    override fun exportAndUpload(exportId: Long) {
+        UnityPlayer.UnitySendMessage("GlbExportManager", "ExportAndUpload", "$exportId")
     }
 }

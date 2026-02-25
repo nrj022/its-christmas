@@ -14,10 +14,7 @@ interface AssetDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAsset(asset: AssetEntity): Long
 
-    @Query("SELECT * FROM assets")
-    suspend fun getAll(): List<AssetEntity>
-
-    @Query("SELECT * FROM assets WHERE assetType = :assetType")
+    @Query("SELECT * FROM assets WHERE assetType = :assetType ORDER BY assetId DESC")
     suspend fun getByType(assetType: String): List<AssetEntity>
 
     @Query("SELECT * FROM assets WHERE assetId = :assetId")

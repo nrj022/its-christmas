@@ -39,6 +39,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -105,7 +106,7 @@ fun PreviewGifImage() {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .fillMaxHeight(0.55f)
+            .fillMaxHeight(0.40f)
             .clip(
                 RoundedCornerShape(
                     bottomStart = 50.dp,
@@ -120,7 +121,7 @@ fun PreviewGifImage() {
         AsyncImage(
             modifier = Modifier.fillMaxSize(),
             imageLoader = gifEnabledLoader,
-            model = R.drawable.gif_sample_scene,
+            model = R.drawable.gif_happy_2026,
             contentScale = ContentScale.Crop,
             contentDescription = stringResource(R.string.main_cd_async_image)
         )
@@ -131,8 +132,8 @@ fun PreviewGifImage() {
         )
         Text(
             modifier = Modifier.padding(top = 20.dp),
-            style = MaterialTheme.typography.titleLarge,
             color = White,
+            fontWeight = FontWeight.Light,
             text = stringResource(R.string.main_title_design_card_prompt)
         )
     }

@@ -32,3 +32,26 @@ google-services.json
 
 # Android Profiling
 *.hprof
+
+# --- [Android / Kotlin Standard] ---
+/*/build/
+.idea/workspace.xml
+.idea/libraries/
+.idea/modules.xml
+.idea/caches/
+.idea/navEditor.xml
+.idea/assetWizardSettings.xml
+.kotlin/
+
+# --- [Unity Library Specific] ---
+unity_export/
+
+# --- [Firebase & Tools] ---
+.firebase/
+.firebaserc
+
+# --- [OS & Misc] ---
+.DS_Store
+Thumbs.db
+*.bak
+*.swp

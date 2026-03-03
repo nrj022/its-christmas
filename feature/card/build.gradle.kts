@@ -48,8 +48,7 @@ dependencies {
     implementation(
         fileTree(
             mapOf(
-                "dir" to (findProject(":unityLibrary")?.projectDir?.resolve("libs")
-                    ?: file("D:/Unity/z-card-unity/AndroidBuild/unityLibrary/libs")),
+                "dir" to (findProject(":unityLibrary")?.projectDir?.resolve("libs")),
                 "include" to listOf("*.jar")
             )
         )

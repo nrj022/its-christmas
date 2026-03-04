@@ -34,7 +34,7 @@ google-services.json
 *.hprof
 
 # --- [Android / Kotlin Standard] ---
-/*/build/
+**/build/
 .idea/workspace.xml
 .idea/libraries/
 .idea/modules.xml

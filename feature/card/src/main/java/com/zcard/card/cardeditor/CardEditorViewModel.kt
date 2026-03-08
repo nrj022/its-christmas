@@ -97,6 +97,7 @@ class CardEditorViewModel @Inject constructor(
             is CardEditorIntent.FinishEditing -> handleFinishEditing()
             is CardEditorIntent.ExportGlbAndUpload -> handleExportGlbAndUpload()
             is CardEditorIntent.ExportGlbResult -> handleExportGlbResult(intent.unityStatusType, intent.result)
+            is CardEditorIntent.CreateObjectResult -> { }
             is CardEditorIntent.ChangeDialogState -> handleChangeDialogState(intent.dialogState)
 
             is CardEditorIntent.CreateObject -> handleCreateObject(intent.clickedObject)
@@ -108,7 +109,7 @@ class CardEditorViewModel @Inject constructor(
 
             is CardEditorIntent.ResetCamera -> handleResetCamera()
 
-            /* 오브젝트 조정 */
+            /* 오브젝트 조정 패널 */
             is CardEditorIntent.MoveObject -> handleMoveObject(intent.direction)
             is CardEditorIntent.ChangeScale -> handleChangeScale(intent.newScale)
             is CardEditorIntent.CancelTransform -> handleCancelTransform()
@@ -118,7 +119,7 @@ class CardEditorViewModel @Inject constructor(
             is CardEditorIntent.ResetTransform -> handleResetTransform()
             is CardEditorIntent.CameraFocus -> handleCameraFocus()
 
-            /* 텍스트 편집 */
+            /* 텍스트 편집 패널 */
             is CardEditorIntent.MissingTextSelection -> handleMissingTextSelection()
             is CardEditorIntent.AddText -> handleAddText()
             is CardEditorIntent.DeleteText -> handleDeleteText(intent.textId)

@@ -5,6 +5,7 @@ import kotlinx.serialization.Serializable
 
 enum class UnityMessageType {
     LIFECYCLE,
+    CREATE_OBJECT,
     UPLOAD_GLB
 }
 

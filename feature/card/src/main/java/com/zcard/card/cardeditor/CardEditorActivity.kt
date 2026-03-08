@@ -238,6 +238,9 @@ class CardEditorActivity : AppCompatActivity() {
                     Log.i("UnityMsg", "Unity Started Ready!")
                 }
             }
+            UnityMessageType.CREATE_OBJECT -> {
+                viewModel.onIntent(CardEditorIntent.CreateObjectResult(msg.status, msg.data))
+            }
             UnityMessageType.UPLOAD_GLB -> {
                 if(msg.status != UnityStatusType.START) {
                     viewModel.onIntent(CardEditorIntent.ExportGlbResult(msg.status, msg.data))

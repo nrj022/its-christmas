@@ -97,7 +97,7 @@ class CardEditorViewModel @Inject constructor(
             is CardEditorIntent.FinishEditing -> handleFinishEditing()
             is CardEditorIntent.ExportGlbAndUpload -> handleExportGlbAndUpload()
             is CardEditorIntent.ExportGlbResult -> handleExportGlbResult(intent.unityStatusType, intent.result)
-            is CardEditorIntent.CreateObjectResult -> { }
+            is CardEditorIntent.CreateObjectResult -> handleCreateObjectResult(intent.unityStatusType, intent.result)
             is CardEditorIntent.ChangeDialogState -> handleChangeDialogState(intent.dialogState)
 
             is CardEditorIntent.CreateObject -> handleCreateObject(intent.clickedObject)
@@ -150,7 +150,8 @@ class CardEditorViewModel @Inject constructor(
                             selectedBackgroundId = result.cardData.backgroundAssetId,
                             objects = result.objects,
                             texts = result.texts,
-                            backgrounds = result.backgrounds
+                            backgrounds = result.backgrounds,
+                            loadingObjectIds = result.spawnedObjects.map { obj -> obj.cardElement.elementId }.toSet()
                         )
                     }
                     observeSpawnedObjects(result.spawnedObjectsFlow)
@@ -164,10 +165,12 @@ class CardEditorViewModel @Inject constructor(
     }
 
     private fun observeSpawnedObjects(flow: Flow<Result<List<CardElementWithAssetKeys>>>) {
+        // Room Flow는 cold flow 이므로 collect를 시작할 때마다 새로 데이터를 읽어서 emit
         flow.onEach { result ->
             result.onSuccess { objects ->
-                _cardEditorState.update {
-                    it.copy(spawnedObjects = objects.asReversed())
+                _cardEditorState.update { it.copy(spawnedObjects = objects) }
+                _cardEditorState.value.spawnedObjects.firstOrNull()?.let {
+                    selectSpawnedObject(it)
                 }
             }
         }.launchIn(viewModelScope)
@@ -244,6 +247,19 @@ class CardEditorViewModel @Inject constructor(
         }
     }
 
+    private fun handleCreateObjectResult(unityStatusType: UnityStatusType, result: String) {
+        viewModelScope.launch {
+            if(unityStatusType != UnityStatusType.SUCCESS) {
+                Log.e(TAG, "Id $result Object Creation Failed")
+                _cardEditorSideEffect.emit(CardEditorSideEffect.ShowToast("Oops! Load Object failed. Please try again."))
+            }
+            result.toLongOrNull()?.let { id ->
+                _cardEditorState.update { it.copy(loadingObjectIds = it.loadingObjectIds - id) }
+                unityBridge.selectObject(id)
+            }
+        }
+    }
+
     private fun handleChangeDialogState(dialogState: DialogState) {
         updateDialogState(dialogState)
     }
@@ -259,6 +275,7 @@ class CardEditorViewModel @Inject constructor(
             )
             cardElementRepository.insertCardElement(newElement)
                 .onSuccess { id ->
+                    _cardEditorState.update { it.copy(loadingObjectIds = it.loadingObjectIds + id) }
                     unityBridge.createObject(
                         unityKey = clickedObject.unityKey,
                         elementId = id,
@@ -285,17 +302,7 @@ class CardEditorViewModel @Inject constructor(
     }
 
     private fun handleSelectSpawnedObject(element: CardElementWithAssetKeys) {
-        val alreadySelected = _cardEditorState.value.selectedSpawnedObjectId == element.cardElement.elementId
-
-        _cardEditorState.update {
-            it.copy(selectedSpawnedObject = if (alreadySelected) null else element)
-        }
-
-        if (alreadySelected) {
-            unityBridge.clearSelection()
-        } else {
-            unityBridge.selectObject(element.cardElement.elementId)
-        }
+        selectSpawnedObject(element)
     }
 
     private fun handleDeleteSpawnedObject() {
@@ -364,7 +371,7 @@ class CardEditorViewModel @Inject constructor(
         unityBridge.clearSelection()
     }
 
-    /* 오브젝트 조정 */
+    /* 오브젝트 조정 패널 */
     private fun handleMoveObject(direction: Direction) {
         val tempState = _cardEditorState.value.tempTransform ?: return
         val updatedPosX = tempState.posX + direction.dx
@@ -446,7 +453,7 @@ class CardEditorViewModel @Inject constructor(
         _cardEditorState.update { it.copy(isTransformCameraFocus = !cameraFocus) }
     }
 
-    /* 텍스트 편집 */
+    /* 텍스트 편집 패널 */
     private fun handleMissingTextSelection() {
         if (_cardEditorState.value.tempTextList.isNotEmpty() && _cardEditorState.value.selectedTextTempId == null) {
             _cardEditorState.update { it.copy(selectedTextTempId = it.tempTextList.first().tempId) }
@@ -582,6 +589,20 @@ class CardEditorViewModel @Inject constructor(
                 } else item
             }
             it.copy(tempTextList = newList)
+        }
+    }
+
+    private fun selectSpawnedObject(element: CardElementWithAssetKeys) {
+        val alreadySelected = _cardEditorState.value.selectedSpawnedObjectId == element.cardElement.elementId
+
+        _cardEditorState.update {
+            it.copy(selectedSpawnedObject = if (alreadySelected) null else element)
+        }
+
+        if (alreadySelected) {
+            unityBridge.clearSelection()
+        } else {
+            unityBridge.selectObject(element.cardElement.elementId)
         }
     }
 

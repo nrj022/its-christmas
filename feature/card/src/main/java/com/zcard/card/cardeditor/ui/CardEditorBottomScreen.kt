@@ -28,6 +28,7 @@ fun CardEditorBottomScreen(viewModel: CardEditorViewModel = hiltViewModel()) {
                 spawnedObjects = state.spawnedObjects,
                 selectedSpawnedObject = state.selectedSpawnedObjectId,
                 selectedBackground = state.selectedBackgroundId,
+                loadingObjectIds = state.loadingObjectIds,
                 onAddTextClicked = { viewModel.onIntent(CardEditorIntent.EnterTextMode) },
                 onObjectClicked = { viewModel.onIntent(CardEditorIntent.CreateObject(it)) },
                 onSpawnedObjectClicked = { viewModel.onIntent(CardEditorIntent.SelectSpawnedObject(it)) },

@@ -19,9 +19,9 @@ object InitialData {
     fun getInitialAssets(): List<AssetEntity> {
         return listOf(
             // 모델
-            //AssetEntity(assetId = 7, assetType = "OBJECT", unityKey = "m_001", thumbnailKey = "thumb_m_001"),
+            AssetEntity(assetId = 7, assetType = "OBJECT", unityKey = "m_001", thumbnailKey = "thumb_m_001"),
             AssetEntity(assetId = 8, assetType = "OBJECT", unityKey = "m_002", thumbnailKey = "thumb_m_002"),
-            //AssetEntity(assetId = 9, assetType = "OBJECT", unityKey = "m_003", thumbnailKey = "thumb_m_003"),
+            AssetEntity(assetId = 9, assetType = "OBJECT", unityKey = "m_003", thumbnailKey = "thumb_m_003"),
             AssetEntity(assetId = 10, assetType = "OBJECT", unityKey = "m_004", thumbnailKey = "thumb_m_004"),
             AssetEntity(assetId = 11, assetType = "OBJECT", unityKey = "m_005", thumbnailKey = "thumb_m_005"),
             AssetEntity(assetId = 12, assetType = "OBJECT", unityKey = "m_006", thumbnailKey = "thumb_m_006"),

@@ -11,6 +11,7 @@ import com.zcard.domain.usecase.LoadCardEditorResult
 import com.zcard.domain.usecase.LoadCardEditorUseCase
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
 private const val TAG = "LoadCardEditorUseCaseImpl"
@@ -32,15 +33,17 @@ class LoadCardEditorUseCaseImpl @Inject constructor(
                 val textsDeferred = async { getTextsUseCase(cardId).getOrThrow() }
                 val spawnedObjectsFlow =
                     cardElementRepository.getObjectElementsWithAssetKeysByCardId(cardId)
+                val spawnedObjectsDeferred = async { spawnedObjectsFlow.first().getOrThrow() }
 
-                val cardUrl = generateCardUrlUseCase(cardId)
+                val cardUrlDeferred = async { generateCardUrlUseCase(cardId) }
 
                 LoadCardEditorResult(
                     cardData = cardDataDeferred.await(),
-                    cardUrl = cardUrl,
+                    cardUrl = cardUrlDeferred.await(),
                     objects = objectsDeferred.await(),
                     backgrounds = backgroundsDeferred.await(),
                     texts = textsDeferred.await(),
+                    spawnedObjects = spawnedObjectsDeferred.await(),
                     spawnedObjectsFlow = spawnedObjectsFlow
                 )
             }.onFailure {

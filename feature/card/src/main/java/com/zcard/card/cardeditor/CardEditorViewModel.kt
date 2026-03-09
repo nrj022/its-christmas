@@ -19,7 +19,7 @@ import com.zcard.domain.model.FontOption
 import com.zcard.domain.model.TextAlignmentOption
 import com.zcard.domain.model.TextAttributes
 import com.zcard.domain.model.TextElement
-import com.zcard.domain.model.UnityStatusType
+import com.zcard.domain.model.UnityEventStatus
 import com.zcard.domain.repository.AssetRepository
 import com.zcard.domain.repository.CardElementRepository
 import com.zcard.domain.repository.CardRepository
@@ -96,8 +96,8 @@ class CardEditorViewModel @Inject constructor(
 
             is CardEditorIntent.FinishEditing -> handleFinishEditing()
             is CardEditorIntent.ExportGlbAndUpload -> handleExportGlbAndUpload()
-            is CardEditorIntent.ExportGlbResult -> handleExportGlbResult(intent.unityStatusType, intent.result)
-            is CardEditorIntent.CreateObjectResult -> handleCreateObjectResult(intent.unityStatusType, intent.result)
+            is CardEditorIntent.ExportGlbResult -> handleExportGlbResult(intent.unityResult, intent.result)
+            is CardEditorIntent.CreateObjectResult -> handleCreateObjectResult(intent.unityResult, intent.result)
             is CardEditorIntent.ChangeDialogState -> handleChangeDialogState(intent.dialogState)
 
             is CardEditorIntent.CreateObject -> handleCreateObject(intent.clickedObject)
@@ -224,10 +224,10 @@ class CardEditorViewModel @Inject constructor(
         _cardEditorState.update { it.copy(isLoading = true) }
     }
 
-    private fun handleExportGlbResult(unityStatusType: UnityStatusType, result: String) {
+    private fun handleExportGlbResult(unityStatusType: UnityEventStatus, result: String) {
         viewModelScope.launch {
             try {
-                if(unityStatusType != UnityStatusType.SUCCESS) error("Export glb failed from Unity")
+                if(unityStatusType != UnityEventStatus.SUCCESS) error(result)
 
                 val (fileName, token) = extractFileNameAndToken(result)
                 cardRepository.updateGlb(_cardId, fileName, token).getOrThrow()
@@ -247,9 +247,9 @@ class CardEditorViewModel @Inject constructor(
         }
     }
 
-    private fun handleCreateObjectResult(unityStatusType: UnityStatusType, result: String) {
+    private fun handleCreateObjectResult(unityStatusType: UnityEventStatus, result: String) {
         viewModelScope.launch {
-            if(unityStatusType != UnityStatusType.SUCCESS) {
+            if(unityStatusType != UnityEventStatus.SUCCESS) {
                 Log.e(TAG, "Id $result Object Creation Failed")
                 _cardEditorSideEffect.emit(CardEditorSideEffect.ShowToast("Oops! Load Object failed. Please try again."))
             }

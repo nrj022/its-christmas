@@ -31,9 +31,9 @@ import com.zcard.card.cardshare.CardShareActivity
 import com.zcard.card.databinding.ActivityCardEditorBinding
 import com.zcard.designsystem.theme.ZCardTheme
 import com.zcard.domain.model.UnityMessage
-import com.zcard.domain.model.UnityMessageType
-import com.zcard.domain.model.UnityStatusType
 import com.unity3d.player.UnityPlayerForActivityOrService
+import com.zcard.domain.model.UnityEventStatus
+import com.zcard.domain.model.UnityEventType
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
@@ -232,19 +232,17 @@ class CardEditorActivity : AppCompatActivity() {
 
     private fun handleUnityMessage(msg: UnityMessage) {
         when (msg.type) {
-            UnityMessageType.LIFECYCLE -> {
-                if (msg.status == UnityStatusType.START) {
+            UnityEventType.LIFECYCLE -> {
+                if (msg.status == UnityEventStatus.START) {
                     viewModel.handleInitUnity()
                     Log.i("UnityMsg", "Unity Started Ready!")
                 }
             }
-            UnityMessageType.CREATE_OBJECT -> {
+            UnityEventType.CREATE_OBJECT -> {
                 viewModel.onIntent(CardEditorIntent.CreateObjectResult(msg.status, msg.data))
             }
-            UnityMessageType.UPLOAD_GLB -> {
-                if(msg.status != UnityStatusType.START) {
-                    viewModel.onIntent(CardEditorIntent.ExportGlbResult(msg.status, msg.data))
-                }
+            UnityEventType.UPLOAD_GLB -> {
+                viewModel.onIntent(CardEditorIntent.ExportGlbResult(msg.status, msg.data))
             }
         }
     }

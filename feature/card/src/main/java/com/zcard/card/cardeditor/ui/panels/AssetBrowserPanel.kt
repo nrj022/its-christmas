@@ -191,6 +191,7 @@ fun SpawnedObjectRow(
         ) {
             item { Box(Modifier.size(8.dp)) }
             items(items = elements, key = { it.cardElement.elementId }) { element ->
+                val isLoading = isLoading(element.cardElement.elementId)
                 Box(
                     modifier = Modifier
                         .size(72.dp)
@@ -200,14 +201,13 @@ fun SpawnedObjectRow(
                             RoundedCornerShape(10.dp)
                         )
                         .clip(RoundedCornerShape(10.dp))
+                        .clickable(!isLoading) { onItemClicked(element) }
                 ) {
                     Image(
                         painter = painterResource(id = getObjectThumbByKey(context, element.thumbnailKey)),
                         contentScale = ContentScale.Crop,
                         contentDescription = stringResource(R.string.editor_cd_asset),
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .clickable { onItemClicked(element) }
+                        modifier = Modifier.fillMaxSize()
                     )
                     Box(
                         modifier = Modifier
@@ -222,7 +222,7 @@ fun SpawnedObjectRow(
                             style = MaterialTheme.typography.labelSmall,
                         )
                     }
-                    if (isLoading(element.cardElement.elementId)) {
+                    if (isLoading) {
                         Box(
                             modifier = Modifier
                                 .matchParentSize()

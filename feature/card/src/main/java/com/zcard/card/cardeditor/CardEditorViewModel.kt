@@ -169,9 +169,6 @@ class CardEditorViewModel @Inject constructor(
         flow.onEach { result ->
             result.onSuccess { objects ->
                 _cardEditorState.update { it.copy(spawnedObjects = objects) }
-                _cardEditorState.value.spawnedObjects.firstOrNull()?.let {
-                    selectSpawnedObject(it)
-                }
             }
         }.launchIn(viewModelScope)
     }
@@ -249,14 +246,22 @@ class CardEditorViewModel @Inject constructor(
 
     private fun handleCreateObjectResult(unityStatusType: UnityEventStatus, result: String) {
         viewModelScope.launch {
+            val id = result.toLongOrNull() ?: return@launch
+
+            // 오브젝트 생성 실패 시에도 Unity 에 해당 ID로 대체 큐브가 생성됨
             if(unityStatusType != UnityEventStatus.SUCCESS) {
                 Log.e(TAG, "Id $result Object Creation Failed")
                 _cardEditorSideEffect.emit(CardEditorSideEffect.ShowToast("Oops! Load Object failed. Please try again."))
             }
-            result.toLongOrNull()?.let { id ->
-                _cardEditorState.update { it.copy(loadingObjectIds = it.loadingObjectIds - id) }
-                unityBridge.selectObject(id)
+
+            _cardEditorState.update {
+                val selectedObject = _cardEditorState.value.spawnedObjects.find { obj -> obj.cardElement.elementId == id }
+                it.copy(
+                    loadingObjectIds = it.loadingObjectIds - id,
+                    selectedSpawnedObject = selectedObject
+                )
             }
+            unityBridge.selectObject(id)
         }
     }
 
@@ -302,7 +307,17 @@ class CardEditorViewModel @Inject constructor(
     }
 
     private fun handleSelectSpawnedObject(element: CardElementWithAssetKeys) {
-        selectSpawnedObject(element)
+        val alreadySelected = _cardEditorState.value.selectedSpawnedObjectId == element.cardElement.elementId
+
+        _cardEditorState.update {
+            it.copy(selectedSpawnedObject = if (alreadySelected) null else element)
+        }
+
+        if (alreadySelected) {
+            unityBridge.clearSelection()
+        } else {
+            unityBridge.selectObject(element.cardElement.elementId)
+        }
     }
 
     private fun handleDeleteSpawnedObject() {
@@ -589,20 +604,6 @@ class CardEditorViewModel @Inject constructor(
                 } else item
             }
             it.copy(tempTextList = newList)
-        }
-    }
-
-    private fun selectSpawnedObject(element: CardElementWithAssetKeys) {
-        val alreadySelected = _cardEditorState.value.selectedSpawnedObjectId == element.cardElement.elementId
-
-        _cardEditorState.update {
-            it.copy(selectedSpawnedObject = if (alreadySelected) null else element)
-        }
-
-        if (alreadySelected) {
-            unityBridge.clearSelection()
-        } else {
-            unityBridge.selectObject(element.cardElement.elementId)
         }
     }
 

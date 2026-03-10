@@ -151,6 +151,7 @@ class CardEditorViewModel @Inject constructor(
                             objects = result.objects,
                             texts = result.texts,
                             backgrounds = result.backgrounds,
+                            spawnedObjects = result.spawnedObjects,
                             loadingObjectIds = result.spawnedObjects.map { obj -> obj.cardElement.elementId }.toSet()
                         )
                     }

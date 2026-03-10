@@ -19,7 +19,7 @@ import com.zcard.domain.model.FontOption
 import com.zcard.domain.model.TextAlignmentOption
 import com.zcard.domain.model.TextAttributes
 import com.zcard.domain.model.TextElement
-import com.zcard.domain.model.UnityStatusType
+import com.zcard.domain.model.UnityEventStatus
 import com.zcard.domain.repository.AssetRepository
 import com.zcard.domain.repository.CardElementRepository
 import com.zcard.domain.repository.CardRepository
@@ -96,7 +96,8 @@ class CardEditorViewModel @Inject constructor(
 
             is CardEditorIntent.FinishEditing -> handleFinishEditing()
             is CardEditorIntent.ExportGlbAndUpload -> handleExportGlbAndUpload()
-            is CardEditorIntent.ExportGlbResult -> handleExportGlbResult(intent.unityStatusType, intent.result)
+            is CardEditorIntent.ExportGlbResult -> handleExportGlbResult(intent.unityResult, intent.result)
+            is CardEditorIntent.CreateObjectResult -> handleCreateObjectResult(intent.unityResult, intent.result)
             is CardEditorIntent.ChangeDialogState -> handleChangeDialogState(intent.dialogState)
 
             is CardEditorIntent.CreateObject -> handleCreateObject(intent.clickedObject)
@@ -108,7 +109,7 @@ class CardEditorViewModel @Inject constructor(
 
             is CardEditorIntent.ResetCamera -> handleResetCamera()
 
-            /* 오브젝트 조정 */
+            /* 오브젝트 조정 패널 */
             is CardEditorIntent.MoveObject -> handleMoveObject(intent.direction)
             is CardEditorIntent.ChangeScale -> handleChangeScale(intent.newScale)
             is CardEditorIntent.CancelTransform -> handleCancelTransform()
@@ -118,7 +119,7 @@ class CardEditorViewModel @Inject constructor(
             is CardEditorIntent.ResetTransform -> handleResetTransform()
             is CardEditorIntent.CameraFocus -> handleCameraFocus()
 
-            /* 텍스트 편집 */
+            /* 텍스트 편집 패널 */
             is CardEditorIntent.MissingTextSelection -> handleMissingTextSelection()
             is CardEditorIntent.AddText -> handleAddText()
             is CardEditorIntent.DeleteText -> handleDeleteText(intent.textId)
@@ -149,7 +150,9 @@ class CardEditorViewModel @Inject constructor(
                             selectedBackgroundId = result.cardData.backgroundAssetId,
                             objects = result.objects,
                             texts = result.texts,
-                            backgrounds = result.backgrounds
+                            backgrounds = result.backgrounds,
+                            spawnedObjects = result.spawnedObjects,
+                            loadingObjectIds = result.spawnedObjects.map { obj -> obj.cardElement.elementId }.toSet()
                         )
                     }
                     observeSpawnedObjects(result.spawnedObjectsFlow)
@@ -163,11 +166,10 @@ class CardEditorViewModel @Inject constructor(
     }
 
     private fun observeSpawnedObjects(flow: Flow<Result<List<CardElementWithAssetKeys>>>) {
+        // Room Flow는 cold flow 이므로 collect를 시작할 때마다 새로 데이터를 읽어서 emit
         flow.onEach { result ->
             result.onSuccess { objects ->
-                _cardEditorState.update {
-                    it.copy(spawnedObjects = objects.asReversed())
-                }
+                _cardEditorState.update { it.copy(spawnedObjects = objects) }
             }
         }.launchIn(viewModelScope)
     }
@@ -220,10 +222,10 @@ class CardEditorViewModel @Inject constructor(
         _cardEditorState.update { it.copy(isLoading = true) }
     }
 
-    private fun handleExportGlbResult(unityStatusType: UnityStatusType, result: String) {
+    private fun handleExportGlbResult(unityStatusType: UnityEventStatus, result: String) {
         viewModelScope.launch {
             try {
-                if(unityStatusType != UnityStatusType.SUCCESS) error("Export glb failed from Unity")
+                if(unityStatusType != UnityEventStatus.SUCCESS) error(result)
 
                 val (fileName, token) = extractFileNameAndToken(result)
                 cardRepository.updateGlb(_cardId, fileName, token).getOrThrow()
@@ -243,6 +245,27 @@ class CardEditorViewModel @Inject constructor(
         }
     }
 
+    private fun handleCreateObjectResult(unityStatusType: UnityEventStatus, result: String) {
+        viewModelScope.launch {
+            val id = result.toLongOrNull() ?: return@launch
+
+            // 오브젝트 생성 실패 시에도 Unity 에 해당 ID로 대체 큐브가 생성됨
+            if(unityStatusType != UnityEventStatus.SUCCESS) {
+                Log.e(TAG, "Id $result Object Creation Failed")
+                _cardEditorSideEffect.emit(CardEditorSideEffect.ShowToast("Oops! Load Object failed. Please try again."))
+            }
+
+            _cardEditorState.update {
+                val selectedObject = _cardEditorState.value.spawnedObjects.find { obj -> obj.cardElement.elementId == id }
+                it.copy(
+                    loadingObjectIds = it.loadingObjectIds - id,
+                    selectedSpawnedObject = selectedObject
+                )
+            }
+            unityBridge.selectObject(id)
+        }
+    }
+
     private fun handleChangeDialogState(dialogState: DialogState) {
         updateDialogState(dialogState)
     }
@@ -258,6 +281,7 @@ class CardEditorViewModel @Inject constructor(
             )
             cardElementRepository.insertCardElement(newElement)
                 .onSuccess { id ->
+                    _cardEditorState.update { it.copy(loadingObjectIds = it.loadingObjectIds + id) }
                     unityBridge.createObject(
                         unityKey = clickedObject.unityKey,
                         elementId = id,
@@ -363,7 +387,7 @@ class CardEditorViewModel @Inject constructor(
         unityBridge.clearSelection()
     }
 
-    /* 오브젝트 조정 */
+    /* 오브젝트 조정 패널 */
     private fun handleMoveObject(direction: Direction) {
         val tempState = _cardEditorState.value.tempTransform ?: return
         val updatedPosX = tempState.posX + direction.dx
@@ -445,7 +469,7 @@ class CardEditorViewModel @Inject constructor(
         _cardEditorState.update { it.copy(isTransformCameraFocus = !cameraFocus) }
     }
 
-    /* 텍스트 편집 */
+    /* 텍스트 편집 패널 */
     private fun handleMissingTextSelection() {
         if (_cardEditorState.value.tempTextList.isNotEmpty() && _cardEditorState.value.selectedTextTempId == null) {
             _cardEditorState.update { it.copy(selectedTextTempId = it.tempTextList.first().tempId) }

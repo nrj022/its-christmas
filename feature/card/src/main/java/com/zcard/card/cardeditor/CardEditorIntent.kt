@@ -7,7 +7,7 @@ import com.zcard.domain.model.CardElementWithAssetKeys
 import com.zcard.domain.model.ColorOption
 import com.zcard.domain.model.FontOption
 import com.zcard.domain.model.TextAlignmentOption
-import com.zcard.domain.model.UnityStatusType
+import com.zcard.domain.model.UnityEventStatus
 
 sealed class CardEditorIntent {
     data class Init(val cardId: Long): CardEditorIntent()
@@ -20,7 +20,8 @@ sealed class CardEditorIntent {
 
     data object FinishEditing: CardEditorIntent()
     data object ExportGlbAndUpload: CardEditorIntent()
-    data class ExportGlbResult(val unityStatusType: UnityStatusType, val result: String): CardEditorIntent()
+    data class ExportGlbResult(val unityResult: UnityEventStatus, val result: String): CardEditorIntent()
+    data class CreateObjectResult(val unityResult: UnityEventStatus, val result: String): CardEditorIntent()
     data class ChangeDialogState(val dialogState: DialogState): CardEditorIntent()
 
     data class CreateObject(val clickedObject: Asset): CardEditorIntent()
@@ -32,7 +33,7 @@ sealed class CardEditorIntent {
 
     data object ResetCamera: CardEditorIntent()
 
-    /* 오브젝트 조정 */
+    /* 오브젝트 조정 패널 */
     data class MoveObject(val direction: Direction): CardEditorIntent()
     data class ChangeScale(val newScale: Int): CardEditorIntent()
     data object CancelTransform: CardEditorIntent()
@@ -42,7 +43,7 @@ sealed class CardEditorIntent {
     data object ResetTransform: CardEditorIntent()
     data object CameraFocus: CardEditorIntent()
 
-    /* 텍스트 편집 */
+    /* 텍스트 편집 패널 */
     data object MissingTextSelection: CardEditorIntent()
     data object AddText: CardEditorIntent()
     data class DeleteText(val textId: Long): CardEditorIntent()

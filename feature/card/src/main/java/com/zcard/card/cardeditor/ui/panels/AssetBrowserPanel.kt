@@ -56,6 +56,7 @@ fun AssetBrowserPanel(
     spawnedObjects: List<CardElementWithAssetKeys> = emptyList(),
     selectedSpawnedObject: Long? = null,
     selectedBackground: Long = 1,
+    loadingObjectIds: Set<Long> = emptySet(),
     onAddTextClicked: () -> Unit = {},
     onObjectClicked: (Asset) -> Unit = {},
     onSpawnedObjectClicked: (CardElementWithAssetKeys) -> Unit = {},
@@ -71,6 +72,7 @@ fun AssetBrowserPanel(
         spawnedObjects = spawnedObjects,
         selectedSpawnedObject = selectedSpawnedObject,
         selectedBackground = selectedBackground,
+        loadingObjectIds = loadingObjectIds,
         onTabSelected = { selectedTab = it },
         onAddTextClicked = onAddTextClicked,
         onObjectClicked = onObjectClicked,
@@ -88,6 +90,7 @@ fun AssetBrowserPanelContent(
     spawnedObjects: List<CardElementWithAssetKeys>,
     selectedSpawnedObject: Long?,
     selectedBackground: Long,
+    loadingObjectIds: Set<Long>,
     onTabSelected: (AssetBrowserTab) -> Unit,
     onObjectClicked: (Asset) -> Unit,
     onSpawnedObjectClicked: (CardElementWithAssetKeys) -> Unit,
@@ -109,7 +112,8 @@ fun AssetBrowserPanelContent(
                 SpawnedObjectRow(
                     elements = spawnedObjects,
                     selectedItemIndex = selectedSpawnedObject,
-                    onItemClicked = { onSpawnedObjectClicked(it) }
+                    onItemClicked = { onSpawnedObjectClicked(it) },
+                    isLoading = { id -> loadingObjectIds.contains(id) }
                 )
             }
             ObjectClickableGrid(
@@ -169,7 +173,8 @@ fun ControlHeader(
 fun SpawnedObjectRow(
     elements: List<CardElementWithAssetKeys>,
     selectedItemIndex: Long?,
-    onItemClicked: (CardElementWithAssetKeys) -> Unit
+    onItemClicked: (CardElementWithAssetKeys) -> Unit,
+    isLoading: (Long) -> Boolean
 ) {
     val context = LocalContext.current
 
@@ -186,6 +191,7 @@ fun SpawnedObjectRow(
         ) {
             item { Box(Modifier.size(8.dp)) }
             items(items = elements, key = { it.cardElement.elementId }) { element ->
+                val isLoading = isLoading(element.cardElement.elementId)
                 Box(
                     modifier = Modifier
                         .size(72.dp)
@@ -195,14 +201,13 @@ fun SpawnedObjectRow(
                             RoundedCornerShape(10.dp)
                         )
                         .clip(RoundedCornerShape(10.dp))
+                        .clickable(!isLoading) { onItemClicked(element) }
                 ) {
                     Image(
                         painter = painterResource(id = getObjectThumbByKey(context, element.thumbnailKey)),
                         contentScale = ContentScale.Crop,
                         contentDescription = stringResource(R.string.editor_cd_asset),
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .clickable { onItemClicked(element) }
+                        modifier = Modifier.fillMaxSize()
                     )
                     Box(
                         modifier = Modifier
@@ -216,6 +221,20 @@ fun SpawnedObjectRow(
                             text = toBase62(element.cardElement.elementId),
                             style = MaterialTheme.typography.labelSmall,
                         )
+                    }
+                    if (isLoading) {
+                        Box(
+                            modifier = Modifier
+                                .matchParentSize()
+                                .background(Color.White.copy(alpha = 0.6f)),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(24.dp),
+                                color = SoftBlack,
+                                strokeWidth = 2.dp,
+                            )
+                        }
                     }
                 }
             }

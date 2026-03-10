@@ -12,6 +12,7 @@ data class LoadCardEditorResult(
     val objects: List<Asset>,
     val backgrounds: List<Asset>,
     val texts: List<TextElement>,
+    val spawnedObjects: List<CardElementWithAssetKeys>,
     val spawnedObjectsFlow: Flow<Result<List<CardElementWithAssetKeys>>>
 )
 

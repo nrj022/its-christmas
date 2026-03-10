@@ -3,21 +3,28 @@ package com.zcard.domain.model
 
 import kotlinx.serialization.Serializable
 
-enum class UnityMessageType {
+enum class UnityEventType {
     LIFECYCLE,
+    CREATE_OBJECT,
     UPLOAD_GLB
 }
 
-enum class UnityStatusType {
+enum class UnityEventStatus  {
+    // Result
     SUCCESS,
     FAILURE,
+
+    // Lifecycle
+    AWAKE,
     START,
-    STOP,
+    DISABLE,
+    DESTROY,
+    QUIT
 }
 
 @Serializable
 data class UnityMessage(
-    val type: UnityMessageType,
-    val status: UnityStatusType,
+    val type: UnityEventType,
+    val status: UnityEventStatus,
     val data: String
 )

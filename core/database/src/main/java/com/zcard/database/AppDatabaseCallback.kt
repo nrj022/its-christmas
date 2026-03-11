@@ -2,6 +2,7 @@ package com.zcard.database
 
 import android.content.SharedPreferences
 import android.util.Log
+import androidx.core.content.edit
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.zcard.database.dao.AssetDao
@@ -10,7 +11,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Provider
-import androidx.core.content.edit
+import java.util.concurrent.atomic.AtomicBoolean
 
 class AppDatabaseCallback(
     private val assetDaoProvider: Provider<AssetDao>,
@@ -23,8 +24,7 @@ class AppDatabaseCallback(
         private const val TARGET_DATA_VERSION = 1
     }
 
-    @Volatile   // onCreate, onOpen이 같은 스레드에서 동작한다는 보장이 없으므로 변수의 값을 메인 메모리(RAM)에 직접 읽고 씀
-    private var isInserting = false
+    private val isInserting = AtomicBoolean(false)
 
     // 데이터베이스가 처음 생성될 때 호출 (앱 설치 후 첫 실행 시)
     override fun onCreate(db: SupportSQLiteDatabase) {
@@ -36,7 +36,7 @@ class AppDatabaseCallback(
     override fun onOpen(db: SupportSQLiteDatabase) {
         super.onOpen(db)
         // onCreate 직후 onOpen 호출 시 중복 방지
-        if (!isInserting) {
+        if (!isInserting.get()) {
             checkAndInsertNewInitialData()
         }
     }
@@ -44,8 +44,8 @@ class AppDatabaseCallback(
     private fun checkAndInsertNewInitialData() {
         val currentVersion = prefs.getInt(PREF_KEY_INITIAL_DATA_VERSION, 0)
 
-        if (currentVersion < TARGET_DATA_VERSION && !isInserting) {
-            isInserting = true
+        // AtomicBoolean으로 값 비교와 세팅을 거의 동시에 수행해 다른 스레드의 동시 수행을 완전히 방지
+        if (currentVersion < TARGET_DATA_VERSION && isInserting.compareAndSet(false, true)) {
             CoroutineScope(Dispatchers.IO).launch {
                 try {
                     // Room은 기본적으로 한 번에 하나의 쓰기 작업만 수행
@@ -58,7 +58,7 @@ class AppDatabaseCallback(
                 } catch (e: Exception) {
                     Log.e(TAG, "Failed to sync initial data", e)
                 } finally {
-                    isInserting = false
+                    isInserting.set(false)
                 }
             }
         }

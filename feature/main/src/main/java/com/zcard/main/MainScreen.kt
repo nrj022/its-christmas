@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -40,6 +41,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -49,6 +51,7 @@ import coil.ImageLoader
 import coil.compose.AsyncImage
 import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
+import com.zcard.designsystem.theme.DimGray
 import com.zcard.designsystem.theme.Gray
 import com.zcard.designsystem.theme.ZCardTheme
 import com.zcard.designsystem.theme.SoftBlack
@@ -81,13 +84,9 @@ fun MainContent(modifier: Modifier = Modifier, cardItems: List<CardItem>, onCard
         Column(modifier = Modifier.padding(horizontal = 16.dp)) {
             CreateCardButton(onClick = { onCardClick(-1) })
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(26.dp))
 
-            if(cardItems.isEmpty()) {
-                EmptyCardSection()
-            } else {
-                CardGrid(cardItems = cardItems, onCardClick = onCardClick)
-            }
+            CardDashboard(cardItems = cardItems, onCardClick = onCardClick)
         }
     }
 }
@@ -106,7 +105,7 @@ fun PreviewGifImage() {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .fillMaxHeight(0.40f)
+            .fillMaxHeight(0.35f)
             .clip(
                 RoundedCornerShape(
                     bottomStart = 50.dp,
@@ -128,14 +127,29 @@ fun PreviewGifImage() {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(SoftBlack.copy(alpha = 0.3f))
-        )
-        Text(
-            modifier = Modifier.padding(top = 20.dp),
-            color = White,
-            fontWeight = FontWeight.Light,
-            text = stringResource(R.string.main_title_design_card_prompt)
-        )
+                .background(SoftBlack.copy(alpha = 0.4f))
+                .padding(start = 42.dp, bottom = 38.dp),
+            contentAlignment = Alignment.BottomStart,
+        ) {
+            Column {
+                Text(
+                    color = White,
+                    textAlign = TextAlign.Start,
+                    fontWeight = FontWeight.ExtraLight,
+                    letterSpacing = 0.4.sp,
+                    fontSize = 12.sp,
+                    text = stringResource(R.string.main_title_design_card_sub_prompt)
+                )
+                Text(
+                    color = White,
+                    textAlign = TextAlign.Start,
+                    fontWeight = FontWeight.ExtraBold,
+                    letterSpacing = 0.4.sp,
+                    fontSize = 20.sp,
+                    text = stringResource(R.string.main_title_design_card_prompt)
+                )
+            }
+        }
     }
 }
 
@@ -172,6 +186,23 @@ fun CreateCardButton(onClick: () -> Unit) {
 }
 
 @Composable
+fun CardDashboard(cardItems: List<CardItem> = emptyList(), onCardClick: (Long) -> Unit = {}) {
+    Text(
+        modifier = Modifier.padding(horizontal = 14.dp),
+        text = "Recent Cards",
+        style = MaterialTheme.typography.bodyMedium
+    )
+
+    Spacer(modifier = Modifier.height(10.dp))
+
+    if(cardItems.isEmpty()) {
+        EmptyCardSection()
+    } else {
+        CardGrid(cardItems = cardItems, onCardClick = onCardClick)
+    }
+}
+
+@Composable
 fun CardGrid(cardItems: List<CardItem>, onCardClick: (Long) -> Unit) {
     LazyVerticalStaggeredGrid(
         columns = StaggeredGridCells.Fixed(2),
@@ -180,7 +211,7 @@ fun CardGrid(cardItems: List<CardItem>, onCardClick: (Long) -> Unit) {
             .navigationBarsPadding(),
         contentPadding = PaddingValues(8.dp),
         horizontalArrangement = Arrangement.spacedBy(18.dp),
-        verticalItemSpacing = 20.dp
+        verticalItemSpacing = 18.dp
     ) {
         items(cardItems) { item ->
             CardItem(
@@ -195,38 +226,40 @@ fun CardGrid(cardItems: List<CardItem>, onCardClick: (Long) -> Unit) {
 
 @Composable
 fun CardItem(cardTitle: String, updatedAt: String, thumbnailKey: String?, onClick: () -> Unit) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(120.dp)
-            .clickable { onClick() },
-        shape = CardDefaults.shape,
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-    ) {
-        Box(contentAlignment = Alignment.Center) {
-            Image(
-                modifier = Modifier.fillMaxSize(),
-                painter = painterResource(getBgThumbByKey(thumbnailKey)),
-                contentDescription = stringResource(R.string.main_cd_card),
-                contentScale = ContentScale.Crop
-            )
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(White.copy(alpha = 0.6f)),
-            )
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(
-                    text = cardTitle,
-                    style = MaterialTheme.typography.labelSmall
-                )
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    text = updatedAt,
-                    style = MaterialTheme.typography.labelSmall,
-                    fontSize = 8.sp
+    Column {
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .aspectRatio(1.4f)
+                .clickable { onClick() },
+            shape = CardDefaults.shape,
+            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        ) {
+            Box(contentAlignment = Alignment.Center) {
+                Image(
+                    modifier = Modifier.fillMaxSize(),
+                    painter = painterResource(getBgThumbByKey(thumbnailKey)),
+                    contentDescription = stringResource(R.string.main_cd_card),
+                    contentScale = ContentScale.Crop
                 )
             }
+        }
+        Spacer(modifier = Modifier.height(10.dp))
+        Column(
+            modifier = Modifier.padding(horizontal = 6.dp),
+            horizontalAlignment = Alignment.Start
+        ) {
+            Text(
+                text = cardTitle,
+                style = MaterialTheme.typography.labelSmall
+            )
+            Spacer(modifier = Modifier.height(3.dp))
+            Text(
+                text = updatedAt,
+                color = DimGray,
+                style = MaterialTheme.typography.labelSmall,
+                fontSize = 8.sp
+            )
         }
     }
 }

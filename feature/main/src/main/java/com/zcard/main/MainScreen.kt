@@ -189,7 +189,7 @@ fun CreateCardButton(onClick: () -> Unit) {
 fun CardDashboard(cardItems: List<CardItem> = emptyList(), onCardClick: (Long) -> Unit = {}) {
     Text(
         modifier = Modifier.padding(horizontal = 14.dp),
-        text = "Recent Cards",
+        text = stringResource(R.string.main_title_card_dashboard),
         style = MaterialTheme.typography.bodyMedium
     )
 

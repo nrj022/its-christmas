@@ -1,6 +1,7 @@
 package com.zcard.database
 
 import android.content.Context
+import android.content.SharedPreferences
 import androidx.room.Room
 import com.zcard.database.dao.AssetDao
 import com.zcard.database.dao.CardDao
@@ -17,20 +18,32 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object DatabaseModule {
 
+    private const val ZCARD_PREFS = "zcard_prefs"
+    private const val DB_NAME = "app_database.db"
+
+    @Singleton
+    @Provides
+    fun provideSharedPreferences(
+        @ApplicationContext context: Context
+    ): SharedPreferences {
+        return context.getSharedPreferences(ZCARD_PREFS, Context.MODE_PRIVATE)
+    }
+
     @Singleton
     @Provides
     fun provideAppDatabase(
         @ApplicationContext context: Context,
         assetDaoProvider: Provider<AssetDao>,
+        prefs: SharedPreferences
     ): AppDatabase {
         return Room.databaseBuilder(
             context,
             AppDatabase::class.java,
-            "app_database.db"
+            DB_NAME
         )
-        .fallbackToDestructiveMigration()   // DB 스키마 변경 시 기존 데이터 삭제 후 다시 생성 - TODO 마이그레이션 추가
+        // TODO 마이그레이션 추가
         .enableMultiInstanceInvalidation()
-        .addCallback(AppDatabaseCallback(assetDaoProvider))
+        .addCallback(AppDatabaseCallback(assetDaoProvider, prefs))
         .build()
     }
 

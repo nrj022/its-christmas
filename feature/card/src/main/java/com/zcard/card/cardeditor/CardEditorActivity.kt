@@ -14,6 +14,9 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.res.stringResource
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.ViewCompat
@@ -47,6 +50,7 @@ class CardEditorActivity : AppCompatActivity() {
     private lateinit var unityPlayer: UnityPlayerForActivityOrService
     private lateinit var layoutParams: ConstraintLayout.LayoutParams
     private val viewModel: CardEditorViewModel by viewModels()
+    private val loadingOverlayVisible = mutableStateOf(true)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -103,7 +107,13 @@ class CardEditorActivity : AppCompatActivity() {
         }
 
         binding.composeLoading.setContent {
-            ZCardTheme { BouncingLogoLoadingOverlay(text = stringResource(R.string.common_title_loading)) }
+            ZCardTheme {
+                if (loadingOverlayVisible.value) {
+                    BouncingLogoLoadingOverlay(
+                        text = stringResource(R.string.common_title_loading)
+                    )
+                }
+            }
         }
 
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
@@ -194,6 +204,7 @@ class CardEditorActivity : AppCompatActivity() {
         binding.imgBtnLink.isVisible = state.showLinkDetailButton
         binding.containerObjectOption.isVisible = state.showObjectOptionContainer
         binding.containerTextOption.isVisible = state.showTextOptionContainer
+        loadingOverlayVisible.value = state.isLoading
         binding.frameLoading.isVisible = state.isLoading
 
         updateTransformPanel(state)

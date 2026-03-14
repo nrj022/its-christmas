@@ -14,6 +14,7 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.ui.res.stringResource
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -24,6 +25,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.zcard.card.cardeditor.model.DialogState
 import com.zcard.card.cardeditor.ui.CardEditorBottomScreen
 import com.zcard.card.cardeditor.ui.CardEditorTextScreen
+import com.zcard.card.cardeditor.ui.common.BouncingLogoLoadingOverlay
 import com.zcard.card.cardeditor.util.getObjectThumbByKey
 import com.zcard.card.cardeditor.util.toBase62
 import com.zcard.card.R
@@ -93,15 +95,15 @@ class CardEditorActivity : AppCompatActivity() {
         }
 
         binding.composeContainerText.setContent {
-            ZCardTheme {
-                CardEditorTextScreen()
-            }
+            ZCardTheme { CardEditorTextScreen() }
         }
 
         binding.composeContainer.setContent {
-            ZCardTheme {
-                CardEditorBottomScreen()
-            }
+            ZCardTheme { CardEditorBottomScreen() }
+        }
+
+        binding.composeLoading.setContent {
+            ZCardTheme { BouncingLogoLoadingOverlay(text = stringResource(R.string.common_title_loading)) }
         }
 
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {

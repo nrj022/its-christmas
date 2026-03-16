@@ -14,6 +14,8 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.res.stringResource
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -24,6 +26,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.zcard.card.cardeditor.model.DialogState
 import com.zcard.card.cardeditor.ui.CardEditorBottomScreen
 import com.zcard.card.cardeditor.ui.CardEditorTextScreen
+import com.zcard.card.cardeditor.ui.common.BouncingLogoLoadingOverlay
 import com.zcard.card.cardeditor.util.getObjectThumbByKey
 import com.zcard.card.cardeditor.util.toBase62
 import com.zcard.card.R
@@ -45,6 +48,7 @@ class CardEditorActivity : AppCompatActivity() {
     private lateinit var unityPlayer: UnityPlayerForActivityOrService
     private lateinit var layoutParams: ConstraintLayout.LayoutParams
     private val viewModel: CardEditorViewModel by viewModels()
+    private val loadingOverlayVisible = mutableStateOf(true)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -93,14 +97,20 @@ class CardEditorActivity : AppCompatActivity() {
         }
 
         binding.composeContainerText.setContent {
-            ZCardTheme {
-                CardEditorTextScreen()
-            }
+            ZCardTheme { CardEditorTextScreen() }
         }
 
         binding.composeContainer.setContent {
+            ZCardTheme { CardEditorBottomScreen() }
+        }
+
+        binding.composeLoading.setContent {
             ZCardTheme {
-                CardEditorBottomScreen()
+                if (loadingOverlayVisible.value) {
+                    BouncingLogoLoadingOverlay(
+                        text = stringResource(R.string.common_title_loading)
+                    )
+                }
             }
         }
 
@@ -192,6 +202,7 @@ class CardEditorActivity : AppCompatActivity() {
         binding.imgBtnLink.isVisible = state.showLinkDetailButton
         binding.containerObjectOption.isVisible = state.showObjectOptionContainer
         binding.containerTextOption.isVisible = state.showTextOptionContainer
+        loadingOverlayVisible.value = state.isLoading
         binding.frameLoading.isVisible = state.isLoading
 
         updateTransformPanel(state)

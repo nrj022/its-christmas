@@ -63,11 +63,11 @@
                // 1. URL 파라미터 처리
                const urlParams = new URLSearchParams(window.location.search);
                
-               const decodedTitle = urlParams.get("title") ? decodeURIComponent(urlParams.get("title")) : null;
+               const decodedTitle = urlParams.get("title")
                if(decodedTitle) document.title = decodedTitle;
 
-               const decodedGlbFileName = urlParams.get("glb") ? decodeURIComponent(urlParams.get("glb")) : null;
-               const bgFileName = urlParams.get("bg") ? decodeURIComponent(urlParams.get("bg")) : "bg_001";
+               const decodedGlbFileName = urlParams.get("glb")
+               const bgFileName = urlParams.get("bg") ?? "bg_001";
                const bgUrl = `./${bgFileName}.env`;
 
                if(!decodedGlbFileName) {
@@ -80,7 +80,6 @@
                
                const modelRef = ref(storage, `models/${decodedGlbFileName}`);
                const modelUrl = await getDownloadURL(modelRef); 
-               console.log("Model URL:", modelUrl);
 
                // 3. Babylon.js 렌더링 설정
                const canvas = document.getElementById("cardRenderCanvas");

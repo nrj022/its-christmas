@@ -1,0 +1,127 @@
+<!doctype html>
+<html>
+   <head>
+      <meta charset = "utf-8">
+      <title>A new card has arrived!</title>
+      <script src="https://cdn.babylonjs.com/babylon.max.js"></script>
+      <script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>    
+      <style>
+        body { margin: 0; }
+        canvas { width: 100%; height: 100vh; }
+      </style>
+   </head>
+
+   <body style="background-color: #DEDEDE">
+      <canvas id = "cardRenderCanvas"></canvas>
+      <div id="cardError" style="
+         position: absolute;
+         top: 0; left: 0;
+         width: 100%; height: 100%;
+         color: black;
+         flex-direction: column;
+         align-items: center;
+         justify-content: center;
+         text-align: center;
+         font-size: 2rem;
+         font-weight: bold;
+         z-index: 1000;
+         display: none;
+      ">
+         Failed to load the card 😔
+         <span style="font-size: 1.2rem; margin-top: 12px;">Please try again in a moment.</span>
+         <span style="font-size: 0.8rem; font-weight: normal; margin-top: 30px;">Create your own 3D card in the it's Z-Card app!</span>
+      </div>
+      <script type = "module">   
+         // Import the functions you need from the SDKs you need
+         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
+         import { getStorage, ref, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-storage.js";
+         import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-auth.js";
+
+         // Your web app's Firebase configuration
+         // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+         const firebaseConfig = {
+            apiKey: "AIzaSyCG6WHVhlPTXKI_rmsvzsFNDTrjmQrHliY",
+            authDomain: "z-card-app.firebaseapp.com",
+            projectId: "z-card-app",
+            storageBucket: "z-card-app.firebasestorage.app",
+            messagingSenderId: "836140562813",
+            appId: "1:836140562813:web:8c16e0bca8fbdbd190b414",
+            measurementId: "G-5L7TTQ9HPQ"
+         };
+
+         const defaultProject = initializeApp(firebaseConfig);
+         const storage = getStorage(defaultProject);
+         const auth = getAuth(defaultProject);
+         
+         function showCardError() {
+            document.getElementById("cardRenderCanvas").style.display = "none"
+            document.getElementById("cardError").style.display = "flex"
+         }
+
+         async function initViewer() {
+            try {
+               // 1. URL 파라미터 처리
+               const urlParams = new URLSearchParams(window.location.search);
+               
+               const decodedTitle = urlParams.get("title") ? decodeURIComponent(urlParams.get("title")) : null;
+               if(decodedTitle) document.title = decodedTitle;
+
+               const decodedGlbFileName = urlParams.get("glb") ? decodeURIComponent(urlParams.get("glb")) : null;
+               const bgFileName = urlParams.get("bg") ? decodeURIComponent(urlParams.get("bg")) : "bg_001";
+               const bgUrl = `./${bgFileName}.env`;
+
+               if(!decodedGlbFileName) {
+                  throw new Error("Missing glb parameter in URL");
+               }
+
+               // 2. 익명 로그인 및 URL 가져오기
+               const userCredential = await signInAnonymously(auth);
+               console.log("Anonymous sign-in successful. UID:", userCredential.user.uid);
+               
+               const modelRef = ref(storage, `models/${decodedGlbFileName}`);
+               const modelUrl = await getDownloadURL(modelRef); 
+               console.log("Model URL:", modelUrl);
+
+               // 3. Babylon.js 렌더링 설정
+               const canvas = document.getElementById("cardRenderCanvas");
+               const engine = new BABYLON.Engine(canvas, true);
+               const scene = new BABYLON.Scene(engine);
+               scene.clearColor = new BABYLON.Color3(.5, .5, .5);
+
+               const camera = new BABYLON.ArcRotateCamera("mainCamera", 0, 0, 0, new BABYLON.Vector3(0, 0, 0), scene);
+               camera.setPosition(new BABYLON.Vector3(0, 0, -40));
+               camera.attachControl(canvas, true);
+               camera.wheelPrecision = 10; 
+               camera.pinchPrecision = 100;
+               camera.upperRadiusLimit = 100; 
+
+               const light = new BABYLON.HemisphericLight("mainLight", new BABYLON.Vector3(1, 0.5, 0), scene);
+               light.intensity = 0.8;
+
+               const hdrTexture = BABYLON.CubeTexture.CreateFromPrefilteredData(bgUrl, scene);
+               scene.createDefaultSkybox(hdrTexture, true);
+
+               // 4. 모델 로드 (에러 시 직접 showCardError 호출)
+               BABYLON.SceneLoader.Append("", modelUrl, scene, 
+                  () => { console.log("Model loaded successfully"); }, 
+                  null, 
+                  (scene, message, exception) => { 
+                     console.error("Model Load error:", message, exception);
+                     showCardError(); 
+                  }
+               );
+
+               // 5. 렌더 루프 및 리사이즈 이벤트
+               engine.runRenderLoop(() => { scene.render(); });  
+               window.addEventListener("resize", () => engine.resize());
+
+            } catch (error) {
+               console.error("Failed to load card:", error);
+               showCardError();
+            }
+         }
+
+         initViewer();
+      </script>
+   </body>
+</html>

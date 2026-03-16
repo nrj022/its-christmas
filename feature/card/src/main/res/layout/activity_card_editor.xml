@@ -221,11 +221,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/unity_container"/>
 
+    <!-- elevation으로 Z 우선순위를 높임 -->
     <FrameLayout
         android:id="@+id/frame_loading"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone"
+        android:elevation="10dp"
         android:clickable="true"
         android:focusable="true">
 

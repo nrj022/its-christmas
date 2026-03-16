@@ -20,7 +20,7 @@ navigationUiKtx = "2.6.0"
 
 # Firebase
 googleServices = "4.4.4"
-firebaseBom = "34.5.0"
+firebaseBom = "34.10.0"
 
 ksp = "2.0.21-1.0.27"
 room = "2.8.3"
@@ -60,6 +60,8 @@ androidx-navigation-ui-ktx = { group = "androidx.navigation", name = "navigation
 # Firebase
 google-firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
 google-firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics" }
+google-firebase-storage = { group = "com.google.firebase", name = "firebase-storage" }
+google-firebase-auth = { group = "com.google.firebase", name = "firebase-auth" }
 
 # Room
 androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }

@@ -225,7 +225,12 @@ class CardEditorViewModel @Inject constructor(
         if(_exportId == -1L) return
         unityBridge.exportAndUpload(_exportId)
 
-        _cardEditorState.update { it.copy(isLoading = true) }
+        _cardEditorState.update {
+            it.copy(
+                isLoading = true,
+                loadingText = "Exporting"
+            )
+        }
     }
 
     private fun handleExportGlbResult(unityStatusType: UnityEventStatus, result: String) {
@@ -239,6 +244,7 @@ class CardEditorViewModel @Inject constructor(
                 uploadGlbUseCase(_cardId, file).collect { state ->
                     when(state) {
                         is UploadState.Progress -> _cardEditorState.update {
+                            it.copy(loadingText = "Uploading ${state.percent}%")
                         }
                         is UploadState.Success -> {
                             val cardUrl = generateCardUrlUseCase(_cardId)

@@ -16,8 +16,11 @@ class AssetRepositoryImpl @Inject constructor(
     override fun getInitialBackgrounds(): List<Asset> =
         InitialData.getInitialBackgrounds().map { it.toDomain() }
 
-    override suspend fun getAssetsByType(assetType: AssetType): Result<List<Asset>> =
-        ioCatching { assetDao.getByType(assetType.name).map { it.toDomain() } }
+    override suspend fun getObjects(): Result<List<Asset>> =
+        ioCatching { assetDao.getObjects().map { it.toDomain() } }
+
+    override suspend fun getBackgrounds(): Result<List<Asset>> =
+        ioCatching { assetDao.getBackgrounds().map { it.toDomain() } }
 
     override suspend fun getAssetById(assetId: Long): Result<Asset> =
         ioCatching { assetDao.getById(assetId).toDomain() }

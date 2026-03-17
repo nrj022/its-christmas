@@ -17,7 +17,7 @@ interface CardRepository {
 
     suspend fun updateBackgroundAssetId(cardId: Long, backgroundAssetId: Long): Result<Int>
 
-    suspend fun updateGlb(cardId: Long, glbFileName: String, glbToken: String): Result<Int>
+    suspend fun updateGlb(cardId: Long, glbFileName: String): Result<Int>
 
     suspend fun uploadGlbToFirebase(file: File): Flow<UploadState>
 }

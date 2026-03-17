@@ -45,9 +45,9 @@ class CardRepositoryImpl @Inject constructor(
             cardDao.updateBackgroundAssetId(cardId, backgroundAssetId)
         }
 
-    override suspend fun updateGlb(cardId: Long, glbFileName: String, glbToken: String): Result<Int> =
+    override suspend fun updateGlb(cardId: Long, glbFileName: String): Result<Int> =
         ioCatching {
-            cardDao.updateGlb(cardId, glbFileName, glbToken)
+            cardDao.updateGlb(cardId, glbFileName)
         }
 
     override suspend fun uploadGlbToFirebase(file: File): Flow<UploadState> = callbackFlow {

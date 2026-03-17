@@ -4,7 +4,6 @@ import com.zcard.data.mapper.toDomain
 import com.zcard.data.repositoryImpl.common.ioCatching
 import com.zcard.database.dao.AssetDao
 import com.zcard.database.data.InitialData
-import com.zcard.domain.enum.AssetType
 import com.zcard.domain.model.Asset
 import com.zcard.domain.repository.AssetRepository
 import javax.inject.Inject
@@ -16,8 +15,11 @@ class AssetRepositoryImpl @Inject constructor(
     override fun getInitialBackgrounds(): List<Asset> =
         InitialData.getInitialBackgrounds().map { it.toDomain() }
 
-    override suspend fun getAssetsByType(assetType: AssetType): Result<List<Asset>> =
-        ioCatching { assetDao.getByType(assetType.name).map { it.toDomain() } }
+    override suspend fun getObjects(): Result<List<Asset>> =
+        ioCatching { assetDao.getObjects().map { it.toDomain() } }
+
+    override suspend fun getBackgrounds(): Result<List<Asset>> =
+        ioCatching { assetDao.getBackgrounds().map { it.toDomain() } }
 
     override suspend fun getAssetById(assetId: Long): Result<Asset> =
         ioCatching { assetDao.getById(assetId).toDomain() }

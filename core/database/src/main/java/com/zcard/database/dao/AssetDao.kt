@@ -14,8 +14,11 @@ interface AssetDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAsset(asset: AssetEntity): Long
 
-    @Query("SELECT * FROM assets WHERE assetType = :assetType ORDER BY assetId DESC")
-    suspend fun getByType(assetType: String): List<AssetEntity>
+    @Query("SELECT * FROM assets WHERE assetType = 'OBJECT' ORDER BY assetId DESC")
+    suspend fun getObjects(): List<AssetEntity>
+
+    @Query("SELECT * FROM assets WHERE assetType = 'BACKGROUND' ORDER BY assetId")
+    suspend fun getBackgrounds(): List<AssetEntity>
 
     @Query("SELECT * FROM assets WHERE assetId = :assetId")
     suspend fun getById(assetId: Long): AssetEntity

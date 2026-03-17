@@ -32,10 +32,16 @@ interface CardElementDao {
         JOIN assets AS a ON ce.assetId = a.assetId
         WHERE ce.cardId = :cardId 
         and elementType = 'OBJECT'
+        ORDER BY ce.elementId DESC
         """)
     fun getObjectElementsWithAssetKeysByCardId(cardId: Long): Flow<List<CardElementWithAssetKeysDto>>
 
-    @Query("SELECT * FROM card_elements WHERE cardId = :cardId and elementType = 'TEXT'")
+    @Query("""
+        SELECT * FROM card_elements 
+        WHERE cardId = :cardId 
+        and elementType = 'TEXT' 
+        ORDER BY elementId DESC
+        """)
     suspend fun getTextElementsByCardId(cardId: Long): List<CardElementEntity>
 
     @Query("UPDATE card_elements SET posX = :posX, posY = :posY, posZ = :posZ, scale = :scale WHERE elementId = :elementId")

@@ -41,7 +41,6 @@ object DatabaseModule {
             AppDatabase::class.java,
             DB_NAME
         )
-        // TODO 마이그레이션 추가
         .enableMultiInstanceInvalidation()
         .addCallback(AppDatabaseCallback(assetDaoProvider, prefs))
         .build()

@@ -6,7 +6,7 @@ import com.zcard.domain.model.CardElementWithAssetKeys
 import com.zcard.domain.model.TextElement
 import kotlinx.coroutines.flow.Flow
 
-data class LoadCardEditorResult(
+data class OpenCardEditorUseCaseResult(
     val cardData: Card,
     val cardUrl: String,
     val objects: List<Asset>,
@@ -16,6 +16,6 @@ data class LoadCardEditorResult(
     val spawnedObjectsFlow: Flow<Result<List<CardElementWithAssetKeys>>>
 )
 
-interface LoadCardEditorUseCase {
-    suspend operator fun invoke(cardId: Long): Result<LoadCardEditorResult>
+interface OpenCardEditorUseCase {
+    suspend operator fun invoke(cardId: Long): Result<OpenCardEditorUseCaseResult>
 }

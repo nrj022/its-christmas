@@ -2,14 +2,12 @@ package com.zcard.data.di
 
 import com.zcard.data.usecaseImpl.GenerateCardUrlUseCaseImpl
 import com.zcard.data.usecaseImpl.GetTextElementsUseCaseImpl
-import com.zcard.data.usecaseImpl.InitCardEditorUseCaseImpl
-import com.zcard.data.usecaseImpl.LoadCardEditorUseCaseImpl
+import com.zcard.data.usecaseImpl.OpenCardEditorUseCaseImpl
 import com.zcard.data.usecaseImpl.SaveTextElementsUseCaseImpl
 import com.zcard.data.usecaseImpl.UploadCardModelUseCaseImpl
 import com.zcard.domain.usecase.GenerateCardUrlUseCase
 import com.zcard.domain.usecase.GetTextElementsUseCase
-import com.zcard.domain.usecase.InitCardEditorUseCase
-import com.zcard.domain.usecase.LoadCardEditorUseCase
+import com.zcard.domain.usecase.OpenCardEditorUseCase
 import com.zcard.domain.usecase.SaveTextElementsUseCase
 import com.zcard.domain.usecase.UploadCardModelUseCase
 import dagger.Binds
@@ -27,14 +25,9 @@ abstract class UseCaseModule {
     ): GenerateCardUrlUseCase
 
     @Binds
-    abstract fun bindLoadCardEditorUseCase(
-        loadCardEditorUseCaseImpl: LoadCardEditorUseCaseImpl
-    ): LoadCardEditorUseCase
-
-    @Binds
-    abstract fun bindInitCardEditorUseCase(
-        initCardEditorUseCaseImpl: InitCardEditorUseCaseImpl
-    ): InitCardEditorUseCase
+    abstract fun bindOpenCardEditorUseCase(
+        openCardEditorUserCaseImpl: OpenCardEditorUseCaseImpl
+    ): OpenCardEditorUseCase
 
     @Binds
     abstract fun bindGetTextElementsUseCase(

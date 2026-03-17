@@ -26,7 +26,7 @@ import com.zcard.domain.repository.CardElementRepository
 import com.zcard.domain.repository.CardRepository
 import com.zcard.domain.usecase.GenerateCardUrlUseCase
 import com.zcard.domain.usecase.GetTextElementsUseCase
-import com.zcard.domain.usecase.InitCardEditorUseCase
+import com.zcard.domain.usecase.OpenCardEditorUseCase
 import com.zcard.domain.usecase.SaveTextElementsParams
 import com.zcard.domain.usecase.SaveTextElementsUseCase
 import com.zcard.domain.usecase.UploadCardModelUseCase
@@ -59,7 +59,7 @@ class CardEditorViewModel @Inject constructor(
     private val cardRepository: CardRepository,
     private val assetRepository: AssetRepository,
     private val cardElementRepository: CardElementRepository,
-    private val initCardEditorUseCase: InitCardEditorUseCase,
+    private val openCardEditorUseCase: OpenCardEditorUseCase,
     private val getTextsUseCase: GetTextElementsUseCase,
     private val saveTextElementsUseCase: SaveTextElementsUseCase,
     private val generateCardUrlUseCase: GenerateCardUrlUseCase,
@@ -144,7 +144,7 @@ class CardEditorViewModel @Inject constructor(
 
     private fun handleInit(cardId: Long) {
         viewModelScope.launch {
-            initCardEditorUseCase(cardId)
+            openCardEditorUseCase(cardId)
                 .onSuccess { result ->
                     _cardId = result.cardData.cardId
                     _exportId = result.cardData.exportId

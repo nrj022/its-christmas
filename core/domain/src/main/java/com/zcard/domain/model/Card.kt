@@ -5,7 +5,6 @@ data class Card(
     val exportId: Long = System.currentTimeMillis(),
     val title: String = "New Card",
     val glbFileName: String? = null,
-    val glbToken: String? = null,
     val backgroundAssetId: Long = 1,
     val isDraft: Boolean = true,
     val createdAt: Long = System.currentTimeMillis(),

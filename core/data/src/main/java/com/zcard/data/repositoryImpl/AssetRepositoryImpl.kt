@@ -4,7 +4,6 @@ import com.zcard.data.mapper.toDomain
 import com.zcard.data.repositoryImpl.common.ioCatching
 import com.zcard.database.dao.AssetDao
 import com.zcard.database.data.InitialData
-import com.zcard.domain.enum.AssetType
 import com.zcard.domain.model.Asset
 import com.zcard.domain.repository.AssetRepository
 import javax.inject.Inject

@@ -241,6 +241,10 @@ class CardEditorViewModel @Inject constructor(
                 val externalDir = context.getExternalFilesDir(null)
                 val file = File(externalDir, "glb_exports/$result")
 
+                if (!file.exists()) {
+                    error("Export file not found: ${file.absolutePath}")
+                }
+
                 uploadGlbUseCase(_cardId, file).collect { state ->
                     when(state) {
                         is UploadState.Progress -> _cardEditorState.update {

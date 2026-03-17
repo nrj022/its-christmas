@@ -68,7 +68,7 @@ class CardRepositoryImpl @Inject constructor(
 
         uploadTask.addOnFailureListener { e ->
             trySend(UploadState.Failure)
-            close(e)
+            close()
         }
 
         awaitClose {

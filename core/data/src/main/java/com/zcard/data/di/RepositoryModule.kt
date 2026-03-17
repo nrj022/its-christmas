@@ -1,9 +1,11 @@
 package com.zcard.data.di
 
 import com.zcard.data.repositoryImpl.AssetRepositoryImpl
+import com.zcard.data.repositoryImpl.AuthRepositoryImpl
 import com.zcard.data.repositoryImpl.CardElementRepositoryImpl
 import com.zcard.data.repositoryImpl.CardRepositoryImpl
 import com.zcard.domain.repository.AssetRepository
+import com.zcard.domain.repository.AuthRepository
 import com.zcard.domain.repository.CardElementRepository
 import com.zcard.domain.repository.CardRepository
 import dagger.Binds
@@ -29,4 +31,9 @@ abstract class RepositoryModule {
     abstract fun bindCardElementRepository(
         cardElementRepositoryImpl: CardElementRepositoryImpl
     ): CardElementRepository
+
+    @Binds
+    abstract fun bindAuthRepository(
+        authRepositoryImpl: AuthRepositoryImpl
+    ): AuthRepository
 }

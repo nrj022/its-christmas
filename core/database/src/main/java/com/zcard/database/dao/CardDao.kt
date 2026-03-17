@@ -26,6 +26,6 @@ interface CardDao {
     @Query("UPDATE cards SET backgroundAssetId = :backgroundAssetId, updatedAt = :updatedAt WHERE cardId = :cardId")
     suspend fun updateBackgroundAssetId(cardId: Long, backgroundAssetId: Long, updatedAt: Long = System.currentTimeMillis()): Int
 
-    @Query("UPDATE cards SET glbFileName = :glbFileName, glbToken = :glbToken, updatedAt = :updatedAt WHERE cardId = :cardId")
-    suspend fun updateGlb(cardId: Long, glbFileName: String, glbToken: String, updatedAt: Long = System.currentTimeMillis()): Int
+    @Query("UPDATE cards SET glbFileName = :glbFileName, updatedAt = :updatedAt WHERE cardId = :cardId")
+    suspend fun updateGlb(cardId: Long, glbFileName: String, updatedAt: Long = System.currentTimeMillis()): Int
 }

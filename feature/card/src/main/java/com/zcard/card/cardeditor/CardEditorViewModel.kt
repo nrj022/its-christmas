@@ -1,5 +1,6 @@
 package com.zcard.card.cardeditor
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,7 +9,6 @@ import com.zcard.card.cardeditor.model.DialogState
 import com.zcard.card.cardeditor.model.PanelType
 import com.zcard.card.cardeditor.model.TempTextElement
 import com.zcard.card.cardeditor.model.TempTransform
-import com.zcard.card.cardeditor.util.extractFileNameAndToken
 import com.zcard.domain.bridge.UnityBridge
 import com.zcard.domain.enum.ElementType
 import com.zcard.domain.model.Asset
@@ -20,6 +20,7 @@ import com.zcard.domain.model.TextAlignmentOption
 import com.zcard.domain.model.TextAttributes
 import com.zcard.domain.model.TextElement
 import com.zcard.domain.model.UnityEventStatus
+import com.zcard.domain.model.UploadState
 import com.zcard.domain.repository.AssetRepository
 import com.zcard.domain.repository.CardElementRepository
 import com.zcard.domain.repository.CardRepository
@@ -28,7 +29,9 @@ import com.zcard.domain.usecase.GetTextElementsUseCase
 import com.zcard.domain.usecase.InitCardEditorUseCase
 import com.zcard.domain.usecase.SaveTextElementsParams
 import com.zcard.domain.usecase.SaveTextElementsUseCase
+import com.zcard.domain.usecase.UploadCardModelUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -42,6 +45,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.io.File
 import javax.inject.Inject
 import kotlin.Long
 import kotlin.onSuccess
@@ -50,14 +54,16 @@ private const val TAG = "CardEditorViewModel"
 
 @HiltViewModel
 class CardEditorViewModel @Inject constructor(
+    @ApplicationContext private val context: Context,
+    private val unityBridge: UnityBridge,
     private val cardRepository: CardRepository,
     private val assetRepository: AssetRepository,
     private val cardElementRepository: CardElementRepository,
     private val initCardEditorUseCase: InitCardEditorUseCase,
     private val getTextsUseCase: GetTextElementsUseCase,
     private val saveTextElementsUseCase: SaveTextElementsUseCase,
-    private val generateCardUrl: GenerateCardUrlUseCase,
-    private val unityBridge: UnityBridge
+    private val generateCardUrlUseCase: GenerateCardUrlUseCase,
+    private val uploadGlbUseCase: UploadCardModelUseCase,
 ) : ViewModel() {
 
     private var _cardId: Long = -1L
@@ -219,7 +225,12 @@ class CardEditorViewModel @Inject constructor(
         if(_exportId == -1L) return
         unityBridge.exportAndUpload(_exportId)
 
-        _cardEditorState.update { it.copy(isLoading = true) }
+        _cardEditorState.update {
+            it.copy(
+                isLoading = true,
+                loadingText = "Exporting"
+            )
+        }
     }
 
     private fun handleExportGlbResult(unityStatusType: UnityEventStatus, result: String) {
@@ -227,18 +238,31 @@ class CardEditorViewModel @Inject constructor(
             try {
                 if(unityStatusType != UnityEventStatus.SUCCESS) error(result)
 
-                val (fileName, token) = extractFileNameAndToken(result)
-                cardRepository.updateGlb(_cardId, fileName, token).getOrThrow()
+                val externalDir = context.getExternalFilesDir(null)
+                val file = File(externalDir, "glb_exports/$result")
 
-                val cardUrl = generateCardUrl(_cardId)
-                if(cardUrl.isBlank()) error("Generated card url is blank")
+                if (!file.exists()) {
+                    error("Export file not found: ${file.absolutePath}")
+                }
 
-                _cardEditorSideEffect.emit(CardEditorSideEffect.NavigateToCardShare(cardUrl))
+                uploadGlbUseCase(_cardId, file).collect { state ->
+                    when(state) {
+                        is UploadState.Progress -> _cardEditorState.update {
+                            it.copy(loadingText = "Uploading ${state.percent}%")
+                        }
+                        is UploadState.Success -> {
+                            val cardUrl = generateCardUrlUseCase(_cardId)
+                            if(cardUrl.isEmpty()) error("Empty Card URL")
+                            _cardEditorSideEffect.emit(CardEditorSideEffect.NavigateToCardShare(cardUrl))
+                        }
+                        is UploadState.Failure -> error("Upload Failed")
+                    }
+                }
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Throwable) {
                 Log.e(TAG, "handleExportGlbResult: $e")
-                _cardEditorSideEffect.emit(CardEditorSideEffect.ShowToast("Oops! Card generation failed. Please try again."))
+                _cardEditorSideEffect.emit(CardEditorSideEffect.ShowToast("Oops! Card upload failed. Please try again."))
             } finally {
                 _cardEditorState.update { it.copy(isLoading = false) }
             }
@@ -330,6 +354,7 @@ class CardEditorViewModel @Inject constructor(
                     }
             }
             updateDialogState(DialogState.NONE)
+            _cardEditorState.update { it.copy(selectedSpawnedObject = null) }
         }
     }
 

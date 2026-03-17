@@ -4,7 +4,6 @@
     <string name="common_button_confirm">Confirm</string>
     <string name="common_button_no">No</string>
     <string name="common_button_apply">Apply</string>
-    <string name="common_title_loading">Loading</string>
 
     <string name="editor_msg_block_system_back">Please use the buttons at the top to finish editing</string>
     <string name="editor_msg_copy_success">Copied to clipboard</string>

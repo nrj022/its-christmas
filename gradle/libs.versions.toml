@@ -23,7 +23,7 @@ googleServices = "4.4.4"
 firebaseBom = "34.10.0"
 
 ksp = "2.0.21-1.0.27"
-room = "2.8.3"
+room = "2.6.1"
 hilt = "2.57.1"
 truth = "1.4.5"
 foundation = "1.9.4"

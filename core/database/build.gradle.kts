@@ -29,6 +29,12 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+
+    // DB 마이그레이션을 위한 Json 저장 위치
+    ksp {
+        arg("room.schemaLocation", "$projectDir/schemas")
+    }
+
     kotlinOptions {
         jvmTarget = "11"
     }

@@ -14,8 +14,10 @@ android {
         applicationId = "com.zcard.android"
         minSdk = 26
         targetSdk = 36
-        versionCode = 2
-        versionName = "1.0.1"
+        versionCode = project.findProperty("versionCode")?.toString()?.toInt() ?: 4
+
+        val baseVersion = "1.2.0"
+        versionName = project.findProperty("versionName")?.toString() ?: baseVersion
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }

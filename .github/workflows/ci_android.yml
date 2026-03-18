@@ -1,0 +1,31 @@
+name: Android CI (Check & Build)
+
+on:
+  pull_request:
+    branches: [ "main", "develop" ]
+
+jobs:
+  check-and-build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: gradle # 빌드 속도를 위해 캐시 사용
+
+      # 1. 권한 부여
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      # 2. 정적 코드 분석 (Lint) - 테스트 코드 대신 버그를 잡아줌
+      - name: Run Android Lint
+        run: ./gradlew lintDebug
+
+      # 3. 빌드 확인 (Debug APK 생성)
+      - name: Build Debug APK
+        run: ./gradlew assembleDebug

@@ -3,7 +3,6 @@ include(":app")
 include(":unityLibrary")
 project(":unityLibrary").projectDir = File("unity_export/unityLibrary")
 include(":unityLibrary:mobilenotifications.androidlib")
-include(":unityLibrary:FirebaseApp.androidlib")
 
 pluginManagement {
     repositories {
@@ -23,11 +22,7 @@ dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS)
     repositories {
         flatDir {
-            dirs("${project(":unityLibrary").projectDir}/libs")
-        }
-        // Unity GeneratedLocalRepo 경로 추가
-        maven {
-            url = uri("${project(":unityLibrary").projectDir}/GeneratedLocalRepo/Firebase/m2repository")
+            dirs(rootProject.projectDir.resolve("libs"))
         }
 
         google()

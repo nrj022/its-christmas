@@ -23,31 +23,38 @@ jobs:
         run: |
           echo "${{ secrets.RELEASE_KEYSTORE }}" | base64 --decode > app/release-keystore.jks
 
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
       # 2. 버전 설정
       - name: Determine Version Name
         id: version_logic
         run: |
-          BASE_VERSION=$(grep "val baseVersion =" app/build.gradle.kts | awk -F'"' '{print $2}')
+          BASE_VERSION=$(grep -oP 'val baseVersion\s*=\s*"\K[^"]+' app/build.gradle.kts || echo "1.2.0")
+          
+          VERSION_CODE_OFFSET=100
+          FINAL_VERSION_CODE=$((VERSION_CODE_OFFSET + ${{ github.run_number }}))
           
           if [[ $GITHUB_REF == refs/tags/v* ]]; then
             FINAL_VERSION=${GITHUB_REF#refs/tags/}
             TRACK="alpha"
           
           else
-            FINAL_VERSION="v${BASE_VERSION}-dev.${{ github.run_number }}"
+            FINAL_VERSION="v${BASE_VERSION}-dev.${FINAL_VERSION_CODE}"
             TRACK="internal"
           fi
           
           echo "final_version=$FINAL_VERSION" >> $GITHUB_OUTPUT
           echo "track=$TRACK" >> $GITHUB_OUTPUT
+          echo "version_code=$FINAL_VERSION_CODE" >> $GITHUB_OUTPUT
 
       # 3. 배포용 AAB 빌드 (서명 포함)
       - name: Build Release Bundle with Versioning
         run: >
           ./gradlew bundleRelease
-          -PversionCode=${{ github.run_number }}
+          -PversionCode=${{ steps.version_logic.outputs.version_code }}
           -PversionName=${{ steps.version_logic.outputs.final_version }}
-          -Pandroid.injected.signing.store.file=release-keystore.jks
+          -Pandroid.injected.signing.store.file=app/release-keystore.jks
           -Pandroid.injected.signing.store.password=${{ secrets.KEYSTORE_PASSWORD }}
           -Pandroid.injected.signing.key.alias=${{ secrets.KEY_ALIAS }}
           -Pandroid.injected.signing.key.password=${{ secrets.KEY_PASSWORD }}

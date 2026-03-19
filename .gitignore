@@ -44,21 +44,7 @@ google-services.json
 .kotlin/
 
 # --- [Unity Library Specific] ---
-unity_export/**
-
-!unity_export/**/build.gradle
-!unity_export/**/settings.gradle
-!unity_export/**/gradle.properties
-!unity_export/**/AndroidManifest.xml
-!unity_export/**/src/
-!unity_export/**/src/**/
-
-unity_export/**/*.so
-unity_export/**/*.aar
-unity_export/**/*.jar
-unity_export/**/*.bundle
-unity_export/**/libs/
-unity_export/**/GeneratedLocalRepo/
+unity_export/
 
 # --- [Firebase & Tools] ---
 .firebase/

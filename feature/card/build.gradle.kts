@@ -41,18 +41,10 @@ android {
 }
 
 dependencies {
-    implementation(project(":unityLibrary"))
+
+    implementation(":unityLibrary-release@aar")
     implementation(project(":core:designsystem"))
     implementation(project(":core:domain"))
-
-    implementation(
-        fileTree(
-            mapOf(
-                "dir" to (findProject(":unityLibrary")?.projectDir?.resolve("libs")),
-                "include" to listOf("*.jar")
-            )
-        )
-    )
 
     // Json
     implementation(libs.kotlinx.serialization.json)

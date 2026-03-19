@@ -37,7 +37,7 @@ android {
 
 dependencies {
 
-    implementation(project(":unityLibrary:mobilenotifications.androidlib"))
+    implementation(":unityLibrary-release@aar")
     implementation(project(":core:database"))
     implementation(project(":core:domain"))
 

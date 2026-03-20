@@ -80,6 +80,8 @@ jobs:
           packageName: com.zcard.android
           releaseFiles: app/build/outputs/bundle/release/app-release.aab
           track: ${{ steps.version_logic.outputs.track }}
+          # 출시 노트
+          whatsNewDirectory: distribution/whatsnew
 
           
           

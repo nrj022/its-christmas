@@ -1,0 +1,3 @@
+v1.3.0 Updates
+
+We recommend keeping your app up to date for the best experience :)

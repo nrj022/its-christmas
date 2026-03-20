@@ -1,7 +1,7 @@
 name: Android CD (Google Play Store)
 on:
   push:
-    branches: [ "main", "develop" , "ci/#107-fix-cd-keystore-path"]
+    branches: [ "main", "develop"]
     tags: [ "v*" ]
 
 jobs:

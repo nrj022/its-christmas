@@ -1,8 +1,12 @@
 name: Android CD (Google Play Store)
 on:
+  # 태그 Push 시 자동 배포 (비공개 테스트/알파 트랙)
   push:
-    branches: [ "main", "develop"]
-    tags: [ "v*" ]
+    tags:
+      - "v*"
+
+  # 브랜치 배포는 수동 (내부 테스트 트랙)
+  workflow_dispatch:
 
 jobs:
   deploy:

@@ -82,7 +82,4 @@ jobs:
           track: ${{ steps.version_logic.outputs.track }}
           # 출시 노트
           whatsNewDirectory: distribution/whatsnew
-
-          
-          
       

@@ -251,7 +251,7 @@ class CardEditorActivity : AppCompatActivity() {
             UnityEventType.CREATE_OBJECT -> {
                 viewModel.onIntent(CardEditorIntent.CreateObjectResult(msg.status, msg.data))
             }
-            UnityEventType.UPLOAD_GLB -> {
+            UnityEventType.EXPORT_GLB -> {
                 viewModel.onIntent(CardEditorIntent.ExportGlbResult(msg.status, msg.data))
             }
         }

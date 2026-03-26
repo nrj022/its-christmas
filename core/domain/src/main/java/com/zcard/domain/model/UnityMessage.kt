@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 enum class UnityEventType {
     LIFECYCLE,
     CREATE_OBJECT,
-    UPLOAD_GLB
+    EXPORT_GLB
 }
 
 enum class UnityEventStatus  {

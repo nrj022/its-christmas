@@ -296,9 +296,11 @@ class CardEditorActivity : AppCompatActivity() {
     // Trim Memory Unity
     override fun onTrimMemory(level: Int) {
         super.onTrimMemory(level)
-        when {
-            level >= TRIM_MEMORY_RUNNING_CRITICAL -> unityPlayer.onTrimMemory(UnityPlayerForActivityOrService.MemoryUsage.Critical)
-            level >= TRIM_MEMORY_RUNNING_LOW -> unityPlayer.onTrimMemory(UnityPlayerForActivityOrService.MemoryUsage.High)
+        when(level) {
+            // 앱 백그라운드 이동 시
+            TRIM_MEMORY_UI_HIDDEN -> unityPlayer.onTrimMemory(UnityPlayerForActivityOrService.MemoryUsage.Medium)
+            // 앱 백그라운드 이동 + 메모리 부족 시
+            TRIM_MEMORY_BACKGROUND -> unityPlayer.onTrimMemory(UnityPlayerForActivityOrService.MemoryUsage.High)
             else -> unityPlayer.onTrimMemory(UnityPlayerForActivityOrService.MemoryUsage.Medium)
         }
     }

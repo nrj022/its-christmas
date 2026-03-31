@@ -1,4 +1,4 @@
-package com.zcard.main
+package com.zcard.home
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.zcard.domain.model.Asset
 import com.zcard.domain.repository.AssetRepository
 import com.zcard.domain.repository.CardRepository
-import com.zcard.main.model.CardItem
+import com.zcard.home.model.CardItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

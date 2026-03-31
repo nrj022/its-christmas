@@ -1,4 +1,4 @@
-package com.zcard.main
+package com.zcard.home
 
 import android.os.Build.VERSION.SDK_INT
 import androidx.compose.foundation.Image
@@ -46,23 +46,30 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.ImageLoader
 import coil.compose.AsyncImage
 import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
+import com.zcard.card.R
 import com.zcard.designsystem.theme.DimGray
 import com.zcard.designsystem.theme.Gray
 import com.zcard.designsystem.theme.ZCardTheme
 import com.zcard.designsystem.theme.SoftBlack
 import com.zcard.designsystem.theme.White
 import com.zcard.designsystem.util.DrawableResProvider.getBgThumbByKey
-import com.zcard.main.model.CardItem
-import com.zcard.main.util.formatRelativeTime
+import com.zcard.home.model.CardItem
+import com.zcard.home.util.formatRelativeTime
 
 @Composable
 fun MainScreen(viewModel: MainViewModel = hiltViewModel(), onCardClick: (Long) -> Unit = {}) {
     val cardItems by viewModel.cardList.collectAsStateWithLifecycle()
+
+    LifecycleResumeEffect(Unit) {
+        viewModel.loadCards()
+        onPauseOrDispose {  }
+    }
 
     MainContent(
         cardItems = cardItems,
@@ -75,6 +82,7 @@ fun MainContent(modifier: Modifier = Modifier, cardItems: List<CardItem>, onCard
     Column(
         modifier = modifier
             .fillMaxSize()
+            .background(White)
             .navigationBarsPadding(),
     ) {
         PreviewGifImage()

@@ -46,6 +46,10 @@ dependencies {
     implementation(project(":core:designsystem"))
     implementation(project(":core:domain"))
 
+    // Coil for gif
+    implementation(libs.coil.compose)
+    implementation(libs.coil.gif)
+
     // Json
     implementation(libs.kotlinx.serialization.json)
 
@@ -58,6 +62,7 @@ dependencies {
     implementation(libs.androidx.cardview)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.fragment.fragment.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.material.icons.extended)

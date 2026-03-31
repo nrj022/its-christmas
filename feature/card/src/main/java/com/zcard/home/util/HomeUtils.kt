@@ -1,4 +1,4 @@
-package com.zcard.main.util
+package com.zcard.home.util
 
 import java.time.Duration
 import java.time.Instant

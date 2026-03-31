@@ -1,4 +1,4 @@
-package com.zcard.main.model
+package com.zcard.home.model
 
 import com.zcard.domain.model.Card
 

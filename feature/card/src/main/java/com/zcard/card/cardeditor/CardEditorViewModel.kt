@@ -69,14 +69,13 @@ class CardEditorViewModel @Inject constructor(
     private var _cardId: Long = -1L
     private var _exportId: Long = -1L
 
+    private var _deletedTextElementIds: MutableSet<Long> = mutableSetOf()
+
     private val _cardEditorState = MutableStateFlow(CardEditorState())
     val cardEditorState: StateFlow<CardEditorState> = _cardEditorState
 
     private val _cardEditorSideEffect = MutableSharedFlow<CardEditorSideEffect>()
     val cardEditorSideEffect: SharedFlow<CardEditorSideEffect> = _cardEditorSideEffect
-
-
-    private var _deletedTextElementIds: MutableSet<Long> = mutableSetOf()
 
     private val _imeVisible = MutableStateFlow(false)
     val imeVisible = _imeVisible.asStateFlow()
@@ -161,6 +160,7 @@ class CardEditorViewModel @Inject constructor(
                             loadingObjectIds = result.spawnedObjects.map { obj -> obj.cardElement.elementId }.toSet()
                         )
                     }
+                    initUnity()
                     observeSpawnedObjects(result.spawnedObjectsFlow)
                 }.onFailure {
                     Log.e(TAG, "handleInit: Load Card Failed\n$it")
@@ -171,16 +171,7 @@ class CardEditorViewModel @Inject constructor(
         }
     }
 
-    private fun observeSpawnedObjects(flow: Flow<Result<List<CardElementWithAssetKeys>>>) {
-        // Room Flow는 cold flow 이므로 collect를 시작할 때마다 새로 데이터를 읽어서 emit
-        flow.onEach { result ->
-            result.onSuccess { objects ->
-                _cardEditorState.update { it.copy(spawnedObjects = objects) }
-            }
-        }.launchIn(viewModelScope)
-    }
-
-    fun handleInitUnity() {
+    private fun initUnity() {
         val bgAssetId = _cardEditorState.value.selectedBackgroundId
 
         unityBridge.initScene(
@@ -190,6 +181,15 @@ class CardEditorViewModel @Inject constructor(
         unityChangeBackground(bgAssetId)
 
         _cardEditorState.update { it.copy(isLoading = false) }
+    }
+
+    private fun observeSpawnedObjects(flow: Flow<Result<List<CardElementWithAssetKeys>>>) {
+        // Room Flow는 cold flow 이므로 collect를 시작할 때마다 새로 데이터를 읽어서 emit
+        flow.onEach { result ->
+            result.onSuccess { objects ->
+                _cardEditorState.update { it.copy(spawnedObjects = objects) }
+            }
+        }.launchIn(viewModelScope)
     }
 
     private fun handleChangeTitle(newTitle: String) {

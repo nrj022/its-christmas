@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ZCard">
         <activity
-            android:name="com.zcard.card.cardeditor.CardEditorActivity"
+            android:name="com.zcard.card.cardeditor.MainActivity"
             android:exported="true"
             android:theme="@style/Theme.ZCard" >
             <intent-filter>

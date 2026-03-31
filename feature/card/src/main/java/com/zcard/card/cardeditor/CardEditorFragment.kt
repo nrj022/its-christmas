@@ -1,24 +1,23 @@
 package com.zcard.card.cardeditor
 
-import android.annotation.SuppressLint
 import android.content.ClipData
 import android.content.ClipboardManager
-import android.content.Intent
-import android.content.res.Configuration
+import android.content.Context.CLIPBOARD_SERVICE
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
-import android.view.MotionEvent
+import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
-import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.mutableStateOf
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -29,40 +28,59 @@ import com.zcard.card.cardeditor.ui.common.BouncingLogoLoadingOverlay
 import com.zcard.card.cardeditor.util.getObjectThumbByKey
 import com.zcard.card.cardeditor.util.toBase62
 import com.zcard.card.R
-import com.zcard.card.cardshare.CardShareActivity
-import com.zcard.card.databinding.ActivityCardEditorBinding
+import com.zcard.card.cardshare.CardShareFragment
+import com.zcard.card.databinding.FragmentCardEditorBinding
 import com.zcard.designsystem.theme.ZCardTheme
 import com.zcard.domain.model.UnityMessage
-import com.unity3d.player.UnityPlayerForActivityOrService
 import com.zcard.domain.model.UnityEventStatus
 import com.zcard.domain.model.UnityEventType
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import kotlinx.serialization.json.Json
+import kotlin.getValue
 
 @AndroidEntryPoint
-class CardEditorActivity : AppCompatActivity() {
+class CardEditorFragment : Fragment() {
 
-    private lateinit var binding: ActivityCardEditorBinding
-    private lateinit var unityPlayer: UnityPlayerForActivityOrService
+    private lateinit var binding: FragmentCardEditorBinding
     private lateinit var layoutParams: ConstraintLayout.LayoutParams
+
     private val viewModel: CardEditorViewModel by viewModels()
+    private val mainViewModel: MainViewModel by activityViewModels()
+
     private val loadingOverlayVisible = mutableStateOf(true)
     private val loadingText = mutableStateOf("Loading")
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivityCardEditorBinding.inflate(layoutInflater)
+    companion object {
+        private const val ARG_CARD_ID = "cardId"
+
+        fun newInstance(cardId: Long) =
+            CardEditorFragment().apply {
+                arguments = Bundle().apply {
+                    putLong(ARG_CARD_ID, cardId)
+                }
+            }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding = FragmentCardEditorBinding.inflate(inflater, container, false)
         layoutParams = binding.unityContainer.layoutParams as ConstraintLayout.LayoutParams
 
-        val cardId = intent.getLongExtra("cardId", -1)
+        val cardId = arguments?.getLong(ARG_CARD_ID) ?: -1
         viewModel.onIntent(CardEditorIntent.Init(cardId))
+        mainViewModel.emitSideEffect(MainSideEffect.ResumeUnity)
 
-        setContentView(binding.root)
-        initUnity()
         initListener()
 
-        lifecycleScope.launch {
+        requireActivity().onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                Toast.makeText(requireContext(), getString(R.string.editor_msg_block_system_back), Toast.LENGTH_SHORT).show()
+            }
+        })
+
+        viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
                     viewModel.cardEditorState.collect {
@@ -70,26 +88,34 @@ class CardEditorActivity : AppCompatActivity() {
                     }
                 }
                 launch {
+                    viewModel.cardEditorSideEffect.collect {
+                        when (it) {
+                            is CardEditorSideEffect.NavigateToCardShare -> {
+                                navigateToCardShare(it.cardUrl)
+                            }
+                            is CardEditorSideEffect.Finish -> { parentFragmentManager.popBackStack() }
+                            is CardEditorSideEffect.ShowToast -> {
+                                Toast.makeText(requireContext(),it.message,Toast.LENGTH_SHORT).show()
+                            }
+                            is CardEditorSideEffect.CopyCardLink -> {
+                                val clipboard = requireContext().getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+                                clipboard.setPrimaryClip(ClipData.newPlainText("", it.cardUrl))
+                                if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2)
+                                    Toast.makeText(requireContext(), getString(R.string.editor_msg_copy_success),Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    }
+                }
+                launch {
                     viewModel.unityContainerHeightFractionFlow.collect {
+                        mainViewModel.emitUnityContainerHeightFraction(it)
                         updateUnityContainerHeight(it)
                     }
                 }
                 launch {
-                    viewModel.cardEditorSideEffect.collect {
-                        when(it) {
-                            is CardEditorSideEffect.NavigateToCardShare -> {
-                                navigateToCardShare(it.cardUrl)
-                            }
-                            is CardEditorSideEffect.Finish -> finish()
-                            is CardEditorSideEffect.ShowToast -> {
-                                Toast.makeText(this@CardEditorActivity, it.message, Toast.LENGTH_SHORT).show()
-                            }
-                            is CardEditorSideEffect.CopyCardLink -> {
-                                val clipboard = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
-                                clipboard.setPrimaryClip(ClipData.newPlainText("", it.cardUrl))
-                                if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2)
-                                    Toast.makeText(this@CardEditorActivity, getString(R.string.editor_msg_copy_success), Toast.LENGTH_SHORT).show()
-                            }
+                    mainViewModel.mainSideEffect.collect {
+                        if(it is MainSideEffect.ReceivedUnityMessage) {
+                            handleUnityMessage(it.message)
                         }
                     }
                 }
@@ -97,11 +123,11 @@ class CardEditorActivity : AppCompatActivity() {
         }
 
         binding.composeContainerText.setContent {
-            ZCardTheme { CardEditorTextScreen() }
+            ZCardTheme { CardEditorTextScreen(viewModel) }
         }
 
         binding.composeContainer.setContent {
-            ZCardTheme { CardEditorBottomScreen() }
+            ZCardTheme { CardEditorBottomScreen(viewModel) }
         }
 
         binding.composeLoading.setContent {
@@ -112,36 +138,24 @@ class CardEditorActivity : AppCompatActivity() {
             }
         }
 
-        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+        requireActivity().onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                Toast.makeText(this@CardEditorActivity, getString(R.string.editor_msg_block_system_back), Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), getString(R.string.editor_msg_block_system_back), Toast.LENGTH_SHORT).show()
             }
         })
+
+        return binding.root
     }
 
-    @SuppressLint("ClickableViewAccessibility")
-    private fun initUnity() {
-        unityPlayer = UnityPlayerForActivityOrService(this)
-        (unityPlayer.view.parent as? ViewGroup)?.removeView(unityPlayer.view)
-
-        binding.unityContainer.addView(
-            unityPlayer.view,
-            ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT
-            )
-        )
-
-        unityPlayer.view.setOnTouchListener(null)
-        binding.unityContainer.setOnTouchListener { v, event ->
-            unityPlayer.injectEvent(event)
-            if (event.action == MotionEvent.ACTION_UP) v.performClick()
-            true
-        }
+    override fun onDestroy() {
+        mainViewModel.emitSideEffect(MainSideEffect.PauseUnity)
+        super.onDestroy()
     }
 
     private fun initListener() {
-        binding.imgBtnBack.setOnClickListener { finish() }
+        binding.imgBtnBack.setOnClickListener {
+            parentFragmentManager.popBackStack()
+        }
 
         binding.imgBtnLink.setOnClickListener {
             viewModel.onIntent(CardEditorIntent.OpenCardLinkDetail)
@@ -187,6 +201,18 @@ class CardEditorActivity : AppCompatActivity() {
         }
     }
 
+    private fun handleUnityMessage(msg: UnityMessage) {
+        when (msg.type) {
+            UnityEventType.CREATE_OBJECT -> {
+                viewModel.onIntent(CardEditorIntent.CreateObjectResult(msg.status, msg.data))
+            }
+            UnityEventType.EXPORT_GLB -> {
+                viewModel.onIntent(CardEditorIntent.ExportGlbResult(msg.status, msg.data))
+            }
+            else -> Unit
+        }
+    }
+
     private fun updateUnityContainerHeight(heightFraction: Float) {
         if(layoutParams.matchConstraintPercentHeight != heightFraction) {
             layoutParams.matchConstraintPercentHeight = heightFraction
@@ -216,98 +242,14 @@ class CardEditorActivity : AppCompatActivity() {
         binding.imgBtnCameraFocusController.setImageResource(
             if(state.isTransformCameraFocus) R.drawable.ic_fit_screen else R.drawable.ic_target)
         binding.imgBtnTransformReset.isVisible = active && state.hasPendingTransform
-        binding.imgObjectThumb.setImageResource(getObjectThumbByKey(this, temp?.thumbnailKey))
+        binding.imgObjectThumb.setImageResource(getObjectThumbByKey(requireContext(), temp?.thumbnailKey))
         binding.textElementKey.text = if(active) toBase62(temp.elementId) else ""
     }
 
     private fun navigateToCardShare(cardUrl: String) {
-        val intent = Intent(this@CardEditorActivity, CardShareActivity::class.java)
-        intent.putExtra("cardUrl", cardUrl)
-        startActivity(intent)
-    }
-
-    // Unity에서 호출하는 함수
-    fun onUnityMessage(jsonString: String) {
-        Log.d("UnityMsg", "Received: $jsonString")
-        try {
-            val message = Json.decodeFromString<UnityMessage>(jsonString)
-            // UI 스레드에서 처리 보장
-            runOnUiThread {
-                handleUnityMessage(message)
-            }
-        } catch (e: Exception) {
-            Log.e("UnityMsg", "Parsing Error: ${e.message}")
-        }
-    }
-
-    private fun handleUnityMessage(msg: UnityMessage) {
-        when (msg.type) {
-            UnityEventType.LIFECYCLE -> {
-                if (msg.status == UnityEventStatus.START) {
-                    viewModel.handleInitUnity()
-                    Log.i("UnityMsg", "Unity Started Ready!")
-                }
-            }
-            UnityEventType.CREATE_OBJECT -> {
-                viewModel.onIntent(CardEditorIntent.CreateObjectResult(msg.status, msg.data))
-            }
-            UnityEventType.EXPORT_GLB -> {
-                viewModel.onIntent(CardEditorIntent.ExportGlbResult(msg.status, msg.data))
-            }
-        }
-    }
-
-    override fun onStart() {
-        super.onStart()
-        unityPlayer.onStart()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        unityPlayer.onResume()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        unityPlayer.onPause()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        unityPlayer.onStop()
-    }
-
-    override fun onDestroy() {
-        unityPlayer.destroy()
-        super.onDestroy()
-    }
-
-    override fun onWindowFocusChanged(hasFocus: Boolean) {
-        super.onWindowFocusChanged(hasFocus)
-        unityPlayer.windowFocusChanged(hasFocus)
-    }
-
-    // Low Memory Unity
-    override fun onLowMemory() {
-        super.onLowMemory()
-        unityPlayer.onTrimMemory(UnityPlayerForActivityOrService.MemoryUsage.Critical)
-    }
-
-    // Trim Memory Unity
-    override fun onTrimMemory(level: Int) {
-        super.onTrimMemory(level)
-        when {
-            // 앱 백그라운드 이동 + 메모리 부족 시
-            level >= TRIM_MEMORY_BACKGROUND -> unityPlayer.onTrimMemory(UnityPlayerForActivityOrService.MemoryUsage.High)
-            // 앱 백그라운드 이동 시
-            level == TRIM_MEMORY_UI_HIDDEN -> unityPlayer.onTrimMemory(UnityPlayerForActivityOrService.MemoryUsage.Medium)
-            else -> unityPlayer.onTrimMemory(UnityPlayerForActivityOrService.MemoryUsage.Medium)
-        }
-    }
-
-    // 레이아웃에 따른 Unity 맵핑
-    override fun onConfigurationChanged(newConfig: Configuration) {
-        super.onConfigurationChanged(newConfig)
-        unityPlayer.configurationChanged(newConfig)
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, CardShareFragment.newInstance(cardUrl))
+            .addToBackStack(null)
+            .commit()
     }
 }

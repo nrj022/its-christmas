@@ -1,4 +1,4 @@
-package com.zcard.feature.cardeditor
+package com.zcard.feature
 
 import android.annotation.SuppressLint
 import android.content.res.Configuration

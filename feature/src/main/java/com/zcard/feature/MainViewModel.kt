@@ -1,4 +1,4 @@
-package com.zcard.feature.cardeditor
+package com.zcard.feature
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

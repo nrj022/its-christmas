@@ -1,4 +1,4 @@
-package com.zcard.feature.cardeditor
+package com.zcard.feature
 
 import com.zcard.domain.model.UnityMessage
 

@@ -55,6 +55,6 @@ interface UnityBridge {
 
     fun deleteObject(elementId: Long)
 
-    fun exportAndUpload(exportId: Long)
+    fun exportGlb(exportId: Long)
 
 }

@@ -223,7 +223,7 @@ class CardEditorViewModel @Inject constructor(
         updateDialogState(DialogState.NONE)
 
         if(_exportId == -1L) return
-        unityBridge.exportAndUpload(_exportId)
+        unityBridge.exportGlb(_exportId)
 
         _cardEditorState.update {
             it.copy(

@@ -32,7 +32,6 @@ import com.zcard.card.cardshare.CardShareFragment
 import com.zcard.card.databinding.FragmentCardEditorBinding
 import com.zcard.designsystem.theme.ZCardTheme
 import com.zcard.domain.model.UnityMessage
-import com.zcard.domain.model.UnityEventStatus
 import com.zcard.domain.model.UnityEventType
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -248,6 +247,12 @@ class CardEditorFragment : Fragment() {
 
     private fun navigateToCardShare(cardUrl: String) {
         parentFragmentManager.beginTransaction()
+            .setCustomAnimations(
+                R.anim.slide_in_right,
+                R.anim.slide_out_left,
+                R.anim.slide_in_left,
+                R.anim.slide_out_right
+            )
             .replace(R.id.fragment_container, CardShareFragment.newInstance(cardUrl))
             .addToBackStack(null)
             .commit()

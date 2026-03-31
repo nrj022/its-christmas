@@ -179,8 +179,6 @@ class CardEditorViewModel @Inject constructor(
             _cardEditorState.value.texts
         )
         unityChangeBackground(bgAssetId)
-
-        _cardEditorState.update { it.copy(isLoading = false) }
     }
 
     private fun observeSpawnedObjects(flow: Flow<Result<List<CardElementWithAssetKeys>>>) {

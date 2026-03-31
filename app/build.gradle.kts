@@ -42,7 +42,7 @@ android {
 
 dependencies {
 
-    implementation(project(":feature:card"))
+    implementation(project(":feature"))
     implementation(project(":core:data"))
 
     // Hilt

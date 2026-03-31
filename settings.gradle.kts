@@ -30,7 +30,7 @@ dependencyResolutionManagement {
     }
 }
 include(":core:database")
-include(":feature:card")
 include(":core:designsystem")
 include(":core:data")
 include(":core:domain")
+include(":feature")

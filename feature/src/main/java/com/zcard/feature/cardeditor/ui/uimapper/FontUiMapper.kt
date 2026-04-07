@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
-import com.zcard.card.R
+import com.zcard.feature.R
 
 private val fontResMap: Map<String, Int> = mapOf(
     "PlaywriteUsTradGuides" to R.font.playwriteustradguides_regular,

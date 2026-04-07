@@ -9,7 +9,7 @@ import android.view.ViewGroup
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.FragmentManager
-import com.zcard.card.R
+import com.zcard.feature.R
 import com.zcard.feature.home.HomeFragment
 import com.zcard.designsystem.theme.ZCardTheme
 import kotlin.apply

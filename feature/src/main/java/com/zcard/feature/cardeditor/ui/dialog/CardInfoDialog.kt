@@ -24,7 +24,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.zcard.card.R
+import com.zcard.feature.R
 import com.zcard.feature.cardeditor.ui.common.BaseDialog
 import com.zcard.designsystem.theme.Gray
 import com.zcard.designsystem.theme.White

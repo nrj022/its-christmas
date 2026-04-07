@@ -2,7 +2,7 @@ package com.zcard.feature.cardeditor.ui.dialog
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
-import com.zcard.card.R
+import com.zcard.feature.R
 import com.zcard.feature.cardeditor.ui.common.BaseDialog
 
 @Composable

@@ -32,7 +32,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.zcard.card.R
+import com.zcard.feature.R
 import kotlinx.coroutines.delay
 import kotlin.math.roundToInt
 

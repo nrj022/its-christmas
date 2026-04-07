@@ -54,7 +54,7 @@ import com.zcard.domain.model.FontOption
 import com.zcard.domain.model.TextAlignmentOption
 import com.zcard.feature.cardeditor.model.Direction
 import com.zcard.domain.model.TextElement
-import com.zcard.card.R
+import com.zcard.feature.R
 
 // 토글 탭 목록 정의
 enum class TextEditorTab(val resId: Int) {

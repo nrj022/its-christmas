@@ -27,9 +27,9 @@ import com.zcard.feature.cardeditor.ui.CardEditorTextScreen
 import com.zcard.feature.cardeditor.ui.common.BouncingLogoLoadingOverlay
 import com.zcard.feature.cardeditor.util.getObjectThumbByKey
 import com.zcard.feature.cardeditor.util.toBase62
-import com.zcard.card.R
+import com.zcard.feature.R
 import com.zcard.feature.cardshare.CardShareFragment
-import com.zcard.card.databinding.FragmentCardEditorBinding
+import com.zcard.feature.databinding.FragmentCardEditorBinding
 import com.zcard.designsystem.theme.ZCardTheme
 import com.zcard.domain.model.UnityMessage
 import com.zcard.domain.model.UnityEventType

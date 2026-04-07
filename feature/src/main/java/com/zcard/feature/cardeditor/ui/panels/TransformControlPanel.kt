@@ -21,7 +21,7 @@ import com.zcard.feature.cardeditor.model.Direction
 import com.zcard.designsystem.theme.Gray
 import com.zcard.designsystem.theme.SoftBlack
 import com.zcard.designsystem.theme.White
-import com.zcard.card.R
+import com.zcard.feature.R
 
 /**
  * 이미지에 표시된 컨트롤러 전체 UI

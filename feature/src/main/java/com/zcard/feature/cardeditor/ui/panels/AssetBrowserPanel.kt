@@ -39,7 +39,7 @@ import com.zcard.feature.cardeditor.util.toBase62
 import com.zcard.feature.cardeditor.model.BaseTabItem
 import com.zcard.feature.cardeditor.util.getObjectThumbByKey
 import com.zcard.designsystem.util.DrawableResProvider.getBgThumbByKey
-import com.zcard.card.R
+import com.zcard.feature.R
 
 private const val COLUMNS = 3
 

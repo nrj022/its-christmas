@@ -8,7 +8,7 @@ plugins {
 }
 
 android {
-    namespace = "com.zcard.card"
+    namespace = "com.zcard.feature"
     compileSdk = 36
 
     defaultConfig {

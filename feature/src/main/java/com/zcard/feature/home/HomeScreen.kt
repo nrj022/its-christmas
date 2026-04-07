@@ -52,7 +52,7 @@ import coil.ImageLoader
 import coil.compose.AsyncImage
 import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
-import com.zcard.card.R
+import com.zcard.feature.R
 import com.zcard.designsystem.theme.DimGray
 import com.zcard.designsystem.theme.Gray
 import com.zcard.designsystem.theme.ZCardTheme

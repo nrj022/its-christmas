@@ -12,10 +12,9 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.zcard.card.R
-import com.zcard.card.databinding.ActivityCardEditorBinding
 import com.zcard.domain.model.UnityMessage
 import com.unity3d.player.UnityPlayerForActivityOrService
+import com.zcard.feature.databinding.ActivityMainBinding
 import com.zcard.feature.home.HomeFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -24,14 +23,14 @@ import kotlinx.serialization.json.Json
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityCardEditorBinding
+    private lateinit var binding: ActivityMainBinding
     private lateinit var unityPlayer: UnityPlayerForActivityOrService
     private lateinit var layoutParams: ConstraintLayout.LayoutParams
     private val viewModel: MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityCardEditorBinding.inflate(layoutInflater)
+        binding = ActivityMainBinding.inflate(layoutInflater)
         layoutParams = binding.unityContainer.layoutParams as ConstraintLayout.LayoutParams
 
         setContentView(binding.root)

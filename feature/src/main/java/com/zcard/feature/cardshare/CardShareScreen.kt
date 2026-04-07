@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.zcard.designsystem.theme.SoftBlack
 import com.zcard.designsystem.theme.White
-import com.zcard.card.R
+import com.zcard.feature.R
 
 @Composable
 fun CardShareScreen(cardUrl: String, onBackClicked: () -> Unit = {}, onHomeClicked: () -> Unit = {}, onShareClicked: () -> Unit = {}) {

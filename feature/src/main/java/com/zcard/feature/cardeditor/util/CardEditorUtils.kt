@@ -1,7 +1,7 @@
 package com.zcard.feature.cardeditor.util
 
 import android.content.Context
-import com.zcard.card.R
+import com.zcard.feature.R
 
 private const val base62Chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
 

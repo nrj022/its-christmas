@@ -187,6 +187,12 @@ class CardEditorViewModel @Inject constructor(
             result.onSuccess { objects ->
                 _cardEditorState.update { it.copy(spawnedObjects = objects) }
             }
+            result.exceptionOrNull()?.let { error ->
+                Log.e(TAG, "observeSpawnedObjects: $error")
+                _cardEditorSideEffect.emit(
+                    CardEditorSideEffect.ShowToast("Oops! Failed to refresh objects. Please try again.")
+                )
+            }
         }.launchIn(viewModelScope)
     }
 

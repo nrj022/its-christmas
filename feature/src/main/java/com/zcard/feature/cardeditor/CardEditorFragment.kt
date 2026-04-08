@@ -69,7 +69,7 @@ class CardEditorFragment : Fragment() {
         binding = FragmentCardEditorBinding.inflate(inflater, container, false)
         layoutParams = binding.unityContainer.layoutParams as ConstraintLayout.LayoutParams
 
-        val cardId = arguments?.getLong(ARG_CARD_ID) ?: -1
+        val cardId = arguments?.getLong(ARG_CARD_ID) ?: -1  // TODO: 새로운 카드 생성이 아닌 카드 조회 시 Card ID 누락에 대한 에러 처리 추가 (Log, Dialog)
         viewModel.onIntent(CardEditorIntent.Init(cardId))
         mainViewModel.emitSideEffect(MainSideEffect.ResumeUnity)
 
@@ -138,12 +138,6 @@ class CardEditorFragment : Fragment() {
                 }
             }
         }
-
-        requireActivity().onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                Toast.makeText(requireContext(), getString(R.string.editor_msg_block_system_back), Toast.LENGTH_SHORT).show()
-            }
-        })
 
         return binding.root
     }

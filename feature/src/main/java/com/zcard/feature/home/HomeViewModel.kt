@@ -34,6 +34,7 @@ class MainViewModel @Inject constructor(
         backgroundList = assetRepository.getInitialBackgrounds()
     }
 
+    // TODO: Flow로 전체 카드 리스트 조회 방식 변경
     fun loadCards() {
         viewModelScope.launch {
             cardRepository.getAllCards()

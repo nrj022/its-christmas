@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.MotionEvent
 import android.view.ViewGroup
 import androidx.activity.viewModels
+import androidx.annotation.Keep
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.Lifecycle
@@ -91,7 +92,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // Unity에서 호출하는 함수
+    /* Unity에서 호출하는 함수 */
+    @Keep   // 배포 시 프로그램 최적화로부터 보호
     fun onUnityMessage(jsonString: String) {
         Log.d("UnityMsg", "Received: $jsonString")
         try {

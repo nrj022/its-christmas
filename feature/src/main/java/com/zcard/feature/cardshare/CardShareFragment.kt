@@ -9,8 +9,6 @@ import android.view.ViewGroup
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.FragmentManager
-import com.zcard.feature.R
-import com.zcard.feature.home.HomeFragment
 import com.zcard.designsystem.theme.ZCardTheme
 import kotlin.apply
 
@@ -50,9 +48,6 @@ class CardShareFragment : Fragment() {
 
     private fun navigationToMain() {
         parentFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
-        parentFragmentManager.beginTransaction()
-            .replace(R.id.fragment_container, HomeFragment())
-            .commit()
     }
 
     private fun shareCardLink(cardUrl: String) {

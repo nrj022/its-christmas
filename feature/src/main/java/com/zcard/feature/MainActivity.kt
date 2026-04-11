@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         layoutParams = binding.unityContainer.layoutParams as ConstraintLayout.LayoutParams
-        lastConfig = resources.configuration
+        lastConfig = Configuration(resources.configuration)
 
         setContentView(binding.root)
 
@@ -162,6 +162,11 @@ class MainActivity : AppCompatActivity() {
         super.onConfigurationChanged(newConfig)
 
         val diff = lastConfig?.diff(newConfig) ?: return
+        val intent = packageManager.getLaunchIntentForPackage(packageName)
+        if (intent == null) {
+            Log.e("ConfigCheck", "Failed to get launch intent for package: $packageName")
+            return
+        }
         val isOrientationChanged = (diff and ActivityInfo.CONFIG_ORIENTATION) != 0 || (diff and ActivityInfo.CONFIG_SCREEN_SIZE) != 0
 
         if (isOrientationChanged) {

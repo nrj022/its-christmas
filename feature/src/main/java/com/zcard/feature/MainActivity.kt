@@ -162,11 +162,6 @@ class MainActivity : AppCompatActivity() {
         super.onConfigurationChanged(newConfig)
 
         val diff = lastConfig?.diff(newConfig) ?: return
-        val intent = packageManager.getLaunchIntentForPackage(packageName)
-        if (intent == null) {
-            Log.e("ConfigCheck", "Failed to get launch intent for package: $packageName")
-            return
-        }
         val isOrientationChanged = (diff and ActivityInfo.CONFIG_ORIENTATION) != 0 || (diff and ActivityInfo.CONFIG_SCREEN_SIZE) != 0
 
         if (isOrientationChanged) {
@@ -181,7 +176,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun restartApp() {
-        val intent = packageManager.getLaunchIntentForPackage(packageName) ?: return
+        val intent = packageManager.getLaunchIntentForPackage(packageName)
+        if (intent == null) {
+            Log.e("ConfigCheck", "Failed to get launch intent for package: $packageName")
+            return
+        }
         // CLEAR_TASK: 기존 태스크 스택 전체 제거 후 새 태스크에서 재시작
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
         startActivity(intent)

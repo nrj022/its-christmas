@@ -1,214 +1,121 @@
 package com.zcard.data.bridgeimpl
 
-import com.zcard.data.dto.ObjectDto
-import com.zcard.data.dto.SceneDto
-import com.zcard.data.dto.TextDto
-import com.zcard.data.dto.TextListDto
-import com.zcard.data.dto.UpdateDto
-import com.zcard.data.dto.Vector3Dto
-import com.zcard.data.mapper.toDto
+import com.zcard.data.mapper.UnityMapper
 import com.zcard.domain.bridge.UnityBridge
+import com.zcard.domain.model.CardElement
 import com.zcard.domain.model.CardElementWithAssetKeys
 import com.zcard.domain.model.RgbaColor
 import com.zcard.domain.model.TextElement
 import com.unity3d.player.UnityPlayer
-import kotlinx.serialization.json.Json
 import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import javax.inject.Inject
 
 class UnityBridgeImpl @Inject constructor(): UnityBridge {
+
+    private companion object {
+        const val UNITY_BRIDGE = "UnityBridge"
+    }
+
+    private object Methods {
+        const val INIT_SCENE = "InitScene"
+        const val CHANGE_BACKGROUND = "ChangeBackground"
+
+        const val CREATE_OBJECT = "CreateObject"
+        const val CREATE_TEXT = "CreateText"
+
+        const val UPDATE_POSITION = "UpdatePosition"
+        const val UPDATE_SCALE = "UpdateScale"
+        const val UPDATE_FONT_SIZE = "UpdateFontSize"
+        const val UPDATE_TEXT_COLOR = "UpdateTextColor"
+        const val UPDATE_TEXT_CONTENT = "UpdateTextContent"
+        const val UPDATE_FONT = "UpdateFont"
+        const val UPDATE_TEXT_ALIGN = "UpdateTextAlign"
+
+        const val REPLACE_ALL_TEXTS = "ReplaceAllTexts"
+        const val CLEAR_ALL_TEXTS = "ClearAllTexts"
+
+        const val SELECT_OBJECT = "SelectObject"
+        const val CLEAR_SELECTION = "ClearSelection"
+
+        const val DELETE_OBJECT = "DeleteObject"
+
+        const val EXPORT_GLB = "ExportGlb"
+    }
+
+    private inline fun <reified T> send(method: String, payload: T) {
+        val message = if(payload is String) payload else Json.encodeToString(payload)
+        UnityPlayer.UnitySendMessage(UNITY_BRIDGE, method, message)
+    }
 
     override fun initScene(
         objectElements: List<CardElementWithAssetKeys>,
         textElements: List<TextElement>
     ) {
-        val jsonString = Json.encodeToString(
-            SceneDto(
-                objects = objectElements.map {
-                    ObjectDto(
-                        id = "${it.cardElement.elementId}",
-                        prefabName = it.unityKey,
-                        position = Vector3Dto(
-                            x = it.cardElement.posX,
-                            y = it.cardElement.posY,
-                            z = it.cardElement.posZ
-                        ),
-                        scale = it.cardElement.scale
-                  )},
-                texts = textElements.map {
-                    TextDto(
-                        id = "${it.elementId}",
-                        position = Vector3Dto(
-                            x = it.posX,
-                            y = it.posY,
-                            z = it.posZ
-                        ),
-                        textContent = it.attributes.content,
-                        fontFamilyName = it.attributes.fontFamily.key,
-                        fontSize = it.attributes.fontSize,
-                        color = it.attributes.textColor.rgbaColor.toDto(),
-                        textAlignInt = it.attributes.alignment.alignCode,
-                    )
-                }
-            )
-        )
-        UnityPlayer.UnitySendMessage("AndroidMessageHandler", "InitializeObjectsFromAndroid", jsonString)
+        send(Methods.INIT_SCENE, UnityMapper.toSceneDto(objectElements, textElements))
     }
 
     override fun changeBackground(backgroundKey: String) {
-        UnityPlayer.UnitySendMessage("BackgroundManager", "ChangeBackground", backgroundKey)
+        send(Methods.CHANGE_BACKGROUND, backgroundKey)
     }
 
-    override fun createObject(
-        unityKey: String,
-        elementId: Long,
-        posX: Float,
-        posY: Float,
-        posZ: Float,
-        scale: Int
-    ) {
-        val jsonString = Json.encodeToString(
-            ObjectDto(
-                id = "$elementId",
-                prefabName = unityKey,
-                position = Vector3Dto(posX, posY, posZ),
-                scale = scale,
-            )
-        )
-        UnityPlayer.UnitySendMessage("AndroidMessageHandler", "CreateObjectFromAndroid", jsonString)
+    override fun createObject(unityKey: String, elementId: Long, element: CardElement) {
+        send(Methods.CREATE_OBJECT, UnityMapper.toObjectDto(unityKey, elementId, element))
     }
 
-    override fun createText(
-        tempId: Long?,
-        textElement: TextElement
-    ) {
-        val jsonString = Json.encodeToString(
-            TextDto(
-                id = "${tempId ?: textElement.elementId}",
-                position = Vector3Dto(textElement.posX, textElement.posY, textElement.posZ),
-                textContent = textElement.attributes.content,
-                fontFamilyName = textElement.attributes.fontFamily.key,
-                fontSize = textElement.attributes.fontSize,
-                color = textElement.attributes.textColor.rgbaColor.toDto(),
-                textAlignInt = textElement.attributes.alignment.alignCode
-            )
-        )
-        UnityPlayer.UnitySendMessage("AndroidMessageHandler", "CreateTextFromAndroid", jsonString)
+    override fun createText(tempId: Long?, textElement: TextElement) {
+        send(Methods.CREATE_TEXT, UnityMapper.toTextDto(tempId, textElement))
     }
 
-    override fun updatePosition(
-        elementId: Long,
-        posX: Float,
-        posY: Float,
-        posZ: Float,
-    ) {
-        val jsonString = Json.encodeToString(
-            UpdateDto(
-                id = "$elementId",
-                value = Vector3Dto(posX, posY, posZ)
-            )
-        )
-        UnityPlayer.UnitySendMessage("AndroidMessageHandler", "UpdatePositionFromAndroid", jsonString)
+    override fun updatePosition(elementId: Long, posX: Float, posY: Float, posZ: Float) {
+        send(Methods.UPDATE_POSITION, UnityMapper.toUpdatePositionDto(elementId, posX, posY, posZ))
     }
 
     override fun updateScale(elementId: Long, scale: Int) {
-        val jsonString = Json.encodeToString(
-            UpdateDto(
-                id = "$elementId",
-                value = scale
-            )
-        )
-        UnityPlayer.UnitySendMessage("AndroidMessageHandler", "UpdateScaleFromAndroid", jsonString)
+        send(Methods.UPDATE_SCALE, UnityMapper.toUpdateScaleDto(elementId, scale))
     }
 
     override fun updateFontSize(elementId: Long, fontSize: Float) {
-        val jsonString = Json.encodeToString(
-            UpdateDto(
-                id = "$elementId",
-                value = fontSize
-            )
-        )
-        UnityPlayer.UnitySendMessage("AndroidMessageHandler", "UpdateFontSizeFromAndroid", jsonString)
+        send(Methods.UPDATE_FONT_SIZE, UnityMapper.toUpdateFontSizeDto(elementId, fontSize))
     }
 
     override fun updateTextColor(elementId: Long, rgbaColor: RgbaColor) {
-        val jsonString = Json.encodeToString(
-            UpdateDto(
-                id = "$elementId",
-                value = rgbaColor.toDto()
-            )
-        )
-        UnityPlayer.UnitySendMessage("AndroidMessageHandler", "UpdateTextColorFromAndroid", jsonString)
+        send(Methods.UPDATE_TEXT_COLOR, UnityMapper.toUpdateTextColorDto(elementId, rgbaColor))
     }
 
     override fun updateTextContent(elementId: Long, textContent: String) {
-        val jsonString = Json.encodeToString(
-            UpdateDto(
-                id = "$elementId",
-                value = textContent
-            )
-        )
-        UnityPlayer.UnitySendMessage("AndroidMessageHandler", "UpdateTextContentFromAndroid", jsonString)
+        send(Methods.UPDATE_TEXT_CONTENT, UnityMapper.toUpdateTextContentDto(elementId, textContent))
     }
 
     override fun updateFont(elementId: Long, fontFamilyName: String) {
-        val jsonString = Json.encodeToString(
-            UpdateDto(
-                id = "$elementId",
-                value = fontFamilyName
-            )
-        )
-        UnityPlayer.UnitySendMessage("AndroidMessageHandler", "UpdateFontFromAndroid", jsonString)
+        send(Methods.UPDATE_FONT, UnityMapper.toUpdateFontDto(elementId, fontFamilyName))
     }
 
     override fun updateTextAlign(elementId: Long, textAlignInt: Int) {
-        val jsonString = Json.encodeToString(
-            UpdateDto(
-                id = "$elementId",
-                value = textAlignInt
-            )
-        )
-        UnityPlayer.UnitySendMessage("AndroidMessageHandler", "UpdateTextAlignFromAndroid", jsonString)
+        send(Methods.UPDATE_TEXT_ALIGN, UnityMapper.toUpdateTextAlignDto(elementId, textAlignInt))
     }
 
     override fun replaceAllTexts(textElements: List<TextElement>) {
-        val jsonString = Json.encodeToString(
-            TextListDto(
-                texts = textElements.mapNotNull {
-                    it.elementId?.let { id ->
-                        TextDto(
-                            id = "$id",
-                            position = Vector3Dto(it.posX, it.posY, it.posZ),
-                            textContent = it.attributes.content,
-                            fontFamilyName = it.attributes.fontFamily.key,
-                            fontSize = it.attributes.fontSize,
-                            color = it.attributes.textColor.rgbaColor.toDto(),
-                            textAlignInt = it.attributes.alignment.alignCode
-                        )
-                    }
-                }
-            )
-        )
-        UnityPlayer.UnitySendMessage("AndroidMessageHandler", "ReplaceAllTextsFromAndroid", jsonString)
+        send(Methods.REPLACE_ALL_TEXTS, UnityMapper.toTextListDto(textElements))
     }
 
     override fun clearAllTexts() {
-        UnityPlayer.UnitySendMessage("ObjectManager", "ClearAllTexts", "")
+        send(Methods.CLEAR_ALL_TEXTS, "")
     }
 
     override fun selectObject(elementId: Long) {
-        UnityPlayer.UnitySendMessage("ObjectManager", "SelectObject", "$elementId")
+        send(Methods.SELECT_OBJECT, "$elementId")
     }
 
     override fun clearSelection() {
-        UnityPlayer.UnitySendMessage("ObjectManager", "ClearSelection", "")
+        send(Methods.CLEAR_SELECTION, "")
     }
 
     override fun deleteObject(elementId: Long) {
-        UnityPlayer.UnitySendMessage("ObjectManager", "DeleteObject", "$elementId")
+        send(Methods.DELETE_OBJECT, "$elementId")
     }
 
     override fun exportGlb(exportId: Long) {
-        UnityPlayer.UnitySendMessage("GlbExportManager", "ExportGlb", "$exportId")
+        send(Methods.EXPORT_GLB, "$exportId")
     }
 }

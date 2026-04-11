@@ -313,10 +313,7 @@ class CardEditorViewModel @Inject constructor(
                     unityBridge.createObject(
                         unityKey = clickedObject.unityKey,
                         elementId = id,
-                        posX = newElement.posX,
-                        posY = newElement.posY,
-                        posZ = newElement.posZ,
-                        scale = newElement.scale
+                        element = newElement
                     )
             }
         }

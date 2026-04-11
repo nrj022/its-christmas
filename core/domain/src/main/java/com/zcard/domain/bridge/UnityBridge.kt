@@ -1,5 +1,6 @@
 package com.zcard.domain.bridge
 
+import com.zcard.domain.model.CardElement
 import com.zcard.domain.model.CardElementWithAssetKeys
 import com.zcard.domain.model.RgbaColor
 import com.zcard.domain.model.TextElement
@@ -15,10 +16,7 @@ interface UnityBridge {
     fun createObject(
         unityKey: String,
         elementId: Long,
-        posX: Float,
-        posY: Float,
-        posZ: Float,
-        scale: Int
+        element: CardElement
     )
 
     fun createText(

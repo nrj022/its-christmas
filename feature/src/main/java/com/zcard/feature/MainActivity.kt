@@ -162,9 +162,13 @@ class MainActivity : AppCompatActivity() {
         super.onConfigurationChanged(newConfig)
 
         val diff = lastConfig?.diff(newConfig) ?: return
+        val criticalMask = ActivityInfo.CONFIG_UI_MODE or  // 다크모드
+                ActivityInfo.CONFIG_LOCALE or   // 언어 변경
+                ActivityInfo.CONFIG_FONT_SCALE  // 글꼴 크기
+
         val isOrientationChanged = (diff and ActivityInfo.CONFIG_ORIENTATION) != 0 || (diff and ActivityInfo.CONFIG_SCREEN_SIZE) != 0
 
-        if (isOrientationChanged) {
+        if (isOrientationChanged && (diff and criticalMask) == 0) {
             Log.i("ConfigCheck", "🟢 Orientation change detected → keep Unity engine (orientation=${newConfig.orientation})")
             unityPlayer.configurationChanged(newConfig)
         } else {

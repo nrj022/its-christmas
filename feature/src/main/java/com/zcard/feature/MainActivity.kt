@@ -1,6 +1,8 @@
 package com.zcard.feature
 
 import android.annotation.SuppressLint
+import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
@@ -28,11 +30,13 @@ class MainActivity : AppCompatActivity() {
     private lateinit var unityPlayer: UnityPlayerForActivityOrService
     private lateinit var layoutParams: ConstraintLayout.LayoutParams
     private val viewModel: MainViewModel by viewModels()
+    private var lastConfig: Configuration? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         layoutParams = binding.unityContainer.layoutParams as ConstraintLayout.LayoutParams
+        lastConfig = Configuration(resources.configuration)
 
         setContentView(binding.root)
 
@@ -156,6 +160,36 @@ class MainActivity : AppCompatActivity() {
     // 레이아웃에 따른 Unity 맵핑
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
-        unityPlayer.configurationChanged(newConfig)
+
+        val diff = lastConfig?.diff(newConfig) ?: return
+        val criticalMask = ActivityInfo.CONFIG_UI_MODE or  // 다크모드
+                ActivityInfo.CONFIG_LOCALE or   // 언어 변경
+                ActivityInfo.CONFIG_FONT_SCALE  // 글꼴 크기
+
+        val isOrientationChanged = (diff and ActivityInfo.CONFIG_ORIENTATION) != 0 || (diff and ActivityInfo.CONFIG_SCREEN_SIZE) != 0
+
+        if (isOrientationChanged && (diff and criticalMask) == 0) {
+            Log.i("ConfigCheck", "🟢 Orientation change detected → keep Unity engine (orientation=${newConfig.orientation})")
+            unityPlayer.configurationChanged(newConfig)
+        } else {
+            Log.w("ConfigCheck", "🔴 Non-orientation config change detected → restarting app (diff=$diff)")
+            restartApp()
+        }
+
+        lastConfig = Configuration(newConfig)
+    }
+
+    private fun restartApp() {
+        val intent = packageManager.getLaunchIntentForPackage(packageName)
+        if (intent == null) {
+            Log.e("ConfigCheck", "Failed to get launch intent for package: $packageName")
+            return
+        }
+        // CLEAR_TASK: 기존 태스크 스택 전체 제거 후 새 태스크에서 재시작
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        startActivity(intent)
+        // 현재 태스크의 모든 Activity 종료 후 프로세스 종료
+        finishAffinity()
+        Runtime.getRuntime().exit(0)
     }
 }

@@ -7,14 +7,16 @@ import com.zcard.feature.cardeditor.model.TempTransform
 import com.zcard.domain.model.CardElementWithAssetKeys
 import com.zcard.domain.model.Asset
 import com.zcard.domain.model.TextElement
+import com.zcard.feature.cardeditor.model.UnityState
 
 data class CardEditorState(
     val panelType: PanelType = PanelType.ASSET_BROWSER,
+    val dialogState: DialogState = DialogState.NONE,
+    val unityState: UnityState = UnityState.IDLE,
     val isLoading: Boolean = false,
     val isTransformCameraFocus: Boolean = true,
     val tempTransform: TempTransform? = null,
     val tempTextList: List<TempTextElement> = emptyList(),
-    val dialogState: DialogState = DialogState.NONE,
     val originalCardTitle: String = "New Card",
     val cardTitle: String = "New Card",
     val cardUrl: String = "",

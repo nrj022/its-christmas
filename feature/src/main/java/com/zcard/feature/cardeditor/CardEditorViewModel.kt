@@ -9,6 +9,7 @@ import com.zcard.feature.cardeditor.model.DialogState
 import com.zcard.feature.cardeditor.model.PanelType
 import com.zcard.feature.cardeditor.model.TempTextElement
 import com.zcard.feature.cardeditor.model.TempTransform
+import com.zcard.feature.cardeditor.model.UnityState
 import com.zcard.domain.bridge.UnityBridge
 import com.zcard.domain.enum.ElementType
 import com.zcard.domain.model.Asset
@@ -20,6 +21,8 @@ import com.zcard.domain.model.TextAlignmentOption
 import com.zcard.domain.model.TextAttributes
 import com.zcard.domain.model.TextElement
 import com.zcard.domain.model.UnityEventStatus
+import com.zcard.domain.model.UnityEventType
+import com.zcard.domain.model.UnityMessage
 import com.zcard.domain.model.UploadState
 import com.zcard.domain.repository.AssetRepository
 import com.zcard.domain.repository.CardElementRepository
@@ -91,7 +94,9 @@ class CardEditorViewModel @Inject constructor(
 
     fun onIntent(intent: CardEditorIntent) {
         when (intent) {
+            is CardEditorIntent.OnUnityMessage -> handleUnityMessage(intent.message)
             is CardEditorIntent.Init -> handleInit(intent.cardId)
+            is CardEditorIntent.ClearScene -> handleClearScene()
             is CardEditorIntent.ChangeTitle -> handleChangeTitle(intent.newTitle)
 
             is CardEditorIntent.OpenCardLinkDetail -> handleOpenCardLinkDetail()
@@ -101,8 +106,6 @@ class CardEditorViewModel @Inject constructor(
 
             is CardEditorIntent.FinishEditing -> handleFinishEditing()
             is CardEditorIntent.ExportGlbAndUpload -> handleExportGlbAndUpload()
-            is CardEditorIntent.ExportGlbResult -> handleExportGlbResult(intent.unityResult, intent.result)
-            is CardEditorIntent.CreateObjectResult -> handleCreateObjectResult(intent.unityResult, intent.result)
             is CardEditorIntent.ChangeDialogState -> handleChangeDialogState(intent.dialogState)
 
             is CardEditorIntent.CreateObject -> handleCreateObject(intent.clickedObject)
@@ -141,6 +144,8 @@ class CardEditorViewModel @Inject constructor(
         }
     }
 
+    // ── 씬 초기화 ─────────────────────────────────────────────────────────────
+
     private fun handleInit(cardId: Long) {
         viewModelScope.launch {
             openCardEditorUseCase(cardId)
@@ -160,7 +165,13 @@ class CardEditorViewModel @Inject constructor(
                             loadingObjectIds = result.spawnedObjects.map { obj -> obj.cardElement.elementId }.toSet()
                         )
                     }
-                    initUnity()
+                    _cardEditorState.update {
+                        it.copy(
+                            unityState = UnityState.LOADING,
+                            isLoading = true,
+                        )
+                    }
+                    unityBridge.checkSceneReady()
                     observeSpawnedObjects(result.spawnedObjectsFlow)
                 }.onFailure {
                     Log.e(TAG, "handleInit: Load Card Failed\n$it")
@@ -181,6 +192,10 @@ class CardEditorViewModel @Inject constructor(
         unityChangeBackground(bgAssetId)
     }
 
+    private fun handleClearScene() {
+        unityBridge.clearScene()
+    }
+
     private fun observeSpawnedObjects(flow: Flow<Result<List<CardElementWithAssetKeys>>>) {
         // Room Flow는 cold flow 이므로 collect를 시작할 때마다 새로 데이터를 읽어서 emit
         flow.onEach { result ->
@@ -196,44 +211,55 @@ class CardEditorViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
-    private fun handleChangeTitle(newTitle: String) {
-        _cardEditorState.update { it.copy(cardTitle = newTitle) }
-    }
+    // ── Unity 메시지 ──────────────────────────────────────────────────────────
 
-    private fun handleOpenCardLinkDetail() {
-        updateDialogState(DialogState.CARD_LINK_DETAIL)
-    }
-
-    private fun handleSaveTitle() {
-        saveCardTitle()
-    }
-
-    private fun handleResetTitle() {
-        _cardEditorState.update { it.copy(cardTitle = it.originalCardTitle) }
-    }
-
-    private fun handleCopyCardLink() {
-        viewModelScope.launch {
-            _cardEditorSideEffect.emit(CardEditorSideEffect.CopyCardLink(_cardEditorState.value.cardUrl))
+    private fun handleUnityMessage(msg: UnityMessage) {
+        when (msg.type) {
+            UnityEventType.SCENE_READY -> handleSceneReady(msg.status)
+            UnityEventType.CREATE_OBJECT -> handleCreateObjectResult(msg.status, msg.data)
+            UnityEventType.EXPORT_GLB -> handleExportGlbResult(msg.status, msg.data)
+            else -> Unit
         }
     }
 
-    private fun handleFinishEditing() {
-        updateDialogState(DialogState.SET_CARD_TITLE)
+    private fun handleSceneReady(status: UnityEventStatus) {
+        _cardEditorState.update { it.copy(isLoading = false) }
+        if (status == UnityEventStatus.SUCCESS) {
+            _cardEditorState.update { it.copy(unityState = UnityState.READY) }
+            initUnity()
+        } else {
+            _cardEditorState.update { it.copy(unityState = UnityState.ERROR) }
+            viewModelScope.launch {
+                // TODO: 재시도 or 별도 에러 화면 처리
+                _cardEditorSideEffect.emit(CardEditorSideEffect.ShowToast("Oops! Unity scene failed to load. Please try again."))
+                _cardEditorSideEffect.emit(CardEditorSideEffect.Finish)
+            }
+        }
     }
 
-    private fun handleExportGlbAndUpload() {
-        saveCardTitle()
-        updateDialogState(DialogState.NONE)
+    private fun handleCreateObjectResult(unityStatusType: UnityEventStatus, result: String) {
+        viewModelScope.launch {
+            val id = result.toLongOrNull() ?: return@launch
+            val selectedObject: CardElementWithAssetKeys?
 
-        if(_exportId == -1L) return
-        unityBridge.exportGlb(_exportId)
+            // 오브젝트 생성 실패 시 cardElement 에서 지우고 에러 메세지 Toast
+            if(unityStatusType == UnityEventStatus.FAILURE) {
+                Log.e(TAG, "Id $result Object Creation Failed")
+                selectedObject = null
+                cardElementRepository.deleteCardElementById(_cardId, id)
+                    .onFailure { Log.e(TAG, "Zombie data created. Element ID: $id") }
+                _cardEditorSideEffect.emit(CardEditorSideEffect.ShowToast("Oops! Load Object failed. Please try again."))
+            } else {
+                selectedObject = _cardEditorState.value.spawnedObjects.find { obj -> obj.cardElement.elementId == id }
+                unityBridge.selectObject(id)
+            }
 
-        _cardEditorState.update {
-            it.copy(
-                isLoading = true,
-                loadingText = "Exporting"
-            )
+            _cardEditorState.update {
+                it.copy(
+                    loadingObjectIds = it.loadingObjectIds - id,
+                    selectedSpawnedObject = selectedObject
+                )
+            }
         }
     }
 
@@ -273,24 +299,46 @@ class CardEditorViewModel @Inject constructor(
         }
     }
 
-    private fun handleCreateObjectResult(unityStatusType: UnityEventStatus, result: String) {
+    // ── 카드 정보 ─────────────────────────────────────────────────────────────
+
+    private fun handleChangeTitle(newTitle: String) {
+        _cardEditorState.update { it.copy(cardTitle = newTitle) }
+    }
+
+    private fun handleSaveTitle() {
+        saveCardTitle()
+    }
+
+    private fun handleResetTitle() {
+        _cardEditorState.update { it.copy(cardTitle = it.originalCardTitle) }
+    }
+
+    private fun handleOpenCardLinkDetail() {
+        updateDialogState(DialogState.CARD_LINK_DETAIL)
+    }
+
+    private fun handleCopyCardLink() {
         viewModelScope.launch {
-            val id = result.toLongOrNull() ?: return@launch
+            _cardEditorSideEffect.emit(CardEditorSideEffect.CopyCardLink(_cardEditorState.value.cardUrl))
+        }
+    }
 
-            // 오브젝트 생성 실패 시에도 Unity 에 해당 ID로 대체 큐브가 생성됨
-            if(unityStatusType != UnityEventStatus.SUCCESS) {
-                Log.e(TAG, "Id $result Object Creation Failed")
-                _cardEditorSideEffect.emit(CardEditorSideEffect.ShowToast("Oops! Load Object failed. Please try again."))
-            }
+    private fun handleFinishEditing() {
+        updateDialogState(DialogState.SET_CARD_TITLE)
+    }
 
-            _cardEditorState.update {
-                val selectedObject = _cardEditorState.value.spawnedObjects.find { obj -> obj.cardElement.elementId == id }
-                it.copy(
-                    loadingObjectIds = it.loadingObjectIds - id,
-                    selectedSpawnedObject = selectedObject
-                )
-            }
-            unityBridge.selectObject(id)
+    private fun handleExportGlbAndUpload() {
+        saveCardTitle()
+        updateDialogState(DialogState.NONE)
+
+        if(_exportId == -1L) return
+        unityBridge.exportGlb(_exportId)
+
+        _cardEditorState.update {
+            it.copy(
+                isLoading = true,
+                loadingText = "Exporting"
+            )
         }
     }
 
@@ -298,6 +346,7 @@ class CardEditorViewModel @Inject constructor(
         updateDialogState(dialogState)
     }
 
+    // ── 오브젝트 ──────────────────────────────────────────────────────────────
 
     private fun handleCreateObject(clickedObject: Asset) {
         viewModelScope.launch {
@@ -378,42 +427,12 @@ class CardEditorViewModel @Inject constructor(
         }
     }
 
-    private fun handleEnterTextMode() {
-        val texts = _cardEditorState.value.texts
-        val newList = texts.map { element ->
-            TempTextElement(
-                textElement = TextElement(
-                    elementId = element.elementId,
-                    attributes = element.attributes,
-                    posX = element.posX,
-                    posY = element.posY,
-                    posZ = element.posZ
-                )
-            )
-        }.asReversed()
-        _cardEditorState.update {
-            it.copy(
-                tempTextList = newList,
-                selectedTextTempId = newList.firstOrNull()?.tempId
-            )
-        }
-        updatePanelType(PanelType.TEXT_EDITOR)
-
-        unityBridge.clearAllTexts()
-        newList.forEach {
-            unityBridge.createText(
-                tempId = it.tempId,
-                textElement = it.textElement
-            )
-        }
-    }
-
-
     private fun handleResetCamera() {
         unityBridge.clearSelection()
     }
 
-    /* 오브젝트 조정 패널 */
+    // ── 오브젝트 조정 패널 ────────────────────────────────────────────────────
+
     private fun handleMoveObject(direction: Direction) {
         val tempState = _cardEditorState.value.tempTransform ?: return
         val updatedPosX = tempState.posX + direction.dx
@@ -495,7 +514,38 @@ class CardEditorViewModel @Inject constructor(
         _cardEditorState.update { it.copy(isTransformCameraFocus = !cameraFocus) }
     }
 
-    /* 텍스트 편집 패널 */
+    // ── 텍스트 편집 패널 ──────────────────────────────────────────────────────
+
+    private fun handleEnterTextMode() {
+        val texts = _cardEditorState.value.texts
+        val newList = texts.map { element ->
+            TempTextElement(
+                textElement = TextElement(
+                    elementId = element.elementId,
+                    attributes = element.attributes,
+                    posX = element.posX,
+                    posY = element.posY,
+                    posZ = element.posZ
+                )
+            )
+        }.asReversed()
+        _cardEditorState.update {
+            it.copy(
+                tempTextList = newList,
+                selectedTextTempId = newList.firstOrNull()?.tempId
+            )
+        }
+        updatePanelType(PanelType.TEXT_EDITOR)
+
+        unityBridge.clearAllTexts()
+        newList.forEach {
+            unityBridge.createText(
+                tempId = it.tempId,
+                textElement = it.textElement
+            )
+        }
+    }
+
     private fun handleMissingTextSelection() {
         if (_cardEditorState.value.tempTextList.isNotEmpty() && _cardEditorState.value.selectedTextTempId == null) {
             _cardEditorState.update { it.copy(selectedTextTempId = it.tempTextList.first().tempId) }
@@ -613,8 +663,8 @@ class CardEditorViewModel @Inject constructor(
         exitTextEditor()
     }
 
+    // ── 공통 유틸 ─────────────────────────────────────────────────────────────
 
-    /* 공통 함수 */
     private fun updatePanelType(panelType: PanelType) {
         _cardEditorState.update { it.copy(panelType = panelType) }
     }

@@ -31,8 +31,6 @@ import com.zcard.feature.R
 import com.zcard.feature.cardshare.CardShareFragment
 import com.zcard.feature.databinding.FragmentCardEditorBinding
 import com.zcard.designsystem.theme.ZCardTheme
-import com.zcard.domain.model.UnityMessage
-import com.zcard.domain.model.UnityEventType
 import com.zcard.feature.MainSideEffect
 import com.zcard.feature.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -116,7 +114,7 @@ class CardEditorFragment : Fragment() {
                 launch {
                     mainViewModel.mainSideEffect.collect {
                         if(it is MainSideEffect.ReceivedUnityMessage) {
-                            handleUnityMessage(it.message)
+                            viewModel.onIntent(CardEditorIntent.OnUnityMessage(it.message))
                         }
                     }
                 }
@@ -144,6 +142,7 @@ class CardEditorFragment : Fragment() {
 
     override fun onDestroy() {
         mainViewModel.emitSideEffect(MainSideEffect.PauseUnity)
+        viewModel.onIntent(CardEditorIntent.ClearScene)
         super.onDestroy()
     }
 
@@ -193,18 +192,6 @@ class CardEditorFragment : Fragment() {
             val imeVisible = insets.isVisible(WindowInsetsCompat.Type.ime())
             viewModel.setImeVisible(imeVisible)
             insets
-        }
-    }
-
-    private fun handleUnityMessage(msg: UnityMessage) {
-        when (msg.type) {
-            UnityEventType.CREATE_OBJECT -> {
-                viewModel.onIntent(CardEditorIntent.CreateObjectResult(msg.status, msg.data))
-            }
-            UnityEventType.EXPORT_GLB -> {
-                viewModel.onIntent(CardEditorIntent.ExportGlbResult(msg.status, msg.data))
-            }
-            else -> Unit
         }
     }
 

@@ -186,21 +186,17 @@ fun PreviewGifImage(onCardClick: () -> Unit) {
             contentAlignment = Alignment.BottomStart
         ) {
             Column(verticalArrangement = Arrangement.spacedBy(30.dp)) {
-                Column {
+                Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
                     Text(
                         color = White,
                         textAlign = TextAlign.Start,
-                        fontWeight = FontWeight.ExtraLight,
-                        letterSpacing = 0.4.sp,
-                        fontSize = 12.sp,
+                        style = MaterialTheme.typography.labelSmall,
                         text = stringResource(R.string.main_title_design_card_sub_prompt)
                     )
                     Text(
                         color = White,
                         textAlign = TextAlign.Start,
-                        fontWeight = FontWeight.ExtraBold,
-                        letterSpacing = 0.4.sp,
-                        fontSize = 20.sp,
+                        style = MaterialTheme.typography.titleLarge,
                         text = stringResource(R.string.main_title_design_card_prompt)
                     )
                 }

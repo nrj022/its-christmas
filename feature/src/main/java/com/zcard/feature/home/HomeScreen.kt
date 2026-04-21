@@ -41,7 +41,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -54,6 +53,7 @@ import coil.ImageLoader
 import coil.compose.AsyncImage
 import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
+import coil.request.ImageRequest
 import com.zcard.feature.R
 import com.zcard.designsystem.theme.DimGray
 import com.zcard.designsystem.theme.Gray
@@ -63,6 +63,7 @@ import com.zcard.designsystem.theme.White
 import com.zcard.designsystem.util.DrawableResProvider.getBgThumbByKey
 import com.zcard.feature.home.model.CardItem
 import com.zcard.feature.home.util.formatRelativeTime
+import java.io.File
 
 @Composable
 fun MainScreen(viewModel: MainViewModel = hiltViewModel(), onCardClick: (Long) -> Unit = {}) {
@@ -118,7 +119,8 @@ fun MainContent(modifier: Modifier = Modifier, cardItems: List<CardItem> = empty
                     CardItem(
                         cardTitle = item.card.title,
                         updatedAt = formatRelativeTime(item.card.updatedAt),
-                        thumbnailKey = item.thumbnailKey,
+                        thumbnailFile = item.thumbnailFile,
+                        backgroundKey = item.backgroundKey,
                         onClick = { onCardClick(item.card.cardId) }
                     )
                 }
@@ -237,7 +239,7 @@ fun CreateCardButton(onClick: () -> Unit) {
 }
 
 @Composable
-fun CardItem(cardTitle: String, updatedAt: String, thumbnailKey: String?, onClick: () -> Unit) {
+fun CardItem(cardTitle: String, updatedAt: String, thumbnailFile: File?, backgroundKey: String?, onClick: () -> Unit) {
     Column {
         Card(
             modifier = Modifier
@@ -249,12 +251,25 @@ fun CardItem(cardTitle: String, updatedAt: String, thumbnailKey: String?, onClic
             elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
         ) {
             Box(contentAlignment = Alignment.Center) {
-                Image(
-                    modifier = Modifier.fillMaxSize(),
-                    painter = painterResource(getBgThumbByKey(thumbnailKey)),
-                    contentDescription = stringResource(R.string.main_cd_card),
-                    contentScale = ContentScale.Crop
-                )
+                if(thumbnailFile != null) {
+                    AsyncImage(
+                        modifier = Modifier.fillMaxSize(),
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(thumbnailFile)
+                            .memoryCacheKey("${thumbnailFile.path}_${thumbnailFile.lastModified()}")
+                            .diskCacheKey("${thumbnailFile.path}_${thumbnailFile.lastModified()}")
+                            .build(),
+                        contentDescription = stringResource(R.string.main_cd_card),
+                        contentScale = ContentScale.Crop
+                    )
+                } else {
+                    Image(
+                        modifier = Modifier.fillMaxSize(),
+                        painter = painterResource(getBgThumbByKey(backgroundKey)),
+                        contentDescription = stringResource(R.string.main_cd_card),
+                        contentScale = ContentScale.Crop
+                    )
+                }
             }
         }
         Spacer(modifier = Modifier.height(10.dp))

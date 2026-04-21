@@ -1,5 +1,6 @@
 package com.zcard.feature.home
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,15 +9,18 @@ import com.zcard.domain.repository.AssetRepository
 import com.zcard.domain.repository.CardRepository
 import com.zcard.feature.home.model.CardItem
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.io.File
 import javax.inject.Inject
 
 private const val TAG = "MainViewModel"
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
+    @ApplicationContext private val context: Context,
     private val cardRepository: CardRepository,
     private val assetRepository: AssetRepository
 ): ViewModel() {
@@ -40,9 +44,12 @@ class MainViewModel @Inject constructor(
             cardRepository.getAllCards()
                 .onSuccess { cards ->
                     _cardList.value = cards.map {
-                        val thumbnailKey =
+                        val thumbnailKey = "thumb_card_${it.cardId}.jpg"
+                        val thumbnailFile = File(context.filesDir, thumbnailKey)
+                            .takeIf { file -> file.exists() }
+                        val backgroundKey =
                             backgroundList.find { bg -> bg.assetId == it.backgroundAssetId }?.thumbnailKey
-                        CardItem(it, thumbnailKey)
+                        CardItem(card = it, thumbnailFile = thumbnailFile, backgroundKey = backgroundKey)
                     }
                 }
                 .onFailure {

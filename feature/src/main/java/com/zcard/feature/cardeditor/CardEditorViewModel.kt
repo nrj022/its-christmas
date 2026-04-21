@@ -9,7 +9,6 @@ import com.zcard.feature.cardeditor.model.DialogState
 import com.zcard.feature.cardeditor.model.PanelType
 import com.zcard.feature.cardeditor.model.TempTextElement
 import com.zcard.feature.cardeditor.model.TempTransform
-import com.zcard.feature.cardeditor.model.UnityState
 import com.zcard.domain.bridge.UnityBridge
 import com.zcard.domain.enum.ElementType
 import com.zcard.domain.model.Asset
@@ -165,14 +164,8 @@ class CardEditorViewModel @Inject constructor(
                             loadingObjectIds = result.spawnedObjects.map { obj -> obj.cardElement.elementId }.toSet()
                         )
                     }
-                    _cardEditorState.update {
-                        it.copy(
-                            unityState = UnityState.LOADING,
-                            isLoading = true,
-                        )
-                    }
-                    unityBridge.checkSceneReady()
                     observeSpawnedObjects(result.spawnedObjectsFlow)
+                    initUnity()
                 }.onFailure {
                     Log.e(TAG, "handleInit: Load Card Failed\n$it")
                     delay(1000L)    // UX 개선 및 SideEffect 놓침 방지
@@ -215,25 +208,9 @@ class CardEditorViewModel @Inject constructor(
 
     private fun handleUnityMessage(msg: UnityMessage) {
         when (msg.type) {
-            UnityEventType.SCENE_READY -> handleSceneReady(msg.status)
             UnityEventType.CREATE_OBJECT -> handleCreateObjectResult(msg.status, msg.data)
             UnityEventType.EXPORT_GLB -> handleExportGlbResult(msg.status, msg.data)
             else -> Unit
-        }
-    }
-
-    private fun handleSceneReady(status: UnityEventStatus) {
-        _cardEditorState.update { it.copy(isLoading = false) }
-        if (status == UnityEventStatus.SUCCESS) {
-            _cardEditorState.update { it.copy(unityState = UnityState.READY) }
-            initUnity()
-        } else {
-            _cardEditorState.update { it.copy(unityState = UnityState.ERROR) }
-            viewModelScope.launch {
-                // TODO: 재시도 or 별도 에러 화면 처리
-                _cardEditorSideEffect.emit(CardEditorSideEffect.ShowToast("Oops! Unity scene failed to load. Please try again."))
-                _cardEditorSideEffect.emit(CardEditorSideEffect.Finish)
-            }
         }
     }
 

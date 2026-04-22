@@ -12,7 +12,6 @@ import com.zcard.domain.model.UnityMessage
 sealed class CardEditorIntent {
     data class OnUnityMessage(val message: UnityMessage) : CardEditorIntent()
     data class Init(val cardId: Long): CardEditorIntent()
-    data object ClearScene: CardEditorIntent()
     data class ChangeTitle(val newTitle: String): CardEditorIntent()
 
     data object OpenCardLinkDetail: CardEditorIntent()

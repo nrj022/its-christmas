@@ -48,6 +48,7 @@ class CardEditorFragment : Fragment() {
 
     private val loadingOverlayVisible = mutableStateOf(true)
     private val loadingText = mutableStateOf("Loading")
+    private var cardId: Long = -1L
 
     companion object {
         private const val ARG_CARD_ID = "cardId"
@@ -66,10 +67,10 @@ class CardEditorFragment : Fragment() {
     ): View? {
         binding = FragmentCardEditorBinding.inflate(inflater, container, false)
         layoutParams = binding.unityContainer.layoutParams as ConstraintLayout.LayoutParams
+        mainViewModel.onEditorCreated()
 
-        val cardId = arguments?.getLong(ARG_CARD_ID) ?: -1  // TODO: 새로운 카드 생성이 아닌 카드 조회 시 Card ID 누락에 대한 에러 처리 추가 (Log, Dialog)
+        cardId = arguments?.getLong(ARG_CARD_ID) ?: -1  // TODO: 새로운 카드 생성이 아닌 카드 조회 시 Card ID 누락에 대한 에러 처리 추가 (Log, Dialog)
         viewModel.onIntent(CardEditorIntent.Init(cardId))
-        mainViewModel.emitSideEffect(MainSideEffect.ResumeUnity)
 
         initListener()
 
@@ -140,10 +141,9 @@ class CardEditorFragment : Fragment() {
         return binding.root
     }
 
-    override fun onDestroy() {
-        mainViewModel.emitSideEffect(MainSideEffect.PauseUnity)
-        viewModel.onIntent(CardEditorIntent.ClearScene)
-        super.onDestroy()
+    override fun onDestroyView() {
+        mainViewModel.onEditorDestroyed(cardId)
+        super.onDestroyView()
     }
 
     private fun initListener() {

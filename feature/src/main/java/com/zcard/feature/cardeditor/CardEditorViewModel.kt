@@ -95,7 +95,6 @@ class CardEditorViewModel @Inject constructor(
         when (intent) {
             is CardEditorIntent.OnUnityMessage -> handleUnityMessage(intent.message)
             is CardEditorIntent.Init -> handleInit(intent.cardId)
-            is CardEditorIntent.ClearScene -> handleClearScene()
             is CardEditorIntent.ChangeTitle -> handleChangeTitle(intent.newTitle)
 
             is CardEditorIntent.OpenCardLinkDetail -> handleOpenCardLinkDetail()
@@ -183,9 +182,6 @@ class CardEditorViewModel @Inject constructor(
             _cardEditorState.value.texts
         )
         unityChangeBackground(bgAssetId)
-    }
-
-    private fun handleClearScene() {
     }
 
     private fun observeSpawnedObjects(flow: Flow<Result<List<CardElementWithAssetKeys>>>) {

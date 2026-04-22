@@ -35,16 +35,16 @@ import com.zcard.domain.usecase.UploadCardModelUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.File
@@ -76,11 +76,11 @@ class CardEditorViewModel @Inject constructor(
     private val _cardEditorState = MutableStateFlow(CardEditorState())
     val cardEditorState: StateFlow<CardEditorState> = _cardEditorState
 
-    private val _cardEditorSideEffect = MutableSharedFlow<CardEditorSideEffect>()
-    val cardEditorSideEffect: SharedFlow<CardEditorSideEffect> = _cardEditorSideEffect
+    private val _cardEditorSideEffect = Channel<CardEditorSideEffect>(Channel.BUFFERED)
+    val cardEditorSideEffect = _cardEditorSideEffect.receiveAsFlow()
 
     private val _imeVisible = MutableStateFlow(false)
-    val imeVisible = _imeVisible.asStateFlow()
+    private val imeVisible = _imeVisible.asStateFlow()
 
     fun setImeVisible(visible: Boolean) {
         _imeVisible.value = visible
@@ -168,8 +168,8 @@ class CardEditorViewModel @Inject constructor(
                 }.onFailure {
                     Log.e(TAG, "handleInit: Load Card Failed\n$it")
                     delay(1000L)    // UX 개선 및 SideEffect 놓침 방지
-                    _cardEditorSideEffect.emit(CardEditorSideEffect.ShowToast("Oops! Failed to load card. Please try again."))
-                    _cardEditorSideEffect.emit(CardEditorSideEffect.Finish)
+                    _cardEditorSideEffect.trySend(CardEditorSideEffect.ShowToast("Oops! Failed to load card. Please try again."))
+                    _cardEditorSideEffect.trySend(CardEditorSideEffect.Finish)
                 }
         }
     }
@@ -192,7 +192,7 @@ class CardEditorViewModel @Inject constructor(
             }
             result.exceptionOrNull()?.let { error ->
                 Log.e(TAG, "observeSpawnedObjects: $error")
-                _cardEditorSideEffect.emit(
+                _cardEditorSideEffect.trySend(
                     CardEditorSideEffect.ShowToast("Oops! Failed to refresh objects. Please try again.")
                 )
             }
@@ -220,7 +220,7 @@ class CardEditorViewModel @Inject constructor(
                 selectedObject = null
                 cardElementRepository.deleteCardElementById(_cardId, id)
                     .onFailure { Log.e(TAG, "Zombie data created. Element ID: $id") }
-                _cardEditorSideEffect.emit(CardEditorSideEffect.ShowToast("Oops! Load Object failed. Please try again."))
+                _cardEditorSideEffect.trySend(CardEditorSideEffect.ShowToast("Oops! Load Object failed. Please try again."))
             } else {
                 selectedObject = _cardEditorState.value.spawnedObjects.find { obj -> obj.cardElement.elementId == id }
                 unityBridge.selectObject(id)
@@ -255,7 +255,7 @@ class CardEditorViewModel @Inject constructor(
                         is UploadState.Success -> {
                             val cardUrl = generateCardUrlUseCase(_cardId)
                             if(cardUrl.isEmpty()) error("Empty Card URL")
-                            _cardEditorSideEffect.emit(CardEditorSideEffect.NavigateToCardShare(cardUrl))
+                            _cardEditorSideEffect.trySend(CardEditorSideEffect.NavigateToCardShare(cardUrl))
                         }
                         is UploadState.Failure -> error("Upload Failed")
                     }
@@ -264,7 +264,7 @@ class CardEditorViewModel @Inject constructor(
                 throw e
             } catch (e: Throwable) {
                 Log.e(TAG, "handleExportGlbResult: $e")
-                _cardEditorSideEffect.emit(CardEditorSideEffect.ShowToast("Oops! Card upload failed. Please try again."))
+                _cardEditorSideEffect.trySend(CardEditorSideEffect.ShowToast("Oops! Card upload failed. Please try again."))
             } finally {
                 _cardEditorState.update { it.copy(isLoading = false) }
             }
@@ -291,7 +291,7 @@ class CardEditorViewModel @Inject constructor(
 
     private fun handleCopyCardLink() {
         viewModelScope.launch {
-            _cardEditorSideEffect.emit(CardEditorSideEffect.CopyCardLink(_cardEditorState.value.cardUrl))
+            _cardEditorSideEffect.trySend(CardEditorSideEffect.CopyCardLink(_cardEditorState.value.cardUrl))
         }
     }
 
@@ -664,7 +664,7 @@ class CardEditorViewModel @Inject constructor(
                     _cardEditorState.update { it.copy(originalCardTitle = title) }
                 }.onFailure {
                     Log.e(TAG, "handleSaveTitle: $it")
-                    _cardEditorSideEffect.emit(CardEditorSideEffect.ShowToast("Oops! Card title update failed. Please try again."))
+                    _cardEditorSideEffect.trySend(CardEditorSideEffect.ShowToast("Oops! Card title update failed. Please try again."))
                 }
         }
     }

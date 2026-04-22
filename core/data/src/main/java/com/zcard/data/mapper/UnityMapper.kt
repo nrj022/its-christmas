@@ -28,8 +28,9 @@ object UnityMapper {
                 )
             },
             texts = texts.map {
+                val id = requireNotNull(it.elementId) { "TextElement must have elementId before sending to Unity" }
                 TextDto(
-                    id = "${it.elementId}",
+                    id = "$id",
                     position = Vector3Dto(
                         x = it.posX,
                         y = it.posY,
@@ -126,18 +127,17 @@ object UnityMapper {
 
     fun toTextListDto(textElements: List<TextElement>): TextListDto =
         TextListDto(
-            texts = textElements.mapNotNull { textElement ->
-                textElement.elementId?.let { id ->
-                    TextDto(
-                        id = "$id",
-                        position = Vector3Dto(textElement.posX, textElement.posY, textElement.posZ),
-                        textContent = textElement.attributes.content,
-                        fontFamilyName = textElement.attributes.fontFamily.key,
-                        fontSize = textElement.attributes.fontSize,
-                        color = textElement.attributes.textColor.rgbaColor.toDto(),
-                        textAlignInt = textElement.attributes.alignment.alignCode
-                    )
-                }
+            texts = textElements.map { textElement ->
+                val id = requireNotNull(textElement.elementId) { "TextElement must have elementId before sending to Unity" }
+                TextDto(
+                    id = "$id",
+                    position = Vector3Dto(textElement.posX, textElement.posY, textElement.posZ),
+                    textContent = textElement.attributes.content,
+                    fontFamilyName = textElement.attributes.fontFamily.key,
+                    fontSize = textElement.attributes.fontSize,
+                    color = textElement.attributes.textColor.rgbaColor.toDto(),
+                    textAlignInt = textElement.attributes.alignment.alignCode
+                )
             }
         )
 }

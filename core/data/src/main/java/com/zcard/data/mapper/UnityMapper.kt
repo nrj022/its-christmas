@@ -68,9 +68,11 @@ object UnityMapper {
     fun toTextDto(
         tempId: Long?,
         textElement: TextElement
-    ): TextDto =
-        TextDto(
-            id = "${tempId ?: textElement.elementId}",
+    ): TextDto {
+        val resolvedId = tempId ?: textElement.elementId
+            ?: error("toTextDto requires either tempId or textElement.elementId to be non-null")
+        return TextDto(
+            id = "$resolvedId",
             position = Vector3Dto(textElement.posX, textElement.posY, textElement.posZ),
             textContent = textElement.attributes.content,
             fontFamilyName = textElement.attributes.fontFamily.key,
@@ -78,6 +80,7 @@ object UnityMapper {
             color = textElement.attributes.textColor.rgbaColor.toDto(),
             textAlignInt = textElement.attributes.alignment.alignCode
         )
+    }
 
     fun toUpdatePositionDto(elementId: Long, posX: Float, posY: Float, posZ: Float): UpdateDto<Vector3Dto> =
         UpdateDto(

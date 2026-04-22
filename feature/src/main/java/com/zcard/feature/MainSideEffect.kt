@@ -1,7 +1,5 @@
 package com.zcard.feature
 
-import com.zcard.domain.model.UnityMessage
-
 sealed class MainSideEffect {
     data object ResumeUnity : MainSideEffect()
     data object PauseUnity : MainSideEffect()

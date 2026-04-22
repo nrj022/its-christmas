@@ -31,9 +31,7 @@ import com.zcard.feature.R
 import com.zcard.feature.cardshare.CardShareFragment
 import com.zcard.feature.databinding.FragmentCardEditorBinding
 import com.zcard.designsystem.theme.ZCardTheme
-import com.zcard.domain.model.UnityMessage
-import com.zcard.domain.model.UnityEventType
-import com.zcard.feature.MainSideEffect
+import com.zcard.feature.MainIntent
 import com.zcard.feature.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -50,6 +48,7 @@ class CardEditorFragment : Fragment() {
 
     private val loadingOverlayVisible = mutableStateOf(true)
     private val loadingText = mutableStateOf("Loading")
+    private var cardId: Long = -1L
 
     companion object {
         private const val ARG_CARD_ID = "cardId"
@@ -68,10 +67,10 @@ class CardEditorFragment : Fragment() {
     ): View? {
         binding = FragmentCardEditorBinding.inflate(inflater, container, false)
         layoutParams = binding.unityContainer.layoutParams as ConstraintLayout.LayoutParams
+        mainViewModel.onIntent(MainIntent.OnEditorCreated)
 
-        val cardId = arguments?.getLong(ARG_CARD_ID) ?: -1  // TODO: 새로운 카드 생성이 아닌 카드 조회 시 Card ID 누락에 대한 에러 처리 추가 (Log, Dialog)
+        cardId = arguments?.getLong(ARG_CARD_ID) ?: -1  // TODO: 새로운 카드 생성이 아닌 카드 조회 시 Card ID 누락에 대한 에러 처리 추가 (Log, Dialog)
         viewModel.onIntent(CardEditorIntent.Init(cardId))
-        mainViewModel.emitSideEffect(MainSideEffect.ResumeUnity)
 
         initListener()
 
@@ -109,15 +108,13 @@ class CardEditorFragment : Fragment() {
                 }
                 launch {
                     viewModel.unityContainerHeightFractionFlow.collect {
-                        mainViewModel.emitUnityContainerHeightFraction(it)
+                        mainViewModel.onIntent(MainIntent.OnUnityContainerHeightChanged(it))
                         updateUnityContainerHeight(it)
                     }
                 }
                 launch {
-                    mainViewModel.mainSideEffect.collect {
-                        if(it is MainSideEffect.ReceivedUnityMessage) {
-                            handleUnityMessage(it.message)
-                        }
+                    mainViewModel.unityMessage.collect {
+                        viewModel.onIntent(CardEditorIntent.OnUnityMessage(it))
                     }
                 }
             }
@@ -142,9 +139,9 @@ class CardEditorFragment : Fragment() {
         return binding.root
     }
 
-    override fun onDestroy() {
-        mainViewModel.emitSideEffect(MainSideEffect.PauseUnity)
-        super.onDestroy()
+    override fun onDestroyView() {
+        mainViewModel.onIntent(MainIntent.OnEditorDestroyed(cardId))
+        super.onDestroyView()
     }
 
     private fun initListener() {
@@ -193,18 +190,6 @@ class CardEditorFragment : Fragment() {
             val imeVisible = insets.isVisible(WindowInsetsCompat.Type.ime())
             viewModel.setImeVisible(imeVisible)
             insets
-        }
-    }
-
-    private fun handleUnityMessage(msg: UnityMessage) {
-        when (msg.type) {
-            UnityEventType.CREATE_OBJECT -> {
-                viewModel.onIntent(CardEditorIntent.CreateObjectResult(msg.status, msg.data))
-            }
-            UnityEventType.EXPORT_GLB -> {
-                viewModel.onIntent(CardEditorIntent.ExportGlbResult(msg.status, msg.data))
-            }
-            else -> Unit
         }
     }
 

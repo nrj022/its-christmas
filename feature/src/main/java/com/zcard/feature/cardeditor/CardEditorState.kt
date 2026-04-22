@@ -10,11 +10,11 @@ import com.zcard.domain.model.TextElement
 
 data class CardEditorState(
     val panelType: PanelType = PanelType.ASSET_BROWSER,
+    val dialogState: DialogState = DialogState.NONE,
     val isLoading: Boolean = false,
     val isTransformCameraFocus: Boolean = true,
     val tempTransform: TempTransform? = null,
     val tempTextList: List<TempTextElement> = emptyList(),
-    val dialogState: DialogState = DialogState.NONE,
     val originalCardTitle: String = "New Card",
     val cardTitle: String = "New Card",
     val cardUrl: String = "",

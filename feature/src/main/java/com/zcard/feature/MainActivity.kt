@@ -61,7 +61,6 @@ class MainActivity : AppCompatActivity() {
                         is MainSideEffect.UnityContainerHeightFraction -> {
                             updateUnityContainerHeight(sideEffect.fraction)
                         }
-                        else -> Unit
                     }
                 }
             }
@@ -103,7 +102,7 @@ class MainActivity : AppCompatActivity() {
         try {
             val message = Json.decodeFromString<UnityMessage>(jsonString)
             // UI 스레드에서 처리 보장
-            runOnUiThread { viewModel.emitUnityMessage(message) }
+            runOnUiThread { viewModel.onIntent(MainIntent.OnUnityMessage(message)) }
         } catch (e: Exception) {
             Log.e("UnityMsg", "Parsing Error: ${e.message}")
         }

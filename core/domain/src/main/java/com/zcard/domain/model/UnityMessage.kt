@@ -4,22 +4,16 @@ package com.zcard.domain.model
 import kotlinx.serialization.Serializable
 
 enum class UnityEventType {
-    LIFECYCLE,
+    SCENE_RESET,
     CREATE_OBJECT,
-    EXPORT_GLB
+    EXPORT_GLB,
 }
 
 enum class UnityEventStatus  {
     // Result
     SUCCESS,
     FAILURE,
-
-    // Lifecycle
-    AWAKE,
-    START,
-    DISABLE,
-    DESTROY,
-    QUIT
+    CANCELED,
 }
 
 @Serializable

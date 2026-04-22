@@ -7,9 +7,10 @@ import com.zcard.domain.model.CardElementWithAssetKeys
 import com.zcard.domain.model.ColorOption
 import com.zcard.domain.model.FontOption
 import com.zcard.domain.model.TextAlignmentOption
-import com.zcard.domain.model.UnityEventStatus
+import com.zcard.domain.model.UnityMessage
 
 sealed class CardEditorIntent {
+    data class OnUnityMessage(val message: UnityMessage) : CardEditorIntent()
     data class Init(val cardId: Long): CardEditorIntent()
     data class ChangeTitle(val newTitle: String): CardEditorIntent()
 
@@ -20,8 +21,6 @@ sealed class CardEditorIntent {
 
     data object FinishEditing: CardEditorIntent()
     data object ExportGlbAndUpload: CardEditorIntent()
-    data class ExportGlbResult(val unityResult: UnityEventStatus, val result: String): CardEditorIntent()
-    data class CreateObjectResult(val unityResult: UnityEventStatus, val result: String): CardEditorIntent()
     data class ChangeDialogState(val dialogState: DialogState): CardEditorIntent()
 
     data class CreateObject(val clickedObject: Asset): CardEditorIntent()

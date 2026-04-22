@@ -66,7 +66,7 @@ import com.zcard.feature.home.util.formatRelativeTime
 import java.io.File
 
 @Composable
-fun MainScreen(viewModel: MainViewModel = hiltViewModel(), onCardClick: (Long) -> Unit = {}) {
+fun HomeScreen(viewModel: HomeViewModel = hiltViewModel(), onCardClick: (Long) -> Unit = {}) {
     val cardItems by viewModel.cardList.collectAsStateWithLifecycle()
 
     LifecycleResumeEffect(Unit) {
@@ -74,14 +74,14 @@ fun MainScreen(viewModel: MainViewModel = hiltViewModel(), onCardClick: (Long) -
         onPauseOrDispose {  }
     }
 
-    MainContent(
+    HomeContent(
         cardItems = cardItems,
         onCardClick = onCardClick
     )
 }
 
 @Composable
-fun MainContent(modifier: Modifier = Modifier, cardItems: List<CardItem> = emptyList(), onCardClick: (Long) -> Unit = {}) {
+fun HomeContent(modifier: Modifier = Modifier, cardItems: List<CardItem> = emptyList(), onCardClick: (Long) -> Unit = {}) {
     Scaffold(
         modifier = modifier
             .fillMaxSize()
@@ -103,7 +103,7 @@ fun MainContent(modifier: Modifier = Modifier, cardItems: List<CardItem> = empty
             item(span = { GridItemSpan(maxLineSpan) }) {
                 Text(
                     modifier = Modifier.padding(horizontal = 8.dp),
-                    text = stringResource(R.string.main_title_card_dashboard),
+                    text = stringResource(R.string.home_title_card_dashboard),
                     style = MaterialTheme.typography.bodyMedium
                 )
             }
@@ -176,7 +176,7 @@ fun PreviewGifImage(onCardClick: () -> Unit) {
             imageLoader = gifEnabledLoader,
             model = R.drawable.gif_happy_birthday,
             contentScale = ContentScale.Crop,
-            contentDescription = stringResource(R.string.main_cd_async_image)
+            contentDescription = stringResource(R.string.home_cd_async_image)
         )
         Box(
             modifier = Modifier
@@ -191,13 +191,13 @@ fun PreviewGifImage(onCardClick: () -> Unit) {
                         color = White,
                         textAlign = TextAlign.Start,
                         style = MaterialTheme.typography.labelSmall,
-                        text = stringResource(R.string.main_title_design_card_sub_prompt)
+                        text = stringResource(R.string.home_title_design_card_sub_prompt)
                     )
                     Text(
                         color = White,
                         textAlign = TextAlign.Start,
                         style = MaterialTheme.typography.titleLarge,
-                        text = stringResource(R.string.main_title_design_card_prompt)
+                        text = stringResource(R.string.home_title_design_card_prompt)
                     )
                 }
                 CreateCardButton(onClick = onCardClick)
@@ -222,12 +222,12 @@ fun CreateCardButton(onClick: () -> Unit) {
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = stringResource(R.string.main_button_create),
+                text = stringResource(R.string.home_button_create),
                 style = MaterialTheme.typography.labelSmall
             )
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowForward,
-                contentDescription = stringResource(R.string.main_cd_arrow_forward_icon),
+                contentDescription = stringResource(R.string.home_cd_arrow_forward_icon),
                 modifier = Modifier.size(14.dp)
             )
         }
@@ -255,14 +255,14 @@ fun CardItem(cardTitle: String, updatedAt: String, thumbnailFile: File?, backgro
                             .memoryCacheKey("${thumbnailFile.path}_${thumbnailFile.lastModified()}")
                             .diskCacheKey("${thumbnailFile.path}_${thumbnailFile.lastModified()}")
                             .build(),
-                        contentDescription = stringResource(R.string.main_cd_card),
+                        contentDescription = stringResource(R.string.home_cd_card),
                         contentScale = ContentScale.Crop
                     )
                 } else {
                     Image(
                         modifier = Modifier.fillMaxSize(),
                         painter = painterResource(getBgThumbByKey(backgroundKey)),
-                        contentDescription = stringResource(R.string.main_cd_card),
+                        contentDescription = stringResource(R.string.home_cd_card),
                         contentScale = ContentScale.Crop
                     )
                 }
@@ -302,17 +302,17 @@ fun EmptyCardSection(modifier: Modifier = Modifier) {
         Icon(
             painter = painterResource(id = R.drawable.ic_card_star),
             tint = Gray,
-            contentDescription = stringResource(R.string.main_cd_empty_card_icon)
+            contentDescription = stringResource(R.string.home_cd_empty_card_icon)
         )
         Spacer(modifier = Modifier.height(20.dp))
         Text(
-            text = stringResource(R.string.main_text_notice_empty_card_1),
+            text = stringResource(R.string.home_text_notice_empty_card_1),
             style = MaterialTheme.typography.labelSmall,
             color = Gray
         )
         Spacer(modifier = Modifier.height(6.dp))
         Text(
-            text = stringResource(R.string.main_text_notice_empty_card_2),
+            text = stringResource(R.string.home_text_notice_empty_card_2),
             style = MaterialTheme.typography.labelSmall,
             color = Gray
         )
@@ -322,8 +322,8 @@ fun EmptyCardSection(modifier: Modifier = Modifier) {
 
 @Preview(showSystemUi = true)
 @Composable
-fun MainScreenPreview() {
+fun HomeScreenPreview() {
     ZCardTheme {
-        MainContent()
+        HomeContent()
     }
 }

@@ -16,10 +16,10 @@ import kotlinx.coroutines.launch
 import java.io.File
 import javax.inject.Inject
 
-private const val TAG = "MainViewModel"
+private const val TAG = "HomeViewModel"
 
 @HiltViewModel
-class MainViewModel @Inject constructor(
+class HomeViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val cardRepository: CardRepository,
     private val assetRepository: AssetRepository

@@ -22,7 +22,7 @@ class HomeFragment : Fragment() {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 ZCardTheme {
-                    MainScreen {
+                    HomeScreen {
                         parentFragmentManager.beginTransaction()
                             .setCustomAnimations(
                                 R.anim.slide_in_right,

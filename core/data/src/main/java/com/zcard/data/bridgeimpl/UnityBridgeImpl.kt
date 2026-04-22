@@ -18,9 +18,8 @@ class UnityBridgeImpl @Inject constructor(): UnityBridge {
     }
 
     private object Methods {
-        const val CHECK_SCENE_READY = "CheckSceneReady"
         const val INIT_SCENE = "InitScene"
-        const val CLEAR_SCENE = "ClearScene"
+        const val RESET_SCENE = "ResetScene"
         const val CHANGE_BACKGROUND = "ChangeBackground"
 
         const val CREATE_OBJECT = "CreateObject"
@@ -50,10 +49,6 @@ class UnityBridgeImpl @Inject constructor(): UnityBridge {
         UnityPlayer.UnitySendMessage(UNITY_BRIDGE, method, message)
     }
 
-    override fun checkSceneReady() {
-        send(Methods.CHECK_SCENE_READY, "")
-    }
-
     override fun initScene(
         objectElements: List<CardElementWithAssetKeys>,
         textElements: List<TextElement>
@@ -61,8 +56,8 @@ class UnityBridgeImpl @Inject constructor(): UnityBridge {
         send(Methods.INIT_SCENE, UnityMapper.toSceneDto(objectElements, textElements))
     }
 
-    override fun clearScene() {
-        send(Methods.CLEAR_SCENE, "")
+    override fun resetScene(cardId: Long, resetIdCounter: Int) {
+        send(Methods.RESET_SCENE, UnityMapper.toResetSceneDto(cardId, resetIdCounter))
     }
 
     override fun changeBackground(backgroundKey: String) {

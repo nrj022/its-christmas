@@ -1,6 +1,7 @@
 package com.zcard.data.mapper
 
 import com.zcard.data.dto.ObjectDto
+import com.zcard.data.dto.ResetSceneDto
 import com.zcard.data.dto.SceneDto
 import com.zcard.data.dto.TextDto
 import com.zcard.data.dto.TextListDto
@@ -41,6 +42,15 @@ object UnityMapper {
                     textAlignInt = it.attributes.alignment.alignCode,
                 )
             }
+        )
+
+    fun toResetSceneDto(
+        cardId: Long,
+        resetIdCounter: Int
+    ): ResetSceneDto =
+        ResetSceneDto(
+            cardId = cardId,
+            resetIdCounter = resetIdCounter
         )
 
     fun toObjectDto(

@@ -4,8 +4,7 @@ package com.zcard.domain.model
 import kotlinx.serialization.Serializable
 
 enum class UnityEventType {
-    SCENE_READY,
-    SCENE_CLEARED,
+    SCENE_RESET,
     CREATE_OBJECT,
     EXPORT_GLB,
 }

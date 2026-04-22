@@ -26,6 +26,13 @@ data class SceneDto(
 )
 
 @Serializable
+data class ResetSceneDto(
+    val cardId: Long,
+    val resetIdCounter: Int
+)
+
+
+@Serializable
 data class ObjectDto(
     val id: String,
     val prefabName: String,

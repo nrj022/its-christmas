@@ -6,14 +6,12 @@ import com.zcard.domain.model.RgbaColor
 import com.zcard.domain.model.TextElement
 
 interface UnityBridge {
-    fun checkSceneReady()
-
     fun initScene(
         objectElements: List<CardElementWithAssetKeys>,
         textElements: List<TextElement>
     )
 
-    fun clearScene()
+    fun resetScene(cardId: Long, resetIdCounter: Int)
 
     fun changeBackground(backgroundKey: String)
 

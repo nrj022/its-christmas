@@ -186,7 +186,6 @@ class CardEditorViewModel @Inject constructor(
     }
 
     private fun handleClearScene() {
-        unityBridge.clearScene()
     }
 
     private fun observeSpawnedObjects(flow: Flow<Result<List<CardElementWithAssetKeys>>>) {

@@ -1,5 +1,6 @@
 package com.zcard.data.mapper
 
+import com.zcard.data.dto.ColorDto
 import com.zcard.data.dto.ObjectDto
 import com.zcard.data.dto.ResetSceneDto
 import com.zcard.data.dto.SceneDto
@@ -101,7 +102,7 @@ object UnityMapper {
             value = fontSize
         )
 
-    fun toUpdateTextColorDto(elementId: Long, rgbaColor: RgbaColor): UpdateDto<*> =
+    fun toUpdateTextColorDto(elementId: Long, rgbaColor: RgbaColor): UpdateDto<ColorDto> =
         UpdateDto(
             id = "$elementId",
             value = rgbaColor.toDto()

@@ -6,5 +6,4 @@ import java.io.File
 data class CardItem(
     val card: Card,
     val thumbnailFile: File? = null,
-    val backgroundKey: String? = null
 )

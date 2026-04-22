@@ -120,7 +120,6 @@ fun HomeContent(modifier: Modifier = Modifier, cardItems: List<CardItem> = empty
                         cardTitle = item.card.title,
                         updatedAt = formatRelativeTime(item.card.updatedAt),
                         thumbnailFile = item.thumbnailFile,
-                        backgroundKey = item.backgroundKey,
                         onClick = { onCardClick(item.card.cardId) }
                     )
                 }
@@ -235,7 +234,7 @@ fun CreateCardButton(onClick: () -> Unit) {
 }
 
 @Composable
-fun CardItem(cardTitle: String, updatedAt: String, thumbnailFile: File?, backgroundKey: String?, onClick: () -> Unit) {
+fun CardItem(cardTitle: String, updatedAt: String, thumbnailFile: File?, onClick: () -> Unit) {
     Column {
         Card(
             modifier = Modifier
@@ -261,7 +260,7 @@ fun CardItem(cardTitle: String, updatedAt: String, thumbnailFile: File?, backgro
                 } else {
                     Image(
                         modifier = Modifier.fillMaxSize(),
-                        painter = painterResource(getBgThumbByKey(backgroundKey)),
+                        painter = painterResource(R.drawable.thumb_card_placeholder),
                         contentDescription = stringResource(R.string.home_cd_card),
                         contentScale = ContentScale.Crop
                     )

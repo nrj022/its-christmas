@@ -4,8 +4,6 @@ import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.zcard.domain.model.Asset
-import com.zcard.domain.repository.AssetRepository
 import com.zcard.domain.repository.CardRepository
 import com.zcard.feature.home.model.CardItem
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,21 +20,10 @@ private const val TAG = "HomeViewModel"
 class HomeViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val cardRepository: CardRepository,
-    private val assetRepository: AssetRepository
 ): ViewModel() {
 
     private val _cardList = MutableStateFlow<List<CardItem>>(emptyList())
     val cardList: StateFlow<List<CardItem>> = _cardList
-
-    private var backgroundList = emptyList<Asset>()
-
-    init {
-        loadBackgrounds()
-    }
-
-    fun loadBackgrounds() {
-        backgroundList = assetRepository.getInitialBackgrounds()
-    }
 
     // TODO: Flow로 전체 카드 리스트 조회 방식 변경
     fun loadCards() {
@@ -47,9 +34,7 @@ class HomeViewModel @Inject constructor(
                         val thumbnailKey = "thumb_card_${it.cardId}.jpg"
                         val thumbnailFile = File(context.filesDir, thumbnailKey)
                             .takeIf { file -> file.exists() }
-                        val backgroundKey =
-                            backgroundList.find { bg -> bg.assetId == it.backgroundAssetId }?.thumbnailKey
-                        CardItem(card = it, thumbnailFile = thumbnailFile, backgroundKey = backgroundKey)
+                        CardItem(card = it, thumbnailFile = thumbnailFile)
                     }
                 }
                 .onFailure {

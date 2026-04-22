@@ -31,7 +31,7 @@ import com.zcard.feature.R
 import com.zcard.feature.cardshare.CardShareFragment
 import com.zcard.feature.databinding.FragmentCardEditorBinding
 import com.zcard.designsystem.theme.ZCardTheme
-import com.zcard.feature.MainSideEffect
+import com.zcard.feature.MainIntent
 import com.zcard.feature.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -67,7 +67,7 @@ class CardEditorFragment : Fragment() {
     ): View? {
         binding = FragmentCardEditorBinding.inflate(inflater, container, false)
         layoutParams = binding.unityContainer.layoutParams as ConstraintLayout.LayoutParams
-        mainViewModel.onEditorCreated()
+        mainViewModel.onIntent(MainIntent.OnEditorCreated)
 
         cardId = arguments?.getLong(ARG_CARD_ID) ?: -1  // TODO: 새로운 카드 생성이 아닌 카드 조회 시 Card ID 누락에 대한 에러 처리 추가 (Log, Dialog)
         viewModel.onIntent(CardEditorIntent.Init(cardId))
@@ -108,15 +108,13 @@ class CardEditorFragment : Fragment() {
                 }
                 launch {
                     viewModel.unityContainerHeightFractionFlow.collect {
-                        mainViewModel.emitUnityContainerHeightFraction(it)
+                        mainViewModel.onIntent(MainIntent.OnUnityContainerHeightChanged(it))
                         updateUnityContainerHeight(it)
                     }
                 }
                 launch {
-                    mainViewModel.mainSideEffect.collect {
-                        if(it is MainSideEffect.ReceivedUnityMessage) {
-                            viewModel.onIntent(CardEditorIntent.OnUnityMessage(it.message))
-                        }
+                    mainViewModel.unityMessage.collect {
+                        viewModel.onIntent(CardEditorIntent.OnUnityMessage(it))
                     }
                 }
             }
@@ -142,7 +140,7 @@ class CardEditorFragment : Fragment() {
     }
 
     override fun onDestroyView() {
-        mainViewModel.onEditorDestroyed(cardId)
+        mainViewModel.onIntent(MainIntent.OnEditorDestroyed(cardId))
         super.onDestroyView()
     }
 

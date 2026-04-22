@@ -12,9 +12,9 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 sealed class UnityLifecycle {
-    data object Paused: UnityLifecycle()
-    data object Running: UnityLifecycle()
-    data class Resetting(val id: Int): UnityLifecycle()
+    data object Paused : UnityLifecycle()
+    data object Running : UnityLifecycle()
+    data class Resetting(val id: Int) : UnityLifecycle()
 }
 
 @HiltViewModel
@@ -28,41 +28,51 @@ class MainViewModel @Inject constructor(
     private val _mainSideEffect = MutableSharedFlow<MainSideEffect>()
     val mainSideEffect: SharedFlow<MainSideEffect> = _mainSideEffect
 
-    private fun emitSideEffect(sideEffect: MainSideEffect) {
-        viewModelScope.launch {
-            _mainSideEffect.emit(sideEffect)
+    private val _unityMessage = MutableSharedFlow<UnityMessage>()
+    val unityMessage: SharedFlow<UnityMessage> = _unityMessage
+
+    fun onIntent(intent: MainIntent) {
+        when (intent) {
+            is MainIntent.OnUnityMessage -> handleUnityMessage(intent.message)
+            is MainIntent.OnEditorCreated -> handleEditorCreated()
+            is MainIntent.OnEditorDestroyed -> handleEditorDestroyed(intent.cardId)
+            is MainIntent.OnUnityContainerHeightChanged -> handleUnityContainerHeightFraction(intent.fraction)
         }
     }
 
-    fun emitUnityMessage(message: UnityMessage) {
-        if(message.type == UnityEventType.SCENE_RESET) {
+    private fun handleUnityMessage(message: UnityMessage) {
+        if (message.type == UnityEventType.SCENE_RESET) {
             val idCounter = message.data.toIntOrNull() ?: -1
-            onUnityResetComplete(idCounter)
+            handleUnityResetComplete(idCounter)
         } else {
-            emitSideEffect(MainSideEffect.ReceivedUnityMessage(message))
+            viewModelScope.launch { _unityMessage.emit(message) }
         }
     }
 
-    fun emitUnityContainerHeightFraction(fraction: Float) {
+    fun handleUnityContainerHeightFraction(fraction: Float) {
         emitSideEffect(MainSideEffect.UnityContainerHeightFraction(fraction))
     }
 
-    fun onEditorCreated() {
+    private fun handleEditorCreated() {
         unityLifecycle = UnityLifecycle.Running
         emitSideEffect(MainSideEffect.ResumeUnity)
     }
 
-    fun onEditorDestroyed(cardId: Long) {
+    private fun handleEditorDestroyed(cardId: Long) {
         val id = ++resetIdCounter
         unityLifecycle = UnityLifecycle.Resetting(id)
         unityBridge.resetScene(cardId, id)
     }
 
-    fun onUnityResetComplete(id: Int) {
+    private fun handleUnityResetComplete(id: Int) {
         val state = unityLifecycle
-        if(state is UnityLifecycle.Resetting && state.id == id) {
+        if (state is UnityLifecycle.Resetting && state.id == id) {
             unityLifecycle = UnityLifecycle.Paused
             emitSideEffect(MainSideEffect.PauseUnity)
         }
+    }
+
+    private fun emitSideEffect(sideEffect: MainSideEffect) {
+        viewModelScope.launch { _mainSideEffect.emit(sideEffect) }
     }
 }

@@ -11,6 +11,6 @@ class CardFileStorageImpl @Inject constructor(
 ) : CardFileStorage {
     override fun getThumbnailFile(cardId: Long): File? {
         val fileName = "thumb_card_${cardId}.jpg"
-        return File(context.filesDir, fileName)
+        return File(context.filesDir, fileName).takeIf { it.exists() }
     }
 }

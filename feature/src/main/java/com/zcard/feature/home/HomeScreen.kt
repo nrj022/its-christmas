@@ -247,6 +247,7 @@ fun CardItem(cardTitle: String, updatedAt: String, thumbnailFile: File?, onClick
                             .data(thumbnailFile)
                             .memoryCacheKey("${thumbnailFile.path}_${thumbnailFile.lastModified()}")
                             .diskCacheKey("${thumbnailFile.path}_${thumbnailFile.lastModified()}")
+                            .placeholder(R.drawable.thumb_card_placeholder)
                             .build(),
                         contentDescription = stringResource(R.string.home_cd_card),
                         contentScale = ContentScale.Crop

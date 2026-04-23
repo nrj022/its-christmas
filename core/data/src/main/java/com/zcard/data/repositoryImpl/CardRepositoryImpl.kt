@@ -16,6 +16,7 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import java.io.File
@@ -41,7 +42,8 @@ class CardRepositoryImpl @Inject constructor(
                         cardId = it.cardId,
                         title = it.title,
                         updatedAt = it.updatedAt,
-                        thumbnailFile = thumbnail)
+                        thumbnailFile = thumbnail
+                    )
                 })
             }
             .catch { e -> emit(Result.failure(e)) }
@@ -67,29 +69,35 @@ class CardRepositoryImpl @Inject constructor(
             cardDao.updateGlb(cardId, glbFileName)
         }
 
-    override suspend fun uploadGlbToFirebase(file: File): Flow<UploadState> = callbackFlow {
-        val storageRef = firebaseStorage.reference
-        val uploadRef = storageRef.child("models/${file.name}")
+    override suspend fun uploadGlbToFirebase(fileName: String): Flow<UploadState> {
+        val file = cardFileStorage.getGlbFile(fileName)
+            ?: return flowOf(UploadState.Failure(Throwable("File not found")))
 
-        val uploadTask = uploadRef.putFile(Uri.fromFile(file))
+        return callbackFlow {
 
-        uploadTask.addOnProgressListener {
-            val percent = ((100.0 * it.bytesTransferred) / it.totalByteCount).toInt()
-            trySend(UploadState.Progress(percent))
-        }
+            val storageRef = firebaseStorage.reference
+            val uploadRef = storageRef.child("models/$fileName")
 
-        uploadTask.addOnSuccessListener {
-            trySend(UploadState.Success)
-            close()
-        }
+            val uploadTask = uploadRef.putFile(Uri.fromFile(file))
 
-        uploadTask.addOnFailureListener { e ->
-            trySend(UploadState.Failure)
-            close()
-        }
+            uploadTask.addOnProgressListener {
+                val percent = ((100.0 * it.bytesTransferred) / it.totalByteCount).toInt()
+                trySend(UploadState.Progress(percent))
+            }
 
-        awaitClose {
-            uploadTask.cancel()
+            uploadTask.addOnSuccessListener {
+                trySend(UploadState.Success)
+                close()
+            }
+
+            uploadTask.addOnFailureListener { e ->
+                trySend(UploadState.Failure(e))
+                close()
+            }
+
+            awaitClose {
+                uploadTask.cancel()
+            }
         }
     }
 }

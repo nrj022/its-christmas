@@ -13,4 +13,9 @@ class CardFileStorageImpl @Inject constructor(
         val fileName = "thumb_card_${cardId}.jpg"
         return File(context.filesDir, fileName).takeIf { it.exists() }
     }
+
+    override fun getGlbFile(fileName: String): File? {
+        val externalDir = context.getExternalFilesDir(null) ?: return null
+        return File(externalDir, "glb_exports/$fileName").takeIf { it.exists() }
+    }
 }

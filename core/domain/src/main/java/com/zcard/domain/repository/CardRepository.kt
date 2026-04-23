@@ -4,7 +4,6 @@ import com.zcard.domain.model.Card
 import com.zcard.domain.model.CardPreview
 import com.zcard.domain.model.UploadState
 import kotlinx.coroutines.flow.Flow
-import java.io.File
 
 interface CardRepository {
 
@@ -20,5 +19,5 @@ interface CardRepository {
 
     suspend fun updateGlb(cardId: Long, glbFileName: String): Result<Int>
 
-    suspend fun uploadGlbToFirebase(file: File): Flow<UploadState>
+    suspend fun uploadGlbToFirebase(fileName: String): Flow<UploadState>
 }

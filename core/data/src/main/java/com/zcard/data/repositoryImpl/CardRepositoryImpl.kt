@@ -7,17 +7,24 @@ import com.zcard.data.mapper.toEntity
 import com.zcard.data.repositoryImpl.common.ioCatching
 import com.zcard.database.dao.CardDao
 import com.zcard.domain.model.Card
+import com.zcard.domain.model.CardPreview
 import com.zcard.domain.model.UploadState
 import com.zcard.domain.repository.CardRepository
+import com.zcard.domain.storage.CardFileStorage
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 import java.io.File
 import javax.inject.Inject
 
 class CardRepositoryImpl @Inject constructor(
     private val cardDao: CardDao,
     private val firebaseStorage: FirebaseStorage,
+    private val cardFileStorage: CardFileStorage
 ) : CardRepository {
 
     override suspend fun insertCard(card: Card): Result<Long> =
@@ -25,10 +32,20 @@ class CardRepositoryImpl @Inject constructor(
             cardDao.insertCard(card.toEntity())
         }
 
-    override suspend fun getAllCards(): Result<List<Card>> =
-        ioCatching {
-            cardDao.getAllCards().map { it.toDomain() }
-        }
+    override fun getCardPreviews(): Flow<Result<List<CardPreview>>> =
+        cardDao.getAllCards()
+            .map { cardList ->
+                Result.success(cardList.map { it ->
+                    val thumbnail = cardFileStorage.getThumbnailFile(it.cardId)
+                    CardPreview(
+                        cardId = it.cardId,
+                        title = it.title,
+                        updatedAt = it.updatedAt,
+                        thumbnailFile = thumbnail)
+                })
+            }
+            .catch { e -> emit(Result.failure(e)) }
+            .flowOn(Dispatchers.IO)
 
     override suspend fun getCardById(cardId: Long): Result<Card> =
         ioCatching {

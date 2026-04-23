@@ -47,7 +47,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import androidx.lifecycle.compose.LifecycleResumeEffect
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.ImageLoader
 import coil.compose.AsyncImage
@@ -60,27 +60,22 @@ import com.zcard.designsystem.theme.Gray
 import com.zcard.designsystem.theme.ZCardTheme
 import com.zcard.designsystem.theme.SoftBlack
 import com.zcard.designsystem.theme.White
-import com.zcard.feature.home.model.CardItem
+import com.zcard.domain.model.CardPreview
 import com.zcard.feature.home.util.formatRelativeTime
 import java.io.File
 
 @Composable
 fun HomeScreen(viewModel: HomeViewModel = hiltViewModel(), onCardClick: (Long) -> Unit = {}) {
-    val cardItems by viewModel.cardList.collectAsStateWithLifecycle()
-
-    LifecycleResumeEffect(Unit) {
-        viewModel.loadCards()
-        onPauseOrDispose {  }
-    }
+    val cardPreviews by viewModel.cardPreviews.collectAsStateWithLifecycle(minActiveState = Lifecycle.State.STARTED)
 
     HomeContent(
-        cardItems = cardItems,
+        cardPreviews = cardPreviews,
         onCardClick = onCardClick
     )
 }
 
 @Composable
-fun HomeContent(modifier: Modifier = Modifier, cardItems: List<CardItem> = emptyList(), onCardClick: (Long) -> Unit = {}, onSettingClick: () -> Unit = {}) {
+fun HomeContent(modifier: Modifier = Modifier, cardPreviews: List<CardPreview> = emptyList(), onCardClick: (Long) -> Unit = {}, onSettingClick: () -> Unit = {}) {
     Scaffold(
         modifier = modifier
             .fillMaxSize()
@@ -107,19 +102,19 @@ fun HomeContent(modifier: Modifier = Modifier, cardItems: List<CardItem> = empty
                 )
             }
 
-            if (cardItems.isEmpty()) {
+            if (cardPreviews.isEmpty()) {
                 item(span = { GridItemSpan(maxLineSpan) }) {
                     EmptyCardSection()
                 }
             } else {
                 items(
-                    items = cardItems,
+                    items = cardPreviews,
                 ) { item ->
                     CardItem(
-                        cardTitle = item.card.title,
-                        updatedAt = formatRelativeTime(item.card.updatedAt),
+                        cardTitle = item.title,
+                        updatedAt = formatRelativeTime(item.updatedAt),
                         thumbnailFile = item.thumbnailFile,
-                        onClick = { onCardClick(item.card.cardId) }
+                        onClick = { onCardClick(item.cardId) }
                     )
                 }
             }

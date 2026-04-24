@@ -7,20 +7,19 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
-import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
-import androidx.compose.foundation.lazy.staggeredgrid.items
+import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
@@ -29,7 +28,9 @@ import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -40,8 +41,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -52,18 +53,19 @@ import coil.ImageLoader
 import coil.compose.AsyncImage
 import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
+import coil.request.ImageRequest
 import com.zcard.feature.R
 import com.zcard.designsystem.theme.DimGray
 import com.zcard.designsystem.theme.Gray
 import com.zcard.designsystem.theme.ZCardTheme
 import com.zcard.designsystem.theme.SoftBlack
 import com.zcard.designsystem.theme.White
-import com.zcard.designsystem.util.DrawableResProvider.getBgThumbByKey
 import com.zcard.feature.home.model.CardItem
 import com.zcard.feature.home.util.formatRelativeTime
+import java.io.File
 
 @Composable
-fun MainScreen(viewModel: MainViewModel = hiltViewModel(), onCardClick: (Long) -> Unit = {}) {
+fun HomeScreen(viewModel: HomeViewModel = hiltViewModel(), onCardClick: (Long) -> Unit = {}) {
     val cardItems by viewModel.cardList.collectAsStateWithLifecycle()
 
     LifecycleResumeEffect(Unit) {
@@ -71,36 +73,85 @@ fun MainScreen(viewModel: MainViewModel = hiltViewModel(), onCardClick: (Long) -
         onPauseOrDispose {  }
     }
 
-    MainContent(
+    HomeContent(
         cardItems = cardItems,
         onCardClick = onCardClick
     )
 }
 
 @Composable
-fun MainContent(modifier: Modifier = Modifier, cardItems: List<CardItem>, onCardClick: (Long) -> Unit) {
-    Column(
+fun HomeContent(modifier: Modifier = Modifier, cardItems: List<CardItem> = emptyList(), onCardClick: (Long) -> Unit = {}, onSettingClick: () -> Unit = {}) {
+    Scaffold(
         modifier = modifier
             .fillMaxSize()
-            .background(White)
-            .navigationBarsPadding(),
+            .background(MaterialTheme.colorScheme.background)
+            .systemBarsPadding()
+            .padding(horizontal = 18.dp),
+        topBar = { TopBar(onSettingClick = onSettingClick) },
     ) {
-        PreviewGifImage()
+        LazyVerticalGrid(
+            modifier = Modifier.fillMaxSize().padding(it),
+            columns = GridCells.Fixed(3),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            item(span = { GridItemSpan(maxLineSpan) }) {
+                PreviewGifImage { onCardClick(-1) }
+            }
 
-        Spacer(modifier = Modifier.height(20.dp))
+            item(span = { GridItemSpan(maxLineSpan) }) {
+                Text(
+                    modifier = Modifier.padding(horizontal = 8.dp),
+                    text = stringResource(R.string.home_title_card_dashboard),
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
 
-        Column(modifier = Modifier.padding(horizontal = 16.dp)) {
-            CreateCardButton(onClick = { onCardClick(-1) })
+            if (cardItems.isEmpty()) {
+                item(span = { GridItemSpan(maxLineSpan) }) {
+                    EmptyCardSection()
+                }
+            } else {
+                items(
+                    items = cardItems,
+                ) { item ->
+                    CardItem(
+                        cardTitle = item.card.title,
+                        updatedAt = formatRelativeTime(item.card.updatedAt),
+                        thumbnailFile = item.thumbnailFile,
+                        onClick = { onCardClick(item.card.cardId) }
+                    )
+                }
+            }
 
-            Spacer(modifier = Modifier.height(26.dp))
-
-            CardDashboard(cardItems = cardItems, onCardClick = onCardClick)
+            item(span = { GridItemSpan(maxLineSpan) }) {
+                Spacer(modifier = Modifier.height(20.dp))
+            }
         }
     }
 }
 
 @Composable
-fun PreviewGifImage() {
+fun TopBar(onSettingClick: () -> Unit = {}) {
+    Row(
+        modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Image(
+            modifier = Modifier.height(40.dp).aspectRatio(2.3f),
+            painter = painterResource(R.drawable.logo_full),
+            contentDescription = stringResource(R.string.home_cd_logo_img),
+            contentScale = ContentScale.Fit
+        )
+        IconButton(onClick = onSettingClick) {
+            Icon(painterResource(R.drawable.ic_setting), contentDescription = stringResource(R.string.home_cd_setting_button))
+        }
+    }
+}
+
+@Composable
+fun PreviewGifImage(onCardClick: () -> Unit) {
     val gifEnabledLoader = ImageLoader.Builder(LocalContext.current)
         .components {
             if ( SDK_INT >= 28 ) {
@@ -113,49 +164,41 @@ fun PreviewGifImage() {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .fillMaxHeight(0.35f)
-            .clip(
-                RoundedCornerShape(
-                    bottomStart = 50.dp,
-                    bottomEnd = 50.dp,
-                    topStart = 0.dp,
-                    topEnd = 0.dp
-                )
-            )
+            .height(220.dp)
+            .clip(RoundedCornerShape(30.dp))
             .background(Gray),
         contentAlignment = Alignment.Center
     ) {
         AsyncImage(
             modifier = Modifier.fillMaxSize(),
             imageLoader = gifEnabledLoader,
-            model = R.drawable.gif_happy_2026,
+            model = R.drawable.gif_happy_birthday,
             contentScale = ContentScale.Crop,
-            contentDescription = stringResource(R.string.main_cd_async_image)
+            contentDescription = stringResource(R.string.home_cd_async_image)
         )
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(SoftBlack.copy(alpha = 0.4f))
-                .padding(start = 42.dp, bottom = 38.dp),
-            contentAlignment = Alignment.BottomStart,
+                .background(SoftBlack.copy(alpha = 0.15f))
+                .padding(horizontal = 24.dp, vertical = 20.dp),
+            contentAlignment = Alignment.BottomStart
         ) {
-            Column {
-                Text(
-                    color = White,
-                    textAlign = TextAlign.Start,
-                    fontWeight = FontWeight.ExtraLight,
-                    letterSpacing = 0.4.sp,
-                    fontSize = 12.sp,
-                    text = stringResource(R.string.main_title_design_card_sub_prompt)
-                )
-                Text(
-                    color = White,
-                    textAlign = TextAlign.Start,
-                    fontWeight = FontWeight.ExtraBold,
-                    letterSpacing = 0.4.sp,
-                    fontSize = 20.sp,
-                    text = stringResource(R.string.main_title_design_card_prompt)
-                )
+            Column(verticalArrangement = Arrangement.spacedBy(30.dp)) {
+                Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                    Text(
+                        color = White,
+                        textAlign = TextAlign.Start,
+                        style = MaterialTheme.typography.labelSmall,
+                        text = stringResource(R.string.home_title_design_card_sub_prompt)
+                    )
+                    Text(
+                        color = White,
+                        textAlign = TextAlign.Start,
+                        style = MaterialTheme.typography.titleLarge,
+                        text = stringResource(R.string.home_title_design_card_prompt)
+                    )
+                }
+                CreateCardButton(onClick = onCardClick)
             }
         }
     }
@@ -165,28 +208,24 @@ fun PreviewGifImage() {
 fun CreateCardButton(onClick: () -> Unit) {
     Button(
         onClick = onClick,
-        modifier = Modifier.fillMaxWidth(),
         colors = ButtonColors(
-            containerColor = SoftBlack,
-            contentColor = White,
+            containerColor = White,
+            contentColor = SoftBlack,
             disabledContainerColor = Gray,
             disabledContentColor = White
         )
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 10.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = stringResource(R.string.main_button_create),
+                text = stringResource(R.string.home_button_create),
                 style = MaterialTheme.typography.labelSmall
             )
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowForward,
-                contentDescription = stringResource(R.string.main_cd_arrow_forward_icon),
+                contentDescription = stringResource(R.string.home_cd_arrow_forward_icon),
                 modifier = Modifier.size(14.dp)
             )
         }
@@ -194,62 +233,37 @@ fun CreateCardButton(onClick: () -> Unit) {
 }
 
 @Composable
-fun CardDashboard(cardItems: List<CardItem> = emptyList(), onCardClick: (Long) -> Unit = {}) {
-    Text(
-        modifier = Modifier.padding(horizontal = 14.dp),
-        text = stringResource(R.string.main_title_card_dashboard),
-        style = MaterialTheme.typography.bodyMedium
-    )
-
-    Spacer(modifier = Modifier.height(10.dp))
-
-    if(cardItems.isEmpty()) {
-        EmptyCardSection()
-    } else {
-        CardGrid(cardItems = cardItems, onCardClick = onCardClick)
-    }
-}
-
-@Composable
-fun CardGrid(cardItems: List<CardItem>, onCardClick: (Long) -> Unit) {
-    LazyVerticalStaggeredGrid(
-        columns = StaggeredGridCells.Fixed(2),
-        modifier = Modifier
-            .fillMaxSize()
-            .navigationBarsPadding(),
-        contentPadding = PaddingValues(8.dp),
-        horizontalArrangement = Arrangement.spacedBy(18.dp),
-        verticalItemSpacing = 18.dp
-    ) {
-        items(cardItems) { item ->
-            CardItem(
-                cardTitle = item.card.title,
-                updatedAt = formatRelativeTime(item.card.updatedAt),
-                thumbnailKey = item.thumbnailKey,
-                onClick = { onCardClick(item.card.cardId) }
-            )
-        }
-    }
-}
-
-@Composable
-fun CardItem(cardTitle: String, updatedAt: String, thumbnailKey: String?, onClick: () -> Unit) {
+fun CardItem(cardTitle: String, updatedAt: String, thumbnailFile: File?, onClick: () -> Unit) {
     Column {
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .aspectRatio(1.4f)
+                .aspectRatio(1f)
+                .clip(RoundedCornerShape(25.dp))
                 .clickable { onClick() },
-            shape = CardDefaults.shape,
+            shape = RoundedCornerShape(25.dp),
             elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
         ) {
             Box(contentAlignment = Alignment.Center) {
-                Image(
-                    modifier = Modifier.fillMaxSize(),
-                    painter = painterResource(getBgThumbByKey(thumbnailKey)),
-                    contentDescription = stringResource(R.string.main_cd_card),
-                    contentScale = ContentScale.Crop
-                )
+                if(thumbnailFile != null) {
+                    AsyncImage(
+                        modifier = Modifier.fillMaxSize(),
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(thumbnailFile)
+                            .memoryCacheKey("${thumbnailFile.path}_${thumbnailFile.lastModified()}")
+                            .diskCacheKey("${thumbnailFile.path}_${thumbnailFile.lastModified()}")
+                            .build(),
+                        contentDescription = stringResource(R.string.home_cd_card),
+                        contentScale = ContentScale.Crop
+                    )
+                } else {
+                    Image(
+                        modifier = Modifier.fillMaxSize(),
+                        painter = painterResource(R.drawable.thumb_card_placeholder),
+                        contentDescription = stringResource(R.string.home_cd_card),
+                        contentScale = ContentScale.Crop
+                    )
+                }
             }
         }
         Spacer(modifier = Modifier.height(10.dp))
@@ -259,6 +273,8 @@ fun CardItem(cardTitle: String, updatedAt: String, thumbnailKey: String?, onClic
         ) {
             Text(
                 text = cardTitle,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
                 style = MaterialTheme.typography.labelSmall
             )
             Spacer(modifier = Modifier.height(3.dp))
@@ -280,32 +296,32 @@ fun EmptyCardSection(modifier: Modifier = Modifier) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        Spacer(modifier = Modifier.weight(0.3f))
+        Spacer(modifier = Modifier.height(60.dp))
         Icon(
             painter = painterResource(id = R.drawable.ic_card_star),
             tint = Gray,
-            contentDescription = stringResource(R.string.main_cd_empty_card_icon)
+            contentDescription = stringResource(R.string.home_cd_empty_card_icon)
         )
         Spacer(modifier = Modifier.height(20.dp))
         Text(
-            text = stringResource(R.string.main_text_notice_empty_card_1),
+            text = stringResource(R.string.home_text_notice_empty_card_1),
             style = MaterialTheme.typography.labelSmall,
             color = Gray
         )
         Spacer(modifier = Modifier.height(6.dp))
         Text(
-            text = stringResource(R.string.main_text_notice_empty_card_2),
+            text = stringResource(R.string.home_text_notice_empty_card_2),
             style = MaterialTheme.typography.labelSmall,
             color = Gray
         )
-        Spacer(modifier = Modifier.weight(0.7f))
+        Spacer(modifier = Modifier.height(60.dp))
     }
 }
 
 @Preview(showSystemUi = true)
 @Composable
-fun MainScreenPreview() {
+fun HomeScreenPreview() {
     ZCardTheme {
-        MainScreen()
+        HomeContent()
     }
 }

@@ -54,15 +54,17 @@
     <string name="share_cd_home_button">Home</string>
 
 
-    <!-- Main Screen -->
-    <string name="main_cd_async_image">Card Creation Preview</string>
-    <string name="main_title_design_card_sub_prompt">Imagine More</string>
-    <string name="main_title_design_card_prompt">Create Stunning\n3D Cards</string>
-    <string name="main_button_create">Create new card</string>
-    <string name="main_title_card_dashboard">Recent Cards</string>
-    <string name="main_cd_arrow_forward_icon">Arrow Forward</string>
-    <string name="main_cd_card">Card Preview Image</string>
-    <string name="main_cd_empty_card_icon">Empty Card</string>
-    <string name="main_text_notice_empty_card_1">You don\'t have any cards yet!</string>
-    <string name="main_text_notice_empty_card_2">Create your first 3D card now.</string>
+    <!-- Home Screen -->
+    <string name="home_cd_logo_img">Main Logo</string>
+    <string name="home_cd_setting_button">Settings</string>
+    <string name="home_cd_async_image">Card Creation Preview</string>
+    <string name="home_title_design_card_sub_prompt">Imagine More</string>
+    <string name="home_title_design_card_prompt">Create Your Own\n3D Cards</string>
+    <string name="home_button_create">Create card</string>
+    <string name="home_title_card_dashboard">Recent Cards</string>
+    <string name="home_cd_arrow_forward_icon">Arrow Forward</string>
+    <string name="home_cd_card">Card Preview Image</string>
+    <string name="home_cd_empty_card_icon">Empty Card</string>
+    <string name="home_text_notice_empty_card_1">You don\'t have any cards yet!</string>
+    <string name="home_text_notice_empty_card_2">Create your first 3D card now.</string>
 </resources>

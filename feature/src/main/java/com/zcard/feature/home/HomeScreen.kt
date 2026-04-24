@@ -80,17 +80,17 @@ fun HomeScreen(viewModel: HomeViewModel = hiltViewModel(), onCardClick: (Long) -
 }
 
 @Composable
-fun HomeContent(modifier: Modifier = Modifier, cardItems: List<CardItem> = emptyList(), onCardClick: (Long) -> Unit = {}) {
+fun HomeContent(modifier: Modifier = Modifier, cardItems: List<CardItem> = emptyList(), onCardClick: (Long) -> Unit = {}, onSettingClick: () -> Unit = {}) {
     Scaffold(
         modifier = modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
             .systemBarsPadding()
             .padding(horizontal = 18.dp),
-        topBar = { TopBar {} },
+        topBar = { TopBar(onSettingClick = onSettingClick) },
     ) {
         LazyVerticalGrid(
-            modifier = modifier.fillMaxSize().padding(it),
+            modifier = Modifier.fillMaxSize().padding(it),
             columns = GridCells.Fixed(3),
             verticalArrangement = Arrangement.spacedBy(16.dp),
             horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -141,11 +141,11 @@ fun TopBar(onSettingClick: () -> Unit = {}) {
         Image(
             modifier = Modifier.height(40.dp).aspectRatio(2.3f),
             painter = painterResource(R.drawable.logo_full),
-            contentDescription = null,
+            contentDescription = stringResource(R.string.home_cd_logo_img),
             contentScale = ContentScale.Fit
         )
         IconButton(onClick = onSettingClick) {
-            Icon(painterResource(R.drawable.ic_setting), contentDescription = null)
+            Icon(painterResource(R.drawable.ic_setting), contentDescription = stringResource(R.string.home_cd_setting_button))
         }
     }
 }

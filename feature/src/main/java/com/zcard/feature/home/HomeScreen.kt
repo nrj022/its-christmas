@@ -85,7 +85,7 @@ fun HomeContent(modifier: Modifier = Modifier, cardItems: List<CardItem> = empty
     Scaffold(
         modifier = modifier
             .fillMaxSize()
-            .background(White)
+            .background(MaterialTheme.colorScheme.background)
             .systemBarsPadding()
             .padding(horizontal = 18.dp),
         topBar = { TopBar {} },

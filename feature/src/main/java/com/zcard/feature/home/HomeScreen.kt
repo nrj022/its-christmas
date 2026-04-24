@@ -60,7 +60,6 @@ import com.zcard.designsystem.theme.Gray
 import com.zcard.designsystem.theme.ZCardTheme
 import com.zcard.designsystem.theme.SoftBlack
 import com.zcard.designsystem.theme.White
-import com.zcard.designsystem.util.DrawableResProvider.getBgThumbByKey
 import com.zcard.feature.home.model.CardItem
 import com.zcard.feature.home.util.formatRelativeTime
 import java.io.File

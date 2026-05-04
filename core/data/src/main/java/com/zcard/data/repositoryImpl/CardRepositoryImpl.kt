@@ -69,6 +69,9 @@ class CardRepositoryImpl @Inject constructor(
             cardDao.updateGlb(cardId, glbFileName)
         }
 
+    override suspend fun deleteCardGlb(fileName: String): Boolean =
+        cardFileStorage.deleteGlbFile(fileName)
+
     override suspend fun uploadGlbToFirebase(fileName: String): Flow<UploadState> {
         val file = cardFileStorage.getGlbFile(fileName)
             ?: return flowOf(UploadState.Failure(Throwable("File not found")))

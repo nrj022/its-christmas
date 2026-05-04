@@ -9,13 +9,23 @@ import javax.inject.Inject
 class CardFileStorageImpl @Inject constructor(
     @ApplicationContext private val context: Context
 ) : CardFileStorage {
+
+    companion object {
+        const val GLB_FILE_PATH = "glb_exports/"
+        fun getThumbFileName(cardId: Long): String =
+            "thumbnails/thumb_card_${cardId}.jpg"
+    }
     override fun getThumbnailFile(cardId: Long): File? {
-        val fileName = "thumb_card_${cardId}.jpg"
-        return File(context.filesDir, fileName).takeIf { it.exists() }
+        return File(context.filesDir, getThumbFileName(cardId)).takeIf { it.exists() }
     }
 
     override fun getGlbFile(fileName: String): File? {
         val externalDir = context.getExternalFilesDir(null) ?: return null
-        return File(externalDir, "glb_exports/$fileName").takeIf { it.exists() }
+        return File(externalDir, "$GLB_FILE_PATH$fileName").takeIf { it.exists() }
+    }
+
+    override fun deleteGlbFile(fileName: String): Boolean {
+        val externalDir = context.getExternalFilesDir(null) ?: return false
+        return File(externalDir, "$GLB_FILE_PATH$fileName").delete()
     }
 }

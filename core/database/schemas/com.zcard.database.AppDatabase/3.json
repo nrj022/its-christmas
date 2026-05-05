@@ -1,0 +1,231 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 3,
+    "identityHash": "8c6fbe01d5138bead58e68c23099ed8e",
+    "entities": [
+      {
+        "tableName": "cards",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`cardId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `exportId` INTEGER NOT NULL, `title` TEXT NOT NULL, `glbFileName` TEXT, `backgroundAssetId` INTEGER NOT NULL, `isDraft` INTEGER NOT NULL, `createdAt` INTEGER NOT NULL, `updatedAt` INTEGER NOT NULL, `thumbnailUpdatedAt` INTEGER NOT NULL DEFAULT 0)",
+        "fields": [
+          {
+            "fieldPath": "cardId",
+            "columnName": "cardId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "exportId",
+            "columnName": "exportId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "title",
+            "columnName": "title",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "glbFileName",
+            "columnName": "glbFileName",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "backgroundAssetId",
+            "columnName": "backgroundAssetId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isDraft",
+            "columnName": "isDraft",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "createdAt",
+            "columnName": "createdAt",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "updatedAt",
+            "columnName": "updatedAt",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "thumbnailUpdatedAt",
+            "columnName": "thumbnailUpdatedAt",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "0"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "cardId"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "card_elements",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`elementId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `cardId` INTEGER NOT NULL, `assetId` INTEGER, `elementType` TEXT NOT NULL, `posX` REAL NOT NULL, `posY` REAL NOT NULL, `posZ` REAL NOT NULL, `rotX` INTEGER NOT NULL, `rotY` INTEGER NOT NULL, `rotZ` INTEGER NOT NULL, `scale` INTEGER NOT NULL, `textContent` TEXT, `fontFamily` TEXT, `fontSize` REAL, `textColor` TEXT, `textAlign` TEXT)",
+        "fields": [
+          {
+            "fieldPath": "elementId",
+            "columnName": "elementId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cardId",
+            "columnName": "cardId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "assetId",
+            "columnName": "assetId",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "elementType",
+            "columnName": "elementType",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "posX",
+            "columnName": "posX",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "posY",
+            "columnName": "posY",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "posZ",
+            "columnName": "posZ",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "rotX",
+            "columnName": "rotX",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "rotY",
+            "columnName": "rotY",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "rotZ",
+            "columnName": "rotZ",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "scale",
+            "columnName": "scale",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "textContent",
+            "columnName": "textContent",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "fontFamily",
+            "columnName": "fontFamily",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "fontSize",
+            "columnName": "fontSize",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "textColor",
+            "columnName": "textColor",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "textAlign",
+            "columnName": "textAlign",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "elementId"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "assets",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`assetId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `assetType` TEXT NOT NULL, `unityKey` TEXT NOT NULL, `thumbnailKey` TEXT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "assetId",
+            "columnName": "assetId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "assetType",
+            "columnName": "assetType",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "unityKey",
+            "columnName": "unityKey",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "thumbnailKey",
+            "columnName": "thumbnailKey",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "assetId"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '8c6fbe01d5138bead58e68c23099ed8e')"
+    ]
+  }
+}

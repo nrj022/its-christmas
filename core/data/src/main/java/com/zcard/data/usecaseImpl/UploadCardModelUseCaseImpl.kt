@@ -5,11 +5,9 @@ import com.zcard.domain.model.UploadState
 import com.zcard.domain.repository.AuthRepository
 import com.zcard.domain.repository.CardRepository
 import com.zcard.domain.usecase.UploadCardModelUseCase
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.transform
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 private const val TAG = "UploadCardModelUseCaseImpl"
@@ -27,9 +25,8 @@ class UploadCardModelUseCaseImpl @Inject constructor(
             if(progress is UploadState.Success) {
                 val updatedRows = cardRepository.updateGlb(cardId, fileName).getOrNull() ?: 0
                 if (updatedRows > 0) {
-                    withContext(Dispatchers.IO) {
-                        if (!cardRepository.deleteCardGlb(fileName))
-                            Log.w(TAG, "Failed to delete card glb file")
+                    if (!cardRepository.deleteCardGlb(fileName)) {
+                        Log.w(TAG, "Failed to delete card glb file")
                     }
                     emit(UploadState.Success)
                 } else {

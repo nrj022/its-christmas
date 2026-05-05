@@ -7,17 +7,37 @@ import android.view.ViewGroup
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.zcard.feature.R
 import com.zcard.feature.cardeditor.CardEditorFragment
 import com.zcard.designsystem.theme.ZCardTheme
+import com.zcard.feature.MainViewModel
+import kotlinx.coroutines.launch
+import kotlin.getValue
 
 class HomeFragment : Fragment() {
+
+    private val viewModel: HomeViewModel by viewModels()
+    private val mainViewModel: MainViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                mainViewModel.unityMessage.collect { msg ->
+                    viewModel.handleUnityMessage(msg)
+                }
+            }
+        }
+
         return ComposeView(requireContext()).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {

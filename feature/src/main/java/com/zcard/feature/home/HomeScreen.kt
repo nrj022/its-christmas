@@ -109,11 +109,13 @@ fun HomeContent(modifier: Modifier = Modifier, cardPreviews: List<CardPreview> =
             } else {
                 items(
                     items = cardPreviews,
+                    key = { card -> card.cardId }
                 ) { item ->
                     CardItem(
                         cardTitle = item.title,
                         updatedAt = formatRelativeTime(item.updatedAt),
                         thumbnailFile = item.thumbnailFile,
+                        thumbnailUpdatedAt = item.thumbnailUpdatedAt,
                         onClick = { onCardClick(item.cardId) }
                     )
                 }
@@ -228,7 +230,7 @@ fun CreateCardButton(onClick: () -> Unit) {
 }
 
 @Composable
-fun CardItem(cardTitle: String, updatedAt: String, thumbnailFile: File?, onClick: () -> Unit) {
+fun CardItem(cardTitle: String, updatedAt: String, thumbnailFile: File?, thumbnailUpdatedAt: Long, onClick: () -> Unit) {
     Column {
         Card(
             modifier = Modifier
@@ -245,9 +247,10 @@ fun CardItem(cardTitle: String, updatedAt: String, thumbnailFile: File?, onClick
                         modifier = Modifier.fillMaxSize(),
                         model = ImageRequest.Builder(LocalContext.current)
                             .data(thumbnailFile)
-                            .memoryCacheKey("${thumbnailFile.path}_${thumbnailFile.lastModified()}")
-                            .diskCacheKey("${thumbnailFile.path}_${thumbnailFile.lastModified()}")
+                            .memoryCacheKey("${thumbnailFile.path}_${thumbnailUpdatedAt}")
+                            .diskCacheKey("${thumbnailFile.path}_${thumbnailUpdatedAt}")
                             .placeholder(R.drawable.thumb_card_placeholder)
+                            .crossfade(true)
                             .build(),
                         contentDescription = stringResource(R.string.home_cd_card),
                         contentScale = ContentScale.Crop

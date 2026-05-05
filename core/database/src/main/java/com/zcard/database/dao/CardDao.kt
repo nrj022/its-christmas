@@ -21,6 +21,9 @@ interface CardDao {
     @Query("UPDATE cards SET updatedAt = :updatedAt WHERE cardId = :cardId")
     suspend fun refreshUpdatedAt(cardId: Long, updatedAt: Long = System.currentTimeMillis()): Int
 
+    @Query("UPDATE cards SET thumbnailUpdatedAt = :thumbnailUpdatedAt WHERE cardId = :cardId")
+    suspend fun refreshThumbnailUpdatedAt(cardId: Long, thumbnailUpdatedAt: Long = System.currentTimeMillis()): Int
+
     @Query("UPDATE cards SET title = :title, updatedAt = :updatedAt WHERE cardId = :cardId")
     suspend fun updateTitle(cardId: Long, title: String, updatedAt: Long = System.currentTimeMillis()): Int
 

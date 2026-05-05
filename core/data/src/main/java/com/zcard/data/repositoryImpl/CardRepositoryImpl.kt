@@ -42,7 +42,8 @@ class CardRepositoryImpl @Inject constructor(
                         cardId = it.cardId,
                         title = it.title,
                         updatedAt = it.updatedAt,
-                        thumbnailFile = thumbnail
+                        thumbnailFile = thumbnail,
+                        thumbnailUpdatedAt = it.thumbnailUpdatedAt
                     )
                 })
             }
@@ -52,6 +53,11 @@ class CardRepositoryImpl @Inject constructor(
     override suspend fun getCardById(cardId: Long): Result<Card> =
         ioCatching {
             cardDao.getCardById(cardId).toDomain()
+        }
+
+    override suspend fun updateCardThumbnail(cardId: Long): Result<Int> =
+        ioCatching {
+            cardDao.refreshThumbnailUpdatedAt(cardId)
         }
 
     override suspend fun updateCardTitle(cardId: Long, title: String): Result<Int> =

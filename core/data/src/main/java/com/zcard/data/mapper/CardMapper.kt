@@ -11,7 +11,8 @@ fun CardEntity.toDomain(): Card = Card(
     backgroundAssetId = backgroundAssetId,
     isDraft = isDraft,
     createdAt = createdAt,
-    updatedAt = updatedAt
+    updatedAt = updatedAt,
+    thumbnailUpdatedAt = thumbnailUpdatedAt,
 )
 
 fun Card.toEntity(): CardEntity = CardEntity(
@@ -22,5 +23,6 @@ fun Card.toEntity(): CardEntity = CardEntity(
     backgroundAssetId = backgroundAssetId,
     isDraft = isDraft,
     createdAt = createdAt,
-    updatedAt = updatedAt
+    updatedAt = updatedAt,
+    thumbnailUpdatedAt = thumbnailUpdatedAt,
 )

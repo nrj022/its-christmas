@@ -13,6 +13,8 @@ interface CardRepository {
 
     suspend fun getCardById(cardId: Long): Result<Card>
 
+    suspend fun updateCardThumbnail(cardId: Long): Result<Int>
+
     suspend fun updateCardTitle(cardId: Long, title: String): Result<Int>
 
     suspend fun updateBackgroundAssetId(cardId: Long, backgroundAssetId: Long): Result<Int>

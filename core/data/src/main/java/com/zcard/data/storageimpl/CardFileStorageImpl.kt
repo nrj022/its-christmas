@@ -6,6 +6,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
+import java.io.IOException
 import javax.inject.Inject
 
 class CardFileStorageImpl @Inject constructor(
@@ -28,11 +29,14 @@ class CardFileStorageImpl @Inject constructor(
     }
 
     override suspend fun deleteGlbFile(fileName: String): Result<Unit> = withContext(Dispatchers.IO) {
-        val externalDir = context.getExternalFilesDir(null) ?: return@withContext Result.failure(Throwable("External directory not found"))
-        if(File(externalDir, "$GLB_FILE_PATH$fileName").delete()) {
+        val externalDir = context.getExternalFilesDir(null)
+            ?: return@withContext Result.failure(IllegalStateException("External directory not found"))
+
+        val target = File(externalDir, "$GLB_FILE_PATH$fileName")
+        if (!target.exists() || target.delete()) {
             Result.success(Unit)
         } else {
-            Result.failure(Throwable("Failed to delete file"))
+            Result.failure(IOException("Failed to delete file: ${target.absolutePath}"))
         }
     }
 }

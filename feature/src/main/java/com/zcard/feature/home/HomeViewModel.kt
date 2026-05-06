@@ -7,9 +7,12 @@ import com.zcard.domain.repository.CardRepository
 import com.zcard.domain.model.CardPreview
 import com.zcard.domain.model.UnityEventType
 import com.zcard.domain.model.UnityMessage
+import com.zcard.domain.usecase.CreateCardUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.launch
@@ -20,6 +23,7 @@ private const val TAG = "HomeViewModel"
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val cardRepository: CardRepository,
+    private val createCardUseCase: CreateCardUseCase
 ): ViewModel() {
 
     val cardPreviews: StateFlow<List<CardPreview>> = cardRepository.getCardPreviews()
@@ -36,10 +40,28 @@ class HomeViewModel @Inject constructor(
             initialValue = emptyList()
         )
 
-    fun handleUnityMessage(msg: UnityMessage) {
+    private val _homeSideEffect = Channel<HomeSideEffect>(Channel.BUFFERED)
+    val homeSideEffect = _homeSideEffect.receiveAsFlow()
+
+
+    fun onIntent(intent: HomeIntent) {
+        when(intent) {
+            is HomeIntent.OnUnityMessage -> handleUnityMessage(intent.message)
+            is HomeIntent.CreateCardAndNavigate -> handleCreateCard()
+        }
+    }
+
+    private fun handleUnityMessage(msg: UnityMessage) {
         if(msg.type == UnityEventType.CREATE_CARD_THUMB) {
             val cardId = msg.data.toLongOrNull() ?: return
             if(cardId > 0) viewModelScope.launch { cardRepository.updateCardThumbnail(cardId) }
+        }
+    }
+
+    private fun handleCreateCard() {
+        viewModelScope.launch {
+            val cardId = createCardUseCase()
+            _homeSideEffect.trySend(HomeSideEffect.NavigateToCardEditor(cardId))
         }
     }
 }

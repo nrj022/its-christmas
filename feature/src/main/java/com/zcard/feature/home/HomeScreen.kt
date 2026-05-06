@@ -65,17 +65,24 @@ import com.zcard.feature.home.util.formatRelativeTime
 import java.io.File
 
 @Composable
-fun HomeScreen(viewModel: HomeViewModel = hiltViewModel(), onCardClick: (Long) -> Unit = {}) {
+fun HomeScreen(viewModel: HomeViewModel = hiltViewModel(), onNewCardClick: () -> Unit = {}, onCardClick: (Long) -> Unit = {}) {
     val cardPreviews by viewModel.cardPreviews.collectAsStateWithLifecycle(minActiveState = Lifecycle.State.STARTED)
 
     HomeContent(
         cardPreviews = cardPreviews,
+        onNewCardClick = onNewCardClick,
         onCardClick = onCardClick
     )
 }
 
 @Composable
-fun HomeContent(modifier: Modifier = Modifier, cardPreviews: List<CardPreview> = emptyList(), onCardClick: (Long) -> Unit = {}, onSettingClick: () -> Unit = {}) {
+fun HomeContent(
+    modifier: Modifier = Modifier,
+    cardPreviews: List<CardPreview> = emptyList(),
+    onNewCardClick: () -> Unit = {},
+    onCardClick: (Long) -> Unit = {},
+    onSettingClick: () -> Unit = {}
+) {
     Scaffold(
         modifier = modifier
             .fillMaxSize()
@@ -91,7 +98,7 @@ fun HomeContent(modifier: Modifier = Modifier, cardPreviews: List<CardPreview> =
             horizontalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             item(span = { GridItemSpan(maxLineSpan) }) {
-                PreviewGifImage { onCardClick(-1) }
+                PreviewGifImage { onNewCardClick() }
             }
 
             item(span = { GridItemSpan(maxLineSpan) }) {

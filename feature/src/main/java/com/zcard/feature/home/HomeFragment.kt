@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
@@ -16,9 +17,11 @@ import com.zcard.feature.R
 import com.zcard.feature.cardeditor.CardEditorFragment
 import com.zcard.designsystem.theme.ZCardTheme
 import com.zcard.feature.MainViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import kotlin.getValue
 
+@AndroidEntryPoint
 class HomeFragment : Fragment() {
 
     private val viewModel: HomeViewModel by viewModels()
@@ -32,8 +35,17 @@ class HomeFragment : Fragment() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                mainViewModel.unityMessage.collect { msg ->
-                    viewModel.handleUnityMessage(msg)
+                launch {
+                    mainViewModel.unityMessage.collect { msg ->
+                        viewModel.onIntent(HomeIntent.OnUnityMessage(msg))
+                    }
+                }
+                launch {
+                    viewModel.homeSideEffect.collect { sideEffect ->
+                        when(sideEffect) {
+                            is HomeSideEffect.NavigateToCardEditor -> navigateToCardEditor(sideEffect.cardId)
+                        }
+                    }
                 }
             }
         }
@@ -42,20 +54,29 @@ class HomeFragment : Fragment() {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 ZCardTheme {
-                    HomeScreen {
-                        parentFragmentManager.beginTransaction()
-                            .setCustomAnimations(
-                                R.anim.slide_in_right,
-                                R.anim.slide_out_left,
-                                R.anim.slide_in_left,
-                                R.anim.slide_out_right
-                            )
-                            .replace(R.id.fragment_container, CardEditorFragment.newInstance(it))
-                            .addToBackStack(null)
-                            .commit()
-                    }
+                    HomeScreen(
+                        onNewCardClick = { viewModel.onIntent(HomeIntent.CreateCardAndNavigate) },
+                        onCardClick = { navigateToCardEditor(it) }
+                    )
                 }
             }
         }
+    }
+    private fun navigateToCardEditor(cardId: Long) {
+        if(cardId <= 0) {
+            Toast.makeText(context, "Oops! Failed to create card. Please try again.", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        parentFragmentManager.beginTransaction()
+            .setCustomAnimations(
+                R.anim.slide_in_right,
+                R.anim.slide_out_left,
+                R.anim.slide_in_left,
+                R.anim.slide_out_right
+            )
+            .replace(R.id.fragment_container, CardEditorFragment.newInstance(cardId))
+            .addToBackStack(null)
+            .commit()
     }
 }

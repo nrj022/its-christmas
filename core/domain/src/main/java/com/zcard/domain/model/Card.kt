@@ -9,5 +9,5 @@ data class Card(
     val isDraft: Boolean = true,
     val createdAt: Long = System.currentTimeMillis(),
     val updatedAt: Long = System.currentTimeMillis(),
-    val thumbnailUpdatedAt: Long = System.currentTimeMillis(),
+    val thumbnailUpdatedAt: Long = 0L,
 )

@@ -1,6 +1,5 @@
 package com.zcard.feature.cardeditor
 
-import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -33,7 +32,6 @@ import com.zcard.domain.usecase.SaveTextElementsParams
 import com.zcard.domain.usecase.SaveTextElementsUseCase
 import com.zcard.domain.usecase.UploadCardModelUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
@@ -47,7 +45,6 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.io.File
 import javax.inject.Inject
 import kotlin.Long
 import kotlin.onSuccess
@@ -56,7 +53,6 @@ private const val TAG = "CardEditorViewModel"
 
 @HiltViewModel
 class CardEditorViewModel @Inject constructor(
-    @ApplicationContext private val context: Context,
     private val unityBridge: UnityBridge,
     private val cardRepository: CardRepository,
     private val assetRepository: AssetRepository,
@@ -235,19 +231,12 @@ class CardEditorViewModel @Inject constructor(
         }
     }
 
-    private fun handleExportGlbResult(unityStatusType: UnityEventStatus, result: String) {
+    private fun handleExportGlbResult(unityStatusType: UnityEventStatus, fileName: String) {
         viewModelScope.launch {
             try {
-                if(unityStatusType != UnityEventStatus.SUCCESS) error(result)
+                if(unityStatusType != UnityEventStatus.SUCCESS) error(fileName)
 
-                val externalDir = context.getExternalFilesDir(null)
-                val file = File(externalDir, "glb_exports/$result")
-
-                if (!file.exists()) {
-                    error("Export file not found: ${file.absolutePath}")
-                }
-
-                uploadGlbUseCase(_cardId, file).collect { state ->
+                uploadGlbUseCase(_cardId, fileName).collect { state ->
                     when(state) {
                         is UploadState.Progress -> _cardEditorState.update {
                             it.copy(loadingText = "Uploading ${state.percent}%")
@@ -257,7 +246,7 @@ class CardEditorViewModel @Inject constructor(
                             if(cardUrl.isEmpty()) error("Empty Card URL")
                             _cardEditorSideEffect.trySend(CardEditorSideEffect.NavigateToCardShare(cardUrl))
                         }
-                        is UploadState.Failure -> error("Upload Failed")
+                        is UploadState.Failure -> throw state.error ?: Exception("Firebase upload failed")
                     }
                 }
             } catch (e: CancellationException) {

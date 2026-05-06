@@ -1,7 +1,7 @@
 package com.zcard.data.di
 
-import com.zcard.data.bridgeimpl.UnityBridgeImpl
-import com.zcard.domain.bridge.UnityBridge
+import com.zcard.data.storageimpl.CardFileStorageImpl
+import com.zcard.domain.storage.CardFileStorage
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -10,11 +10,11 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-abstract class BridgeModule {
+abstract class StorageModule {
 
     @Binds
     @Singleton
-    abstract fun bindUnityBridge(
-        unityBridgeImpl: UnityBridgeImpl
-    ): UnityBridge
+    abstract fun bindCardFileStorage(
+        cardFileStorageImpl: CardFileStorageImpl
+    ): CardFileStorage
 }

@@ -5,6 +5,7 @@ import kotlinx.serialization.Serializable
 
 enum class UnityEventType {
     SCENE_RESET,
+    CREATE_CARD_THUMB,
     CREATE_OBJECT,
     EXPORT_GLB,
 }

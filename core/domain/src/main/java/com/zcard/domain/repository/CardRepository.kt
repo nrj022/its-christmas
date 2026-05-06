@@ -1,17 +1,19 @@
 package com.zcard.domain.repository
 
 import com.zcard.domain.model.Card
+import com.zcard.domain.model.CardPreview
 import com.zcard.domain.model.UploadState
 import kotlinx.coroutines.flow.Flow
-import java.io.File
 
 interface CardRepository {
 
     suspend fun insertCard(card: Card): Result<Long>
 
-    suspend fun getAllCards(): Result<List<Card>>
+    fun getCardPreviews(): Flow<Result<List<CardPreview>>>
 
     suspend fun getCardById(cardId: Long): Result<Card>
+
+    suspend fun updateCardThumbnail(cardId: Long): Result<Int>
 
     suspend fun updateCardTitle(cardId: Long, title: String): Result<Int>
 
@@ -19,5 +21,7 @@ interface CardRepository {
 
     suspend fun updateGlb(cardId: Long, glbFileName: String): Result<Int>
 
-    suspend fun uploadGlbToFirebase(file: File): Flow<UploadState>
+    suspend fun deleteCardGlb(fileName: String): Result<Unit>
+
+    suspend fun uploadGlbToFirebase(fileName: String): Flow<UploadState>
 }

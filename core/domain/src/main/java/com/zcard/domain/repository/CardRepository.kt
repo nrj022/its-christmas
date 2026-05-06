@@ -21,7 +21,7 @@ interface CardRepository {
 
     suspend fun updateGlb(cardId: Long, glbFileName: String): Result<Int>
 
-    suspend fun deleteCardGlb(fileName: String): Boolean
+    suspend fun deleteCardGlb(fileName: String): Result<Unit>
 
     suspend fun uploadGlbToFirebase(fileName: String): Flow<UploadState>
 }

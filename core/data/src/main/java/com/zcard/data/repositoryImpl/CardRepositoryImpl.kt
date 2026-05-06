@@ -19,7 +19,6 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class CardRepositoryImpl @Inject constructor(
@@ -75,13 +74,11 @@ class CardRepositoryImpl @Inject constructor(
             cardDao.updateGlb(cardId, glbFileName)
         }
 
-    override suspend fun deleteCardGlb(fileName: String): Boolean =
-        withContext(Dispatchers.IO) {
+    override suspend fun deleteCardGlb(fileName: String): Result<Unit> =
             cardFileStorage.deleteGlbFile(fileName)
-        }
 
     override suspend fun uploadGlbToFirebase(fileName: String): Flow<UploadState> {
-        val file = withContext(Dispatchers.IO) { cardFileStorage.getGlbFile(fileName) }
+        val file = cardFileStorage.getGlbFile(fileName)
             ?: return flowOf(UploadState.Failure(Throwable("File not found")))
 
         return callbackFlow {

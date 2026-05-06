@@ -25,8 +25,8 @@ class UploadCardModelUseCaseImpl @Inject constructor(
             if(progress is UploadState.Success) {
                 val updatedRows = cardRepository.updateGlb(cardId, fileName).getOrNull() ?: 0
                 if (updatedRows > 0) {
-                    if (!cardRepository.deleteCardGlb(fileName)) {
-                        Log.w(TAG, "Failed to delete card glb file")
+                    cardRepository.deleteCardGlb(fileName).onFailure { e ->
+                        Log.w(TAG, "Failed to delete card glb file", e)
                     }
                     emit(UploadState.Success)
                 } else {

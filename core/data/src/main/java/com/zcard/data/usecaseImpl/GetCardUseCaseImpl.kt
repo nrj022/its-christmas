@@ -33,7 +33,7 @@ class GetCardUseCaseImpl @Inject constructor(
                     cardElementRepository.getObjectElementsWithAssetKeysByCardId(cardId)
                 val spawnedObjectsDeferred = async { spawnedObjectsFlow.first().getOrThrow() }
 
-                val cardUrlDeferred = async { generateCardUrlUseCase(cardId).getOrThrow() }
+                val cardUrlDeferred = async { generateCardUrlUseCase(cardId).getOrNull() ?: "" }
 
                 GetCardUseCaseResult(
                     cardData = cardDataDeferred.await(),

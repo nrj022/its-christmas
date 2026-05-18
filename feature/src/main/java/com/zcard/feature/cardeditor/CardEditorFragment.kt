@@ -69,7 +69,7 @@ class CardEditorFragment : Fragment() {
         layoutParams = binding.unityContainer.layoutParams as ConstraintLayout.LayoutParams
         mainViewModel.onIntent(MainIntent.OnEditorCreated)
 
-        cardId = arguments?.getLong(ARG_CARD_ID) ?: -1  // TODO: 새로운 카드 생성이 아닌 카드 조회 시 Card ID 누락에 대한 에러 처리 추가 (Log, Dialog)
+        cardId = requireArguments().getLong(ARG_CARD_ID)    // newInstance로만 생성되므로 없으면 즉시 크래시
         viewModel.onIntent(CardEditorIntent.Init(cardId))
 
         initListener()

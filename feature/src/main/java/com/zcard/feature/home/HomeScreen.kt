@@ -3,7 +3,7 @@ package com.zcard.feature.home
 import android.os.Build.VERSION.SDK_INT
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,11 +27,15 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -57,10 +61,12 @@ import coil.request.ImageRequest
 import com.zcard.feature.R
 import com.zcard.designsystem.theme.DimGray
 import com.zcard.designsystem.theme.Gray
+import com.zcard.designsystem.theme.Red
 import com.zcard.designsystem.theme.ZCardTheme
 import com.zcard.designsystem.theme.SoftBlack
 import com.zcard.designsystem.theme.White
 import com.zcard.domain.model.CardPreview
+import com.zcard.feature.home.util.formatDateTime
 import com.zcard.feature.home.util.formatRelativeTime
 import java.io.File
 
@@ -79,9 +85,14 @@ fun HomeScreen(viewModel: HomeViewModel = hiltViewModel(), onNewCardClick: () ->
 fun HomeContent(
     modifier: Modifier = Modifier,
     cardPreviews: List<CardPreview> = emptyList(),
+    selectedCard: CardPreview? = null,
     onNewCardClick: () -> Unit = {},
     onCardClick: (Long) -> Unit = {},
-    onSettingClick: () -> Unit = {}
+    onCardLongClick: (Long) -> Unit = {},
+    onSettingClick: () -> Unit = {},
+    onBottomSheetDismissRequest: () -> Unit = {},
+    onCopyLinkClick: (Long) -> Unit = {},
+    onDeleteClick: (Long) -> Unit = {}
 ) {
     Scaffold(
         modifier = modifier
@@ -123,7 +134,8 @@ fun HomeContent(
                         updatedAt = formatRelativeTime(item.updatedAt),
                         thumbnailFile = item.thumbnailFile,
                         thumbnailUpdatedAt = item.thumbnailUpdatedAt,
-                        onClick = { onCardClick(item.cardId) }
+                        onClick = { onCardClick(item.cardId) },
+                        onLongClick = { onCardLongClick(item.cardId) }
                     )
                 }
             }
@@ -131,6 +143,16 @@ fun HomeContent(
             item(span = { GridItemSpan(maxLineSpan) }) {
                 Spacer(modifier = Modifier.height(20.dp))
             }
+        }
+
+        if(selectedCard != null) {
+            CardOptionBottomSheet(
+                cardTitle = selectedCard.title,
+                updatedAt = formatDateTime(selectedCard.updatedAt),
+                onDismissRequest = onBottomSheetDismissRequest,
+                onCopyLinkClick = { onCopyLinkClick(selectedCard.cardId) },
+                onDeleteClick = { onDeleteClick(selectedCard.cardId) }
+            )
         }
     }
 }
@@ -237,14 +259,17 @@ fun CreateCardButton(onClick: () -> Unit) {
 }
 
 @Composable
-fun CardItem(cardTitle: String, updatedAt: String, thumbnailFile: File?, thumbnailUpdatedAt: Long, onClick: () -> Unit) {
+fun CardItem(cardTitle: String, updatedAt: String, thumbnailFile: File?, thumbnailUpdatedAt: Long, onClick: () -> Unit, onLongClick: () -> Unit = {}) {
     Column {
         Card(
             modifier = Modifier
                 .fillMaxWidth()
                 .aspectRatio(1f)
                 .clip(RoundedCornerShape(25.dp))
-                .clickable { onClick() },
+                .combinedClickable(
+                    onClick = { onClick() },
+                    onLongClick = { onLongClick() },
+                ),
             shape = RoundedCornerShape(25.dp),
             elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
         ) {
@@ -321,6 +346,81 @@ fun EmptyCardSection(modifier: Modifier = Modifier) {
             color = Gray
         )
         Spacer(modifier = Modifier.height(60.dp))
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CardOptionBottomSheet(
+    modifier: Modifier = Modifier,
+    cardTitle: String = "Card Title",
+    updatedAt: String = "Updated At",
+    onDismissRequest: () -> Unit = {},
+    onCopyLinkClick: () -> Unit = {},
+    onDeleteClick: () -> Unit = {}
+) {
+    ModalBottomSheet(
+        modifier = modifier,
+        onDismissRequest = onDismissRequest,
+        sheetState = rememberModalBottomSheetState()
+    ) {
+        Column(
+            modifier = Modifier.padding(horizontal = 34.dp),
+            horizontalAlignment = Alignment.Start
+        ) {
+            Column(
+                modifier = Modifier.padding(horizontal = 15.dp),
+                verticalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                Text(
+                    text = cardTitle,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    style = MaterialTheme.typography.labelSmall
+                )
+                Text(
+                    text = updatedAt,
+                    color = DimGray,
+                    style = MaterialTheme.typography.labelSmall,
+                    fontSize = 8.sp
+                )
+            }
+            Spacer(modifier = Modifier.height(20.dp))
+            TextButton(
+                onClick = onCopyLinkClick
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Icon(painterResource(R.drawable.ic_copy), contentDescription = null)
+                    Text(
+                        style = MaterialTheme.typography.labelSmall,
+                        text = stringResource(R.string.home_label_copy_link_button)
+                    )
+                }
+            }
+            TextButton(
+                onClick = onDeleteClick
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Icon(
+                        painterResource(R.drawable.ic_delete),
+                        tint = Red,
+                        contentDescription = null
+                    )
+                    Text(
+                        color = Red,
+                        style = MaterialTheme.typography.labelSmall,
+                        text = stringResource(R.string.home_label_delete_button)
+                    )
+                }
+            }
+            Spacer(modifier = Modifier.height(30.dp))
+        }
     }
 }
 

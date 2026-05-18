@@ -20,3 +20,9 @@ fun formatRelativeTime(millis: Long): String {
         }
     }
 }
+
+fun formatDateTime(millis: Long): String {
+    val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
+    val dateTime = Instant.ofEpochMilli(millis)
+    return dateTime.atZone(ZoneId.systemDefault()).format(formatter)
+}

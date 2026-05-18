@@ -66,6 +66,7 @@ import com.zcard.designsystem.theme.ZCardTheme
 import com.zcard.designsystem.theme.SoftBlack
 import com.zcard.designsystem.theme.White
 import com.zcard.domain.model.CardPreview
+import com.zcard.designsystem.component.BaseDialog
 import com.zcard.feature.home.util.formatDateTime
 import com.zcard.feature.home.util.formatRelativeTime
 import java.io.File
@@ -83,8 +84,17 @@ fun HomeScreen(viewModel: HomeViewModel = hiltViewModel()) {
         onSettingClick = { /* TODO */ },
         onBottomSheetDismissRequest = { viewModel.onIntent(HomeIntent.CloseBottomSheet) },
         onShareLinkClick = { viewModel.onIntent(HomeIntent.ShareLink(it)) },
-        onDeleteClick = { viewModel.onIntent(HomeIntent.DeleteCard(it)) },
+        onDeleteClick = { viewModel.onIntent(HomeIntent.ConfirmDelete) },
     )
+
+    state.deleteTargetCard?.let { card ->
+        DeleteConfirmDialog(
+            cardTitle = card.title,
+            onConfirm = { viewModel.onIntent(HomeIntent.DeleteCard(card.cardId)) },
+            onDismiss = { viewModel.onIntent(HomeIntent.CancelDelete) },
+            onDismissRequest = { viewModel.onIntent(HomeIntent.CancelDelete) }
+        )
+    }
 }
 
 @Composable
@@ -109,7 +119,9 @@ fun HomeContent(
         topBar = { TopBar(onSettingClick = onSettingClick) },
     ) {
         LazyVerticalGrid(
-            modifier = Modifier.fillMaxSize().padding(it),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(it),
             columns = GridCells.Fixed(3),
             verticalArrangement = Arrangement.spacedBy(16.dp),
             horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -166,12 +178,16 @@ fun HomeContent(
 @Composable
 fun TopBar(onSettingClick: () -> Unit = {}) {
     Row(
-        modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Image(
-            modifier = Modifier.height(40.dp).aspectRatio(2.3f),
+            modifier = Modifier
+                .height(40.dp)
+                .aspectRatio(2.3f),
             painter = painterResource(R.drawable.logo_full),
             contentDescription = stringResource(R.string.home_cd_logo_img),
             contentScale = ContentScale.Fit
@@ -406,7 +422,7 @@ fun CardOptionBottomSheet(
                     )
                     Text(
                         style = MaterialTheme.typography.labelSmall,
-                        text = stringResource(R.string.home_label_share_link_button)
+                        text = stringResource(R.string.home_button_share_link)
                     )
                 }
             }
@@ -426,13 +442,33 @@ fun CardOptionBottomSheet(
                     Text(
                         color = Red,
                         style = MaterialTheme.typography.labelSmall,
-                        text = stringResource(R.string.home_label_delete_button)
+                        text = stringResource(R.string.home_button_delete)
                     )
                 }
             }
             Spacer(modifier = Modifier.height(30.dp))
         }
     }
+}
+
+@Composable
+fun DeleteConfirmDialog(
+    modifier: Modifier = Modifier,
+    cardTitle: String,
+    onConfirm: () -> Unit = {},
+    onDismiss: () -> Unit = {},
+    onDismissRequest: () -> Unit = {}
+) {
+    BaseDialog(
+        modifier = modifier,
+        title = stringResource(R.string.home_dialog_title_delete_confirm, cardTitle),
+        content = stringResource(R.string.home_dialog_content_delete_confirm),
+        confirmLabel = stringResource(R.string.home_dialog_button_delete),
+        dismissLabel = stringResource(R.string.common_button_cancel),
+        onConfirm = onConfirm,
+        onDismiss = onDismiss,
+        onDismissRequest = onDismissRequest
+    )
 }
 
 @Preview(showSystemUi = true)

@@ -5,6 +5,7 @@
     <string name="common_button_no">No</string>
     <string name="common_button_apply">Apply</string>
 
+    <!-- Editor Screen -->
     <string name="editor_msg_block_system_back">Please use the buttons at the top to finish editing</string>
     <string name="editor_msg_copy_success">Copied to clipboard</string>
 
@@ -50,9 +51,9 @@
     <string name="editor_dialog_content_unsaved_changes">Do you want to save before leaving?</string>
     <string name="editor_dialog_text_exclude_new_edit">Excludes new edits</string>
 
+    <!-- Share Screen -->
     <string name="share_label_share_button">Share</string>
     <string name="share_cd_home_button">Home</string>
-
 
     <!-- Home Screen -->
     <string name="home_cd_logo_img">Main Logo</string>
@@ -69,6 +70,11 @@
     <string name="home_text_notice_empty_card_2">Create your first 3D card now.</string>
 
     <!-- Home Screen - Bottom Sheet -->
-    <string name="home_label_share_link_button">Share Link</string>
-    <string name="home_label_delete_button">Delete</string>
+    <string name="home_button_share_link">Share Link</string>
+    <string name="home_button_delete">Delete</string>
+
+    <!-- Home Screen - Dialog -->
+    <string name="home_dialog_title_delete_confirm">Delete %1$s?</string>
+    <string name="home_dialog_content_delete_confirm">"You can't undo this action."</string>
+    <string name="home_dialog_button_delete">Delete</string>
 </resources>

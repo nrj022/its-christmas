@@ -41,8 +41,10 @@ class HomeViewModel @Inject constructor(
             is HomeIntent.NavigateToCardEditor -> navigateToCardEditor(intent.cardId)
             is HomeIntent.OpenBottomSheet -> handleOpenBottomSheet(intent.cardId)
             is HomeIntent.CloseBottomSheet -> handleCloseBottomSheet()
-            is HomeIntent.DeleteCard -> handleDeleteCard(intent.cardId)
             is HomeIntent.ShareLink -> handleShareLink(intent.cardId)
+            is HomeIntent.ConfirmDelete -> handleConfirmDelete()
+            is HomeIntent.CancelDelete -> handleCancelDelete()
+            is HomeIntent.DeleteCard -> handleDeleteCard(intent.cardId)
         }
     }
 
@@ -87,13 +89,25 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun handleCloseBottomSheet() {
-        _homeState.update { it.copy(selectedCardId = null) }
+        _homeState.update { it.copy(selectedCardId = null, deleteTargetCard = null) }
     }
 
     private fun handleShareLink(cardId: Long) {
         viewModelScope.launch {
             val link = generateCardUrlUseCase(cardId)
             _homeSideEffect.trySend(HomeSideEffect.ShareLink(link))
+        }
+    }
+
+    private fun handleConfirmDelete() {
+        _homeState.update {
+            it.copy(deleteTargetCard = it.selectedCard)
+        }
+    }
+
+    private fun handleCancelDelete() {
+        _homeState.update {
+            it.copy(deleteTargetCard = null)
         }
     }
 

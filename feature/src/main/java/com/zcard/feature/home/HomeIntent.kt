@@ -8,6 +8,8 @@ sealed class HomeIntent {
     data class NavigateToCardEditor(val cardId: Long) : HomeIntent()
     data class OpenBottomSheet(val cardId: Long) : HomeIntent()
     data object CloseBottomSheet : HomeIntent()
-    data class DeleteCard(val cardId: Long) : HomeIntent()
     data class ShareLink(val cardId: Long) : HomeIntent()
+    data object ConfirmDelete : HomeIntent()
+    data object CancelDelete : HomeIntent()
+    data class DeleteCard(val cardId: Long) : HomeIntent()
 }

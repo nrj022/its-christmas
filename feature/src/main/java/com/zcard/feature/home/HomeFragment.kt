@@ -19,7 +19,6 @@ import com.zcard.designsystem.theme.ZCardTheme
 import com.zcard.feature.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import kotlin.getValue
 
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
@@ -32,6 +31,23 @@ class HomeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        super.onCreateView(inflater, container, savedInstanceState)
+
+        return ComposeView(requireContext()).apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                ZCardTheme {
+                    HomeScreen(
+                        onNewCardClick = { viewModel.onIntent(HomeIntent.CreateCard) },
+                        onCardClick = { navigateToCardEditor(it) }
+                    )
+                }
+            }
+        }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -52,19 +68,8 @@ class HomeFragment : Fragment() {
                 }
             }
         }
-
-        return ComposeView(requireContext()).apply {
-            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-            setContent {
-                ZCardTheme {
-                    HomeScreen(
-                        onNewCardClick = { viewModel.onIntent(HomeIntent.CreateCard) },
-                        onCardClick = { navigateToCardEditor(it) }
-                    )
-                }
-            }
-        }
     }
+
     private fun navigateToCardEditor(cardId: Long) {
         parentFragmentManager.beginTransaction()
             .setCustomAnimations(

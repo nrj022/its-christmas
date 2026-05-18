@@ -1,4 +1,4 @@
-package com.zcard.feature.cardeditor.ui.common
+package com.zcard.designsystem.component
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.AlertDialog

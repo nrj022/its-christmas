@@ -14,7 +14,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.zcard.feature.R
-import com.zcard.feature.cardeditor.ui.common.BaseDialog
+import com.zcard.designsystem.component.BaseDialog
 import com.zcard.designsystem.theme.Gray
 import com.zcard.designsystem.theme.White
 

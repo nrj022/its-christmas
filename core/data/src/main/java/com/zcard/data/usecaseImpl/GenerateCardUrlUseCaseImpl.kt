@@ -16,8 +16,8 @@ class GenerateCardUrlUseCaseImpl @Inject constructor(
     override suspend fun invoke(
         cardId: Long,
     ): Result<String> {
-        val card = cardRepository.getCardById(cardId).getOrNull() ?: return Result.failure(Exception("Card not found"))
-        val bg = assetRepository.getAssetById(card.backgroundAssetId).getOrNull() ?: return Result.failure(Exception("Background not found"))
+        val card = cardRepository.getCardById(cardId).getOrElse { return Result.failure(it) }
+        val bg = assetRepository.getAssetById(card.backgroundAssetId).getOrElse { return Result.failure(it) }
 
         val glb = card.glbFileName ?: return Result.failure(CardNotExportedException(cardId))
         val bgFile = bg.unityKey

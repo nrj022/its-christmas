@@ -47,7 +47,7 @@ class HomeViewModel @Inject constructor(
     fun onIntent(intent: HomeIntent) {
         when(intent) {
             is HomeIntent.OnUnityMessage -> handleUnityMessage(intent.message)
-            is HomeIntent.CreateCardAndNavigate -> handleCreateCard()
+            is HomeIntent.CreateCard -> handleCreateCard()
         }
     }
 
@@ -60,8 +60,13 @@ class HomeViewModel @Inject constructor(
 
     private fun handleCreateCard() {
         viewModelScope.launch {
-            val cardId = createCardUseCase()
-            _homeSideEffect.trySend(HomeSideEffect.NavigateToCardEditor(cardId))
+            createCardUseCase()
+                .onSuccess {
+                    _homeSideEffect.trySend(HomeSideEffect.NavigateToCardEditor(it))
+                }.onFailure { e ->
+                    _homeSideEffect.trySend(HomeSideEffect.ToastMessage("Failed to create card"))
+                    Log.e(TAG, "createCard failed: $e")
+                }
         }
     }
 }

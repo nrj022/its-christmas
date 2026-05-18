@@ -12,16 +12,12 @@ class CreateCardUseCaseImpl @Inject constructor(
     private val cardRepository: CardRepository,
 ): CreateCardUseCase {
 
-    override suspend fun invoke(): Long {
-        var cardId = -1L
-        cardRepository.insertCard(Card())
+    override suspend operator fun invoke(): Result<Long> {
+        return cardRepository.insertCard(Card())
             .onSuccess {
                 cardRepository.updateCardTitle(it, "New Card $it")
                     .onFailure { e -> Log.w(TAG, "updateCardTitle failed: $e") }
-                cardId = it
-            }.onFailure { e ->
-                Log.e(TAG, "insertCard failed: $e")
             }
-        return cardId
+            .onFailure { e -> Log.e(TAG, "insertCard failed: $e") }
     }
 }

@@ -44,6 +44,9 @@ class HomeFragment : Fragment() {
                     viewModel.homeSideEffect.collect { sideEffect ->
                         when(sideEffect) {
                             is HomeSideEffect.NavigateToCardEditor -> navigateToCardEditor(sideEffect.cardId)
+                            is HomeSideEffect.ToastMessage -> {
+                                Toast.makeText(requireContext(), sideEffect.message, Toast.LENGTH_SHORT).show()
+                            }
                         }
                     }
                 }
@@ -55,7 +58,7 @@ class HomeFragment : Fragment() {
             setContent {
                 ZCardTheme {
                     HomeScreen(
-                        onNewCardClick = { viewModel.onIntent(HomeIntent.CreateCardAndNavigate) },
+                        onNewCardClick = { viewModel.onIntent(HomeIntent.CreateCard) },
                         onCardClick = { navigateToCardEditor(it) }
                     )
                 }
@@ -63,11 +66,6 @@ class HomeFragment : Fragment() {
         }
     }
     private fun navigateToCardEditor(cardId: Long) {
-        if(cardId <= 0) {
-            Toast.makeText(context, "Oops! Failed to create card. Please try again.", Toast.LENGTH_SHORT).show()
-            return
-        }
-
         parentFragmentManager.beginTransaction()
             .setCustomAnimations(
                 R.anim.slide_in_right,

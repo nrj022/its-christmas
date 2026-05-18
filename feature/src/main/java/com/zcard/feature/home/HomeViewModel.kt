@@ -98,6 +98,15 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun handleDeleteCard(cardId: Long) {
-
+        viewModelScope.launch {
+            cardRepository.deleteCard(cardId)
+                .onSuccess {
+                    _homeSideEffect.trySend(HomeSideEffect.ToastMessage("Card deleted"))
+                    handleCloseBottomSheet()
+                }.onFailure { e ->
+                    Log.e(TAG, "deleteCard failed: $e")
+                    _homeSideEffect.trySend(HomeSideEffect.ToastMessage("Failed to delete card"))
+                }
+        }
     }
 }

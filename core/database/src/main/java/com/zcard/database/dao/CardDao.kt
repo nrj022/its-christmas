@@ -12,6 +12,9 @@ interface CardDao {
     @Insert
     suspend fun insertCard(card: CardEntity): Long
 
+    @Query("DELETE FROM cards WHERE cardId = :cardId")
+    suspend fun deleteCard(cardId: Long): Int
+
     @Query("SELECT * FROM cards ORDER BY updatedAt DESC")
     fun getAllCards(): Flow<List<CardEntity>>
 

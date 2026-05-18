@@ -71,13 +71,19 @@ import com.zcard.feature.home.util.formatRelativeTime
 import java.io.File
 
 @Composable
-fun HomeScreen(viewModel: HomeViewModel = hiltViewModel(), onNewCardClick: () -> Unit = {}, onCardClick: (Long) -> Unit = {}) {
-    val cardPreviews by viewModel.cardPreviews.collectAsStateWithLifecycle(minActiveState = Lifecycle.State.STARTED)
+fun HomeScreen(viewModel: HomeViewModel = hiltViewModel()) {
+    val state by viewModel.homeState.collectAsStateWithLifecycle(minActiveState = Lifecycle.State.STARTED)
 
     HomeContent(
-        cardPreviews = cardPreviews,
-        onNewCardClick = onNewCardClick,
-        onCardClick = onCardClick
+        cardPreviews = state.cardPreviews,
+        selectedCard = state.selectedCard,
+        onNewCardClick = { viewModel.onIntent(HomeIntent.CreateCard) },
+        onCardClick = { viewModel.onIntent(HomeIntent.NavigateToCardEditor(it)) },
+        onCardLongClick = { viewModel.onIntent(HomeIntent.OpenBottomSheet(it)) },
+        onSettingClick = { /* TODO */ },
+        onBottomSheetDismissRequest = { viewModel.onIntent(HomeIntent.CloseBottomSheet) },
+        onCopyLinkClick = { viewModel.onIntent(HomeIntent.CopyCardLink(it)) },
+        onDeleteClick = { viewModel.onIntent(HomeIntent.DeleteCard(it)) },
     )
 }
 

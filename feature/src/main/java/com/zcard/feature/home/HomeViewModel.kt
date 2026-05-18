@@ -3,6 +3,7 @@ package com.zcard.feature.home
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.zcard.domain.exception.CardNotExportedException
 import com.zcard.domain.repository.CardRepository
 import com.zcard.domain.model.UnityEventType
 import com.zcard.domain.model.UnityMessage
@@ -94,8 +95,25 @@ class HomeViewModel @Inject constructor(
 
     private fun handleShareLink(cardId: Long) {
         viewModelScope.launch {
-            val link = generateCardUrlUseCase(cardId)
-            _homeSideEffect.trySend(HomeSideEffect.ShareLink(link))
+            generateCardUrlUseCase(cardId)
+                .onSuccess { link ->
+                    _homeSideEffect.trySend(HomeSideEffect.ShareLink(link))
+                }.onFailure { e ->
+                    when(e) {
+                        is CardNotExportedException -> {
+                            _homeSideEffect.trySend(
+                                HomeSideEffect.ToastMessage("Please export the card before sharing.")
+                            )
+                            Log.w(TAG, "generateCardUrl failed: $e")
+                        }
+                        else -> {
+                            _homeSideEffect.trySend(
+                                HomeSideEffect.ToastMessage("Failed to generate link. Please try again.")
+                            )
+                            Log.e(TAG, "generateCardUrl failed: $e")
+                        }
+                    }
+                }
         }
     }
 

@@ -5,6 +5,7 @@ import com.zcard.domain.repository.CardRepository
 import com.zcard.domain.usecase.GenerateCardUrlUseCase
 import javax.inject.Inject
 import androidx.core.net.toUri
+import com.zcard.domain.exception.CardNotExportedException
 
 class GenerateCardUrlUseCaseImpl @Inject constructor(
     private val cardRepository: CardRepository,
@@ -14,11 +15,11 @@ class GenerateCardUrlUseCaseImpl @Inject constructor(
 
     override suspend fun invoke(
         cardId: Long,
-    ): String {
-        val card = cardRepository.getCardById(cardId).getOrNull() ?: return ""
-        val bg = assetRepository.getAssetById(card.backgroundAssetId).getOrNull() ?: return ""
+    ): Result<String> {
+        val card = cardRepository.getCardById(cardId).getOrNull() ?: return Result.failure(Exception("Card not found"))
+        val bg = assetRepository.getAssetById(card.backgroundAssetId).getOrNull() ?: return Result.failure(Exception("Background not found"))
 
-        val glb = card.glbFileName ?: return ""
+        val glb = card.glbFileName ?: return Result.failure(CardNotExportedException(cardId))
         val bgFile = bg.unityKey
 
         val builder = baseCardUrl.toUri().buildUpon()
@@ -26,6 +27,6 @@ class GenerateCardUrlUseCaseImpl @Inject constructor(
             .appendQueryParameter("glb", glb)
             .appendQueryParameter("bg", bgFile)
 
-        return builder.build().toString()
+        return Result.success(builder.build().toString())
     }
 }

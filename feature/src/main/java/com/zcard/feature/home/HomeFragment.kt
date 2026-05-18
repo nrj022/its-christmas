@@ -1,5 +1,6 @@
 package com.zcard.feature.home
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -56,11 +57,19 @@ class HomeFragment : Fragment() {
                             is HomeSideEffect.ToastMessage -> {
                                 Toast.makeText(requireContext(), sideEffect.message, Toast.LENGTH_SHORT).show()
                             }
+                            is HomeSideEffect.ShareLink -> shareCardLink(sideEffect.link)
                         }
                     }
                 }
             }
         }
+    }
+
+    private fun shareCardLink(link: String) {
+        val intent = Intent(Intent.ACTION_SEND)
+        intent.putExtra(Intent.EXTRA_TEXT, link)
+        intent.type = "text/plain"
+        startActivity(Intent.createChooser(intent, null))
     }
 
     private fun navigateToCardEditor(cardId: Long) {

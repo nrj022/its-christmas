@@ -7,6 +7,7 @@ import com.zcard.domain.repository.CardRepository
 import com.zcard.domain.model.UnityEventType
 import com.zcard.domain.model.UnityMessage
 import com.zcard.domain.usecase.CreateCardUseCase
+import com.zcard.domain.usecase.GenerateCardUrlUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,7 +24,8 @@ private const val TAG = "HomeViewModel"
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val cardRepository: CardRepository,
-    private val createCardUseCase: CreateCardUseCase
+    private val createCardUseCase: CreateCardUseCase,
+    private val generateCardUrlUseCase: GenerateCardUrlUseCase
 ): ViewModel() {
 
     private val _homeState = MutableStateFlow(HomeState())
@@ -40,7 +42,7 @@ class HomeViewModel @Inject constructor(
             is HomeIntent.OpenBottomSheet -> handleOpenBottomSheet(intent.cardId)
             is HomeIntent.CloseBottomSheet -> handleCloseBottomSheet()
             is HomeIntent.DeleteCard -> handleDeleteCard(intent.cardId)
-            is HomeIntent.CopyCardLink -> handleCopyCardLink(intent.cardId)
+            is HomeIntent.ShareLink -> handleShareLink(intent.cardId)
         }
     }
 
@@ -88,8 +90,11 @@ class HomeViewModel @Inject constructor(
         _homeState.update { it.copy(selectedCardId = null) }
     }
 
-    private fun handleCopyCardLink(cardId: Long) {
-
+    private fun handleShareLink(cardId: Long) {
+        viewModelScope.launch {
+            val link = generateCardUrlUseCase(cardId)
+            _homeSideEffect.trySend(HomeSideEffect.ShareLink(link))
+        }
     }
 
     private fun handleDeleteCard(cardId: Long) {

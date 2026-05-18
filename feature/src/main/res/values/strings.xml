@@ -69,6 +69,6 @@
     <string name="home_text_notice_empty_card_2">Create your first 3D card now.</string>
 
     <!-- Home Screen - Bottom Sheet -->
-    <string name="home_label_copy_link_button">Copy Link</string>
+    <string name="home_label_share_link_button">Share Link</string>
     <string name="home_label_delete_button">Delete</string>
 </resources>

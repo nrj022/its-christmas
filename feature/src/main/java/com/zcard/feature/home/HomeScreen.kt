@@ -82,7 +82,7 @@ fun HomeScreen(viewModel: HomeViewModel = hiltViewModel()) {
         onCardLongClick = { viewModel.onIntent(HomeIntent.OpenBottomSheet(it)) },
         onSettingClick = { /* TODO */ },
         onBottomSheetDismissRequest = { viewModel.onIntent(HomeIntent.CloseBottomSheet) },
-        onCopyLinkClick = { viewModel.onIntent(HomeIntent.CopyCardLink(it)) },
+        onShareLinkClick = { viewModel.onIntent(HomeIntent.ShareLink(it)) },
         onDeleteClick = { viewModel.onIntent(HomeIntent.DeleteCard(it)) },
     )
 }
@@ -97,7 +97,7 @@ fun HomeContent(
     onCardLongClick: (Long) -> Unit = {},
     onSettingClick: () -> Unit = {},
     onBottomSheetDismissRequest: () -> Unit = {},
-    onCopyLinkClick: (Long) -> Unit = {},
+    onShareLinkClick: (Long) -> Unit = {},
     onDeleteClick: (Long) -> Unit = {}
 ) {
     Scaffold(
@@ -156,7 +156,7 @@ fun HomeContent(
                 cardTitle = selectedCard.title,
                 updatedAt = formatDateTime(selectedCard.updatedAt),
                 onDismissRequest = onBottomSheetDismissRequest,
-                onCopyLinkClick = { onCopyLinkClick(selectedCard.cardId) },
+                onShareLinkClick = { onShareLinkClick(selectedCard.cardId) },
                 onDeleteClick = { onDeleteClick(selectedCard.cardId) }
             )
         }
@@ -362,7 +362,7 @@ fun CardOptionBottomSheet(
     cardTitle: String = "Card Title",
     updatedAt: String = "Updated At",
     onDismissRequest: () -> Unit = {},
-    onCopyLinkClick: () -> Unit = {},
+    onShareLinkClick: () -> Unit = {},
     onDeleteClick: () -> Unit = {}
 ) {
     ModalBottomSheet(
@@ -393,16 +393,20 @@ fun CardOptionBottomSheet(
             }
             Spacer(modifier = Modifier.height(20.dp))
             TextButton(
-                onClick = onCopyLinkClick
+                onClick = onShareLinkClick
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    Icon(painterResource(R.drawable.ic_copy), contentDescription = null)
+                    Icon(
+                        modifier = Modifier.size(18.dp),
+                        painter = painterResource(R.drawable.ic_share),
+                        contentDescription = null
+                    )
                     Text(
                         style = MaterialTheme.typography.labelSmall,
-                        text = stringResource(R.string.home_label_copy_link_button)
+                        text = stringResource(R.string.home_label_share_link_button)
                     )
                 }
             }
@@ -414,7 +418,8 @@ fun CardOptionBottomSheet(
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     Icon(
-                        painterResource(R.drawable.ic_delete),
+                        modifier = Modifier.size(18.dp),
+                        painter = painterResource(R.drawable.ic_delete),
                         tint = Red,
                         contentDescription = null
                     )

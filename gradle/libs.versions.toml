@@ -22,6 +22,8 @@ navigationUiKtx = "2.6.0"
 # Firebase
 googleServices = "4.4.4"
 firebaseBom = "34.10.0"
+firebaseCrashlytics = "3.0.7"
+firebasePerf = "2.0.2"
 
 ksp = "2.0.21-1.0.27"
 room = "2.6.1"
@@ -62,6 +64,8 @@ androidx-navigation-ui-ktx = { group = "androidx.navigation", name = "navigation
 # Firebase
 google-firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
 google-firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics" }
+google-firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics" }
+google-firebase-perf = { group = "com.google.firebase", name = "firebase-perf" }
 google-firebase-storage = { group = "com.google.firebase", name = "firebase-storage" }
 google-firebase-auth = { group = "com.google.firebase", name = "firebase-auth" }
 
@@ -91,6 +95,8 @@ kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "ko
 
 # Firebase
 google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
+firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebaseCrashlytics" }
+firebase-perf = { id = "com.google.firebase.firebase-perf", version.ref = "firebasePerf" }
 
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }

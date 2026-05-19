@@ -7,6 +7,7 @@ import com.zcard.data.mapper.toDomain
 import com.zcard.data.mapper.toEntity
 import com.zcard.data.repositoryImpl.common.ioCatching
 import com.zcard.database.dao.CardDao
+import com.zcard.domain.analytics.PerformanceTracker
 import com.zcard.domain.model.Card
 import com.zcard.domain.model.CardPreview
 import com.zcard.domain.model.UploadState
@@ -27,7 +28,8 @@ private const val TAG = "CardRepositoryImpl"
 class CardRepositoryImpl @Inject constructor(
     private val cardDao: CardDao,
     private val firebaseStorage: FirebaseStorage,
-    private val cardFileStorage: CardFileStorage
+    private val cardFileStorage: CardFileStorage,
+    private val performanceTracker: PerformanceTracker
 ) : CardRepository {
 
     override suspend fun insertCard(card: Card): Result<Long> =
@@ -97,10 +99,19 @@ class CardRepositoryImpl @Inject constructor(
             ?: return flowOf(UploadState.Failure(Throwable("File not found")))
 
         return callbackFlow {
+            val fileSizeKb = file.length() / 1024
+            val startTime = System.currentTimeMillis()
+
+            val traceId = performanceTracker.startTrace("card_glb_upload")
+            performanceTracker.putMetric(traceId, "file_size_kb", fileSizeKb)
+            performanceTracker.putAttribute(traceId, "size_bucket", when {
+                fileSizeKb < 1024 -> "small"
+                fileSizeKb < 5120 -> "medium"
+                else              -> "large"
+            })
 
             val storageRef = firebaseStorage.reference
             val uploadRef = storageRef.child("models/$fileName")
-
             val uploadTask = uploadRef.putFile(Uri.fromFile(file))
 
             uploadTask.addOnProgressListener {
@@ -109,17 +120,26 @@ class CardRepositoryImpl @Inject constructor(
             }
 
             uploadTask.addOnSuccessListener {
+                val durationSec = (System.currentTimeMillis() - startTime) / 1000.0
+                val speedKbps = if (durationSec > 0) (fileSizeKb / durationSec).toLong() else 0L
+                performanceTracker.putMetric(traceId, "upload_speed_kb_per_s", speedKbps)
+                performanceTracker.stopTrace(traceId)
                 trySend(UploadState.Success)
                 close()
             }
 
             uploadTask.addOnFailureListener { e ->
+                performanceTracker.stopTrace(traceId, false, e.message?.take(100))
                 trySend(UploadState.Failure(e))
                 close()
             }
 
             awaitClose {
                 uploadTask.cancel()
+
+                if (!uploadTask.isComplete) {
+                    performanceTracker.stopTrace(traceId, false, "Cancelled by user/system")
+                }
             }
         }
     }

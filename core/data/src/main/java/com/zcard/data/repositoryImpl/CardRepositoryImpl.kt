@@ -102,7 +102,7 @@ class CardRepositoryImpl @Inject constructor(
             val fileSizeKb = file.length() / 1024
             val startTime = System.currentTimeMillis()
 
-            val traceId = performanceTracker.startTrace("glb_upload")
+            val traceId = performanceTracker.startTrace("card_glb_upload")
             performanceTracker.putMetric(traceId, "file_size_kb", fileSizeKb)
             performanceTracker.putAttribute(traceId, "size_bucket", when {
                 fileSizeKb < 1024 -> "small"
@@ -122,7 +122,7 @@ class CardRepositoryImpl @Inject constructor(
             uploadTask.addOnSuccessListener {
                 val durationSec = (System.currentTimeMillis() - startTime) / 1000.0
                 val speedKbps = if (durationSec > 0) (fileSizeKb / durationSec).toLong() else 0L
-                performanceTracker.putMetric(traceId, "upload_speed_kbps", speedKbps)
+                performanceTracker.putMetric(traceId, "upload_speed_kb_per_s", speedKbps)
                 performanceTracker.stopTrace(traceId)
                 trySend(UploadState.Success)
                 close()

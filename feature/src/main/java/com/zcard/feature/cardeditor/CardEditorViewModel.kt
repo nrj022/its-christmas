@@ -242,8 +242,7 @@ class CardEditorViewModel @Inject constructor(
                             it.copy(loadingText = "Uploading ${state.percent}%")
                         }
                         is UploadState.Success -> {
-                            val cardUrl = generateCardUrlUseCase(_cardId)
-                            if(cardUrl.isEmpty()) error("Empty Card URL")
+                            val cardUrl = generateCardUrlUseCase(_cardId).getOrThrow()
                             _cardEditorSideEffect.trySend(CardEditorSideEffect.NavigateToCardShare(cardUrl))
                         }
                         is UploadState.Failure -> throw state.error ?: Exception("Firebase upload failed")

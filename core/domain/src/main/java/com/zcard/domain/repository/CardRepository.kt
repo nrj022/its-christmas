@@ -9,6 +9,8 @@ interface CardRepository {
 
     suspend fun insertCard(card: Card): Result<Long>
 
+    suspend fun deleteCard(cardId: Long): Result<Int>
+
     fun getCardPreviews(): Flow<Result<List<CardPreview>>>
 
     suspend fun getCardById(cardId: Long): Result<Card>

@@ -23,6 +23,15 @@ class CardFileStorageImpl @Inject constructor(
         File(context.filesDir, getThumbFileName(cardId)).takeIf { it.exists() }
     }
 
+    override suspend fun deleteThumbnailFile(cardId: Long): Result<Unit> = withContext(Dispatchers.IO) {
+        val target = File(context.filesDir, getThumbFileName(cardId))
+        if (!target.exists() || target.delete()) {
+            Result.success(Unit)
+        } else {
+            Result.failure(IOException("Failed to delete file: ${target.absolutePath}"))
+        }
+    }
+
     override suspend fun getGlbFile(fileName: String): File? = withContext(Dispatchers.IO) {
         val externalDir = context.getExternalFilesDir(null) ?: return@withContext null
         File(externalDir, "$GLB_FILE_PATH$fileName").takeIf { it.exists() }

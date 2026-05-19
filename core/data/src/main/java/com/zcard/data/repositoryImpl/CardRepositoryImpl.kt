@@ -1,6 +1,7 @@
 package com.zcard.data.repositoryImpl
 
 import android.net.Uri
+import android.util.Log
 import com.google.firebase.storage.FirebaseStorage
 import com.zcard.data.mapper.toDomain
 import com.zcard.data.mapper.toEntity
@@ -21,6 +22,8 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
+private const val TAG = "CardRepositoryImpl"
+
 class CardRepositoryImpl @Inject constructor(
     private val cardDao: CardDao,
     private val firebaseStorage: FirebaseStorage,
@@ -30,6 +33,18 @@ class CardRepositoryImpl @Inject constructor(
     override suspend fun insertCard(card: Card): Result<Long> =
         ioCatching {
             cardDao.insertCard(card.toEntity())
+        }
+
+    override suspend fun deleteCard(cardId: Long): Result<Int> =
+        ioCatching {
+            val result = cardDao.deleteCard(cardId)
+            if (result > 0) {
+                cardFileStorage.deleteThumbnailFile(cardId)
+                    .onFailure { e -> Log.w(TAG, "deleteThumbnail failed (cardId=$cardId): $e") }
+            } else {
+                throw Throwable("Failed to delete card")
+            }
+            result
         }
 
     override fun getCardPreviews(): Flow<Result<List<CardPreview>>> =

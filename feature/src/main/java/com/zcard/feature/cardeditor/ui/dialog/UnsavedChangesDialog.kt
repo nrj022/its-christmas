@@ -3,7 +3,7 @@ package com.zcard.feature.cardeditor.ui.dialog
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import com.zcard.feature.R
-import com.zcard.feature.cardeditor.ui.common.BaseDialog
+import com.zcard.designsystem.component.BaseDialog
 
 @Composable
 fun UnsavedChangesDialog(

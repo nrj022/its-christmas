@@ -29,6 +29,7 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
+include(":core:analytics")
 include(":core:database")
 include(":core:designsystem")
 include(":core:data")

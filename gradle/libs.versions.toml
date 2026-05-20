@@ -67,6 +67,7 @@ google-firebase-analytics = { group = "com.google.firebase", name = "firebase-an
 google-firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics" }
 google-firebase-perf = { group = "com.google.firebase", name = "firebase-perf" }
 google-firebase-storage = { group = "com.google.firebase", name = "firebase-storage" }
+google-firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore" }
 google-firebase-auth = { group = "com.google.firebase", name = "firebase-auth" }
 
 # Room

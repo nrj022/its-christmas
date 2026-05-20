@@ -39,7 +39,8 @@ class HomeViewModel @Inject constructor(
         when(intent) {
             is HomeIntent.OnUnityMessage -> handleUnityMessage(intent.message)
             is HomeIntent.CreateCard -> handleCreateCard()
-            is HomeIntent.NavigateToCardEditor -> navigateToCardEditor(intent.cardId)
+            is HomeIntent.NavigateToSetting -> handleNavigateToSetting()
+            is HomeIntent.NavigateToCardEditor -> handleNavigateToCardEditor(intent.cardId)
             is HomeIntent.OpenBottomSheet -> handleOpenBottomSheet(intent.cardId)
             is HomeIntent.CloseBottomSheet -> handleCloseBottomSheet()
             is HomeIntent.ShareLink -> handleShareLink(intent.cardId)
@@ -73,7 +74,7 @@ class HomeViewModel @Inject constructor(
     private fun handleCreateCard() {
         viewModelScope.launch {
             createCardUseCase()
-                .onSuccess { navigateToCardEditor(it) }
+                .onSuccess { handleNavigateToCardEditor(it) }
                 .onFailure { e ->
                     _homeSideEffect.trySend(HomeSideEffect.ToastMessage("Failed to create card"))
                     Log.e(TAG, "createCard failed: $e")
@@ -81,7 +82,11 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun navigateToCardEditor(cardId: Long) {
+    private fun handleNavigateToSetting() {
+        _homeSideEffect.trySend(HomeSideEffect.NavigateToSetting)
+    }
+
+    private fun handleNavigateToCardEditor(cardId: Long) {
         _homeSideEffect.trySend(HomeSideEffect.NavigateToCardEditor(cardId))
     }
 

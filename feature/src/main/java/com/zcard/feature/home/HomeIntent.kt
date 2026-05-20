@@ -5,6 +5,7 @@ import com.zcard.domain.model.UnityMessage
 sealed class HomeIntent {
     data class OnUnityMessage(val message: UnityMessage) : HomeIntent()
     data object CreateCard : HomeIntent()
+    data object NavigateToSetting : HomeIntent()
     data class NavigateToCardEditor(val cardId: Long) : HomeIntent()
     data class OpenBottomSheet(val cardId: Long) : HomeIntent()
     data object CloseBottomSheet : HomeIntent()

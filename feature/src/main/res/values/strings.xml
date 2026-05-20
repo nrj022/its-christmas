@@ -77,4 +77,15 @@
     <string name="home_dialog_title_delete_confirm">Delete %1$s?</string>
     <string name="home_dialog_content_delete_confirm">"You can't undo this action."</string>
     <string name="home_dialog_button_delete">Delete</string>
+
+    <!-- Setting Screen -->
+    <string name="setting_label_open_source_credits">Open Source Credits</string>
+    <string name="setting_label_leave_feedback">Leave Feedback</string>
+
+    <!-- Setting Screen - Dialog -->
+    <string name="setting_dialog_title_feedback">Help us improve</string>
+    <string name="setting_dialog_content_feedback">Your feedback will be sent anonymously.</string>
+    <string name="setting_dialog_placeholder_feedback">Type here…</string>
+    <string name="setting_dialog_button_submit">Submit</string>
+
 </resources>

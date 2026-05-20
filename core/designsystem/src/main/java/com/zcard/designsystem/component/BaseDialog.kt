@@ -18,6 +18,7 @@ fun BaseDialog(
     content: String = "",
     confirmLabel: String = "",
     dismissLabel: String = "",
+    isConfirmEnabled: Boolean = true,
     onConfirm: () -> Unit = {},
     onDismiss: () -> Unit = {},
     onDismissRequest: () -> Unit = {},
@@ -44,7 +45,10 @@ fun BaseDialog(
             }
         } ?: customContent?.let { customContent },
         confirmButton = {
-            TextButton(onClick = onConfirm) {
+            TextButton(
+                onClick = onConfirm,
+                enabled = isConfirmEnabled
+            ) {
                 Text(text = confirmLabel, style = MaterialTheme.typography.labelSmall)
             }
         },

@@ -56,6 +56,7 @@ fun SettingScreen(viewModel: SettingViewModel = hiltViewModel()) {
     if(state.showFeedbackDialog) {
         FeedbackDialog(
             feedbackText = state.feedbackText,
+            isSubmitEnabled = state.isSubmitEnabled,
             onFeedbackTextChanged = { viewModel.onIntent(SettingIntent.OnFeedbackTextChanged(it)) },
             onSubmit = { viewModel.onIntent(SettingIntent.SubmitFeedback(it)) },
             onDismiss = { viewModel.onIntent(SettingIntent.CancelFeedback) },
@@ -145,6 +146,7 @@ fun MenuItem(label: String = "", icon: ImageVector, onClick: () -> Unit = {}) {
 fun FeedbackDialog(
     modifier: Modifier = Modifier,
     feedbackText: String = "",
+    isSubmitEnabled: Boolean = true,
     onFeedbackTextChanged: (String) -> Unit = {},
     onSubmit: (String) -> Unit = {},
     onDismiss: () -> Unit = {},
@@ -155,6 +157,7 @@ fun FeedbackDialog(
         title = stringResource(R.string.setting_dialog_title_feedback),
         confirmLabel = stringResource(R.string.setting_dialog_button_submit),
         dismissLabel = stringResource(R.string.common_button_cancel),
+        isConfirmEnabled = isSubmitEnabled,
         onConfirm = { onSubmit(feedbackText) },
         onDismiss = onDismiss,
         onDismissRequest = onDismissRequest

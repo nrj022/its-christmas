@@ -150,7 +150,7 @@ private fun BoxScope.ShareButton(onShareClicked: () -> Unit) {
                     tint = SoftBlack
                 )
                 Text(
-                    text = stringResource(R.string.share_label_share_button),
+                    text = stringResource(R.string.share_button_share),
                     style = MaterialTheme.typography.labelSmall,
                     fontWeight = FontWeight.Bold
                 )

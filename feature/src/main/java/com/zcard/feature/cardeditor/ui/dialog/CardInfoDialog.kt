@@ -77,7 +77,7 @@ fun CardInfoDialog(
                     shape = CircleShape,
                 ) {
                     Text(
-                        text = stringResource(R.string.editor_dialog_button_title_save),
+                        text = stringResource(R.string.editor_dialog_button_set_card_title_save),
                         style = MaterialTheme.typography.labelSmall
                     )
                 }

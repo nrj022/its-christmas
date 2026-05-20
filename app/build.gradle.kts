@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.google.services)
+    alias(libs.plugins.firebase.crashlytics)
+    alias(libs.plugins.firebase.perf)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
 }
@@ -16,7 +18,7 @@ android {
         targetSdk = 36
         versionCode = project.findProperty("versionCode")?.toString()?.toInt() ?: 4
 
-        val baseVersion = "1.3.0"
+        val baseVersion = "1.5.0"
         versionName = project.findProperty("versionName")?.toString() ?: baseVersion
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -42,9 +44,9 @@ android {
 
 dependencies {
 
-    implementation(project(":feature:card"))
-    implementation(project(":feature:main"))
+    implementation(project(":feature"))
     implementation(project(":core:data"))
+    implementation(project(":core:analytics"))
 
     // Hilt
     implementation(libs.google.hilt.android)
@@ -52,7 +54,6 @@ dependencies {
 
     // Firebase
     implementation(platform(libs.google.firebase.bom))
-    implementation(libs.google.firebase.analytics)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

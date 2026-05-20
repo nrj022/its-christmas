@@ -8,5 +8,6 @@ data class Card(
     val backgroundAssetId: Long = 1,
     val isDraft: Boolean = true,
     val createdAt: Long = System.currentTimeMillis(),
-    val updatedAt: Long = System.currentTimeMillis()
+    val updatedAt: Long = System.currentTimeMillis(),
+    val thumbnailUpdatedAt: Long = 0L,
 )

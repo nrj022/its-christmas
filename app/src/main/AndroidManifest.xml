@@ -12,35 +12,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ZCard">
         <activity
-            android:name="com.zcard.main.MainActivity"
+            android:name="com.zcard.feature.MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.ZCard">
+            android:configChanges="mcc|mnc|locale|touchscreen|keyboard|keyboardHidden|navigation|orientation|screenLayout|uiMode|screenSize|smallestScreenSize|fontScale|layoutDirection|density"
+            android:launchMode="singleTask"
+            android:theme="@style/Theme.ZCard" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="zcard" android:host="main" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name="com.zcard.card.cardeditor.CardEditorActivity"
-            android:exported="true"
-            android:process=":unity_process"
-            android:theme="@style/Theme.ZCard" >
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="zcard" android:host="card" android:pathPrefix="/editor" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name="com.zcard.card.cardshare.CardShareActivity"
-            android:exported="false" >
         </activity>
     </application>
 

@@ -18,6 +18,7 @@ import com.zcard.feature.R
 import com.zcard.feature.cardeditor.CardEditorFragment
 import com.zcard.designsystem.theme.ZCardTheme
 import com.zcard.feature.MainViewModel
+import com.zcard.feature.setting.SettingFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -53,6 +54,7 @@ class HomeFragment : Fragment() {
                 launch {
                     viewModel.homeSideEffect.collect { sideEffect ->
                         when(sideEffect) {
+                            is HomeSideEffect.NavigateToSetting -> navigateToSetting()
                             is HomeSideEffect.NavigateToCardEditor -> navigateToCardEditor(sideEffect.cardId)
                             is HomeSideEffect.ToastMessage -> {
                                 Toast.makeText(requireContext(), sideEffect.message, Toast.LENGTH_SHORT).show()
@@ -81,6 +83,19 @@ class HomeFragment : Fragment() {
                 R.anim.slide_out_right
             )
             .replace(R.id.fragment_container, CardEditorFragment.newInstance(cardId))
+            .addToBackStack(null)
+            .commit()
+    }
+
+    private fun navigateToSetting() {
+        parentFragmentManager.beginTransaction()
+            .setCustomAnimations(
+                R.anim.slide_in_right,
+                R.anim.slide_out_left,
+                R.anim.slide_in_left,
+                R.anim.slide_out_right
+            )
+            .replace(R.id.fragment_container, SettingFragment())
             .addToBackStack(null)
             .commit()
     }

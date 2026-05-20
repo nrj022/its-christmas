@@ -7,6 +7,11 @@
     <string name="common_button_apply">Apply</string>
 
     <!-- Editor Screen -->
+    <string name="editor_msg_fail_load_card">Oops! Failed to load card. Please try again.</string>
+    <string name="editor_msg_fail_refresh_objects">Oops! Failed to refresh objects. Please try again.</string>
+    <string name="editor_msg_fail_load_object">Oops! Load Object failed. Please try again.</string>
+    <string name="editor_msg_fail_card_upload">Oops! Card upload failed. Please try again.</string>
+    <string name="editor_msg_fail_card_title_update">Oops! Card title update failed. Please try again.</string>
     <string name="editor_msg_block_system_back">Please use the buttons at the top to finish editing</string>
     <string name="editor_msg_copy_success">Copied to clipboard</string>
 
@@ -63,6 +68,12 @@
     <string name="share_cd_home_button">Home</string>
 
     <!-- Home Screen -->
+    <string name="home_msg_fail_create_card">Failed to create card</string>
+    <string name="home_msg_export_card_before_share">Please export the card before sharing.</string>
+    <string name="home_msg_fail_generate_link">Failed to generate link. Please try again.</string>
+    <string name="home_msg_card_deleted">Card deleted</string>
+    <string name="home_msg_fail_delete_card">Failed to delete card</string>
+
     <string name="home_cd_logo_img">Main Logo</string>
     <string name="home_cd_setting_button">Settings</string>
     <string name="home_cd_async_image">Card Creation Preview</string>
@@ -89,6 +100,9 @@
     <string name="home_dialog_button_delete">Delete</string>
 
     <!-- Setting Screen -->
+    <string name="setting_msg_feedback_submitted">Feedback submitted</string>
+    <string name="setting_msg_fail_open_link">No app found to open this link</string>
+
     <string name="setting_label_open_source_credits">Open Source Credits</string>
     <string name="setting_label_leave_feedback">Leave Feedback</string>
 

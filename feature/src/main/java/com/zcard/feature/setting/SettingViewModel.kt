@@ -1,7 +1,6 @@
 package com.zcard.feature.setting
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.zcard.domain.repository.FeedbackRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -9,8 +8,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import javax.inject.Inject
+import com.zcard.feature.R
 
 private const val TAG = "SettingViewModel"
 
@@ -54,7 +53,7 @@ class SettingViewModel @Inject constructor(
 
     private fun handleSubmitFeedback(text: String) {
         feedbackRepository.submitFeedback(text)
-        _settingSideEffect.trySend(SettingSideEffect.ToastMessage("Feedback submitted"))
+        _settingSideEffect.trySend(SettingSideEffect.ToastMessage(R.string.setting_msg_feedback_submitted))
         handleCancelFeedback()
         _settingState.update { it.copy(feedbackText = "") }
     }

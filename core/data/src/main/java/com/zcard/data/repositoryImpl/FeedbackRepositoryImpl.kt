@@ -17,7 +17,7 @@ class FeedbackRepositoryImpl @Inject constructor(
         private const val FIELD_FEEDBACK = "feedback"
     }
 
-    override suspend fun submitFeedback(text: String): Result<Unit> = runCatching {
+    override fun submitFeedback(text: String) {
         val feedback = mapOf(
             FIELD_FEEDBACK to text,
             FIELD_TIMESTAMP to System.currentTimeMillis()

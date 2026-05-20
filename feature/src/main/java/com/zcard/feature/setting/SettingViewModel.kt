@@ -53,13 +53,10 @@ class SettingViewModel @Inject constructor(
     }
 
     private fun handleSubmitFeedback(text: String) {
-        viewModelScope.launch {
-            feedbackRepository.submitFeedback(text)
-
-            _settingSideEffect.trySend(SettingSideEffect.ToastMessage("Feedback submitted"))
-            handleCancelFeedback()
-            _settingState.update { it.copy(feedbackText = "") }
-        }
+        feedbackRepository.submitFeedback(text)
+        _settingSideEffect.trySend(SettingSideEffect.ToastMessage("Feedback submitted"))
+        handleCancelFeedback()
+        _settingState.update { it.copy(feedbackText = "") }
     }
 
     private fun handleCancelFeedback() {

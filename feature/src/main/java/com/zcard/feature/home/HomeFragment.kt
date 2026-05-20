@@ -57,7 +57,7 @@ class HomeFragment : Fragment() {
                             is HomeSideEffect.NavigateToSetting -> navigateToSetting()
                             is HomeSideEffect.NavigateToCardEditor -> navigateToCardEditor(sideEffect.cardId)
                             is HomeSideEffect.ToastMessage -> {
-                                Toast.makeText(requireContext(), sideEffect.message, Toast.LENGTH_SHORT).show()
+                                Toast.makeText(requireContext(), getString(sideEffect.msgRes), Toast.LENGTH_SHORT).show()
                             }
                             is HomeSideEffect.ShareLink -> shareCardLink(sideEffect.link)
                         }

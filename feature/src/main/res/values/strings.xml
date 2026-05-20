@@ -1,4 +1,5 @@
 <resources>
+    <!-- Common -->
     <string name="common_cd_back_button">Go back</string>
     <string name="common_button_cancel">Cancel</string>
     <string name="common_button_confirm">Confirm</string>
@@ -6,66 +7,86 @@
     <string name="common_button_apply">Apply</string>
 
     <!-- Editor Screen -->
+    <string name="editor_msg_fail_load_card">Failed to load card. Please try again.</string>
+    <string name="editor_msg_fail_refresh_objects">Failed to refresh objects. Please try again.</string>
+    <string name="editor_msg_fail_load_object">Failed to load object. Please try again.</string>
+    <string name="editor_msg_fail_card_upload">Failed to upload card. Please try again.</string>
+    <string name="editor_msg_fail_card_title_update">Failed to update card title. Please try again.</string>
     <string name="editor_msg_block_system_back">Please use the buttons at the top to finish editing</string>
     <string name="editor_msg_copy_success">Copied to clipboard</string>
+
+    <string name="editor_button_adjust">Adjust</string>
+    <string name="editor_button_complete">Complete</string>
+    <string name="editor_button_back">Back</string>
+    <string name="editor_button_add_text">Edit Text</string>
+
+    <string name="editor_title_asset_tab_objects">3D Object</string>
+    <string name="editor_title_asset_tab_background">Background</string>
+    <string name="editor_title_spawned_objects_list">My Objects</string>
+
+    <string name="editor_title_text_tab_style">Style</string>
+    <string name="editor_title_text_tab_font">Font</string>
+    <string name="editor_title_text_tab_position">Position</string>
+    <string name="editor_placeholder_text">New Text</string>
+    <string name="editor_content_empty_text">No text added.\nTap \'+\' to add your first text!</string>
 
     <string name="editor_cd_link_button">Link Detail</string>
     <string name="editor_cd_delete_img_button">Delete Element</string>
     <string name="editor_cd_transform_reset_img_button">Reset Transform</string>
     <string name="editor_cd_camera_reset_img_button">Reset Camera</string>
     <string name="editor_cd_object_thumb_img">Object Thumbnail</string>
-    <string name="editor_button_adjust">Adjust</string>
-    <string name="editor_button_complete">Complete</string>
     <string name="editor_cd_complete_button">Complete Editing Card</string>
     <string name="editor_cd_add_text">New Text</string>
     <string name="editor_cd_delete_text">Delete Text</string>
     <string name="editor_cd_increase_scale">Increase scale</string>
     <string name="editor_cd_decrease_scale">Decrease scale</string>
-
-    <string name="editor_title_asset_tab_objects">3D Object</string>
-    <string name="editor_title_asset_tab_background">Background</string>
-    <string name="editor_button_add_text">Edit Text</string>
-    <string name="editor_title_spawned_objects_list">My Objects</string>
+    <string name="editor_cd_align_icon">Align %s</string>
     <string name="editor_cd_asset">Asset</string>
 
-    <string name="editor_title_text_tab_style">Style</string>
-    <string name="editor_title_text_tab_font">Font</string>
-    <string name="editor_title_text_tab_position">Position</string>
-    <string name="editor_button_back">Back</string>
-    <string name="editor_placeholder_text">New Text</string>
-    <string name="editor_cd_align_icon">Align %s</string>
-    <string name="editor_content_empty_text">No text added.\nTap \'+\' to add your first text!</string>
-
-    <string name="editor_dialog_button_delete">Delete</string>
-    <string name="editor_dialog_button_save">Yes</string>
-    <string name="editor_dialog_button_generate">Generate 3D Card</string>
-    <string name="editor_dialog_button_title_save">Save</string>
-    <string name="editor_dialog_button_link_copy">Copy Link</string>
-
+    <!-- Editor Screen - Dialog (Delete Object) -->
     <string name="editor_dialog_title_delete">Delete This Object?</string>
-    <string name="editor_dialog_title_set_card_title">Set the title of your card!</string>
-    <string name="editor_dialog_title_unsaved_changes">You have unsaved changes.</string>
-    <string name="editor_dialog_title_link_detail">Copy Card Link</string>
+    <string name="editor_dialog_button_delete">Delete</string>
 
+    <!-- Editor Screen - Dialog (Set Card Title) -->
+    <string name="editor_dialog_title_set_card_title">Set the title of your card!</string>
     <string name="editor_dialog_placeholder_card_title">Enter the title</string>
+    <string name="editor_dialog_button_generate">Generate 3D Card</string>
+
+    <!-- Editor Screen - Dialog (Unsaved Changes) -->
+    <string name="editor_dialog_title_unsaved_changes">You have unsaved changes.</string>
     <string name="editor_dialog_content_unsaved_changes">Do you want to save before leaving?</string>
+    <string name="editor_dialog_button_save_confirm">Yes</string>
+
+    <!-- Editor Screen - Dialog (Link Detail) -->
+    <string name="editor_dialog_title_link_detail">Copy Card Link</string>
+    <string name="editor_dialog_button_set_card_title_save">Save</string>
+    <string name="editor_dialog_button_link_copy">Copy Link</string>
     <string name="editor_dialog_text_exclude_new_edit">Excludes new edits</string>
 
     <!-- Share Screen -->
-    <string name="share_label_share_button">Share</string>
+    <string name="share_button_share">Share</string>
     <string name="share_cd_home_button">Home</string>
 
     <!-- Home Screen -->
+    <string name="home_msg_fail_create_card">Failed to create card</string>
+    <string name="home_msg_export_card_before_share">Please export the card before sharing.</string>
+    <string name="home_msg_fail_generate_link">Failed to generate link. Please try again.</string>
+    <string name="home_msg_card_deleted">Card deleted</string>
+    <string name="home_msg_fail_delete_card">Failed to delete card</string>
+
     <string name="home_cd_logo_img">Main Logo</string>
     <string name="home_cd_setting_button">Settings</string>
     <string name="home_cd_async_image">Card Creation Preview</string>
-    <string name="home_title_design_card_sub_prompt">Imagine More</string>
-    <string name="home_title_design_card_prompt">Create Your Own\n3D Cards</string>
-    <string name="home_button_create">Create card</string>
-    <string name="home_title_card_dashboard">Recent Cards</string>
     <string name="home_cd_arrow_forward_icon">Arrow Forward</string>
     <string name="home_cd_card">Card Preview Image</string>
     <string name="home_cd_empty_card_icon">Empty Card</string>
+
+    <string name="home_title_design_card_sub_prompt">Imagine More</string>
+    <string name="home_title_design_card_prompt">Create Your Own\n3D Cards</string>
+    <string name="home_title_card_dashboard">Recent Cards</string>
+
+    <string name="home_button_create">Create card</string>
+
     <string name="home_text_notice_empty_card_1">You don\'t have any cards yet!</string>
     <string name="home_text_notice_empty_card_2">Create your first 3D card now.</string>
 
@@ -73,16 +94,19 @@
     <string name="home_button_share_link">Share Link</string>
     <string name="home_button_delete">Delete</string>
 
-    <!-- Home Screen - Dialog -->
+    <!-- Home Screen - Dialog (Delete Card) -->
     <string name="home_dialog_title_delete_confirm">Delete %1$s?</string>
     <string name="home_dialog_content_delete_confirm">"You can't undo this action."</string>
     <string name="home_dialog_button_delete">Delete</string>
 
     <!-- Setting Screen -->
+    <string name="setting_msg_feedback_submitted">Feedback submitted</string>
+    <string name="setting_msg_fail_open_link">No app found to open this link</string>
+
     <string name="setting_label_open_source_credits">Open Source Credits</string>
     <string name="setting_label_leave_feedback">Leave Feedback</string>
 
-    <!-- Setting Screen - Dialog -->
+    <!-- Setting Screen - Dialog (Feedback) -->
     <string name="setting_dialog_title_feedback">Help us improve</string>
     <string name="setting_dialog_content_feedback">Your feedback will be sent anonymously.</string>
     <string name="setting_dialog_placeholder_feedback">Type here…</string>

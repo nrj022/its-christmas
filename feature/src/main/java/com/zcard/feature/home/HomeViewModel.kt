@@ -9,6 +9,7 @@ import com.zcard.domain.model.UnityEventType
 import com.zcard.domain.model.UnityMessage
 import com.zcard.domain.usecase.CreateCardUseCase
 import com.zcard.domain.usecase.GenerateCardUrlUseCase
+import com.zcard.feature.R
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -76,7 +77,7 @@ class HomeViewModel @Inject constructor(
             createCardUseCase()
                 .onSuccess { handleNavigateToCardEditor(it) }
                 .onFailure { e ->
-                    _homeSideEffect.trySend(HomeSideEffect.ToastMessage("Failed to create card"))
+                    _homeSideEffect.trySend(HomeSideEffect.ToastMessage(R.string.home_msg_fail_create_card))
                     Log.e(TAG, "createCard failed: $e")
                 }
         }
@@ -107,13 +108,13 @@ class HomeViewModel @Inject constructor(
                     when(e) {
                         is CardNotExportedException -> {
                             _homeSideEffect.trySend(
-                                HomeSideEffect.ToastMessage("Please export the card before sharing.")
+                                HomeSideEffect.ToastMessage(R.string.home_msg_export_card_before_share)
                             )
                             Log.w(TAG, "generateCardUrl failed: $e")
                         }
                         else -> {
                             _homeSideEffect.trySend(
-                                HomeSideEffect.ToastMessage("Failed to generate link. Please try again.")
+                                HomeSideEffect.ToastMessage(R.string.home_msg_fail_generate_link)
                             )
                             Log.e(TAG, "generateCardUrl failed: $e")
                         }
@@ -138,11 +139,11 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             cardRepository.deleteCard(cardId)
                 .onSuccess {
-                    _homeSideEffect.trySend(HomeSideEffect.ToastMessage("Card deleted"))
+                    _homeSideEffect.trySend(HomeSideEffect.ToastMessage(R.string.home_msg_card_deleted))
                     handleCloseBottomSheet()
                 }.onFailure { e ->
                     Log.e(TAG, "deleteCard failed: $e")
-                    _homeSideEffect.trySend(HomeSideEffect.ToastMessage("Failed to delete card"))
+                    _homeSideEffect.trySend(HomeSideEffect.ToastMessage(R.string.home_msg_fail_delete_card))
                 }
         }
     }

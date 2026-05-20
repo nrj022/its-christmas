@@ -1,0 +1,115 @@
+<resources>
+    <!-- Common -->
+    <string name="common_cd_back_button">Volver</string>
+    <string name="common_button_cancel">Cancelar</string>
+    <string name="common_button_confirm">Confirmar</string>
+    <string name="common_button_no">No</string>
+    <string name="common_button_apply">Aplicar</string>
+
+    <!-- Editor Screen -->
+    <string name="editor_msg_fail_load_card">No se pudo cargar la tarjeta. Por favor, inténtalo de nuevo.</string>
+    <string name="editor_msg_fail_refresh_objects">No se pudieron actualizar los objetos. Por favor, inténtalo de nuevo.</string>
+    <string name="editor_msg_fail_load_object">No se pudo cargar el objeto. Por favor, inténtalo de nuevo.</string>
+    <string name="editor_msg_fail_card_upload">Error al subir la tarjeta. Por favor, inténtalo de nuevo.</string>
+    <string name="editor_msg_fail_card_title_update">No se pudo actualizar el título. Por favor, inténtalo de nuevo.</string>
+    <string name="editor_msg_block_system_back">Usa los botones de arriba para terminar la edición</string>
+    <string name="editor_msg_copy_success">Copiado al portapapeles</string>
+
+    <string name="editor_button_adjust">Ajustar</string>
+    <string name="editor_button_complete">Listo</string>
+    <string name="editor_button_back">Atrás</string>
+    <string name="editor_button_add_text">Editar texto</string>
+
+    <string name="editor_title_asset_tab_objects">Objeto 3D</string>
+    <string name="editor_title_asset_tab_background">Fondo</string>
+    <string name="editor_title_spawned_objects_list">Mis objetos</string>
+
+    <string name="editor_title_text_tab_style">Estilo</string>
+    <string name="editor_title_text_tab_font">Fuente</string>
+    <string name="editor_title_text_tab_position">Posición</string>
+    <string name="editor_placeholder_text">Nuevo texto</string>
+    <string name="editor_content_empty_text">No hay texto añadido.\n¡Toca \'+\' para añadir tu primer texto!</string>
+
+    <string name="editor_cd_link_button">Detalle del enlace</string>
+    <string name="editor_cd_delete_img_button">Eliminar elemento</string>
+    <string name="editor_cd_transform_reset_img_button">Restablecer transformación</string>
+    <string name="editor_cd_camera_reset_img_button">Restablecer cámara</string>
+    <string name="editor_cd_object_thumb_img">Miniatura del objeto</string>
+    <string name="editor_cd_complete_button">Finalizar edición de tarjeta</string>
+    <string name="editor_cd_add_text">Nuevo texto</string>
+    <string name="editor_cd_delete_text">Eliminar texto</string>
+    <string name="editor_cd_increase_scale">Aumentar tamaño</string>
+    <string name="editor_cd_decrease_scale">Reducir tamaño</string>
+    <string name="editor_cd_align_icon">Alinear %s</string>
+    <string name="editor_cd_asset">Asset</string>
+
+    <!-- Editor Screen - Dialog (Delete Object) -->
+    <string name="editor_dialog_title_delete">¿Eliminar este objeto?</string>
+    <string name="editor_dialog_button_delete">Eliminar</string>
+
+    <!-- Editor Screen - Dialog (Set Card Title) -->
+    <string name="editor_dialog_title_set_card_title">¡Ponle un título a tu tarjeta!</string>
+    <string name="editor_dialog_placeholder_card_title">Introduce el título</string>
+    <string name="editor_dialog_button_generate">Crear tarjeta 3D</string>
+
+    <!-- Editor Screen - Dialog (Unsaved Changes) -->
+    <string name="editor_dialog_title_unsaved_changes">Tienes cambios sin guardar.</string>
+    <string name="editor_dialog_content_unsaved_changes">¿Quieres guardar antes de salir?</string>
+    <string name="editor_dialog_button_save_confirm">Sí</string>
+
+    <!-- Editor Screen - Dialog (Link Detail) -->
+    <string name="editor_dialog_title_link_detail">Copiar enlace de tarjeta</string>
+    <string name="editor_dialog_button_set_card_title_save">Guardar</string>
+    <string name="editor_dialog_button_link_copy">Copiar enlace</string>
+    <string name="editor_dialog_text_exclude_new_edit">Excluye nuevas ediciones</string>
+
+    <!-- Share Screen -->
+    <string name="share_button_share">Compartir</string>
+    <string name="share_cd_home_button">Inicio</string>
+
+    <!-- Home Screen -->
+    <string name="home_msg_fail_create_card">No se pudo crear la tarjeta</string>
+    <string name="home_msg_export_card_before_share">Exporta la tarjeta antes de compartirla.</string>
+    <string name="home_msg_fail_generate_link">No se pudo generar el enlace. Por favor, inténtalo de nuevo.</string>
+    <string name="home_msg_card_deleted">Tarjeta eliminada</string>
+    <string name="home_msg_fail_delete_card">No se pudo eliminar la tarjeta</string>
+
+    <string name="home_cd_logo_img">Logo principal</string>
+    <string name="home_cd_setting_button">Ajustes</string>
+    <string name="home_cd_async_image">Vista previa de creación de tarjeta</string>
+    <string name="home_cd_arrow_forward_icon">Flecha adelante</string>
+    <string name="home_cd_card">Imagen de vista previa de tarjeta</string>
+    <string name="home_cd_empty_card_icon">Tarjeta vacía</string>
+
+    <string name="home_title_design_card_sub_prompt">Imagina más</string>
+    <string name="home_title_design_card_prompt">Crea tus propias\ntarjetas 3D</string>
+    <string name="home_title_card_dashboard">Tarjetas recientes</string>
+
+    <string name="home_button_create">Crear tarjeta</string>
+
+    <string name="home_text_notice_empty_card_1">¡Aún no tienes tarjetas!</string>
+    <string name="home_text_notice_empty_card_2">Crea tu primera tarjeta 3D ahora.</string>
+
+    <!-- Home Screen - Bottom Sheet -->
+    <string name="home_button_share_link">Compartir enlace</string>
+    <string name="home_button_delete">Eliminar</string>
+
+    <!-- Home Screen - Dialog (Delete Card) -->
+    <string name="home_dialog_title_delete_confirm">¿Eliminar %1$s?</string>
+    <string name="home_dialog_content_delete_confirm">"Esta acción no se puede deshacer."</string>
+    <string name="home_dialog_button_delete">Eliminar</string>
+
+    <!-- Setting Screen -->
+    <string name="setting_msg_feedback_submitted">Feedback enviado</string>
+    <string name="setting_msg_fail_open_link">No se encontró ninguna app para abrir este enlace</string>
+
+    <string name="setting_label_open_source_credits">Créditos de código abierto</string>
+    <string name="setting_label_leave_feedback">Enviar feedback</string>
+
+    <!-- Setting Screen - Dialog (Feedback) -->
+    <string name="setting_dialog_title_feedback">Ayúdanos a mejorar</string>
+    <string name="setting_dialog_content_feedback">Tu comentario se enviará de forma anónima.</string>
+    <string name="setting_dialog_placeholder_feedback">Escribe aquí…</string>
+    <string name="setting_dialog_button_submit">Enviar</string>
+
+</resources>

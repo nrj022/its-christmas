@@ -1,0 +1,115 @@
+<resources>
+    <!-- Common -->
+    <string name="common_cd_back_button">뒤로 가기</string>
+    <string name="common_button_cancel">취소</string>
+    <string name="common_button_confirm">확인</string>
+    <string name="common_button_no">아니요</string>
+    <string name="common_button_apply">적용</string>
+
+    <!-- Editor Screen -->
+    <string name="editor_msg_fail_load_card">카드를 불러오지 못했어요. 다시 시도해 주세요.</string>
+    <string name="editor_msg_fail_refresh_objects">오브젝트를 새로 고치지 못했어요. 다시 시도해 주세요.</string>
+    <string name="editor_msg_fail_load_object">오브젝트 불러오기에 실패했어요. 다시 시도해 주세요.</string>
+    <string name="editor_msg_fail_card_upload">카드 업로드에 실패했어요. 다시 시도해 주세요.</string>
+    <string name="editor_msg_fail_card_title_update">카드 제목 업데이트에 실패했어요. 다시 시도해 주세요.</string>
+    <string name="editor_msg_block_system_back">편집을 마치려면 상단 버튼을 사용해 주세요</string>
+    <string name="editor_msg_copy_success">클립보드에 복사됐어요</string>
+
+    <string name="editor_button_adjust">Adjust</string>
+    <string name="editor_button_complete">Complete</string>
+    <string name="editor_button_back">Back</string>
+    <string name="editor_button_add_text">Edit Text</string>
+
+    <string name="editor_title_asset_tab_objects">3D Object</string>
+    <string name="editor_title_asset_tab_background">Background</string>
+    <string name="editor_title_spawned_objects_list">My Objects</string>
+
+    <string name="editor_title_text_tab_style">스타일</string>
+    <string name="editor_title_text_tab_font">폰트</string>
+    <string name="editor_title_text_tab_position">위치</string>
+    <string name="editor_placeholder_text">새 텍스트</string>
+    <string name="editor_content_empty_text">추가된 텍스트가 없어요.\n\'+\'를 눌러 첫 텍스트를 추가해 보세요!</string>
+
+    <string name="editor_cd_link_button">링크 상세</string>
+    <string name="editor_cd_delete_img_button">요소 삭제</string>
+    <string name="editor_cd_transform_reset_img_button">변환 초기화</string>
+    <string name="editor_cd_camera_reset_img_button">카메라 초기화</string>
+    <string name="editor_cd_object_thumb_img">오브젝트 썸네일</string>
+    <string name="editor_cd_complete_button">카드 편집 완료</string>
+    <string name="editor_cd_add_text">새 텍스트</string>
+    <string name="editor_cd_delete_text">텍스트 삭제</string>
+    <string name="editor_cd_increase_scale">크기 늘리기</string>
+    <string name="editor_cd_decrease_scale">크기 줄이기</string>
+    <string name="editor_cd_align_icon">%s 정렬</string>
+    <string name="editor_cd_asset">에셋</string>
+
+    <!-- Editor Screen - Dialog (Delete Object) -->
+    <string name="editor_dialog_title_delete">이 오브젝트를 삭제할까요?</string>
+    <string name="editor_dialog_button_delete">삭제</string>
+
+    <!-- Editor Screen - Dialog (Set Card Title) -->
+    <string name="editor_dialog_title_set_card_title">카드 제목을 설정해 주세요.</string>
+    <string name="editor_dialog_placeholder_card_title">제목을 입력하세요</string>
+    <string name="editor_dialog_button_generate">3D 카드 생성</string>
+
+    <!-- Editor Screen - Dialog (Unsaved Changes) -->
+    <string name="editor_dialog_title_unsaved_changes">저장되지 않은 변경사항이 있어요.</string>
+    <string name="editor_dialog_content_unsaved_changes">나가기 전에 저장할까요?</string>
+    <string name="editor_dialog_button_save_confirm">네</string>
+
+    <!-- Editor Screen - Dialog (Link Detail) -->
+    <string name="editor_dialog_title_link_detail">카드 정보</string>
+    <string name="editor_dialog_button_set_card_title_save">저장</string>
+    <string name="editor_dialog_button_link_copy">링크 복사</string>
+    <string name="editor_dialog_text_exclude_new_edit">새 편집 내용 미포함</string>
+
+    <!-- Share Screen -->
+    <string name="share_button_share">Share</string>
+    <string name="share_cd_home_button">홈</string>
+
+    <!-- Home Screen -->
+    <string name="home_msg_fail_create_card">카드 생성에 실패했어요</string>
+    <string name="home_msg_export_card_before_share">공유하기 전에 카드를 먼저 추출해 주세요.</string>
+    <string name="home_msg_fail_generate_link">링크 생성에 실패했어요. 다시 시도해 주세요.</string>
+    <string name="home_msg_card_deleted">카드가 삭제됐어요</string>
+    <string name="home_msg_fail_delete_card">카드 삭제에 실패했어요</string>
+
+    <string name="home_cd_logo_img">메인 로고</string>
+    <string name="home_cd_setting_button">설정</string>
+    <string name="home_cd_async_image">카드 생성 미리보기</string>
+    <string name="home_cd_arrow_forward_icon">앞으로 이동</string>
+    <string name="home_cd_card">카드 미리보기 이미지</string>
+    <string name="home_cd_empty_card_icon">빈 카드</string>
+
+    <string name="home_title_design_card_sub_prompt">Imagine More</string>
+    <string name="home_title_design_card_prompt">Create Your Own\n3D Cards</string>
+    <string name="home_title_card_dashboard">최근 카드</string>
+
+    <string name="home_button_create">카드 만들기</string>
+
+    <string name="home_text_notice_empty_card_1">아직 카드가 없어요!</string>
+    <string name="home_text_notice_empty_card_2">지금 첫 번째 3D 카드를 만들어 보세요.</string>
+
+    <!-- Home Screen - Bottom Sheet -->
+    <string name="home_button_share_link">링크 공유</string>
+    <string name="home_button_delete">삭제</string>
+
+    <!-- Home Screen - Dialog (Delete Card) -->
+    <string name="home_dialog_title_delete_confirm">%1$s을(를) 삭제할까요?</string>
+    <string name="home_dialog_content_delete_confirm">이 작업은 되돌릴 수 없어요.</string>
+    <string name="home_dialog_button_delete">삭제</string>
+
+    <!-- Setting Screen -->
+    <string name="setting_msg_feedback_submitted">피드백이 제출됐어요</string>
+    <string name="setting_msg_fail_open_link">이 링크를 열 수 있는 앱이 없어요</string>
+
+    <string name="setting_label_open_source_credits">오픈소스 크레딧</string>
+    <string name="setting_label_leave_feedback">피드백 보내기</string>
+
+    <!-- Setting Screen - Dialog (Feedback) -->
+    <string name="setting_dialog_title_feedback">의견 보내기</string>
+    <string name="setting_dialog_content_feedback">피드백은 익명으로 전송돼요.</string>
+    <string name="setting_dialog_placeholder_feedback">여기에 입력하세요…</string>
+    <string name="setting_dialog_button_submit">제출</string>
+
+</resources>

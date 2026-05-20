@@ -88,18 +88,18 @@ class CardEditorFragment : Fragment() {
                     }
                 }
                 launch {
-                    viewModel.cardEditorSideEffect.collect {
-                        when (it) {
+                    viewModel.cardEditorSideEffect.collect { sideEffect ->
+                        when (sideEffect) {
                             is CardEditorSideEffect.NavigateToCardShare -> {
-                                navigateToCardShare(it.cardUrl)
+                                navigateToCardShare(sideEffect.cardUrl)
                             }
                             is CardEditorSideEffect.Finish -> { parentFragmentManager.popBackStack() }
-                            is CardEditorSideEffect.ShowToast -> {
-                                Toast.makeText(requireContext(),it.message,Toast.LENGTH_SHORT).show()
+                            is CardEditorSideEffect.ToastMessage -> {
+                                Toast.makeText(requireContext(), getString(sideEffect.msgRes),Toast.LENGTH_SHORT).show()
                             }
                             is CardEditorSideEffect.CopyCardLink -> {
                                 val clipboard = requireContext().getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
-                                clipboard.setPrimaryClip(ClipData.newPlainText("", it.cardUrl))
+                                clipboard.setPrimaryClip(ClipData.newPlainText("", sideEffect.cardUrl))
                                 if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2)
                                     Toast.makeText(requireContext(), getString(R.string.editor_msg_copy_success),Toast.LENGTH_SHORT).show()
                             }

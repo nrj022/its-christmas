@@ -17,6 +17,7 @@ import com.zcard.designsystem.theme.ZCardTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import androidx.core.net.toUri
+import com.zcard.feature.R
 
 private const val CREDITS_URL = "https://www.notion.so/3D-Asset-Attributions-365db7d5b54781dcb929ed1eab7eaef5?source=copy_link"
 
@@ -53,7 +54,7 @@ class SettingFragment : Fragment() {
                             parentFragmentManager.popBackStack()
                         }
                         is SettingSideEffect.ToastMessage -> {
-                            Toast.makeText(requireContext(), sideEffect.message, Toast.LENGTH_SHORT).show()
+                            Toast.makeText(requireContext(), getString(sideEffect.msgRes), Toast.LENGTH_SHORT).show()
                         }
                         is SettingSideEffect.OpenCreditsDocs -> {
                             openCreditsDocs()
@@ -70,7 +71,7 @@ class SettingFragment : Fragment() {
             startActivity(intent)
         } catch (e: Exception) {
             e.printStackTrace()
-            Toast.makeText(requireContext(), "No app found to open this link.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), getString(R.string.setting_msg_fail_open_link), Toast.LENGTH_SHORT).show()
         }
     }
 }

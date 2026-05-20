@@ -1,18 +1,22 @@
 package com.zcard.feature.setting
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.zcard.domain.repository.FeedbackRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 private const val TAG = "SettingViewModel"
 
 @HiltViewModel
 class SettingViewModel @Inject constructor(
+    private val feedbackRepository: FeedbackRepository
 ): ViewModel() {
 
     private val _settingState = MutableStateFlow(SettingState())
@@ -49,9 +53,13 @@ class SettingViewModel @Inject constructor(
     }
 
     private fun handleSubmitFeedback(text: String) {
-        // TODO: 피드백 업로드
-        _settingState.update { it.copy(showFeedbackDialog = false) }
-        _settingSideEffect.trySend(SettingSideEffect.ToastMessage("Feedback submitted"))
+        viewModelScope.launch {
+            feedbackRepository.submitFeedback(text)
+
+            _settingSideEffect.trySend(SettingSideEffect.ToastMessage("Feedback submitted"))
+            handleCancelFeedback()
+            _settingState.update { it.copy(feedbackText = "") }
+        }
     }
 
     private fun handleCancelFeedback() {

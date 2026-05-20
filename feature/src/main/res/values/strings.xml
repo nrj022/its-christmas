@@ -84,8 +84,8 @@
 
     <!-- Setting Screen - Dialog -->
     <string name="setting_dialog_title_feedback">Help us improve</string>
-    <string name="setting_dialog_content_feedback">Tell us what you think!</string>
-    <string name="setting_dialog_placeholder_feedback">Type here</string>
+    <string name="setting_dialog_content_feedback">Your feedback will be sent anonymously.</string>
+    <string name="setting_dialog_placeholder_feedback">Type here…</string>
     <string name="setting_dialog_button_submit">Submit</string>
 
 </resources>

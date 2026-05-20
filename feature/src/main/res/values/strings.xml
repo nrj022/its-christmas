@@ -7,11 +7,11 @@
     <string name="common_button_apply">Apply</string>
 
     <!-- Editor Screen -->
-    <string name="editor_msg_fail_load_card">Oops! Failed to load card. Please try again.</string>
-    <string name="editor_msg_fail_refresh_objects">Oops! Failed to refresh objects. Please try again.</string>
-    <string name="editor_msg_fail_load_object">Oops! Load Object failed. Please try again.</string>
-    <string name="editor_msg_fail_card_upload">Oops! Card upload failed. Please try again.</string>
-    <string name="editor_msg_fail_card_title_update">Oops! Card title update failed. Please try again.</string>
+    <string name="editor_msg_fail_load_card">Failed to load card. Please try again.</string>
+    <string name="editor_msg_fail_refresh_objects">Failed to refresh objects. Please try again.</string>
+    <string name="editor_msg_fail_load_object">Failed to load object. Please try again.</string>
+    <string name="editor_msg_fail_card_upload">Failed to upload card. Please try again.</string>
+    <string name="editor_msg_fail_card_title_update">Failed to update card title. Please try again.</string>
     <string name="editor_msg_block_system_back">Please use the buttons at the top to finish editing</string>
     <string name="editor_msg_copy_success">Copied to clipboard</string>
 

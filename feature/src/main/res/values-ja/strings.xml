@@ -7,11 +7,11 @@
     <string name="common_button_apply">適用</string>
 
     <!-- Editor Screen -->
-    <string name="editor_msg_fail_load_card">おっと！カードを読み込めませんでした。もう一度お試しください。</string>
-    <string name="editor_msg_fail_refresh_objects">おっと！オブジェクトを更新できませんでした。もう一度お試しください。</string>
-    <string name="editor_msg_fail_load_object">おっと！オブジェクトの読み込みに失敗しました。もう一度お試しください。</string>
-    <string name="editor_msg_fail_card_upload">おっと！カードのアップロードに失敗しました。もう一度お試しください。</string>
-    <string name="editor_msg_fail_card_title_update">おっと！タイトルの更新に失敗しました。もう一度お試しください。</string>
+    <string name="editor_msg_fail_load_card">カードを読み込めませんでした。もう一度お試しください。</string>
+    <string name="editor_msg_fail_refresh_objects">オブジェクトを更新できませんでした。もう一度お試しください。</string>
+    <string name="editor_msg_fail_load_object">オブジェクトの読み込みに失敗しました。もう一度お試しください。</string>
+    <string name="editor_msg_fail_card_upload">カードのアップロードに失敗しました。もう一度お試しください。</string>
+    <string name="editor_msg_fail_card_title_update">タイトルの更新に失敗しました。もう一度お試しください。</string>
     <string name="editor_msg_block_system_back">編集を終了するには上部のボタンをご利用ください</string>
     <string name="editor_msg_copy_success">クリップボードにコピーしました</string>
 

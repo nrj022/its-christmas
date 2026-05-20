@@ -96,7 +96,7 @@
 
     <!-- Home Screen - Dialog (Delete Card) -->
     <string name="home_dialog_title_delete_confirm">%1$s을(를) 삭제할까요?</string>
-    <string name="home_dialog_content_delete_confirm">"이 작업은 되돌릴 수 없어요."</string>
+    <string name="home_dialog_content_delete_confirm">이 작업은 되돌릴 수 없어요.</string>
     <string name="home_dialog_button_delete">삭제</string>
 
     <!-- Setting Screen -->

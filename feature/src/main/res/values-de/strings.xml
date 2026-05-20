@@ -7,11 +7,11 @@
     <string name="common_button_apply">Anwenden</string>
 
     <!-- Editor Screen -->
-    <string name="editor_msg_fail_load_card">Ups! Karte konnte nicht geladen werden. Bitte erneut versuchen.</string>
-    <string name="editor_msg_fail_refresh_objects">Ups! Objekte konnten nicht aktualisiert werden. Bitte erneut versuchen.</string>
-    <string name="editor_msg_fail_load_object">Ups! Objekt konnte nicht geladen werden. Bitte erneut versuchen.</string>
-    <string name="editor_msg_fail_card_upload">Ups! Karten-Upload fehlgeschlagen. Bitte erneut versuchen.</string>
-    <string name="editor_msg_fail_card_title_update">Ups! Kartentitel konnte nicht aktualisiert werden. Bitte erneut versuchen.</string>
+    <string name="editor_msg_fail_load_card">Karte konnte nicht geladen werden. Bitte erneut versuchen.</string>
+    <string name="editor_msg_fail_refresh_objects">Objekte konnten nicht aktualisiert werden. Bitte erneut versuchen.</string>
+    <string name="editor_msg_fail_load_object">Objekt konnte nicht geladen werden. Bitte erneut versuchen.</string>
+    <string name="editor_msg_fail_card_upload">Karten-Upload fehlgeschlagen. Bitte erneut versuchen.</string>
+    <string name="editor_msg_fail_card_title_update">Kartentitel konnte nicht aktualisiert werden. Bitte erneut versuchen.</string>
     <string name="editor_msg_block_system_back">Bitte die Schaltflächen oben verwenden, um die Bearbeitung abzuschließen</string>
     <string name="editor_msg_copy_success">In die Zwischenablage kopiert</string>
 

@@ -7,11 +7,11 @@
     <string name="common_button_apply">Aplicar</string>
 
     <!-- Editor Screen -->
-    <string name="editor_msg_fail_load_card">¡Vaya! No se pudo cargar la tarjeta. Por favor, inténtalo de nuevo.</string>
-    <string name="editor_msg_fail_refresh_objects">¡Vaya! No se pudieron actualizar los objetos. Por favor, inténtalo de nuevo.</string>
-    <string name="editor_msg_fail_load_object">¡Vaya! No se pudo cargar el objeto. Por favor, inténtalo de nuevo.</string>
-    <string name="editor_msg_fail_card_upload">¡Vaya! Error al subir la tarjeta. Por favor, inténtalo de nuevo.</string>
-    <string name="editor_msg_fail_card_title_update">¡Vaya! No se pudo actualizar el título. Por favor, inténtalo de nuevo.</string>
+    <string name="editor_msg_fail_load_card">No se pudo cargar la tarjeta. Por favor, inténtalo de nuevo.</string>
+    <string name="editor_msg_fail_refresh_objects">No se pudieron actualizar los objetos. Por favor, inténtalo de nuevo.</string>
+    <string name="editor_msg_fail_load_object">No se pudo cargar el objeto. Por favor, inténtalo de nuevo.</string>
+    <string name="editor_msg_fail_card_upload">Error al subir la tarjeta. Por favor, inténtalo de nuevo.</string>
+    <string name="editor_msg_fail_card_title_update">No se pudo actualizar el título. Por favor, inténtalo de nuevo.</string>
     <string name="editor_msg_block_system_back">Usa los botones de arriba para terminar la edición</string>
     <string name="editor_msg_copy_success">Copiado al portapapeles</string>
 

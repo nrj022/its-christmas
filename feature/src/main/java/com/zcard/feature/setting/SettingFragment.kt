@@ -56,12 +56,21 @@ class SettingFragment : Fragment() {
                             Toast.makeText(requireContext(), sideEffect.message, Toast.LENGTH_SHORT).show()
                         }
                         is SettingSideEffect.OpenCreditsDocs -> {
-                            val intent = Intent(Intent.ACTION_VIEW, CREDITS_URL.toUri())
-                            startActivity(intent)
+                            openCreditsDocs()
                         }
                     }
                 }
             }
+        }
+    }
+
+    private fun openCreditsDocs() {
+        try {
+            val intent = Intent(Intent.ACTION_VIEW, CREDITS_URL.toUri())
+            startActivity(intent)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Toast.makeText(requireContext(), "No app found to open this link.", Toast.LENGTH_SHORT).show()
         }
     }
 }

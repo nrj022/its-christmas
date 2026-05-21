@@ -112,4 +112,7 @@
     <string name="setting_dialog_placeholder_feedback">Hier eingeben…</string>
     <string name="setting_dialog_button_submit">Absenden</string>
 
+    <!-- Tutorial Screen -->
+    <string name="tutorial_button_start">Loslegen</string>
+
 </resources>

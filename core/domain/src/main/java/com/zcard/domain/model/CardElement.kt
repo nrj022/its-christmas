@@ -1,6 +1,5 @@
 package com.zcard.domain.model
 
-import com.zcard.domain.enum.ElementType
 import kotlin.random.Random
 
 data class CardElement(

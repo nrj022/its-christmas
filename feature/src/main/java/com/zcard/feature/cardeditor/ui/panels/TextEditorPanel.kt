@@ -49,11 +49,11 @@ import com.zcard.designsystem.theme.Gray
 import com.zcard.designsystem.theme.ZCardTheme
 import com.zcard.designsystem.theme.SoftBlack
 import com.zcard.designsystem.theme.White
-import com.zcard.domain.model.ColorOption
-import com.zcard.domain.model.FontOption
-import com.zcard.domain.model.TextAlignmentOption
+import com.zcard.domain.model.TextColor
+import com.zcard.domain.model.TextAlignment
 import com.zcard.feature.cardeditor.model.Direction
 import com.zcard.domain.model.TextElement
+import com.zcard.domain.model.TextFontFamily
 import com.zcard.feature.R
 
 // 토글 탭 목록 정의
@@ -67,10 +67,10 @@ enum class TextEditorTab(val resId: Int) {
 fun TextEditorPanel(
     textElement: TextElement? = null,
     onTextChange: (String) -> Unit = {},
-    onColorSelected: (ColorOption) -> Unit = {},
-    onAlignmentSelected: (TextAlignmentOption) -> Unit = {},
+    onColorSelected: (TextColor) -> Unit = {},
+    onAlignmentSelected: (TextAlignment) -> Unit = {},
     onFontSizeChange: (Float) -> Unit = {},
-    onFontSelected: (FontOption) -> Unit = {},
+    onFontSelected: (TextFontFamily) -> Unit = {},
     onPositionChange: (Direction) -> Unit = { },
     onApply: () -> Unit = {},
     onBack: () -> Unit = {}
@@ -98,10 +98,10 @@ private fun EditorTabContent(
     selectedTab: TextEditorTab,
     onTextChange: (String) -> Unit,
     onTabSelected: (TextEditorTab) -> Unit,
-    onColorSelected: (ColorOption) -> Unit,
-    onAlignmentSelected: (TextAlignmentOption) -> Unit,
+    onColorSelected: (TextColor) -> Unit,
+    onAlignmentSelected: (TextAlignment) -> Unit,
     onFontSizeChange: (Float) -> Unit,
-    onFontSelected: (FontOption) -> Unit,
+    onFontSelected: (TextFontFamily) -> Unit,
     onPositionChange: (Direction) -> Unit,
     onApply: () -> Unit,
     onBack: () -> Unit
@@ -227,11 +227,11 @@ private fun EditorHeader(
 
 @Composable
 private fun StyleOptions(
-    selectedColor: ColorOption,
-    selectedAlignment: TextAlignmentOption,
+    selectedColor: TextColor,
+    selectedAlignment: TextAlignment,
     fontSize: Float,
-    onColorSelected: (ColorOption) -> Unit,
-    onAlignmentSelected: (TextAlignmentOption) -> Unit,
+    onColorSelected: (TextColor) -> Unit,
+    onAlignmentSelected: (TextAlignment) -> Unit,
     onFontSizeChange: (Float) -> Unit
 ) {
     Column(
@@ -256,11 +256,11 @@ private fun StyleOptions(
 
 @Composable
 private fun AlignmentOptions(
-    selectedAlignment: TextAlignmentOption,
-    onAlignmentSelected: (TextAlignmentOption) -> Unit
+    selectedAlignment: TextAlignment,
+    onAlignmentSelected: (TextAlignment) -> Unit
 ) {
     Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-        TextAlignmentOption.entries.forEach { align ->
+        TextAlignment.entries.forEach { align ->
             IconButton(onClick = { onAlignmentSelected(align) }) {
                 Icon(
                     modifier = Modifier.size(28.dp),
@@ -274,12 +274,12 @@ private fun AlignmentOptions(
 }
 
 @Composable
-private fun ColorOptions(selectedColor: ColorOption, onColorSelected: (ColorOption) -> Unit) {
+private fun ColorOptions(selectedColor: TextColor, onColorSelected: (TextColor) -> Unit) {
     LazyRow(
         horizontalArrangement = Arrangement.spacedBy(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        items(ColorOption.entries, key = { it.name }) { color ->
+        items(TextColor.entries, key = { it.name }) { color ->
             Box(
                 modifier = Modifier
                     .semantics { contentDescription = color.name }
@@ -326,7 +326,7 @@ private fun FontSizeSlider(fontSize: Float, onFontSizeChange: (Float) -> Unit) {
 }
 
 @Composable
-private fun FontOptions(selectedFont: FontOption, onFontSelected: (FontOption) -> Unit) {
+private fun FontOptions(selectedFont: TextFontFamily, onFontSelected: (TextFontFamily) -> Unit) {
     val fontFamilies = rememberFontFamilies()
 
     LazyVerticalGrid(
@@ -335,7 +335,7 @@ private fun FontOptions(selectedFont: FontOption, onFontSelected: (FontOption) -
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        items(FontOption.entries, key = { it.key }) { font ->
+        items(TextFontFamily.entries, key = { it.key }) { font ->
             FontChip(
                 font = font,
                 isSelected = selectedFont == font,
@@ -347,7 +347,7 @@ private fun FontOptions(selectedFont: FontOption, onFontSelected: (FontOption) -
 }
 
 @Composable
-private fun FontChip(font: FontOption, isSelected: Boolean, fontFamily: FontFamily?, onClick: (FontOption) -> Unit) {
+private fun FontChip(font: TextFontFamily, isSelected: Boolean, fontFamily: FontFamily?, onClick: (TextFontFamily) -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()

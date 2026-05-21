@@ -1,6 +1,8 @@
-@file:OptIn(kotlinx.serialization.InternalSerializationApi::class)
-package com.zcard.domain.model
+@file:OptIn(InternalSerializationApi::class)
 
+package com.zcard.domain.bridge
+
+import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.Serializable
 
 enum class UnityEventType {

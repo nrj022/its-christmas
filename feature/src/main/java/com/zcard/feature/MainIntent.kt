@@ -1,6 +1,6 @@
 package com.zcard.feature
 
-import com.zcard.domain.model.UnityMessage
+import com.zcard.domain.bridge.UnityMessage
 
 sealed class MainIntent {
     data class OnUnityMessage(val message: UnityMessage) : MainIntent()

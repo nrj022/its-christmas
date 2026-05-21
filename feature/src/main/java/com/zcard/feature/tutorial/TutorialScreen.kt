@@ -29,15 +29,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.zcard.designsystem.theme.Gray
 import com.zcard.designsystem.theme.Orange
-import com.zcard.designsystem.theme.White
 import com.zcard.designsystem.theme.ZCardTheme
 import com.zcard.feature.R
 
@@ -74,7 +73,7 @@ fun TutorialContent(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.Black)
+            .background(MaterialTheme.colorScheme.background)
             .systemBarsPadding(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
@@ -103,12 +102,12 @@ fun TutorialContent(
             horizontalArrangement = Arrangement.Center
         ) {
             repeat(pages.size) { iteration ->
-                val color = if (pagerState.currentPage == iteration) Orange else White
+                val color = if (pagerState.currentPage == iteration) Orange else Gray
 
                 Box(
                     modifier = Modifier
                         .padding(horizontal = 4.dp)
-                        .size(6.dp)
+                        .size(8.dp)
                         .clip(CircleShape)
                         .background(color)
                 )
@@ -129,19 +128,18 @@ fun TutorialContent(
                         Text(
                             text = stringResource(R.string.tutorial_button_start),
                             style = MaterialTheme.typography.labelSmall,
-                            color = White
+                            color = MaterialTheme.colorScheme.onBackground
                         )
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowForward,
                             contentDescription = null,
-                            tint = White
+                            tint = MaterialTheme.colorScheme.onBackground
                         )
                     }
                 }
             }
         } else {
-            // 마지막 페이지가 아닐 때는 자리만 차지하도록 빈 공간 설정
-            Spacer(modifier = Modifier.height(82.dp))
+            Spacer(modifier = Modifier.height(20.dp))
         }
     }
 }

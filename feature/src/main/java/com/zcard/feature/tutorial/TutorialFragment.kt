@@ -31,18 +31,4 @@ class TutorialFragment : Fragment() {
             }
         }
     }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        WindowCompat.getInsetsController(requireActivity().window, requireView())
-            .isAppearanceLightStatusBars = false  // false = 아이콘 흰색 (어두운 배경용)
-    }
-
-    override fun onDestroyView() {
-        WindowCompat.getInsetsController(requireActivity().window, requireView())
-            .isAppearanceLightStatusBars = true  // 복구
-
-        super.onDestroyView()
-    }
 }

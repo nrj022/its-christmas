@@ -72,6 +72,24 @@ class CardEditorFragment : Fragment() {
         cardId = requireArguments().getLong(ARG_CARD_ID)    // newInstance로만 생성되므로 없으면 즉시 크래시
         viewModel.onIntent(CardEditorIntent.Init(cardId))
 
+        val initialTopPadding = binding.containerTop.paddingTop
+
+        ViewCompat.setOnApplyWindowInsetsListener(binding.containerTop) { v, windowInsets ->
+            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.statusBars())
+            v.setPadding(0, initialTopPadding + insets.top, 0, 0)
+            windowInsets
+        }
+
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, windowInsets ->
+            val imeVisible = windowInsets.isVisible(WindowInsetsCompat.Type.ime())
+            val navInsets = windowInsets.getInsets(WindowInsetsCompat.Type.navigationBars())
+
+            viewModel.setImeVisible(imeVisible)
+            v.setPadding(0, 0, 0, navInsets.bottom)
+
+            windowInsets
+        }
+
         initListener()
 
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
@@ -184,12 +202,6 @@ class CardEditorFragment : Fragment() {
 
         binding.imgBtnCameraFocusReset.setOnClickListener {
             viewModel.onIntent(CardEditorIntent.ResetCamera)
-        }
-
-        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { _, insets ->
-            val imeVisible = insets.isVisible(WindowInsetsCompat.Type.ime())
-            viewModel.setImeVisible(imeVisible)
-            insets
         }
     }
 

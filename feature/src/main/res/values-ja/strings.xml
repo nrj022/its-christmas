@@ -112,4 +112,7 @@
     <string name="setting_dialog_placeholder_feedback">ここに入力してください…</string>
     <string name="setting_dialog_button_submit">送信</string>
 
+    <!-- Tutorial Screen -->
+    <string name="tutorial_button_start">はじめる</string>
+
 </resources>

@@ -15,7 +15,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.zcard.domain.model.UnityMessage
+import com.zcard.domain.bridge.UnityMessage
 import com.unity3d.player.UnityPlayerForActivityOrService
 import com.zcard.feature.databinding.ActivityMainBinding
 import com.zcard.feature.home.HomeFragment

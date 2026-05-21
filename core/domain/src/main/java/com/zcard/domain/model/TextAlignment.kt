@@ -1,6 +1,6 @@
 package com.zcard.domain.model
 
-enum class TextAlignmentOption(val alignCode: Int) {
+enum class TextAlignment(val alignCode: Int) {
     Right(257),
     Center(288),
     Left(260),

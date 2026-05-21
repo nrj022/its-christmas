@@ -9,18 +9,18 @@ import com.zcard.feature.cardeditor.model.PanelType
 import com.zcard.feature.cardeditor.model.TempTextElement
 import com.zcard.feature.cardeditor.model.TempTransform
 import com.zcard.domain.bridge.UnityBridge
-import com.zcard.domain.enum.ElementType
+import com.zcard.domain.model.ElementType
 import com.zcard.domain.model.Asset
 import com.zcard.domain.model.CardElement
 import com.zcard.domain.model.CardElementWithAssetKeys
-import com.zcard.domain.model.ColorOption
-import com.zcard.domain.model.FontOption
-import com.zcard.domain.model.TextAlignmentOption
+import com.zcard.domain.model.TextColor
+import com.zcard.domain.model.TextFontFamily
+import com.zcard.domain.model.TextAlignment
 import com.zcard.domain.model.TextAttributes
 import com.zcard.domain.model.TextElement
-import com.zcard.domain.model.UnityEventStatus
-import com.zcard.domain.model.UnityEventType
-import com.zcard.domain.model.UnityMessage
+import com.zcard.domain.bridge.UnityEventStatus
+import com.zcard.domain.bridge.UnityEventType
+import com.zcard.domain.bridge.UnityMessage
 import com.zcard.domain.model.UploadState
 import com.zcard.domain.repository.AssetRepository
 import com.zcard.domain.repository.CardElementRepository
@@ -558,13 +558,13 @@ class CardEditorViewModel @Inject constructor(
         unityBridge.updateTextContent(_cardEditorState.value.selectedTextTempId ?: 0, newText)
     }
 
-    private fun handleSelectAlignment(newAlignment: TextAlignmentOption) {
+    private fun handleSelectAlignment(newAlignment: TextAlignment) {
         val textId = _cardEditorState.value.selectedTextTempId ?: return
         updateTempTextAttribute(textId) { copy(alignment = newAlignment) }
         unityBridge.updateTextAlign(textId, newAlignment.alignCode)
     }
 
-    private fun handleSelectColor(newColor: ColorOption) {
+    private fun handleSelectColor(newColor: TextColor) {
         val textId = _cardEditorState.value.selectedTextTempId ?: return
         updateTempTextAttribute(textId) { copy(textColor = newColor) }
         unityBridge.updateTextColor(textId, newColor.rgbaColor)
@@ -576,7 +576,7 @@ class CardEditorViewModel @Inject constructor(
         unityBridge.updateFontSize(textId, newSize)
     }
 
-    private fun handleSelectFont(newFont: FontOption) {
+    private fun handleSelectFont(newFont: TextFontFamily) {
         val textId = _cardEditorState.value.selectedTextTempId ?: return
         updateTempTextAttribute(textId) { copy(fontFamily = newFont) }
         unityBridge.updateFont(textId, newFont.key)

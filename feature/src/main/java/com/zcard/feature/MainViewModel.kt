@@ -3,8 +3,8 @@ package com.zcard.feature
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zcard.domain.bridge.UnityBridge
-import com.zcard.domain.model.UnityEventType
-import com.zcard.domain.model.UnityMessage
+import com.zcard.domain.bridge.UnityEventType
+import com.zcard.domain.bridge.UnityMessage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow

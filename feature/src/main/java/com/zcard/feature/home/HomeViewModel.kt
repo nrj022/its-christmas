@@ -5,8 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zcard.domain.exception.CardNotExportedException
 import com.zcard.domain.repository.CardRepository
-import com.zcard.domain.model.UnityEventType
-import com.zcard.domain.model.UnityMessage
+import com.zcard.domain.bridge.UnityEventType
+import com.zcard.domain.bridge.UnityMessage
 import com.zcard.domain.usecase.CreateCardUseCase
 import com.zcard.domain.usecase.GenerateCardUrlUseCase
 import com.zcard.feature.R

@@ -6,10 +6,10 @@ data class TextElement(
     val elementId: Long? = null,
     val attributes: TextAttributes = TextAttributes(
         content = "New Text",
-        alignment = TextAlignmentOption.Right,
-        textColor = ColorOption.Black,
+        alignment = TextAlignment.Right,
+        textColor = TextColor.Black,
         fontSize = 14f,
-        fontFamily = FontOption.PlaywriteUsTradGuides,
+        fontFamily = TextFontFamily.PlaywriteUsTradGuides,
     ),
     val posX: Float = Random.nextInt(-20, 21) / 10f,
     val posY: Float = Random.nextInt(-20, 21) / 10f,

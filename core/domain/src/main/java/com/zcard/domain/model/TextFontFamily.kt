@@ -1,6 +1,6 @@
 package com.zcard.domain.model
 
-enum class FontOption(val key: String) {
+enum class TextFontFamily(val key: String) {
     PlaywriteUsTradGuides("PlaywriteUsTradGuides"),
     Anton("Anton"),
     BebasNeue("BebasNeue"),

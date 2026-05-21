@@ -1,7 +1,7 @@
 package com.zcard.data.usecaseImpl
 
 import android.util.Log
-import com.zcard.domain.enum.ElementType
+import com.zcard.domain.model.ElementType
 import com.zcard.domain.model.CardElement
 import com.zcard.domain.model.TextElement
 import com.zcard.domain.repository.CardElementRepository

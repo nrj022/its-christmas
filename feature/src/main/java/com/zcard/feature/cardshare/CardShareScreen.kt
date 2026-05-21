@@ -39,7 +39,11 @@ private fun CardShareContent(
     onHomeClicked: () -> Unit = {},
     onShareClicked: () -> Unit = {}
 ) {
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .navigationBarsPadding()
+    ) {
 
         CardShareWebView(cardUrl)
 
@@ -54,8 +58,9 @@ private fun TopSection(onBackClicked: () -> Unit, onCompleteClicked: () -> Unit)
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 20.dp)
-            .padding(top = 30.dp),
+            .statusBarsPadding()
+            .padding(top = 10.dp)
+            .padding(horizontal = 20.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         BackButton(onBackClicked)

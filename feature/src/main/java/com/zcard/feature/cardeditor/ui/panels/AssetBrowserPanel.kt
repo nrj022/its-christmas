@@ -41,7 +41,7 @@ import com.zcard.feature.cardeditor.util.getObjectThumbByKey
 import com.zcard.designsystem.util.DrawableResProvider.getBgThumbByKey
 import com.zcard.feature.R
 
-private const val COLUMNS = 3
+private const val COLUMNS = 4
 
 // 토글 탭 목록 정의
 enum class AssetBrowserTab(val resId: Int) {
@@ -180,21 +180,21 @@ fun SpawnedObjectRow(
 
     Column {
         Text(
-            modifier = Modifier.padding(horizontal = 20.dp).padding(bottom = 12.dp),
+            modifier = Modifier.padding(horizontal = 20.dp).padding(bottom = 10.dp),
             text = stringResource(R.string.editor_title_spawned_objects_list),
             style = MaterialTheme.typography.labelSmall,
             fontSize = 14.sp
         )
         LazyRow(
             horizontalArrangement = Arrangement.spacedBy(12.dp),
-            contentPadding = PaddingValues(bottom = 24.dp)
+            contentPadding = PaddingValues(bottom = 18.dp)
         ) {
             item { Box(Modifier.size(8.dp)) }
             items(items = elements, key = { it.cardElement.elementId }) { element ->
                 val isLoading = isLoading(element.cardElement.elementId)
                 Box(
                     modifier = Modifier
-                        .size(72.dp)
+                        .size(60.dp)
                         .border(
                             2.dp,
                             if (element.cardElement.elementId == selectedItemIndex) SoftBlack else Gray,

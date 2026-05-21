@@ -47,7 +47,7 @@ data class CardEditorState(
         get() = panelType == PanelType.TEXT_EDITOR
 
     val unityContainerHeightFraction: Float
-        get() = if (panelType == PanelType.TRANSFORM_CONTROL || panelType == PanelType.TEXT_EDITOR) 0.6f else 0.5f
+        get() = if (panelType == PanelType.TRANSFORM_CONTROL || panelType == PanelType.TEXT_EDITOR) 0.6f else 0.52f
 
     val selectedSpawnedObjectId: Long?
         get() = selectedSpawnedObject?.cardElement?.elementId

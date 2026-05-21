@@ -2,6 +2,7 @@ package com.zcard.feature.tutorial
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,10 +10,12 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.core.view.WindowCompat
 import com.zcard.designsystem.theme.ZCardTheme
-import com.zcard.feature.R
-import com.zcard.feature.home.HomeFragment
+import com.zcard.feature.MainIntent
+import com.zcard.feature.MainViewModel
 
 class TutorialFragment : Fragment() {
+
+    private val viewModel: MainViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -22,7 +25,8 @@ class TutorialFragment : Fragment() {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 ZCardTheme {
-                    TutorialScreen(::navigateToHome)
+                    TutorialScreen(
+                        onStart = { viewModel.onIntent(MainIntent.CompleteTutorial) })
                 }
             }
         }
@@ -40,17 +44,5 @@ class TutorialFragment : Fragment() {
             .isAppearanceLightStatusBars = true  // 복구
 
         super.onDestroyView()
-    }
-
-    private fun navigateToHome() {
-        parentFragmentManager.beginTransaction()
-            .setCustomAnimations(
-                R.anim.slide_in_right,
-                R.anim.slide_out_left,
-                R.anim.slide_in_left,
-                R.anim.slide_out_right
-            )
-            .replace(R.id.fragment_container, HomeFragment())
-            .commit()
     }
 }

@@ -7,4 +7,5 @@ sealed class MainIntent {
     data object OnEditorCreated : MainIntent()
     data class OnEditorDestroyed(val cardId: Long) : MainIntent()
     data class OnUnityContainerHeightChanged(val fraction: Float) : MainIntent()
+    data object CompleteTutorial : MainIntent()
 }

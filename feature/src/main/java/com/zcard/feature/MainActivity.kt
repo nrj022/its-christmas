@@ -19,6 +19,7 @@ import com.zcard.domain.bridge.UnityMessage
 import com.unity3d.player.UnityPlayerForActivityOrService
 import com.zcard.feature.databinding.ActivityMainBinding
 import com.zcard.feature.home.HomeFragment
+import com.zcard.feature.tutorial.TutorialFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
@@ -41,8 +42,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         if (savedInstanceState == null) {
+            val fragment = if (viewModel.isTutorialCompleted) HomeFragment() else TutorialFragment()
             supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, HomeFragment())
+                .replace(R.id.fragment_container, fragment)
                 .commit()
         }
 
@@ -60,6 +62,15 @@ class MainActivity : AppCompatActivity() {
                         }
                         is MainSideEffect.UnityContainerHeightFraction -> {
                             updateUnityContainerHeight(sideEffect.fraction)
+                        }
+                        is MainSideEffect.NavigateToHome -> {
+                            supportFragmentManager.beginTransaction()
+                                .setCustomAnimations(
+                                    R.anim.slide_in_right,
+                                    R.anim.slide_out_left,
+                                )
+                                .replace(R.id.fragment_container, HomeFragment())
+                                .commit()
                         }
                     }
                 }

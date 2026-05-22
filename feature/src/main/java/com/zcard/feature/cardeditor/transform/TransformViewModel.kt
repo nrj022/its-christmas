@@ -188,6 +188,9 @@ class TransformViewModel @Inject constructor(
                 posZ = temp.posZ,
                 scale = temp.scale
             ).onSuccess {
+                _transformState.update {
+                    it.copy(initialTransform = temp.copy())
+                }
                 onSuccess()
             }.onFailure {
                 Log.e(TAG, "saveTransformChanges: $it")

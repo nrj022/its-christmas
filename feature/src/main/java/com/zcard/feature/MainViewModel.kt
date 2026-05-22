@@ -3,8 +3,9 @@ package com.zcard.feature
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zcard.domain.bridge.UnityBridge
-import com.zcard.domain.model.UnityEventType
-import com.zcard.domain.model.UnityMessage
+import com.zcard.domain.bridge.UnityEventType
+import com.zcard.domain.bridge.UnityMessage
+import com.zcard.domain.repository.OnboardingRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -19,11 +20,15 @@ sealed class UnityLifecycle {
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val unityBridge: UnityBridge
+    private val unityBridge: UnityBridge,
+    private val onboardingRepository: OnboardingRepository,
 ) : ViewModel() {
 
     private var unityLifecycle: UnityLifecycle = UnityLifecycle.Paused
     private var resetIdCounter = 0
+
+    val isTutorialCompleted: Boolean
+        get() = onboardingRepository.isTutorialCompleted()
 
     private val _mainSideEffect = MutableSharedFlow<MainSideEffect>()
     val mainSideEffect: SharedFlow<MainSideEffect> = _mainSideEffect
@@ -37,7 +42,13 @@ class MainViewModel @Inject constructor(
             is MainIntent.OnEditorCreated -> handleEditorCreated()
             is MainIntent.OnEditorDestroyed -> handleEditorDestroyed(intent.cardId)
             is MainIntent.OnUnityContainerHeightChanged -> handleUnityContainerHeightFraction(intent.fraction)
+            is MainIntent.CompleteTutorial -> handleCompleteTutorial()
         }
+    }
+
+    private fun handleCompleteTutorial() {
+        onboardingRepository.setTutorialCompleted()
+        emitSideEffect(MainSideEffect.NavigateToHome)
     }
 
     private fun handleUnityMessage(message: UnityMessage) {

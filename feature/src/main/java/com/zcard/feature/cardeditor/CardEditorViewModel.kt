@@ -9,18 +9,18 @@ import com.zcard.feature.cardeditor.model.PanelType
 import com.zcard.feature.cardeditor.model.TempTextElement
 import com.zcard.feature.cardeditor.model.TempTransform
 import com.zcard.domain.bridge.UnityBridge
-import com.zcard.domain.enum.ElementType
+import com.zcard.domain.model.ElementType
 import com.zcard.domain.model.Asset
 import com.zcard.domain.model.CardElement
 import com.zcard.domain.model.CardElementWithAssetKeys
-import com.zcard.domain.model.ColorOption
-import com.zcard.domain.model.FontOption
-import com.zcard.domain.model.TextAlignmentOption
+import com.zcard.domain.model.TextColor
+import com.zcard.domain.model.TextFontFamily
+import com.zcard.domain.model.TextAlignment
 import com.zcard.domain.model.TextAttributes
 import com.zcard.domain.model.TextElement
-import com.zcard.domain.model.UnityEventStatus
-import com.zcard.domain.model.UnityEventType
-import com.zcard.domain.model.UnityMessage
+import com.zcard.domain.bridge.UnityEventStatus
+import com.zcard.domain.bridge.UnityEventType
+import com.zcard.domain.bridge.UnityMessage
 import com.zcard.domain.model.UploadState
 import com.zcard.domain.repository.AssetRepository
 import com.zcard.domain.repository.CardElementRepository
@@ -31,6 +31,7 @@ import com.zcard.domain.usecase.GetTextElementsUseCase
 import com.zcard.domain.usecase.SaveTextElementsParams
 import com.zcard.domain.usecase.SaveTextElementsUseCase
 import com.zcard.domain.usecase.UploadCardModelUseCase
+import com.zcard.feature.R
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.channels.Channel
@@ -164,7 +165,7 @@ class CardEditorViewModel @Inject constructor(
                 }.onFailure {
                     Log.e(TAG, "handleInit: Load Card Failed\n$it")
                     delay(1000L)    // UX 개선 및 SideEffect 놓침 방지
-                    _cardEditorSideEffect.trySend(CardEditorSideEffect.ShowToast("Oops! Failed to load card. Please try again."))
+                    _cardEditorSideEffect.trySend(CardEditorSideEffect.ToastMessage(R.string.editor_msg_fail_load_card))
                     _cardEditorSideEffect.trySend(CardEditorSideEffect.Finish)
                 }
         }
@@ -189,7 +190,7 @@ class CardEditorViewModel @Inject constructor(
             result.exceptionOrNull()?.let { error ->
                 Log.e(TAG, "observeSpawnedObjects: $error")
                 _cardEditorSideEffect.trySend(
-                    CardEditorSideEffect.ShowToast("Oops! Failed to refresh objects. Please try again.")
+                    CardEditorSideEffect.ToastMessage(R.string.editor_msg_fail_refresh_objects)
                 )
             }
         }.launchIn(viewModelScope)
@@ -216,7 +217,7 @@ class CardEditorViewModel @Inject constructor(
                 selectedObject = null
                 cardElementRepository.deleteCardElementById(_cardId, id)
                     .onFailure { Log.e(TAG, "Zombie data created. Element ID: $id") }
-                _cardEditorSideEffect.trySend(CardEditorSideEffect.ShowToast("Oops! Load Object failed. Please try again."))
+                _cardEditorSideEffect.trySend(CardEditorSideEffect.ToastMessage(R.string.editor_msg_fail_load_object))
             } else {
                 selectedObject = _cardEditorState.value.spawnedObjects.find { obj -> obj.cardElement.elementId == id }
                 unityBridge.selectObject(id)
@@ -252,7 +253,7 @@ class CardEditorViewModel @Inject constructor(
                 throw e
             } catch (e: Throwable) {
                 Log.e(TAG, "handleExportGlbResult: $e")
-                _cardEditorSideEffect.trySend(CardEditorSideEffect.ShowToast("Oops! Card upload failed. Please try again."))
+                _cardEditorSideEffect.trySend(CardEditorSideEffect.ToastMessage(R.string.editor_msg_fail_card_upload))
             } finally {
                 _cardEditorState.update { it.copy(isLoading = false) }
             }
@@ -557,13 +558,13 @@ class CardEditorViewModel @Inject constructor(
         unityBridge.updateTextContent(_cardEditorState.value.selectedTextTempId ?: 0, newText)
     }
 
-    private fun handleSelectAlignment(newAlignment: TextAlignmentOption) {
+    private fun handleSelectAlignment(newAlignment: TextAlignment) {
         val textId = _cardEditorState.value.selectedTextTempId ?: return
         updateTempTextAttribute(textId) { copy(alignment = newAlignment) }
         unityBridge.updateTextAlign(textId, newAlignment.alignCode)
     }
 
-    private fun handleSelectColor(newColor: ColorOption) {
+    private fun handleSelectColor(newColor: TextColor) {
         val textId = _cardEditorState.value.selectedTextTempId ?: return
         updateTempTextAttribute(textId) { copy(textColor = newColor) }
         unityBridge.updateTextColor(textId, newColor.rgbaColor)
@@ -575,7 +576,7 @@ class CardEditorViewModel @Inject constructor(
         unityBridge.updateFontSize(textId, newSize)
     }
 
-    private fun handleSelectFont(newFont: FontOption) {
+    private fun handleSelectFont(newFont: TextFontFamily) {
         val textId = _cardEditorState.value.selectedTextTempId ?: return
         updateTempTextAttribute(textId) { copy(fontFamily = newFont) }
         unityBridge.updateFont(textId, newFont.key)
@@ -652,7 +653,7 @@ class CardEditorViewModel @Inject constructor(
                     _cardEditorState.update { it.copy(originalCardTitle = title) }
                 }.onFailure {
                     Log.e(TAG, "handleSaveTitle: $it")
-                    _cardEditorSideEffect.trySend(CardEditorSideEffect.ShowToast("Oops! Card title update failed. Please try again."))
+                    _cardEditorSideEffect.trySend(CardEditorSideEffect.ToastMessage(R.string.editor_msg_fail_card_title_update))
                 }
         }
     }

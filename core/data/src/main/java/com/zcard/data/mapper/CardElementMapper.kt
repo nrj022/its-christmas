@@ -1,11 +1,11 @@
 package com.zcard.data.mapper
 
 import com.zcard.database.entity.CardElementEntity
-import com.zcard.domain.enum.ElementType
+import com.zcard.domain.model.ElementType
 import com.zcard.domain.model.CardElement
-import com.zcard.domain.model.ColorOption
-import com.zcard.domain.model.FontOption
-import com.zcard.domain.model.TextAlignmentOption
+import com.zcard.domain.model.TextColor
+import com.zcard.domain.model.TextFontFamily
+import com.zcard.domain.model.TextAlignment
 import com.zcard.domain.model.TextAttributes
 
 fun CardElementEntity.toDomain(): CardElement {
@@ -14,10 +14,10 @@ fun CardElementEntity.toDomain(): CardElement {
         val default = TextAttributes()
         TextAttributes(
             content = text,
-            fontFamily = fontFamily?.let { FontOption.valueOf(it) } ?: default.fontFamily,
+            fontFamily = fontFamily?.let { TextFontFamily.valueOf(it) } ?: default.fontFamily,
             fontSize = fontSize ?: default.fontSize,
-            textColor = textColor?.let { ColorOption.valueOf(it) } ?: default.textColor,
-            alignment = textAlign?.let { TextAlignmentOption.valueOf(it) } ?: default.alignment,
+            textColor = textColor?.let { TextColor.valueOf(it) } ?: default.textColor,
+            alignment = textAlign?.let { TextAlignment.valueOf(it) } ?: default.alignment,
         )
     }
 

@@ -1,7 +1,7 @@
 package com.zcard.domain.model
 
 
-enum class ColorOption(val rgbaColor: RgbaColor) {
+enum class TextColor(val rgbaColor: RgbaColor) {
     Black(RgbaColor(r = 0f, g = 0f, b = 0f, a = 1f)),
     White(RgbaColor(r = 1f, g = 1f, b = 1f, a = 1f)),
     Red(RgbaColor(r = 0.7019608f, g = 0f, b = 0f, a = 1f)),

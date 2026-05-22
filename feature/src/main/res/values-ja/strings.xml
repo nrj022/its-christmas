@@ -1,0 +1,118 @@
+<resources>
+    <!-- Common -->
+    <string name="common_cd_back_button">戻る</string>
+    <string name="common_button_cancel">キャンセル</string>
+    <string name="common_button_confirm">確認</string>
+    <string name="common_button_no">いいえ</string>
+    <string name="common_button_apply">適用</string>
+
+    <!-- Editor Screen -->
+    <string name="editor_msg_fail_load_card">カードを読み込めませんでした。もう一度お試しください。</string>
+    <string name="editor_msg_fail_refresh_objects">オブジェクトを更新できませんでした。もう一度お試しください。</string>
+    <string name="editor_msg_fail_load_object">オブジェクトの読み込みに失敗しました。もう一度お試しください。</string>
+    <string name="editor_msg_fail_card_upload">カードのアップロードに失敗しました。もう一度お試しください。</string>
+    <string name="editor_msg_fail_card_title_update">タイトルの更新に失敗しました。もう一度お試しください。</string>
+    <string name="editor_msg_block_system_back">編集を終了するには上部のボタンをご利用ください</string>
+    <string name="editor_msg_copy_success">クリップボードにコピーしました</string>
+
+    <string name="editor_button_adjust">調整</string>
+    <string name="editor_button_complete">完了</string>
+    <string name="editor_button_back">戻る</string>
+    <string name="editor_button_add_text">テキスト編集</string>
+
+    <string name="editor_title_asset_tab_objects">3Dオブジェクト</string>
+    <string name="editor_title_asset_tab_background">背景</string>
+    <string name="editor_title_spawned_objects_list">マイオブジェクト</string>
+
+    <string name="editor_title_text_tab_style">スタイル</string>
+    <string name="editor_title_text_tab_font">フォント</string>
+    <string name="editor_title_text_tab_position">位置</string>
+    <string name="editor_placeholder_text">新しいテキスト</string>
+    <string name="editor_content_empty_text">テキストがありません。\n\'+\'をタップして最初のテキストを追加しましょう！</string>
+
+    <string name="editor_cd_link_button">リンク詳細</string>
+    <string name="editor_cd_delete_img_button">要素を削除</string>
+    <string name="editor_cd_transform_reset_img_button">変換をリセット</string>
+    <string name="editor_cd_camera_reset_img_button">カメラをリセット</string>
+    <string name="editor_cd_object_thumb_img">オブジェクトサムネイル</string>
+    <string name="editor_cd_complete_button">カード編集を完了</string>
+    <string name="editor_cd_add_text">新しいテキスト</string>
+    <string name="editor_cd_delete_text">テキストを削除</string>
+    <string name="editor_cd_increase_scale">サイズを拡大</string>
+    <string name="editor_cd_decrease_scale">サイズを縮小</string>
+    <string name="editor_cd_align_icon">%s 揃え</string>
+    <string name="editor_cd_asset">アセット</string>
+
+    <!-- Editor Screen - Dialog (Delete Object) -->
+    <string name="editor_dialog_title_delete">このオブジェクトを削除しますか？</string>
+    <string name="editor_dialog_button_delete">削除</string>
+
+    <!-- Editor Screen - Dialog (Set Card Title) -->
+    <string name="editor_dialog_title_set_card_title">カードのタイトルを設定してください！</string>
+    <string name="editor_dialog_placeholder_card_title">タイトルを入力</string>
+    <string name="editor_dialog_button_generate">3Dカードを作成</string>
+
+    <!-- Editor Screen - Dialog (Unsaved Changes) -->
+    <string name="editor_dialog_title_unsaved_changes">保存されていない変更があります。</string>
+    <string name="editor_dialog_content_unsaved_changes">終了前に保存しますか？</string>
+    <string name="editor_dialog_button_save_confirm">はい</string>
+
+    <!-- Editor Screen - Dialog (Link Detail) -->
+    <string name="editor_dialog_title_link_detail">カードリンクをコピー</string>
+    <string name="editor_dialog_button_set_card_title_save">保存</string>
+    <string name="editor_dialog_button_link_copy">リンクをコピー</string>
+    <string name="editor_dialog_text_exclude_new_edit">新しい編集は含まれません</string>
+
+    <!-- Share Screen -->
+    <string name="share_button_share">シェア</string>
+    <string name="share_cd_home_button">ホーム</string>
+
+    <!-- Home Screen -->
+    <string name="home_msg_fail_create_card">カードの作成に失敗しました</string>
+    <string name="home_msg_export_card_before_share">シェアする前にカードをエクスポートしてください。</string>
+    <string name="home_msg_fail_generate_link">リンクの生成に失敗しました。もう一度お試しください。</string>
+    <string name="home_msg_card_deleted">カードを削除しました</string>
+    <string name="home_msg_fail_delete_card">カードの削除に失敗しました</string>
+
+    <string name="home_cd_logo_img">メインロゴ</string>
+    <string name="home_cd_setting_button">設定</string>
+    <string name="home_cd_async_image">カード作成プレビュー</string>
+    <string name="home_cd_arrow_forward_icon">進む矢印</string>
+    <string name="home_cd_card">カードプレビュー画像</string>
+    <string name="home_cd_empty_card_icon">空のカード</string>
+
+    <string name="home_title_design_card_sub_prompt">もっと自由に想像を</string>
+    <string name="home_title_design_card_prompt">オリジナルの\n3Dカードを作ろう</string>
+    <string name="home_title_card_dashboard">最近のカード</string>
+
+    <string name="home_button_create">カードを作成</string>
+
+    <string name="home_text_notice_empty_card_1">まだカードがありません！</string>
+    <string name="home_text_notice_empty_card_2">最初の3Dカードを今すぐ作ってみましょう。</string>
+
+    <!-- Home Screen - Bottom Sheet -->
+    <string name="home_button_share_link">リンクをシェア</string>
+    <string name="home_button_delete">削除</string>
+
+    <!-- Home Screen - Dialog (Delete Card) -->
+    <string name="home_dialog_title_delete_confirm">%1$sを削除しますか？</string>
+    <string name="home_dialog_content_delete_confirm">"この操作は元に戻せません。"</string>
+    <string name="home_dialog_button_delete">削除</string>
+
+    <!-- Setting Screen -->
+    <string name="setting_msg_feedback_submitted">フィードバックを送信しました</string>
+    <string name="setting_msg_fail_open_link">このリンクを開けるアプリが見つかりません</string>
+
+    <string name="setting_label_open_source_credits">オープンソースライセンス</string>
+    <string name="setting_label_leave_feedback">フィードバックを送る</string>
+
+    <!-- Setting Screen - Dialog (Feedback) -->
+    <string name="setting_dialog_title_feedback">改善にご協力ください</string>
+    <string name="setting_dialog_content_feedback">フィードバックは匿名で送信されます。</string>
+    <string name="setting_dialog_placeholder_feedback">ここに入力してください…</string>
+    <string name="setting_dialog_button_submit">送信</string>
+
+    <!-- Tutorial Screen -->
+    <string name="tutorial_button_start">はじめる</string>
+
+</resources>

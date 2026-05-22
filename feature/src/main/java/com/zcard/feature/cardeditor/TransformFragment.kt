@@ -34,6 +34,7 @@ class TransformFragment : Fragment() {
 
     companion object {
         private const val ARG_ELEMENT_ID = "elementId"
+        private const val UNITY_HEIGHT_RATIO = 0.6f
 
         fun newInstance(elementId: Long) =
             TransformFragment().apply {
@@ -48,10 +49,15 @@ class TransformFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentTransformBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         val elementId = requireArguments().getLong(ARG_ELEMENT_ID)
         viewModel.onIntent(TransformIntent.Init(elementId))
-        mainViewModel.onIntent(MainIntent.OnUnityContainerHeightChanged(0.6f))
+        mainViewModel.onIntent(MainIntent.OnUnityContainerHeightChanged(UNITY_HEIGHT_RATIO))
 
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, windowInsets ->
             val insets = windowInsets.getInsets(WindowInsetsCompat.Type.navigationBars())
@@ -65,7 +71,7 @@ class TransformFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
-                    viewModel.transformState.collect { updateTransformPanel(it) }
+                    viewModel.transformState.collect { updateUi(it) }
                 }
                 launch {
                     viewModel.transformSideEffect.collect { sideEffect ->
@@ -81,7 +87,6 @@ class TransformFragment : Fragment() {
         }
 
         binding.composeContainer.setContent { ZCardTheme { TransformScreen() } }
-        return binding.root
     }
 
     private fun initListener() {
@@ -94,7 +99,7 @@ class TransformFragment : Fragment() {
         }
     }
 
-    private fun updateTransformPanel(state: TransformState) {
+    private fun updateUi(state: TransformState) {
         binding.imgBtnTransformReset.isVisible = state.hasPendingTransform
         binding.imgBtnCameraFocusController.setImageResource(
             if(state.isCameraFocus) R.drawable.ic_fit_screen else R.drawable.ic_target)

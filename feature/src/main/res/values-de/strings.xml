@@ -33,13 +33,9 @@
     <string name="editor_cd_link_button">Link-Details</string>
     <string name="editor_cd_delete_img_button">Element löschen</string>
     <string name="editor_cd_transform_reset_img_button">Transformation zurücksetzen</string>
-    <string name="editor_cd_camera_reset_img_button">Kamera zurücksetzen</string>
-    <string name="editor_cd_object_thumb_img">Objekt-Vorschaubild</string>
     <string name="editor_cd_complete_button">Kartenbearbeitung abschließen</string>
     <string name="editor_cd_add_text">Neuer Text</string>
     <string name="editor_cd_delete_text">Text löschen</string>
-    <string name="editor_cd_increase_scale">Größe erhöhen</string>
-    <string name="editor_cd_decrease_scale">Größe verringern</string>
     <string name="editor_cd_align_icon">%s ausrichten</string>
     <string name="editor_cd_asset">Asset</string>
 
@@ -62,6 +58,15 @@
     <string name="editor_dialog_button_set_card_title_save">Speichern</string>
     <string name="editor_dialog_button_link_copy">Link kopieren</string>
     <string name="editor_dialog_text_exclude_new_edit">Neue Bearbeitungen ausgeschlossen</string>
+
+    <!-- Transform Screen -->
+    <string name="transform_msg_fail_load_object">Objekt konnte nicht geladen werden. Bitte erneut versuchen.</string>
+    <string name="transform_msg_fail_save">Transformation konnte nicht gespeichert werden. Bitte erneut versuchen.</string>
+    <string name="transform_cd_object_thumb">Objekt-Vorschaubild</string>
+    <string name="transform_cd_reset_button">Transformation zurücksetzen</string>
+    <string name="transform_cd_camera_focus_button">Kamerafokus</string>
+    <string name="transform_cd_increase_scale">Größe erhöhen</string>
+    <string name="transform_cd_decrease_scale">Größe verringern</string>
 
     <!-- Share Screen -->
     <string name="share_button_share">Teilen</string>

@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zcard.domain.bridge.UnityBridge
 import com.zcard.domain.repository.CardElementRepository
+import com.zcard.feature.R
 import com.zcard.feature.cardeditor.model.Direction
 import com.zcard.feature.cardeditor.model.ElementTransform
 import com.zcard.feature.cardeditor.util.toBase62
@@ -75,7 +76,7 @@ class TransformViewModel @Inject constructor(
                     }
                 }.onFailure { e ->
                     Log.e(TAG, "handleInit: $e")
-                    _transformSideEffect.trySend(TransformSideEffect.ToastMessage(0)) // TODO
+                    _transformSideEffect.trySend(TransformSideEffect.ToastMessage(R.string.transform_msg_fail_load_object))
                     _transformSideEffect.trySend(TransformSideEffect.Finish)
                 }
             }
@@ -194,7 +195,7 @@ class TransformViewModel @Inject constructor(
                 onSuccess()
             }.onFailure {
                 Log.e(TAG, "saveTransformChanges: $it")
-                _transformSideEffect.trySend(TransformSideEffect.ToastMessage(0)) // TODO
+                _transformSideEffect.trySend(TransformSideEffect.ToastMessage(R.string.transform_msg_fail_save))
             }
         }
     }

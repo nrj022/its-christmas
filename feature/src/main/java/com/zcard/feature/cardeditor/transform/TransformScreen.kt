@@ -150,7 +150,7 @@ private fun ScaleController(
         // + 버튼
         ScaleAdjustButton(
             icon = Icons.Default.Add,
-            contentDescription = stringResource(R.string.editor_cd_increase_scale),
+            contentDescription = stringResource(R.string.transform_cd_increase_scale),
             onClick = { onScaleChange(scale + 1) }
         )
 
@@ -164,7 +164,7 @@ private fun ScaleController(
         // - 버튼
         ScaleAdjustButton(
             icon = Icons.Default.Remove,
-            contentDescription = stringResource(R.string.editor_cd_decrease_scale),
+            contentDescription = stringResource(R.string.transform_cd_decrease_scale),
             onClick = { onScaleChange(scale - 1) }
         )
     }

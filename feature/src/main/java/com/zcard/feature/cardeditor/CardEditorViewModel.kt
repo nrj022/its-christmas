@@ -7,7 +7,6 @@ import com.zcard.feature.cardeditor.model.Direction
 import com.zcard.feature.cardeditor.model.DialogState
 import com.zcard.feature.cardeditor.model.PanelType
 import com.zcard.feature.cardeditor.model.TempTextElement
-import com.zcard.feature.cardeditor.model.TempTransform
 import com.zcard.domain.bridge.UnityBridge
 import com.zcard.domain.model.ElementType
 import com.zcard.domain.model.Asset
@@ -111,16 +110,6 @@ class CardEditorViewModel @Inject constructor(
             is CardEditorIntent.EnterTextMode -> handleEnterTextMode()
 
             is CardEditorIntent.ResetCamera -> handleResetCamera()
-
-            /* 오브젝트 조정 패널 */
-            is CardEditorIntent.MoveObject -> handleMoveObject(intent.direction)
-            is CardEditorIntent.ChangeScale -> handleChangeScale(intent.newScale)
-            is CardEditorIntent.CancelTransform -> handleCancelTransform()
-            is CardEditorIntent.ApplyTransform -> handleApplyTransform()
-            is CardEditorIntent.ApplyAndExitTransform -> handleApplyAndExitTransform()
-            is CardEditorIntent.DiscardAndExitTransform -> handleDiscardAndExitTransform()
-            is CardEditorIntent.ResetTransform -> handleResetTransform()
-            is CardEditorIntent.CameraFocus -> handleCameraFocus()
 
             /* 텍스트 편집 패널 */
             is CardEditorIntent.MissingTextSelection -> handleMissingTextSelection()
@@ -370,109 +359,12 @@ class CardEditorViewModel @Inject constructor(
     }
 
     private fun handleEnterTransformMode() {
-        _cardEditorState.value.selectedSpawnedObject?.let { obj ->
-            updatePanelType(PanelType.TRANSFORM_CONTROL)
-            _cardEditorState.update {
-                it.copy(
-                    tempTransform = TempTransform(
-                        elementId = obj.cardElement.elementId,
-                        thumbnailKey = obj.thumbnailKey,
-                        posX = obj.cardElement.posX,
-                        posY = obj.cardElement.posY,
-                        posZ = obj.cardElement.posZ,
-                        scale = obj.cardElement.scale
-                    ),
-                    isTransformCameraFocus = true
-                )
-            }
-        }
+        val selectedObject = _cardEditorState.value.selectedSpawnedObject ?: return
+        _cardEditorSideEffect.trySend(CardEditorSideEffect.NavigateToTransform(selectedObject.cardElement.elementId))
     }
 
     private fun handleResetCamera() {
         unityBridge.clearSelection()
-    }
-
-    // ── 오브젝트 조정 패널 ────────────────────────────────────────────────────
-
-    private fun handleMoveObject(direction: Direction) {
-        val tempState = _cardEditorState.value.tempTransform ?: return
-        val updatedPosX = tempState.posX + direction.dx
-        val updatedPosY = tempState.posY + direction.dy
-        val updatedPosZ = tempState.posZ + direction.dz
-
-        _cardEditorState.update {
-            it.copy(tempTransform =
-                tempState.copy(posX = updatedPosX, posY = updatedPosY, posZ = updatedPosZ)
-            )
-        }
-
-        unityBridge.updatePosition(tempState.elementId, updatedPosX, updatedPosY, updatedPosZ)
-    }
-
-    private fun handleChangeScale(newScale: Int) {
-        val tempState = _cardEditorState.value.tempTransform ?: return
-        if(newScale < 1) return
-
-        _cardEditorState.update {
-            it.copy(tempTransform = tempState.copy(scale = newScale))
-        }
-
-        unityBridge.updateScale(tempState.elementId, newScale)
-    }
-
-    private fun handleCancelTransform() {
-        if(_cardEditorState.value.hasPendingTransform) {
-            updateDialogState(DialogState.UNSAVED_TRANSFORM_CHANGES)
-        } else {
-            exitTransform()
-        }
-    }
-
-    private fun handleApplyTransform() {
-        saveTransformChanges()
-    }
-
-    private fun handleApplyAndExitTransform() {
-        saveTransformChanges()
-        exitTransform()
-        updateDialogState(DialogState.NONE)
-    }
-
-    private fun handleDiscardAndExitTransform() {
-        exitTransform()
-        unityResetTransform()
-        updateDialogState(DialogState.NONE)
-    }
-
-    private fun handleResetTransform() {
-        val tempState = _cardEditorState.value.tempTransform ?: return
-        val initialState = _cardEditorState.value.selectedSpawnedObject?.cardElement
-
-        _cardEditorState.update {
-            it.copy(tempTransform =
-                tempState.copy(
-                    posX = initialState?.posX ?: 0f,
-                    posY = initialState?.posY ?: 0f,
-                    posZ = initialState?.posZ ?: 0f,
-                    scale = initialState?.scale ?: 1
-                )
-            )
-        }
-
-        unityResetTransform()
-    }
-
-    private fun handleCameraFocus() {
-        val cameraFocus = _cardEditorState.value.isTransformCameraFocus
-
-        if(cameraFocus) {
-            unityBridge.clearSelection()
-        } else {
-            val elementId = _cardEditorState.value.selectedSpawnedObject?.cardElement?.elementId ?: return
-            unityBridge.selectObject(elementId)
-        }
-
-        _cardEditorState.update { it.copy(isTransformCameraFocus = !cameraFocus) }
     }
 
     // ── 텍스트 편집 패널 ──────────────────────────────────────────────────────
@@ -658,35 +550,6 @@ class CardEditorViewModel @Inject constructor(
         }
     }
 
-    private fun saveTransformChanges() {
-        val tempState = _cardEditorState.value.tempTransform ?: return
-        val initialState = _cardEditorState.value.selectedSpawnedObject ?: return
-
-        viewModelScope.launch {
-            cardElementRepository.updateElementTransform(
-                cardId = _cardId,
-                elementId = tempState.elementId,
-                posX = tempState.posX,
-                posY = tempState.posY,
-                posZ = tempState.posZ,
-                scale = tempState.scale
-            ).onSuccess {
-                _cardEditorState.update {
-                    it.copy(selectedSpawnedObject =
-                        initialState.copy(
-                            cardElement = initialState.cardElement.copy(
-                                posX = tempState.posX,
-                                posY = tempState.posY,
-                                posZ = tempState.posZ,
-                                scale = tempState.scale
-                            )
-                        )
-                    )
-                }
-            }
-        }
-    }
-
     private fun saveTextChanges(shouldFinishEditing: Boolean = false) {
         viewModelScope.launch {
             saveTextElementsUseCase(
@@ -717,12 +580,6 @@ class CardEditorViewModel @Inject constructor(
             }
         }
     }
-
-    private fun exitTransform() {
-        updatePanelType(PanelType.ASSET_BROWSER)
-        _cardEditorState.update { it.copy(tempTransform = null) }
-    }
-
     private fun exitTextEditor() {
         updateDialogState(DialogState.NONE)
         updatePanelType(PanelType.ASSET_BROWSER)
@@ -738,17 +595,5 @@ class CardEditorViewModel @Inject constructor(
                     unityBridge.changeBackground(asset.unityKey)
                 }
         }
-    }
-
-    private fun unityResetTransform() {
-        val initialState = _cardEditorState.value.selectedSpawnedObject?.cardElement ?: return
-
-        val initialPosX = initialState.posX
-        val initialPosY = initialState.posY
-        val initialPosZ = initialState.posZ
-        val initialScale = initialState.scale
-
-        unityBridge.updatePosition(initialState.elementId, initialPosX, initialPosY, initialPosZ)
-        unityBridge.updateScale(initialState.elementId, initialScale)
     }
 }

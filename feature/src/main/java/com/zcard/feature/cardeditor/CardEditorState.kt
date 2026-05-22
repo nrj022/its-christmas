@@ -34,9 +34,6 @@ data class CardEditorState(
     val showLinkDetailButton: Boolean
         get() = panelType == PanelType.ASSET_BROWSER && cardUrl.isNotBlank()
 
-    val isTransformPanelActive: Boolean
-        get() = panelType == PanelType.TRANSFORM_CONTROL
-
     val isTitleChanged: Boolean
         get() = originalCardTitle != cardTitle
 
@@ -47,20 +44,10 @@ data class CardEditorState(
         get() = panelType == PanelType.TEXT_EDITOR
 
     val unityContainerHeightFraction: Float
-        get() = if (panelType == PanelType.TRANSFORM_CONTROL || panelType == PanelType.TEXT_EDITOR) 0.6f else 0.52f
+        get() = if (panelType == PanelType.TEXT_EDITOR) 0.6f else 0.52f
 
     val selectedSpawnedObjectId: Long?
         get() = selectedSpawnedObject?.cardElement?.elementId
-
-    val hasPendingTransform: Boolean
-        get() = tempTransform?.let { temp ->
-            selectedSpawnedObject?.let { selected ->
-                temp.posX != selected.cardElement.posX ||
-                temp.posY != selected.cardElement.posY ||
-                temp.posZ != selected.cardElement.posZ ||
-                temp.scale != selected.cardElement.scale
-            } ?: false
-        } ?: false
 
     val selectedText: TempTextElement?
         get() = selectedTextTempId?.let { id -> tempTextList.find { it.tempId == id } }

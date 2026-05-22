@@ -8,7 +8,6 @@ import com.zcard.feature.cardeditor.CardEditorIntent
 import com.zcard.feature.cardeditor.CardEditorViewModel
 import com.zcard.feature.cardeditor.model.PanelType
 import com.zcard.feature.cardeditor.ui.panels.AssetBrowserPanel
-import com.zcard.feature.cardeditor.ui.panels.TransformControlPanel
 import com.zcard.feature.cardeditor.model.DialogState
 import com.zcard.feature.cardeditor.ui.dialog.CardInfoDialog
 import com.zcard.feature.cardeditor.ui.dialog.ObjectDeleteConfirmDialog
@@ -35,20 +34,6 @@ fun CardEditorBottomScreen(viewModel: CardEditorViewModel = hiltViewModel()) {
                 onBackgroundClicked = { viewModel.onIntent(CardEditorIntent.ChangeBackground(it)) }
             )
 
-        PanelType.TRANSFORM_CONTROL -> {
-            TransformControlPanel(
-                scale = state.tempTransform?.scale ?: 1,
-                onScaleChange = { newScale ->
-                    viewModel.onIntent(CardEditorIntent.ChangeScale(newScale))
-                },
-                onCancel = { viewModel.onIntent(CardEditorIntent.CancelTransform) },
-                onApply = { viewModel.onIntent(CardEditorIntent.ApplyTransform) },
-                onDirectionalClick = { direction ->
-                    viewModel.onIntent(CardEditorIntent.MoveObject(direction))
-                }
-            )
-        }
-
         PanelType.TEXT_EDITOR -> {
             val tempText = state.selectedText
             if(tempText == null) {
@@ -73,13 +58,6 @@ fun CardEditorBottomScreen(viewModel: CardEditorViewModel = hiltViewModel()) {
         DialogState.DELETE_CONFIRM -> {
             ObjectDeleteConfirmDialog(
                 onDeleteObject = { viewModel.onIntent(CardEditorIntent.DeleteSpawnedObject) },
-                onDismiss = { viewModel.onIntent(CardEditorIntent.ChangeDialogState(DialogState.NONE)) }
-            )
-        }
-        DialogState.UNSAVED_TRANSFORM_CHANGES -> {
-            UnsavedChangesDialog(
-                onApplyChanges = { viewModel.onIntent(CardEditorIntent.ApplyAndExitTransform) },
-                onDiscardChanges = { viewModel.onIntent(CardEditorIntent.DiscardAndExitTransform) },
                 onDismiss = { viewModel.onIntent(CardEditorIntent.ChangeDialogState(DialogState.NONE)) }
             )
         }

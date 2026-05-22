@@ -32,16 +32,6 @@ sealed class CardEditorIntent {
 
     data object ResetCamera: CardEditorIntent()
 
-    /* 오브젝트 조정 패널 */
-    data class MoveObject(val direction: Direction): CardEditorIntent()
-    data class ChangeScale(val newScale: Int): CardEditorIntent()
-    data object CancelTransform: CardEditorIntent()
-    data object ApplyTransform: CardEditorIntent()
-    data object ApplyAndExitTransform: CardEditorIntent()
-    data object DiscardAndExitTransform: CardEditorIntent()
-    data object ResetTransform: CardEditorIntent()
-    data object CameraFocus: CardEditorIntent()
-
     /* 텍스트 편집 패널 */
     data object MissingTextSelection: CardEditorIntent()
     data object AddText: CardEditorIntent()

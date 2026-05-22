@@ -25,14 +25,13 @@ import com.zcard.feature.cardeditor.model.DialogState
 import com.zcard.feature.cardeditor.ui.CardEditorBottomScreen
 import com.zcard.feature.cardeditor.ui.CardEditorTextScreen
 import com.zcard.feature.cardeditor.ui.common.BouncingLogoLoadingOverlay
-import com.zcard.feature.cardeditor.util.getObjectThumbByKey
-import com.zcard.feature.cardeditor.util.toBase62
 import com.zcard.feature.R
 import com.zcard.feature.cardshare.CardShareFragment
 import com.zcard.feature.databinding.FragmentCardEditorBinding
 import com.zcard.designsystem.theme.ZCardTheme
 import com.zcard.feature.MainIntent
 import com.zcard.feature.MainViewModel
+import com.zcard.feature.cardeditor.transform.TransformFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import kotlin.getValue
@@ -61,16 +60,20 @@ class CardEditorFragment : Fragment() {
             }
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        mainViewModel.onIntent(MainIntent.OnEditorCreated)
+
+        cardId = requireArguments().getLong(ARG_CARD_ID)    // newInstance로만 생성되므로 없으면 즉시 크래시
+        viewModel.onIntent(CardEditorIntent.Init(cardId))
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentCardEditorBinding.inflate(inflater, container, false)
         layoutParams = binding.unityContainer.layoutParams as ConstraintLayout.LayoutParams
-        mainViewModel.onIntent(MainIntent.OnEditorCreated)
-
-        cardId = requireArguments().getLong(ARG_CARD_ID)    // newInstance로만 생성되므로 없으면 즉시 크래시
-        viewModel.onIntent(CardEditorIntent.Init(cardId))
 
         val initialTopPadding = binding.containerTop.paddingTop
 
@@ -110,6 +113,9 @@ class CardEditorFragment : Fragment() {
                         when (sideEffect) {
                             is CardEditorSideEffect.NavigateToCardShare -> {
                                 navigateToCardShare(sideEffect.cardUrl)
+                            }
+                            is CardEditorSideEffect.NavigateToTransform -> {
+                                navigateToTransform(sideEffect.elementId)
                             }
                             is CardEditorSideEffect.Finish -> { parentFragmentManager.popBackStack() }
                             is CardEditorSideEffect.ToastMessage -> {
@@ -157,9 +163,9 @@ class CardEditorFragment : Fragment() {
         return binding.root
     }
 
-    override fun onDestroyView() {
+    override fun onDestroy() {
         mainViewModel.onIntent(MainIntent.OnEditorDestroyed(cardId))
-        super.onDestroyView()
+        super.onDestroy()
     }
 
     private fun initListener() {
@@ -181,14 +187,6 @@ class CardEditorFragment : Fragment() {
 
         binding.imgBtnDelete.setOnClickListener {
             viewModel.onIntent(CardEditorIntent.ChangeDialogState(DialogState.DELETE_CONFIRM))
-        }
-
-        binding.imgBtnTransformReset.setOnClickListener {
-            viewModel.onIntent(CardEditorIntent.ResetTransform)
-        }
-
-        binding.imgBtnCameraFocusController.setOnClickListener {
-            viewModel.onIntent(CardEditorIntent.CameraFocus)
         }
 
         binding.imgBtnAddText.setOnClickListener {
@@ -221,21 +219,6 @@ class CardEditorFragment : Fragment() {
         loadingOverlayVisible.value = state.isLoading
         loadingText.value = state.loadingText
         binding.frameLoading.isVisible = state.isLoading
-
-        updateTransformPanel(state)
-    }
-
-    private fun updateTransformPanel(state: CardEditorState) {
-        val temp = state.tempTransform
-        val active = state.isTransformPanelActive && temp != null
-
-        binding.containerTransformOption.isVisible = active
-        binding.imgBtnCameraFocusController.isVisible = active
-        binding.imgBtnCameraFocusController.setImageResource(
-            if(state.isTransformCameraFocus) R.drawable.ic_fit_screen else R.drawable.ic_target)
-        binding.imgBtnTransformReset.isVisible = active && state.hasPendingTransform
-        binding.imgObjectThumb.setImageResource(getObjectThumbByKey(requireContext(), temp?.thumbnailKey))
-        binding.textElementKey.text = if(active) toBase62(temp.elementId) else ""
     }
 
     private fun navigateToCardShare(cardUrl: String) {
@@ -247,6 +230,13 @@ class CardEditorFragment : Fragment() {
                 R.anim.slide_out_right
             )
             .replace(R.id.fragment_container, CardShareFragment.newInstance(cardUrl))
+            .addToBackStack(null)
+            .commit()
+    }
+
+    private fun navigateToTransform(elementId: Long) {
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, TransformFragment.newInstance(elementId))
             .addToBackStack(null)
             .commit()
     }

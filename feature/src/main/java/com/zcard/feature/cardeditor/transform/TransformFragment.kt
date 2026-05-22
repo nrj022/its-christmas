@@ -58,6 +58,12 @@ class TransformFragment : Fragment() {
         viewModel.onIntent(TransformIntent.Init(elementId))
         mainViewModel.onIntent(MainIntent.OnUnityContainerHeightChanged(UNITY_HEIGHT_RATIO))
 
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                viewModel.onIntent(TransformIntent.Exit)
+            }
+        })
+
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, windowInsets ->
             val insets = windowInsets.getInsets(WindowInsetsCompat.Type.navigationBars())
             v.setPadding(0, 0, 0, insets.bottom)

@@ -3,7 +3,6 @@ package com.zcard.feature.cardeditor
 import com.zcard.feature.cardeditor.model.DialogState
 import com.zcard.feature.cardeditor.model.PanelType
 import com.zcard.feature.cardeditor.model.TempTextElement
-import com.zcard.feature.cardeditor.model.TempTransform
 import com.zcard.domain.model.CardElementWithAssetKeys
 import com.zcard.domain.model.Asset
 import com.zcard.domain.model.TextElement
@@ -12,8 +11,6 @@ data class CardEditorState(
     val panelType: PanelType = PanelType.ASSET_BROWSER,
     val dialogState: DialogState = DialogState.NONE,
     val isLoading: Boolean = false,
-    val isTransformCameraFocus: Boolean = true,
-    val tempTransform: TempTransform? = null,
     val tempTextList: List<TempTextElement> = emptyList(),
     val originalCardTitle: String = "New Card",
     val cardTitle: String = "New Card",

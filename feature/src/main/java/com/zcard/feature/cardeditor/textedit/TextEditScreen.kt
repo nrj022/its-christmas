@@ -65,7 +65,6 @@ import com.zcard.domain.model.TextElement
 import com.zcard.domain.model.TextFontFamily
 import com.zcard.feature.R
 import com.zcard.feature.cardeditor.model.BaseTabItem
-import com.zcard.feature.cardeditor.model.DialogState
 import com.zcard.feature.cardeditor.model.Direction
 import com.zcard.feature.cardeditor.ui.common.BaseTabs
 import com.zcard.feature.cardeditor.ui.common.DirectionalController
@@ -73,16 +72,19 @@ import com.zcard.feature.cardeditor.ui.dialog.UnsavedChangesDialog
 import com.zcard.feature.cardeditor.ui.uimapper.icon
 import com.zcard.feature.cardeditor.ui.uimapper.rememberFontFamilies
 
+// 토글 탭 목록 정의
+enum class TextEditorTab(val resId: Int) {
+    STYLE(R.string.editor_title_text_tab_style),
+    FONT(R.string.editor_title_text_tab_font),
+    POSITION(R.string.editor_title_text_tab_position)
+}
+
 @Composable
 fun TextEditScreen(viewModel: TextEditViewModel = hiltViewModel()) {
     val state by viewModel.textEditState.collectAsStateWithLifecycle()
-    val tempText = state.selectedText
-    if(tempText == null) {
-        viewModel.onIntent(TextEditIntent.MissingTextSelection)
-    }
 
     TextEditContent(
-        textElement = tempText?.textElement,
+        textElement = state.selectedText?.textElement,
         onTextChange = { viewModel.onIntent(TextEditIntent.ChangeTextContent(it)) },
         onAlignmentSelected = { viewModel.onIntent(TextEditIntent.SelectAlignment(it)) },
         onColorSelected = { viewModel.onIntent(TextEditIntent.SelectColor(it)) },
@@ -100,13 +102,6 @@ fun TextEditScreen(viewModel: TextEditViewModel = hiltViewModel()) {
             onDismiss = { viewModel.onIntent(TextEditIntent.DismissDialog) }
         )
     }
-}
-
-// 토글 탭 목록 정의
-enum class TextEditorTab(val resId: Int) {
-    STYLE(R.string.editor_title_text_tab_style),
-    FONT(R.string.editor_title_text_tab_font),
-    POSITION(R.string.editor_title_text_tab_position)
 }
 
 @Composable

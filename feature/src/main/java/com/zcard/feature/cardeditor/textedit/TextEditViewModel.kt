@@ -1,24 +1,24 @@
 package com.zcard.feature.cardeditor.textedit
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zcard.feature.cardeditor.model.Direction
-import com.zcard.feature.cardeditor.model.TempTextElement
 import com.zcard.domain.bridge.UnityBridge
 import com.zcard.domain.model.TextColor
 import com.zcard.domain.model.TextFontFamily
 import com.zcard.domain.model.TextAlignment
 import com.zcard.domain.model.TextAttributes
-import com.zcard.domain.model.TextElement
-import com.zcard.domain.usecase.GetTextElementsUseCase
+import com.zcard.domain.repository.CardElementRepository
 import com.zcard.domain.usecase.SaveTextElementsParams
 import com.zcard.domain.usecase.SaveTextElementsUseCase
+import com.zcard.feature.cardeditor.model.TempText
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -31,13 +31,12 @@ private const val TAG = "TextEditViewModel"
 @HiltViewModel
 class TextEditViewModel @Inject constructor(
     private val unityBridge: UnityBridge,
-    private val getTextsUseCase: GetTextElementsUseCase,
+    private val cardElementRepository: CardElementRepository,
     private val saveTextElementsUseCase: SaveTextElementsUseCase,
 ) : ViewModel() {
 
-    private var _cardId: Long = -1L
-
-    private var _deletedTextElementIds: MutableSet<Long> = mutableSetOf()
+    private var _cardId: Long? = null
+    private val _deletedTextIds: MutableSet<Long> = mutableSetOf()
 
     private val _textEditState = MutableStateFlow(TextEditState())
     val textEditState: StateFlow<TextEditState> = _textEditState
@@ -45,20 +44,10 @@ class TextEditViewModel @Inject constructor(
     private val _textEditSideEffect = Channel<TextEditSideEffect>(Channel.BUFFERED)
     val textEditSideEffect = _textEditSideEffect.receiveAsFlow()
 
-    private val _imeVisible = MutableStateFlow(false)
-    private val imeVisible = _imeVisible.asStateFlow()
-
-    fun setImeVisible(visible: Boolean) {
-        _imeVisible.value = visible
-    }
-
-    val unityContainerHeightFractionFlow = combine(_textEditState, imeVisible) { state, ime ->
-        if(ime) 0.4f else 0.6f
-    }
-
     fun onIntent(intent: TextEditIntent) {
         when (intent) {
             is TextEditIntent.Init -> handleInit(intent.cardId)
+            is TextEditIntent.ImeVisible -> handleImeVisible(intent.visible)
             is TextEditIntent.ResetCamera -> handleResetCamera()
             is TextEditIntent.MissingTextSelection -> handleMissingTextSelection()
             is TextEditIntent.AddText -> handleAddText()
@@ -79,69 +68,71 @@ class TextEditViewModel @Inject constructor(
     }
 
     private fun handleInit(cardId: Long) {
-        val texts = _textEditState.value.texts
-        val newList = texts.map { element ->
-            TempTextElement(
-                textElement = TextElement(
-                    elementId = element.elementId,
-                    attributes = element.attributes,
-                    posX = element.posX,
-                    posY = element.posY,
-                    posZ = element.posZ
+        cardElementRepository.getTextElementsFlowByCardId(cardId).onEach { result ->
+            result.onSuccess { texts ->
+                val tempTexts = texts.map { element -> TempText(textElement = element) }.asReversed()
+                _cardId = cardId
+                _textEditState.update {
+                    it.copy(
+                        savedTexts = tempTexts,
+                        tempTexts = tempTexts,
+                        selectedTextTempId = tempTexts.firstOrNull()?.tempId
+                    )
+                }
+
+                unityBridge.clearAllTexts()
+                tempTexts.forEach { unityBridge.createText(it.tempId, it.textElement) }
+            }
+            result.exceptionOrNull()?.let { error ->
+                Log.e(TAG, "observeTexts: $error")
+                _textEditSideEffect.trySend(
+                    TextEditSideEffect.ToastMessage(0) // TODO
                 )
-            )
-        }.asReversed()
+            }
+        }.launchIn(viewModelScope)
+    }
+
+    fun handleImeVisible(visible: Boolean) {
         _textEditState.update {
             it.copy(
-                tempTextList = newList,
-                selectedTextTempId = newList.firstOrNull()?.tempId
-            )
-        }
-        unityBridge.clearAllTexts()
-        newList.forEach {
-            unityBridge.createText(
-                tempId = it.tempId,
-                textElement = it.textElement
+                unityContainerHeightFraction = if(visible) 0.4f else 0.6f
             )
         }
     }
 
     private fun handleMissingTextSelection() {
-        if (_textEditState.value.tempTextList.isNotEmpty() && _textEditState.value.selectedTextTempId == null) {
-            _textEditState.update { it.copy(selectedTextTempId = it.tempTextList.first().tempId) }
-            return
-        }
+        _textEditState.update { it.copy(selectedTextTempId = it.tempTexts.firstOrNull()?.tempId) }
     }
 
     private fun handleAddText() {
-        val newTextElement = TempTextElement()
+        val newText = TempText()
         _textEditState.update {
             it.copy(
-                tempTextList = listOf(newTextElement) + it.tempTextList,
-                selectedTextTempId = newTextElement.tempId
+                tempTexts = listOf(newText) + it.tempTexts,
+                selectedTextTempId = newText.tempId
             )
         }
 
         unityBridge.createText(
-            tempId = newTextElement.tempId,
-            textElement = newTextElement.textElement
+            tempId = newText.tempId,
+            textElement = newText.textElement
         )
     }
 
     private fun handleDeleteText(textId: Long) {
-        val oldList = _textEditState.value.tempTextList
+        val oldList = _textEditState.value.tempTexts
         val selectedText = oldList.find { it.tempId == textId } ?: return
         val idx = oldList.indexOfFirst { it.tempId == textId }
         val newSelected = oldList.getOrNull(idx - 1) ?: oldList.getOrNull(idx + 1)
 
         _textEditState.update {
             it.copy(
-                tempTextList = it.tempTextList - selectedText,
+                tempTexts = it.tempTexts - selectedText,
                 selectedTextTempId = newSelected?.tempId
             )
         }
 
-        selectedText.textElement.elementId?.let { _deletedTextElementIds.add(it) }
+        selectedText.textElement.elementId?.let { _deletedTextIds.add(it) }
 
         unityBridge.deleteObject(selectedText.tempId)
     }
@@ -154,7 +145,7 @@ class TextEditViewModel @Inject constructor(
     private fun handleChangeTextContent(newText: String) {
         val textId = _textEditState.value.selectedTextTempId ?: return
         updateTempTextAttribute(textId) { copy(content = newText) }
-        unityBridge.updateTextContent(_textEditState.value.selectedTextTempId ?: 0, newText)
+        unityBridge.updateTextContent(textId, newText)
     }
 
     private fun handleSelectAlignment(newAlignment: TextAlignment) {
@@ -184,25 +175,20 @@ class TextEditViewModel @Inject constructor(
     private fun handleMoveText(direction: Direction) {
         val textId = _textEditState.value.selectedTextTempId ?: return
         _textEditState.update {
-            val newList = it.tempTextList.map { item ->
+            val newList = it.tempTexts.map { item ->
                 if(item.tempId == textId) {
-                    val newPosX = item.textElement.posX + direction.dx
-                    val newPosY = item.textElement.posY + direction.dy
-                    val newPosZ = item.textElement.posZ + direction.dz
-                    unityBridge.updatePosition(textId, newPosX, newPosY, newPosZ)
-                    item.copy(
-                        textElement = item.textElement.copy(
-                            posX = newPosX,
-                            posY = newPosY,
-                            posZ = newPosZ
-                        )
+                    val newText = item.textElement.copy(
+                        posX = item.textElement.posX + direction.dx,
+                        posY = item.textElement.posY + direction.dy,
+                        posZ = item.textElement.posZ + direction.dz
                     )
+                    unityBridge.updatePosition(textId, newText.posX, newText.posY, newText.posZ)
+                    item.copy(textElement = newText)
                 } else item
             }
-            it.copy(tempTextList = newList)
+            it.copy(tempTexts = newList)
         }
     }
-
 
     private fun handleExit() {
         if(_textEditState.value.hasPendingText) {
@@ -221,18 +207,13 @@ class TextEditViewModel @Inject constructor(
     }
 
     private fun handleSaveAndExit() {
-        saveTextChanges(true)
+        saveTextChanges()
         exitTextEditor()
     }
 
     private fun handleDiscardAndExit() {
-        viewModelScope.launch {
-            getTextsUseCase(_cardId)
-                .onSuccess { result ->
-                    _textEditState.update { it.copy(texts = result) }
-                    unityBridge.replaceAllTexts(result)
-                }
-        }
+        unityBridge.clearAllTexts()
+        _textEditState.value.savedTexts.forEach { unityBridge.createText(it.tempId, it.textElement) }
         exitTextEditor()
     }
 
@@ -242,59 +223,39 @@ class TextEditViewModel @Inject constructor(
 
     // ── 공통 유틸 ─────────────────────────────────────────────────────────────
 
-    private fun showDialog() {
-        _textEditState.update { it.copy(showUnsavedChangesDialog = true) }
-    }
-
-    private fun hideDialog() {
-        _textEditState.update { it.copy(showUnsavedChangesDialog = false) }
-    }
-
     private fun updateTempTextAttribute(textId: Long, newTextAttributes: TextAttributes.() -> TextAttributes) {
         _textEditState.update {
-            val newList = it.tempTextList.map { item ->
+            val newList = it.tempTexts.map { item ->
                 if(item.tempId == textId) {
                     item.copy(textElement = item.textElement.copy(attributes = item.textElement.attributes.newTextAttributes()))
                 } else item
             }
-            it.copy(tempTextList = newList)
+            it.copy(tempTexts = newList)
         }
     }
 
-    private fun saveTextChanges(shouldFinishEditing: Boolean = false) {
+    private fun saveTextChanges() {
+        val cardId = _cardId ?: return
+
         viewModelScope.launch {
             saveTextElementsUseCase(
                 SaveTextElementsParams(
-                    cardId = _cardId,
-                    updates = _textEditState.value.tempTextList.map { it.textElement },
-                    deletedIds = _deletedTextElementIds
+                    cardId = cardId,
+                    updates = _textEditState.value.tempTexts.map { it.textElement },
+                    deletedIds = _deletedTextIds
                 )
-            ).onSuccess { result ->
-                if(!shouldFinishEditing) {
-                    _textEditState.update {
-                        val mergedList =
-                            (result.updatedElements + result.failedUpdates).map { text ->
-                                TempTextElement(textElement = text)
-                            }
-                        it.copy(
-                            tempTextList = mergedList,
-                            selectedTextTempId = mergedList.firstOrNull()?.tempId,
-                        )
-                    }
-                    _deletedTextElementIds = result.deletedIds.toMutableSet()
-                } else {
-                    _textEditState.update {
-                        it.copy(texts = result.updatedElements)
-                    }
-                    unityBridge.replaceAllTexts(result.updatedElements)
+            ).onSuccess {
+                if(it.failedUpdates.isNotEmpty() || it.deletedIds.isNotEmpty()) {
+                    _textEditSideEffect.trySend(TextEditSideEffect.ToastMessage(0)) // TODO
                 }
+            }.onFailure {
+                _textEditSideEffect.trySend(TextEditSideEffect.ToastMessage(0)) // TODO
             }
         }
     }
 
     private fun exitTextEditor() {
-        _textEditState.update { it.copy(tempTextList = emptyList(), selectedTextTempId = null, showUnsavedChangesDialog = false) }
+        _textEditState.update { it.copy(showUnsavedChangesDialog = false) }
         _textEditSideEffect.trySend(TextEditSideEffect.Finish)
-        _deletedTextElementIds = mutableSetOf()
     }
 }

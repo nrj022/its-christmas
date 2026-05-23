@@ -15,9 +15,6 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.zcard.feature.cardeditor.ui.CardEditorBottomScreen
-import com.zcard.feature.cardeditor.ui.CardEditorTextScreen
-import com.zcard.feature.R
 import com.zcard.designsystem.theme.ZCardTheme
 import com.zcard.feature.MainIntent
 import com.zcard.feature.MainViewModel
@@ -35,8 +32,6 @@ class TextEditFragment : Fragment() {
     private val viewModel: TextEditViewModel by viewModels()
     private val mainViewModel: MainViewModel by activityViewModels()
 
-    private var cardId: Long = -1L
-
     companion object {
         private const val ARG_CARD_ID = "cardId"
 
@@ -48,38 +43,38 @@ class TextEditFragment : Fragment() {
             }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        mainViewModel.onIntent(MainIntent.OnEditorCreated)
-
-        cardId = requireArguments().getLong(ARG_CARD_ID)    // newInstance로만 생성되므로 없으면 즉시 크래시
-        viewModel.onIntent(TextEditIntent.Init(cardId))
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentTextEditBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         layoutParams = binding.unityContainer.layoutParams as ConstraintLayout.LayoutParams
+
+        val cardId = requireArguments().getLong(ARG_CARD_ID)    // newInstance로만 생성되므로 없으면 즉시 크래시
+        viewModel.onIntent(TextEditIntent.Init(cardId))
+
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                viewModel.onIntent(TextEditIntent.Exit)
+            }
+        })
 
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, windowInsets ->
             val imeVisible = windowInsets.isVisible(WindowInsetsCompat.Type.ime())
             val navInsets = windowInsets.getInsets(WindowInsetsCompat.Type.navigationBars())
 
-            viewModel.setImeVisible(imeVisible)
+            viewModel.onIntent(TextEditIntent.ImeVisible(imeVisible))
             v.setPadding(0, 0, 0, navInsets.bottom)
 
             windowInsets
         }
 
         initListener()
-
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                Toast.makeText(requireContext(), getString(R.string.editor_msg_block_system_back), Toast.LENGTH_SHORT).show()
-            }
-        })
 
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -94,28 +89,21 @@ class TextEditFragment : Fragment() {
                     }
                 }
                 launch {
-                    viewModel.unityContainerHeightFractionFlow.collect {
-                        mainViewModel.onIntent(MainIntent.OnUnityContainerHeightChanged(it))
-                        updateUnityContainerHeight(it)
+                    viewModel.textEditState.collect {
+                        mainViewModel.onIntent(MainIntent.OnUnityContainerHeightChanged(it.unityContainerHeightFraction))
+                        updateUnityContainerHeight(it.unityContainerHeightFraction)
                     }
                 }
             }
         }
 
         binding.composeContainerText.setContent {
-            ZCardTheme { CardEditorTextScreen() }
+            ZCardTheme { TextListPanel() }
         }
 
         binding.composeContainer.setContent {
-            ZCardTheme { CardEditorBottomScreen() }
+            ZCardTheme { TextEditScreen() }
         }
-
-        return binding.root
-    }
-
-    override fun onDestroy() {
-        mainViewModel.onIntent(MainIntent.OnEditorDestroyed(cardId))
-        super.onDestroy()
     }
 
     private fun initListener() {

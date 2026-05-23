@@ -7,6 +7,7 @@ import com.zcard.domain.model.TextAlignment
 
 sealed class TextEditIntent {
     data class Init(val cardId: Long): TextEditIntent()
+    data class ImeVisible(val visible: Boolean): TextEditIntent()
     data object ResetCamera: TextEditIntent()
     data object MissingTextSelection: TextEditIntent()
     data object AddText: TextEditIntent()

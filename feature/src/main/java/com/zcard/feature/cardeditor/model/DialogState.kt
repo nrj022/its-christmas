@@ -4,6 +4,5 @@ enum class DialogState {
     NONE,
     DELETE_CONFIRM,
     CARD_LINK_DETAIL,
-    UNSAVED_TEXT_CHANGES,
     SET_CARD_TITLE
 }

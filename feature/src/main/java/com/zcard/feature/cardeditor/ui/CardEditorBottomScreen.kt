@@ -6,65 +6,34 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.zcard.feature.cardeditor.CardEditorIntent
 import com.zcard.feature.cardeditor.CardEditorViewModel
-import com.zcard.feature.cardeditor.model.PanelType
 import com.zcard.feature.cardeditor.ui.panels.AssetBrowserPanel
 import com.zcard.feature.cardeditor.model.DialogState
 import com.zcard.feature.cardeditor.ui.dialog.CardInfoDialog
 import com.zcard.feature.cardeditor.ui.dialog.ObjectDeleteConfirmDialog
 import com.zcard.feature.cardeditor.ui.dialog.SetCardTitleDialog
-import com.zcard.feature.cardeditor.ui.dialog.UnsavedChangesDialog
-import com.zcard.feature.cardeditor.ui.panels.TextEditorPanel
 
 @Composable
 fun CardEditorBottomScreen(viewModel: CardEditorViewModel = hiltViewModel()) {
     val state by viewModel.cardEditorState.collectAsStateWithLifecycle()
 
-    when (state.panelType) {
-        PanelType.ASSET_BROWSER ->
-            AssetBrowserPanel(
-                objectItems = state.objects, // 임시 데이터
-                backgroundItems = state.backgrounds,  // 임시 데이터
-                spawnedObjects = state.spawnedObjects,
-                selectedSpawnedObject = state.selectedSpawnedObjectId,
-                selectedBackground = state.selectedBackgroundId,
-                loadingObjectIds = state.loadingObjectIds,
-                onAddTextClicked = { viewModel.onIntent(CardEditorIntent.EnterTextMode) },
-                onObjectClicked = { viewModel.onIntent(CardEditorIntent.CreateObject(it)) },
-                onSpawnedObjectClicked = { viewModel.onIntent(CardEditorIntent.SelectSpawnedObject(it)) },
-                onBackgroundClicked = { viewModel.onIntent(CardEditorIntent.ChangeBackground(it)) }
-            )
-
-        PanelType.TEXT_EDITOR -> {
-            val tempText = state.selectedText
-            if(tempText == null) {
-                viewModel.onIntent(CardEditorIntent.MissingTextSelection)
-            }
-            TextEditorPanel(
-                textElement = tempText?.textElement,
-                onTextChange = { viewModel.onIntent(CardEditorIntent.ChangeTextContent(it)) },
-                onAlignmentSelected = { viewModel.onIntent(CardEditorIntent.SelectAlignment(it)) },
-                onColorSelected = { viewModel.onIntent(CardEditorIntent.SelectColor(it)) },
-                onFontSizeChange = { viewModel.onIntent(CardEditorIntent.ChangeFontSize(it)) },
-                onFontSelected = { viewModel.onIntent(CardEditorIntent.SelectFont(it)) },
-                onPositionChange = { viewModel.onIntent(CardEditorIntent.MoveText(it)) },
-                onApply = { viewModel.onIntent(CardEditorIntent.ApplyText) },
-                onBack = { viewModel.onIntent(CardEditorIntent.ChangeDialogState(DialogState.UNSAVED_TEXT_CHANGES)) }
-            )
-        }
-    }
+    AssetBrowserPanel(
+        objectItems = state.objects,
+        backgroundItems = state.backgrounds,
+        spawnedObjects = state.spawnedObjects,
+        selectedSpawnedObject = state.selectedSpawnedObjectId,
+        selectedBackground = state.selectedBackgroundId,
+        loadingObjectIds = state.loadingObjectIds,
+        onAddTextClicked = { viewModel.onIntent(CardEditorIntent.EnterTextMode) },
+        onObjectClicked = { viewModel.onIntent(CardEditorIntent.CreateObject(it)) },
+        onSpawnedObjectClicked = { viewModel.onIntent(CardEditorIntent.SelectSpawnedObject(it)) },
+        onBackgroundClicked = { viewModel.onIntent(CardEditorIntent.ChangeBackground(it)) }
+    )
 
     when(state.dialogState) {
         DialogState.NONE -> {}
         DialogState.DELETE_CONFIRM -> {
             ObjectDeleteConfirmDialog(
                 onDeleteObject = { viewModel.onIntent(CardEditorIntent.DeleteSpawnedObject) },
-                onDismiss = { viewModel.onIntent(CardEditorIntent.ChangeDialogState(DialogState.NONE)) }
-            )
-        }
-        DialogState.UNSAVED_TEXT_CHANGES -> {
-            UnsavedChangesDialog(
-                onApplyChanges = { viewModel.onIntent(CardEditorIntent.ApplyAndExitText) },
-                onDiscardChanges = { viewModel.onIntent(CardEditorIntent.DiscardAndExitText) },
                 onDismiss = { viewModel.onIntent(CardEditorIntent.ChangeDialogState(DialogState.NONE)) }
             )
         }

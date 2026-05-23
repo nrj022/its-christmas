@@ -11,7 +11,7 @@ data class SaveTextElementsParams(
 data class SaveTextElementsResult(
     val updatedElements: List<TextElement>,
     val failedUpdates: List<TextElement> = emptyList(),
-    val deletedIds: Set<Long> = emptySet()
+    val failedDeleteIds: Set<Long> = emptySet()
 )
 
 interface SaveTextElementsUseCase {

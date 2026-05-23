@@ -78,7 +78,7 @@ class SaveTextElementsUseCaseImpl @Inject constructor(
                 SaveTextElementsResult(
                     updatedElements = updated,
                     failedUpdates = failedUpdates,
-                    deletedIds = failedDeleteIds
+                    failedDeleteIds = failedDeleteIds
                 )
             }}
         }

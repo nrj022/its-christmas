@@ -245,7 +245,7 @@ class TextEditViewModel @Inject constructor(
                     deletedIds = _deletedTextIds
                 )
             ).onSuccess {
-                if(it.failedUpdates.isNotEmpty() || it.deletedIds.isNotEmpty()) {
+                if(it.failedUpdates.isNotEmpty() || it.failedDeleteIds.isNotEmpty()) {
                     _textEditSideEffect.trySend(TextEditSideEffect.ToastMessage(0)) // TODO
                 }
             }.onFailure {

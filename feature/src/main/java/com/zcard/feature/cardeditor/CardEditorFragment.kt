@@ -65,6 +65,12 @@ class CardEditorFragment : Fragment() {
         super.onCreate(savedInstanceState)
         mainViewModel.onIntent(MainIntent.OnEditorCreated)
 
+        lifecycleScope.launch {
+            mainViewModel.unityMessage.collect {
+                viewModel.onIntent(CardEditorIntent.OnUnityMessage(it))
+            }
+        }
+
         cardId = requireArguments().getLong(ARG_CARD_ID)    // newInstance로만 생성되므로 없으면 즉시 크래시
         viewModel.onIntent(CardEditorIntent.Init(cardId))
     }
@@ -132,11 +138,7 @@ class CardEditorFragment : Fragment() {
                         }
                     }
                 }
-                launch {
-                    mainViewModel.unityMessage.collect {
-                        viewModel.onIntent(CardEditorIntent.OnUnityMessage(it))
-                    }
-                }
+            }
         }
 
         binding.composeContainer.setContent {

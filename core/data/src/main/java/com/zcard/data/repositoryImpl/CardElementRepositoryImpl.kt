@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
+import kotlin.collections.mapNotNull
 
 class CardElementRepositoryImpl @Inject constructor(
     private val db: AppDatabase,
@@ -90,9 +91,19 @@ class CardElementRepositoryImpl @Inject constructor(
     }
 
 
-    override suspend fun getTextElementsByCardId(cardId: Long): Result<List<CardElement>> =
+    override suspend fun getTextElementsByCardId(cardId: Long): Result<List<TextElement>> =
         ioCatching {
-            cardElementDao.getTextElementsByCardId(cardId).map { it.toDomain() }
+            cardElementDao.getTextElementsByCardId(cardId).mapNotNull { text ->
+                text.toDomain().textAttributes?.let { attr ->
+                    TextElement(
+                        elementId = text.elementId,
+                        attributes = attr,
+                        posX = text.posX,
+                        posY = text.posY,
+                        posZ = text.posZ
+                    )
+                }
+            }
         }
 
     override suspend fun getObjectWithAssetKeys(elementId: Long): Result<CardElementWithAssetKeys> =

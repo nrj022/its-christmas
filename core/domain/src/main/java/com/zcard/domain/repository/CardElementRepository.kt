@@ -20,7 +20,7 @@ interface CardElementRepository {
 
     fun getTextElementsFlowByCardId(cardId: Long): Flow<Result<List<TextElement>>>
 
-    suspend fun getTextElementsByCardId(cardId: Long): Result<List<CardElement>>
+    suspend fun getTextElementsByCardId(cardId: Long): Result<List<TextElement>>
 
     suspend fun getObjectWithAssetKeys(elementId: Long): Result<CardElementWithAssetKeys>
 

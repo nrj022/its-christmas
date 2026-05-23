@@ -74,9 +74,9 @@ import com.zcard.feature.cardeditor.ui.uimapper.rememberFontFamilies
 
 // 토글 탭 목록 정의
 enum class TextEditorTab(val resId: Int) {
-    STYLE(R.string.editor_title_text_tab_style),
-    FONT(R.string.editor_title_text_tab_font),
-    POSITION(R.string.editor_title_text_tab_position)
+    STYLE(R.string.text_edit_title_tab_style),
+    FONT(R.string.text_edit_title_tab_font),
+    POSITION(R.string.text_edit_title_tab_position)
 }
 
 @Composable
@@ -222,7 +222,7 @@ private fun EditorHeader(
                     tint = SoftBlack
                 )
                 Text(
-                    text = stringResource(R.string.editor_button_back),
+                    text = stringResource(R.string.text_edit_button_back),
                     style = MaterialTheme.typography.labelSmall,
                     color = SoftBlack
                 )
@@ -248,7 +248,7 @@ private fun EditorHeader(
                 ) {
                     if (text.isEmpty()) {
                         Text(
-                            text = stringResource(R.string.editor_placeholder_text),
+                            text = stringResource(R.string.text_edit_placeholder_text),
                             style = MaterialTheme.typography.labelSmall,
                             color = White
                         )
@@ -306,7 +306,7 @@ private fun AlignmentOptions(
                 Icon(
                     modifier = Modifier.size(28.dp),
                     imageVector = align.icon(),
-                    contentDescription = stringResource(R.string.editor_cd_align_icon, align.name),
+                    contentDescription = stringResource(R.string.text_edit_cd_align_icon, align.name),
                     tint = if (selectedAlignment == align) SoftBlack else Gray
                 )
             }
@@ -437,7 +437,7 @@ private fun EmptyEditorContent() {
     ) {
         Spacer(modifier = Modifier.weight(1f))
         Text(
-            text = stringResource(R.string.editor_content_empty_text),
+            text = stringResource(R.string.text_edit_content_empty_text),
             style = MaterialTheme.typography.labelSmall,
             textAlign = TextAlign.Center
         )

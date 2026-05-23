@@ -17,18 +17,11 @@
 
     <string name="editor_button_adjust">Adjust</string>
     <string name="editor_button_complete">Complete</string>
-    <string name="editor_button_back">Back</string>
     <string name="editor_button_add_text">Edit Text</string>
 
     <string name="editor_title_asset_tab_objects">3D Object</string>
     <string name="editor_title_asset_tab_background">Background</string>
     <string name="editor_title_spawned_objects_list">My Objects</string>
-
-    <string name="editor_title_text_tab_style">스타일</string>
-    <string name="editor_title_text_tab_font">폰트</string>
-    <string name="editor_title_text_tab_position">위치</string>
-    <string name="editor_placeholder_text">새 텍스트</string>
-    <string name="editor_content_empty_text">추가된 텍스트가 없어요.\n\'+\'를 눌러 첫 텍스트를 추가해 보세요!</string>
 
     <string name="editor_cd_link_button">링크 상세</string>
     <string name="editor_cd_delete_img_button">요소 삭제</string>
@@ -36,7 +29,6 @@
     <string name="editor_cd_complete_button">카드 편집 완료</string>
     <string name="editor_cd_add_text">새 텍스트</string>
     <string name="editor_cd_delete_text">텍스트 삭제</string>
-    <string name="editor_cd_align_icon">%s 정렬</string>
     <string name="editor_cd_asset">에셋</string>
 
     <!-- Editor Screen - Dialog (Delete Object) -->
@@ -58,6 +50,18 @@
     <string name="editor_dialog_button_set_card_title_save">저장</string>
     <string name="editor_dialog_button_link_copy">링크 복사</string>
     <string name="editor_dialog_text_exclude_new_edit">새 편집 내용 미포함</string>
+
+    <!-- Text Edit Screen -->
+    <string name="text_edit_msg_fail_load">텍스트를 불러오지 못했어요.</string>
+    <string name="text_edit_msg_fail_save">저장에 실패했어요. 다시 시도해 주세요.</string>
+    <string name="text_edit_msg_partial_fail_save">일부 변경 사항을 저장하지 못했어요.</string>
+    <string name="text_edit_button_back">Back</string>
+    <string name="text_edit_title_tab_style">스타일</string>
+    <string name="text_edit_title_tab_font">폰트</string>
+    <string name="text_edit_title_tab_position">위치</string>
+    <string name="text_edit_placeholder_text">새 텍스트</string>
+    <string name="text_edit_content_empty_text">추가된 텍스트가 없어요.\n\'+\'를 눌러 첫 텍스트를 추가해 보세요!</string>
+    <string name="text_edit_cd_align_icon">%s 정렬</string>
 
     <!-- Transform Screen -->
     <string name="transform_msg_fail_load_object">오브젝트 불러오기에 실패했어요. 다시 시도해 주세요.</string>

@@ -12,6 +12,7 @@ import com.zcard.domain.model.TextAttributes
 import com.zcard.domain.repository.CardElementRepository
 import com.zcard.domain.usecase.SaveTextElementsParams
 import com.zcard.domain.usecase.SaveTextElementsUseCase
+import com.zcard.feature.R
 import com.zcard.feature.cardeditor.model.TempText
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -82,11 +83,10 @@ class TextEditViewModel @Inject constructor(
 
                 unityBridge.clearAllTexts()
                 tempTexts.forEach { unityBridge.createText(it.tempId, it.textElement) }
-            }
-            result.exceptionOrNull()?.let { error ->
-                Log.e(TAG, "observeTexts: $error")
+            }.onFailure { e ->
+                Log.e(TAG, "observeTexts: $e")
                 _textEditSideEffect.trySend(
-                    TextEditSideEffect.ToastMessage(0) // TODO
+                    TextEditSideEffect.ToastMessage(R.string.text_edit_msg_fail_load)
                 )
             }
         }.launchIn(viewModelScope)
@@ -246,10 +246,10 @@ class TextEditViewModel @Inject constructor(
                 )
             ).onSuccess {
                 if(it.failedUpdates.isNotEmpty() || it.failedDeleteIds.isNotEmpty()) {
-                    _textEditSideEffect.trySend(TextEditSideEffect.ToastMessage(0)) // TODO
+                    _textEditSideEffect.trySend(TextEditSideEffect.ToastMessage(R.string.text_edit_msg_partial_fail_save))
                 }
             }.onFailure {
-                _textEditSideEffect.trySend(TextEditSideEffect.ToastMessage(0)) // TODO
+                _textEditSideEffect.trySend(TextEditSideEffect.ToastMessage(R.string.text_edit_msg_fail_save))
             }
         }
     }

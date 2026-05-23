@@ -17,18 +17,11 @@
 
     <string name="editor_button_adjust">Ajustar</string>
     <string name="editor_button_complete">Listo</string>
-    <string name="editor_button_back">Atrás</string>
     <string name="editor_button_add_text">Editar texto</string>
 
     <string name="editor_title_asset_tab_objects">Objeto 3D</string>
     <string name="editor_title_asset_tab_background">Fondo</string>
     <string name="editor_title_spawned_objects_list">Mis objetos</string>
-
-    <string name="editor_title_text_tab_style">Estilo</string>
-    <string name="editor_title_text_tab_font">Fuente</string>
-    <string name="editor_title_text_tab_position">Posición</string>
-    <string name="editor_placeholder_text">Nuevo texto</string>
-    <string name="editor_content_empty_text">No hay texto añadido.\n¡Toca \'+\' para añadir tu primer texto!</string>
 
     <string name="editor_cd_link_button">Detalle del enlace</string>
     <string name="editor_cd_delete_img_button">Eliminar elemento</string>
@@ -36,7 +29,6 @@
     <string name="editor_cd_complete_button">Finalizar edición de tarjeta</string>
     <string name="editor_cd_add_text">Nuevo texto</string>
     <string name="editor_cd_delete_text">Eliminar texto</string>
-    <string name="editor_cd_align_icon">Alinear %s</string>
     <string name="editor_cd_asset">Asset</string>
 
     <!-- Editor Screen - Dialog (Delete Object) -->
@@ -58,6 +50,18 @@
     <string name="editor_dialog_button_set_card_title_save">Guardar</string>
     <string name="editor_dialog_button_link_copy">Copiar enlace</string>
     <string name="editor_dialog_text_exclude_new_edit">Excluye nuevas ediciones</string>
+
+    <!-- Text Edit Screen -->
+    <string name="text_edit_msg_fail_load">No se pudieron cargar los textos.</string>
+    <string name="text_edit_msg_fail_save">Error al guardar. Por favor, inténtalo de nuevo.</string>
+    <string name="text_edit_msg_partial_fail_save">Algunos cambios no se pudieron guardar.</string>
+    <string name="text_edit_button_back">Atrás</string>
+    <string name="text_edit_title_tab_style">Estilo</string>
+    <string name="text_edit_title_tab_font">Fuente</string>
+    <string name="text_edit_title_tab_position">Posición</string>
+    <string name="text_edit_placeholder_text">Nuevo texto</string>
+    <string name="text_edit_content_empty_text">No hay texto añadido.\n¡Toca \'+\' para añadir tu primer texto!</string>
+    <string name="text_edit_cd_align_icon">Alinear %s</string>
 
     <!-- Transform Screen -->
     <string name="transform_msg_fail_load_object">No se pudo cargar el objeto. Por favor, inténtalo de nuevo.</string>

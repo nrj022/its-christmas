@@ -42,6 +42,14 @@ interface CardElementDao {
         and elementType = 'TEXT' 
         ORDER BY elementId DESC
         """)
+    fun getTextElementsFlowByCardId(cardId: Long): Flow<List<CardElementEntity>>
+
+    @Query("""
+        SELECT * FROM card_elements 
+        WHERE cardId = :cardId 
+        and elementType = 'TEXT' 
+        ORDER BY elementId DESC
+        """)
     suspend fun getTextElementsByCardId(cardId: Long): List<CardElementEntity>
 
     @Query("""

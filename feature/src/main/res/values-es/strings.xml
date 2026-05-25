@@ -33,13 +33,9 @@
     <string name="editor_cd_link_button">Detalle del enlace</string>
     <string name="editor_cd_delete_img_button">Eliminar elemento</string>
     <string name="editor_cd_transform_reset_img_button">Restablecer transformación</string>
-    <string name="editor_cd_camera_reset_img_button">Restablecer cámara</string>
-    <string name="editor_cd_object_thumb_img">Miniatura del objeto</string>
     <string name="editor_cd_complete_button">Finalizar edición de tarjeta</string>
     <string name="editor_cd_add_text">Nuevo texto</string>
     <string name="editor_cd_delete_text">Eliminar texto</string>
-    <string name="editor_cd_increase_scale">Aumentar tamaño</string>
-    <string name="editor_cd_decrease_scale">Reducir tamaño</string>
     <string name="editor_cd_align_icon">Alinear %s</string>
     <string name="editor_cd_asset">Asset</string>
 
@@ -62,6 +58,15 @@
     <string name="editor_dialog_button_set_card_title_save">Guardar</string>
     <string name="editor_dialog_button_link_copy">Copiar enlace</string>
     <string name="editor_dialog_text_exclude_new_edit">Excluye nuevas ediciones</string>
+
+    <!-- Transform Screen -->
+    <string name="transform_msg_fail_load_object">No se pudo cargar el objeto. Por favor, inténtalo de nuevo.</string>
+    <string name="transform_msg_fail_save">No se pudo guardar la transformación. Por favor, inténtalo de nuevo.</string>
+    <string name="transform_cd_object_thumb">Miniatura del objeto</string>
+    <string name="transform_cd_reset_button">Restablecer transformación</string>
+    <string name="transform_cd_camera_focus_button">Foco de cámara</string>
+    <string name="transform_cd_increase_scale">Aumentar tamaño</string>
+    <string name="transform_cd_decrease_scale">Reducir tamaño</string>
 
     <!-- Share Screen -->
     <string name="share_button_share">Compartir</string>

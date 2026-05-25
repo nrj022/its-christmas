@@ -33,13 +33,9 @@
     <string name="editor_cd_link_button">링크 상세</string>
     <string name="editor_cd_delete_img_button">요소 삭제</string>
     <string name="editor_cd_transform_reset_img_button">변환 초기화</string>
-    <string name="editor_cd_camera_reset_img_button">카메라 초기화</string>
-    <string name="editor_cd_object_thumb_img">오브젝트 썸네일</string>
     <string name="editor_cd_complete_button">카드 편집 완료</string>
     <string name="editor_cd_add_text">새 텍스트</string>
     <string name="editor_cd_delete_text">텍스트 삭제</string>
-    <string name="editor_cd_increase_scale">크기 늘리기</string>
-    <string name="editor_cd_decrease_scale">크기 줄이기</string>
     <string name="editor_cd_align_icon">%s 정렬</string>
     <string name="editor_cd_asset">에셋</string>
 
@@ -62,6 +58,15 @@
     <string name="editor_dialog_button_set_card_title_save">저장</string>
     <string name="editor_dialog_button_link_copy">링크 복사</string>
     <string name="editor_dialog_text_exclude_new_edit">새 편집 내용 미포함</string>
+
+    <!-- Transform Screen -->
+    <string name="transform_msg_fail_load_object">오브젝트 불러오기에 실패했어요. 다시 시도해 주세요.</string>
+    <string name="transform_msg_fail_save">변환 저장에 실패했어요. 다시 시도해 주세요.</string>
+    <string name="transform_cd_object_thumb">오브젝트 썸네일</string>
+    <string name="transform_cd_reset_button">변환 초기화</string>
+    <string name="transform_cd_camera_focus_button">카메라 포커스</string>
+    <string name="transform_cd_increase_scale">크기 늘리기</string>
+    <string name="transform_cd_decrease_scale">크기 줄이기</string>
 
     <!-- Share Screen -->
     <string name="share_button_share">Share</string>

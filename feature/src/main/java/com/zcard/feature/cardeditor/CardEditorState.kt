@@ -3,7 +3,6 @@ package com.zcard.feature.cardeditor
 import com.zcard.feature.cardeditor.model.DialogState
 import com.zcard.feature.cardeditor.model.PanelType
 import com.zcard.feature.cardeditor.model.TempTextElement
-import com.zcard.feature.cardeditor.model.TempTransform
 import com.zcard.domain.model.CardElementWithAssetKeys
 import com.zcard.domain.model.Asset
 import com.zcard.domain.model.TextElement
@@ -12,8 +11,6 @@ data class CardEditorState(
     val panelType: PanelType = PanelType.ASSET_BROWSER,
     val dialogState: DialogState = DialogState.NONE,
     val isLoading: Boolean = false,
-    val isTransformCameraFocus: Boolean = true,
-    val tempTransform: TempTransform? = null,
     val tempTextList: List<TempTextElement> = emptyList(),
     val originalCardTitle: String = "New Card",
     val cardTitle: String = "New Card",
@@ -34,9 +31,6 @@ data class CardEditorState(
     val showLinkDetailButton: Boolean
         get() = panelType == PanelType.ASSET_BROWSER && cardUrl.isNotBlank()
 
-    val isTransformPanelActive: Boolean
-        get() = panelType == PanelType.TRANSFORM_CONTROL
-
     val isTitleChanged: Boolean
         get() = originalCardTitle != cardTitle
 
@@ -47,20 +41,10 @@ data class CardEditorState(
         get() = panelType == PanelType.TEXT_EDITOR
 
     val unityContainerHeightFraction: Float
-        get() = if (panelType == PanelType.TRANSFORM_CONTROL || panelType == PanelType.TEXT_EDITOR) 0.6f else 0.52f
+        get() = if (panelType == PanelType.TEXT_EDITOR) 0.6f else 0.52f
 
     val selectedSpawnedObjectId: Long?
         get() = selectedSpawnedObject?.cardElement?.elementId
-
-    val hasPendingTransform: Boolean
-        get() = tempTransform?.let { temp ->
-            selectedSpawnedObject?.let { selected ->
-                temp.posX != selected.cardElement.posX ||
-                temp.posY != selected.cardElement.posY ||
-                temp.posZ != selected.cardElement.posZ ||
-                temp.scale != selected.cardElement.scale
-            } ?: false
-        } ?: false
 
     val selectedText: TempTextElement?
         get() = selectedTextTempId?.let { id -> tempTextList.find { it.tempId == id } }

@@ -44,6 +44,15 @@ interface CardElementDao {
         """)
     suspend fun getTextElementsByCardId(cardId: Long): List<CardElementEntity>
 
+    @Query("""
+        SELECT ce.*, a.thumbnailKey, a.unityKey
+        FROM card_elements AS ce
+        JOIN assets AS a ON ce.assetId = a.assetId
+        WHERE ce.elementId = :elementId 
+        and elementType = 'OBJECT'
+        """)
+    suspend fun getObjectWithAssetKeys(elementId: Long): CardElementWithAssetKeysDto
+
     @Query("UPDATE card_elements SET posX = :posX, posY = :posY, posZ = :posZ, scale = :scale WHERE elementId = :elementId")
     suspend fun updateElementTransform(elementId: Long, posX: Float, posY: Float, posZ: Float, scale: Int): Int
 

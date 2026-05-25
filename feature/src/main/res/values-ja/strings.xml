@@ -33,13 +33,9 @@
     <string name="editor_cd_link_button">リンク詳細</string>
     <string name="editor_cd_delete_img_button">要素を削除</string>
     <string name="editor_cd_transform_reset_img_button">変換をリセット</string>
-    <string name="editor_cd_camera_reset_img_button">カメラをリセット</string>
-    <string name="editor_cd_object_thumb_img">オブジェクトサムネイル</string>
     <string name="editor_cd_complete_button">カード編集を完了</string>
     <string name="editor_cd_add_text">新しいテキスト</string>
     <string name="editor_cd_delete_text">テキストを削除</string>
-    <string name="editor_cd_increase_scale">サイズを拡大</string>
-    <string name="editor_cd_decrease_scale">サイズを縮小</string>
     <string name="editor_cd_align_icon">%s 揃え</string>
     <string name="editor_cd_asset">アセット</string>
 
@@ -62,6 +58,15 @@
     <string name="editor_dialog_button_set_card_title_save">保存</string>
     <string name="editor_dialog_button_link_copy">リンクをコピー</string>
     <string name="editor_dialog_text_exclude_new_edit">新しい編集は含まれません</string>
+
+    <!-- Transform Screen -->
+    <string name="transform_msg_fail_load_object">オブジェクトの読み込みに失敗しました。もう一度お試しください。</string>
+    <string name="transform_msg_fail_save">変換の保存に失敗しました。もう一度お試しください。</string>
+    <string name="transform_cd_object_thumb">オブジェクトサムネイル</string>
+    <string name="transform_cd_reset_button">変換をリセット</string>
+    <string name="transform_cd_camera_focus_button">カメラフォーカス</string>
+    <string name="transform_cd_increase_scale">サイズを拡大</string>
+    <string name="transform_cd_decrease_scale">サイズを縮小</string>
 
     <!-- Share Screen -->
     <string name="share_button_share">シェア</string>

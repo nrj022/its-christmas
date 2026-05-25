@@ -1,13 +1,26 @@
-package com.zcard.feature.cardeditor.ui.panels
+package com.zcard.feature.cardeditor.transform
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Remove
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -16,23 +29,44 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.zcard.feature.cardeditor.ui.common.DirectionalController
-import com.zcard.feature.cardeditor.model.Direction
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.zcard.designsystem.theme.Gray
 import com.zcard.designsystem.theme.SoftBlack
 import com.zcard.designsystem.theme.White
+import com.zcard.designsystem.theme.ZCardTheme
 import com.zcard.feature.R
+import com.zcard.feature.cardeditor.model.Direction
+import com.zcard.feature.cardeditor.ui.common.DirectionalController
+import com.zcard.feature.cardeditor.ui.dialog.UnsavedChangesDialog
 
-/**
- * 이미지에 표시된 컨트롤러 전체 UI
- * @param scale 현재 수량 (가운데 숫자)
- * @param onScaleChange 수량 변경 시 호출되는 콜백 (+, - 버튼)
- * @param onDirectionalClick 방향키 클릭 시 호출되는 콜백
- * @param onCancel 'Cancel' 버튼 클릭 시 호출되는 콜백
- * @param onApply 'Apply' 버튼 클릭 시 호출되는 콜백
- */
 @Composable
-fun TransformControlPanel(
+fun TransformScreen(viewModel: TransformViewModel = hiltViewModel()) {
+    val state by viewModel.transformState.collectAsStateWithLifecycle()
+
+    TransformContent(
+        scale = state.tempTransform.scale,
+        onScaleChange = { newScale ->
+            viewModel.onIntent(TransformIntent.ChangeScale(newScale))
+        },
+        onCancel = { viewModel.onIntent(TransformIntent.Exit) },
+        onApply = { viewModel.onIntent(TransformIntent.SaveChanges) },
+        onDirectionalClick = { direction ->
+            viewModel.onIntent(TransformIntent.MoveObject(direction))
+        }
+    )
+
+    if(state.showUnsavedChangesDialog) {
+        UnsavedChangesDialog(
+            onApplyChanges = { viewModel.onIntent(TransformIntent.SaveAndExit) },
+            onDiscardChanges = { viewModel.onIntent(TransformIntent.DiscardAndExit) },
+            onDismiss = { viewModel.onIntent(TransformIntent.DismissDialog) }
+        )
+    }
+}
+
+@Composable
+fun TransformContent(
     scale: Int = 1,
     onScaleChange: (Int) -> Unit = {},
     onDirectionalClick: (Direction) -> Unit = {},
@@ -116,7 +150,7 @@ private fun ScaleController(
         // + 버튼
         ScaleAdjustButton(
             icon = Icons.Default.Add,
-            contentDescription = stringResource(R.string.editor_cd_increase_scale),
+            contentDescription = stringResource(R.string.transform_cd_increase_scale),
             onClick = { onScaleChange(scale + 1) }
         )
 
@@ -130,7 +164,7 @@ private fun ScaleController(
         // - 버튼
         ScaleAdjustButton(
             icon = Icons.Default.Remove,
-            contentDescription = stringResource(R.string.editor_cd_decrease_scale),
+            contentDescription = stringResource(R.string.transform_cd_decrease_scale),
             onClick = { onScaleChange(scale - 1) }
         )
     }
@@ -166,8 +200,8 @@ private fun ScaleAdjustButton(
 
 @Preview(showBackground = true, backgroundColor = 0xFFFFFFFF)
 @Composable
-fun ControllerPreview() {
-    MaterialTheme {
-        TransformControlPanel()
+fun TransformPreview() {
+    ZCardTheme {
+        TransformContent()
     }
 }

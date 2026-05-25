@@ -26,7 +26,8 @@ import kotlin.getValue
 @AndroidEntryPoint
 class TextEditFragment : Fragment() {
 
-    private lateinit var binding: FragmentTextEditBinding
+    private var _binding: FragmentTextEditBinding? = null
+    private val binding get() = _binding!!
     private lateinit var layoutParams: ConstraintLayout.LayoutParams
 
     private val viewModel: TextEditViewModel by viewModels()
@@ -47,7 +48,7 @@ class TextEditFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentTextEditBinding.inflate(inflater, container, false)
+        _binding = FragmentTextEditBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -55,7 +56,8 @@ class TextEditFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         layoutParams = binding.unityContainer.layoutParams as ConstraintLayout.LayoutParams
 
-        val cardId = requireArguments().getLong(ARG_CARD_ID)    // newInstance로만 생성되므로 없으면 즉시 크래시
+        val cardId = requireArguments().getLong(ARG_CARD_ID, -1L)    // newInstance로만 생성되므로 없으면 즉시 크래시
+        require(cardId != -1L) { "Missing required argument: $ARG_CARD_ID" }
         viewModel.onIntent(TextEditIntent.Init(cardId))
 
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
@@ -104,6 +106,11 @@ class TextEditFragment : Fragment() {
         binding.composeContainer.setContent {
             ZCardTheme { TextEditScreen() }
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     private fun initListener() {

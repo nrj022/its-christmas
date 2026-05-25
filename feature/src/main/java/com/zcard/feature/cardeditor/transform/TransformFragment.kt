@@ -28,7 +28,8 @@ import kotlin.getValue
 @AndroidEntryPoint
 class TransformFragment : Fragment() {
 
-    private lateinit var binding: FragmentTransformBinding
+    private var _binding: FragmentTransformBinding? = null
+    private val binding get() = _binding!!
     private val viewModel: TransformViewModel by viewModels()
     private val mainViewModel: MainViewModel by activityViewModels()
 
@@ -48,14 +49,16 @@ class TransformFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentTransformBinding.inflate(inflater, container, false)
+        _binding = FragmentTransformBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val elementId = requireArguments().getLong(ARG_ELEMENT_ID)
+        val elementId = requireArguments().getLong(ARG_ELEMENT_ID, -1L)    // newInstance로만 생성되므로 없으면 즉시 크래시
+        require(elementId != -1L) { "Missing required argument: $ARG_ELEMENT_ID" }
+
         viewModel.onIntent(TransformIntent.Init(elementId))
         mainViewModel.onIntent(MainIntent.OnUnityContainerHeightChanged(UNITY_HEIGHT_RATIO))
 
@@ -93,6 +96,11 @@ class TransformFragment : Fragment() {
         }
 
         binding.composeContainer.setContent { ZCardTheme { TransformScreen() } }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     private fun initListener() {

@@ -61,7 +61,7 @@
 
     <!-- Transform Screen -->
     <string name="transform_msg_fail_load_object">오브젝트 불러오기에 실패했어요. 다시 시도해 주세요.</string>
-    <string name="transform_msg_fail_save">오브젝트 조정 저장에 실패했어요. 다시 시도해 주세요.</string>
+    <string name="transform_msg_fail_save">변환 저장에 실패했어요. 다시 시도해 주세요.</string>
     <string name="transform_cd_object_thumb">오브젝트 썸네일</string>
     <string name="transform_cd_reset_button">변환 초기화</string>
     <string name="transform_cd_camera_focus_button">카메라 포커스</string>

@@ -65,8 +65,8 @@
     <string name="transform_cd_object_thumb">Object Thumbnail</string>
     <string name="transform_cd_reset_button">Reset Transform</string>
     <string name="transform_cd_camera_focus_button">Camera Focus</string>
-    <string name="transform_cd_increase_scale">Increase scale</string>
-    <string name="transform_cd_decrease_scale">Decrease scale</string>
+    <string name="transform_cd_increase_scale">Increase Scale</string>
+    <string name="transform_cd_decrease_scale">Decrease Scale</string>
 
     <!-- Share Screen -->
     <string name="share_button_share">Share</string>

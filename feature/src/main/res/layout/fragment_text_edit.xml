@@ -27,8 +27,8 @@
 
         <ImageButton
             android:id="@+id/img_btn_add_text"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:background="@drawable/bg_circle_black_30_border_white"
             android:contentDescription="@string/editor_cd_add_text"
             app:layout_constraintBottom_toBottomOf="parent"

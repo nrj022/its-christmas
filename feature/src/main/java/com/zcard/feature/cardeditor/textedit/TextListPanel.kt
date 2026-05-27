@@ -40,7 +40,7 @@ fun TextListPanel(viewModel: TextEditViewModel = hiltViewModel()) {
 
     TextListContent(
         textList = state.tempTexts,
-        selectedTextId = state.selectedTextTempId ?: 0
+        selectedTextId = state.selectedTextTempId
     ) {
         viewModel.onIntent(TextEditIntent.SelectText(it))
     }
@@ -49,7 +49,7 @@ fun TextListPanel(viewModel: TextEditViewModel = hiltViewModel()) {
 @Composable
 fun TextListContent(
     textList: List<TempText> = emptyList(),
-    selectedTextId: Long = 0,
+    selectedTextId: Long? = null,
     onClick: (Long) -> Unit = {}
 ) {
     val fontFamilies = rememberFontFamilies()
@@ -64,7 +64,7 @@ fun TextListContent(
                 text = text.textElement.attributes.content,
                 fontFamily = fontFamilies[text.textElement.attributes.fontFamily.key]
                     ?: FontFamily.Default,
-                isSelected = selectedTextId == text.tempId,
+                isSelected = selectedTextId != null && selectedTextId == text.tempId,
                 onClick = { onClick(text.tempId) }
             )
         }

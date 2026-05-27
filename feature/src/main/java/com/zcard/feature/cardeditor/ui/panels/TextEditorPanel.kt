@@ -181,7 +181,7 @@ private fun EditorHeader(
                     tint = SoftBlack
                 )
                 Text(
-                    text = stringResource(R.string.text_edit_button_back),
+                    text = stringResource(R.string.common_cd_back_button),
                     style = MaterialTheme.typography.labelSmall,
                     color = SoftBlack
                 )

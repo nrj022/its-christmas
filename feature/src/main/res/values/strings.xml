@@ -64,7 +64,6 @@
     <string name="text_edit_msg_fail_load">Failed to load texts.</string>
     <string name="text_edit_msg_fail_save">Failed to save. Please try again.</string>
     <string name="text_edit_msg_partial_fail_save">Some changes couldn\'t be saved.</string>
-    <string name="text_edit_button_back">Back</string>
     <string name="text_edit_title_tab_style">Style</string>
     <string name="text_edit_title_tab_font">Font</string>
     <string name="text_edit_title_tab_position">Position</string>

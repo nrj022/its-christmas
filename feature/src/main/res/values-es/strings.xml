@@ -55,7 +55,6 @@
     <string name="text_edit_msg_fail_load">No se pudieron cargar los textos.</string>
     <string name="text_edit_msg_fail_save">Error al guardar. Por favor, inténtalo de nuevo.</string>
     <string name="text_edit_msg_partial_fail_save">Algunos cambios no se pudieron guardar.</string>
-    <string name="text_edit_button_back">Atrás</string>
     <string name="text_edit_title_tab_style">Estilo</string>
     <string name="text_edit_title_tab_font">Fuente</string>
     <string name="text_edit_title_tab_position">Posición</string>

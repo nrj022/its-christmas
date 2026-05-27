@@ -55,7 +55,6 @@
     <string name="text_edit_msg_fail_load">Texte konnten nicht geladen werden.</string>
     <string name="text_edit_msg_fail_save">Speichern fehlgeschlagen. Bitte erneut versuchen.</string>
     <string name="text_edit_msg_partial_fail_save">Einige Änderungen konnten nicht gespeichert werden.</string>
-    <string name="text_edit_button_back">Zurück</string>
     <string name="text_edit_title_tab_style">Stil</string>
     <string name="text_edit_title_tab_font">Schrift</string>
     <string name="text_edit_title_tab_position">Position</string>

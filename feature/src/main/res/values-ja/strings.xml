@@ -55,7 +55,6 @@
     <string name="text_edit_msg_fail_load">テキストを読み込めませんでした。</string>
     <string name="text_edit_msg_fail_save">保存に失敗しました。もう一度お試しください。</string>
     <string name="text_edit_msg_partial_fail_save">一部の変更を保存できませんでした。</string>
-    <string name="text_edit_button_back">戻る</string>
     <string name="text_edit_title_tab_style">スタイル</string>
     <string name="text_edit_title_tab_font">フォント</string>
     <string name="text_edit_title_tab_position">位置</string>

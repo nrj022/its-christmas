@@ -53,7 +53,7 @@ class TextEditViewModel @Inject constructor(
             is TextEditIntent.MissingTextSelection -> handleMissingTextSelection()
             is TextEditIntent.AddText -> handleAddText()
             is TextEditIntent.DeleteText -> handleDeleteText(intent.tempId)
-            is TextEditIntent.SelectText -> handleSelectText(intent.textId)
+            is TextEditIntent.SelectText -> handleSelectText(intent.tempId)
             is TextEditIntent.ChangeTextContent -> handleChangeTextContent(intent.newText)
             is TextEditIntent.SelectAlignment -> handleSelectAlignment(intent.newAlignment)
             is TextEditIntent.SelectColor -> handleSelectColor(intent.newColor)
@@ -138,9 +138,9 @@ class TextEditViewModel @Inject constructor(
         unityBridge.deleteObject(selectedText.tempId)
     }
 
-    private fun handleSelectText(textId: Long) {
-        _textEditState.update { it.copy(selectedTextTempId = textId) }
-        unityBridge.selectObject(textId)
+    private fun handleSelectText(tempId: Long) {
+        _textEditState.update { it.copy(selectedTextTempId = tempId) }
+        unityBridge.selectObject(tempId)
     }
 
     private fun handleChangeTextContent(newText: String) {

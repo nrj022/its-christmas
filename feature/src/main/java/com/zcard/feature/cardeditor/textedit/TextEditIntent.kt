@@ -12,7 +12,7 @@ sealed class TextEditIntent {
     data object MissingTextSelection: TextEditIntent()
     data object AddText: TextEditIntent()
     data class DeleteText(val tempId: Long): TextEditIntent()
-    data class SelectText(val textId: Long): TextEditIntent()
+    data class SelectText(val tempId: Long): TextEditIntent()
     data class ChangeTextContent(val newText: String): TextEditIntent()
     data class SelectAlignment(val newAlignment: TextAlignment): TextEditIntent()
     data class SelectColor(val newColor: TextColor): TextEditIntent()

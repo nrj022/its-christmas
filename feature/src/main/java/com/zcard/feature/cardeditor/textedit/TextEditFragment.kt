@@ -44,6 +44,15 @@ class TextEditFragment : Fragment() {
             }
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        val cardId = requireArguments().getLong(ARG_CARD_ID, -1L)    // newInstance로만 생성되므로 없으면 즉시 크래시
+        require(cardId != -1L) { "Missing required argument: $ARG_CARD_ID" }
+        viewModel.onIntent(TextEditIntent.Init(cardId))
+
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -55,10 +64,6 @@ class TextEditFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         layoutParams = binding.unityContainer.layoutParams as ConstraintLayout.LayoutParams
-
-        val cardId = requireArguments().getLong(ARG_CARD_ID, -1L)    // newInstance로만 생성되므로 없으면 즉시 크래시
-        require(cardId != -1L) { "Missing required argument: $ARG_CARD_ID" }
-        viewModel.onIntent(TextEditIntent.Init(cardId))
 
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {

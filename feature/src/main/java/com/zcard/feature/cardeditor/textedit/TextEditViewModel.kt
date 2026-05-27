@@ -15,6 +15,7 @@ import com.zcard.domain.usecase.SaveTextElementsUseCase
 import com.zcard.feature.R
 import com.zcard.feature.cardeditor.model.TempText
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -38,6 +39,7 @@ class TextEditViewModel @Inject constructor(
 
     private var _cardId: Long? = null
     private val _deletedTextIds: MutableSet<Long> = mutableSetOf()
+    private var observeTextsJob: Job? = null
 
     private val _textEditState = MutableStateFlow(TextEditState())
     val textEditState: StateFlow<TextEditState> = _textEditState
@@ -70,6 +72,8 @@ class TextEditViewModel @Inject constructor(
 
     private fun handleInit(cardId: Long) {
         cardElementRepository.getTextElementsFlowByCardId(cardId).onEach { result ->
+        observeTextsJob?.cancel()
+        observeTextsJob = cardElementRepository.getTextElementsFlowByCardId(cardId).onEach { result ->
             result.onSuccess { texts ->
                 val tempTexts = texts.map { element -> TempText(textElement = element) }.asReversed()
                 _cardId = cardId

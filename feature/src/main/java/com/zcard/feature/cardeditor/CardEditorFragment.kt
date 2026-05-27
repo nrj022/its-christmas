@@ -23,7 +23,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.zcard.feature.cardeditor.model.DialogState
 import com.zcard.feature.cardeditor.ui.CardEditorBottomScreen
-import com.zcard.feature.cardeditor.ui.CardEditorTextScreen
 import com.zcard.feature.cardeditor.ui.common.BouncingLogoLoadingOverlay
 import com.zcard.feature.R
 import com.zcard.feature.cardshare.CardShareFragment
@@ -31,6 +30,7 @@ import com.zcard.feature.databinding.FragmentCardEditorBinding
 import com.zcard.designsystem.theme.ZCardTheme
 import com.zcard.feature.MainIntent
 import com.zcard.feature.MainViewModel
+import com.zcard.feature.cardeditor.textedit.TextEditFragment
 import com.zcard.feature.cardeditor.transform.TransformFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -51,6 +51,7 @@ class CardEditorFragment : Fragment() {
 
     companion object {
         private const val ARG_CARD_ID = "cardId"
+        private const val UNITY_HEIGHT_RATIO = 0.52f
 
         fun newInstance(cardId: Long) =
             CardEditorFragment().apply {
@@ -63,6 +64,12 @@ class CardEditorFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mainViewModel.onIntent(MainIntent.OnEditorCreated)
+
+        lifecycleScope.launch {
+            mainViewModel.unityMessage.collect {
+                viewModel.onIntent(CardEditorIntent.OnUnityMessage(it))
+            }
+        }
 
         cardId = requireArguments().getLong(ARG_CARD_ID)    // newInstance로만 생성되므로 없으면 즉시 크래시
         viewModel.onIntent(CardEditorIntent.Init(cardId))
@@ -77,6 +84,8 @@ class CardEditorFragment : Fragment() {
 
         val initialTopPadding = binding.containerTop.paddingTop
 
+        mainViewModel.onIntent(MainIntent.OnUnityContainerHeightChanged(UNITY_HEIGHT_RATIO))
+
         ViewCompat.setOnApplyWindowInsetsListener(binding.containerTop) { v, windowInsets ->
             val insets = windowInsets.getInsets(WindowInsetsCompat.Type.statusBars())
             v.setPadding(0, initialTopPadding + insets.top, 0, 0)
@@ -84,12 +93,8 @@ class CardEditorFragment : Fragment() {
         }
 
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, windowInsets ->
-            val imeVisible = windowInsets.isVisible(WindowInsetsCompat.Type.ime())
             val navInsets = windowInsets.getInsets(WindowInsetsCompat.Type.navigationBars())
-
-            viewModel.setImeVisible(imeVisible)
             v.setPadding(0, 0, 0, navInsets.bottom)
-
             windowInsets
         }
 
@@ -117,6 +122,9 @@ class CardEditorFragment : Fragment() {
                             is CardEditorSideEffect.NavigateToTransform -> {
                                 navigateToTransform(sideEffect.elementId)
                             }
+                            is CardEditorSideEffect.NavigateToTextEdit -> {
+                                navigateToTextEdit()
+                            }
                             is CardEditorSideEffect.Finish -> { parentFragmentManager.popBackStack() }
                             is CardEditorSideEffect.ToastMessage -> {
                                 Toast.makeText(requireContext(), getString(sideEffect.msgRes),Toast.LENGTH_SHORT).show()
@@ -130,22 +138,7 @@ class CardEditorFragment : Fragment() {
                         }
                     }
                 }
-                launch {
-                    viewModel.unityContainerHeightFractionFlow.collect {
-                        mainViewModel.onIntent(MainIntent.OnUnityContainerHeightChanged(it))
-                        updateUnityContainerHeight(it)
-                    }
-                }
-                launch {
-                    mainViewModel.unityMessage.collect {
-                        viewModel.onIntent(CardEditorIntent.OnUnityMessage(it))
-                    }
-                }
             }
-        }
-
-        binding.composeContainerText.setContent {
-            ZCardTheme { CardEditorTextScreen(viewModel) }
         }
 
         binding.composeContainer.setContent {
@@ -188,34 +181,11 @@ class CardEditorFragment : Fragment() {
         binding.imgBtnDelete.setOnClickListener {
             viewModel.onIntent(CardEditorIntent.ChangeDialogState(DialogState.DELETE_CONFIRM))
         }
-
-        binding.imgBtnAddText.setOnClickListener {
-            viewModel.onIntent(CardEditorIntent.AddText)
-        }
-
-        binding.imgBtnDeleteText.setOnClickListener {
-            val textId = viewModel.cardEditorState.value.selectedTextTempId ?: return@setOnClickListener
-            viewModel.onIntent(CardEditorIntent.DeleteText(textId))
-        }
-
-        binding.imgBtnCameraFocusReset.setOnClickListener {
-            viewModel.onIntent(CardEditorIntent.ResetCamera)
-        }
-    }
-
-    private fun updateUnityContainerHeight(heightFraction: Float) {
-        if(layoutParams.matchConstraintPercentHeight != heightFraction) {
-            layoutParams.matchConstraintPercentHeight = heightFraction
-            binding.unityContainer.layoutParams = layoutParams
-        }
     }
 
     private fun updateUi(state: CardEditorState) {
-        binding.imgBtnBack.isVisible = state.isAssetBrowserPanelActive
-        binding.btnComplete.isVisible = state.isAssetBrowserPanelActive
         binding.imgBtnLink.isVisible = state.showLinkDetailButton
         binding.containerObjectOption.isVisible = state.showObjectOptionContainer
-        binding.containerTextOption.isVisible = state.showTextOptionContainer
         loadingOverlayVisible.value = state.isLoading
         loadingText.value = state.loadingText
         binding.frameLoading.isVisible = state.isLoading
@@ -237,6 +207,13 @@ class CardEditorFragment : Fragment() {
     private fun navigateToTransform(elementId: Long) {
         parentFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, TransformFragment.newInstance(elementId))
+            .addToBackStack(null)
+            .commit()
+    }
+
+    private fun navigateToTextEdit() {
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, TextEditFragment.newInstance(cardId))
             .addToBackStack(null)
             .commit()
     }

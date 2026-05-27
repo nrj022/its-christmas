@@ -1,11 +1,20 @@
-package com.zcard.feature.cardeditor.ui.panels
+package com.zcard.feature.cardeditor.textedit
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -26,7 +35,11 @@ import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -40,21 +53,24 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.zcard.feature.cardeditor.ui.common.BaseTabs
-import com.zcard.feature.cardeditor.ui.common.DirectionalController
-import com.zcard.feature.cardeditor.ui.uimapper.icon
-import com.zcard.feature.cardeditor.ui.uimapper.rememberFontFamilies
-import com.zcard.feature.cardeditor.model.BaseTabItem
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.zcard.designsystem.theme.Gray
-import com.zcard.designsystem.theme.ZCardTheme
 import com.zcard.designsystem.theme.SoftBlack
 import com.zcard.designsystem.theme.White
-import com.zcard.domain.model.TextColor
+import com.zcard.designsystem.theme.ZCardTheme
 import com.zcard.domain.model.TextAlignment
-import com.zcard.feature.cardeditor.model.Direction
+import com.zcard.domain.model.TextColor
 import com.zcard.domain.model.TextElement
 import com.zcard.domain.model.TextFontFamily
 import com.zcard.feature.R
+import com.zcard.feature.cardeditor.model.BaseTabItem
+import com.zcard.feature.cardeditor.model.Direction
+import com.zcard.feature.cardeditor.ui.common.BaseTabs
+import com.zcard.feature.cardeditor.ui.common.DirectionalController
+import com.zcard.feature.cardeditor.ui.dialog.UnsavedChangesDialog
+import com.zcard.feature.cardeditor.ui.uimapper.icon
+import com.zcard.feature.cardeditor.ui.uimapper.rememberFontFamilies
 
 // 토글 탭 목록 정의
 enum class TextEditorTab(val resId: Int) {
@@ -64,7 +80,32 @@ enum class TextEditorTab(val resId: Int) {
 }
 
 @Composable
-fun TextEditorPanel(
+fun TextEditScreen(viewModel: TextEditViewModel = hiltViewModel()) {
+    val state by viewModel.textEditState.collectAsStateWithLifecycle()
+
+    TextEditContent(
+        textElement = state.selectedText?.textElement,
+        onTextChange = { viewModel.onIntent(TextEditIntent.ChangeTextContent(it)) },
+        onAlignmentSelected = { viewModel.onIntent(TextEditIntent.SelectAlignment(it)) },
+        onColorSelected = { viewModel.onIntent(TextEditIntent.SelectColor(it)) },
+        onFontSizeChange = { viewModel.onIntent(TextEditIntent.ChangeFontSize(it)) },
+        onFontSelected = { viewModel.onIntent(TextEditIntent.SelectFont(it)) },
+        onPositionChange = { viewModel.onIntent(TextEditIntent.MoveText(it)) },
+        onApply = { viewModel.onIntent(TextEditIntent.SaveChanges) },
+        onBack = { viewModel.onIntent(TextEditIntent.Exit) }
+    )
+
+    if(state.showUnsavedChangesDialog) {
+        UnsavedChangesDialog(
+            onApplyChanges = { viewModel.onIntent(TextEditIntent.SaveAndExit) },
+            onDiscardChanges = { viewModel.onIntent(TextEditIntent.DiscardAndExit) },
+            onDismiss = { viewModel.onIntent(TextEditIntent.DismissDialog) }
+        )
+    }
+}
+
+@Composable
+fun TextEditContent(
     textElement: TextElement? = null,
     onTextChange: (String) -> Unit = {},
     onColorSelected: (TextColor) -> Unit = {},
@@ -408,6 +449,6 @@ private fun EmptyEditorContent() {
 @Preview(showBackground = true, backgroundColor = 0xFFFFFFFF)
 fun TextEditorPanelPreview() {
     ZCardTheme {
-        TextEditorPanel()
+        TextEditContent()
     }
 }

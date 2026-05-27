@@ -10,6 +10,7 @@ import com.zcard.database.dao.CardDao
 import com.zcard.database.dao.CardElementDao
 import com.zcard.domain.model.CardElement
 import com.zcard.domain.model.TextAttributes
+import com.zcard.domain.model.TextElement
 import com.zcard.domain.repository.CardElementRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -17,6 +18,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
+import kotlin.collections.mapNotNull
 
 class CardElementRepositoryImpl @Inject constructor(
     private val db: AppDatabase,
@@ -67,9 +69,41 @@ class CardElementRepositoryImpl @Inject constructor(
             .flowOn(Dispatchers.IO)
     }
 
-    override suspend fun getTextElementsByCardId(cardId: Long): Result<List<CardElement>> =
+    override fun getTextElementsFlowByCardId(cardId: Long): Flow<Result<List<TextElement>>> {
+        return cardElementDao.getTextElementsFlowByCardId(cardId)
+            .map { entityList ->
+                Result.success(entityList.mapNotNull { text ->
+                    text.toDomain().textAttributes?.let { attr ->
+                        TextElement(
+                            elementId = text.elementId,
+                            attributes = attr,
+                            posX = text.posX,
+                            posY = text.posY,
+                            posZ = text.posZ
+                        )
+                    }
+                })
+            }
+            .catch { e ->
+                emit(Result.failure(e))
+            }
+            .flowOn(Dispatchers.IO)
+    }
+
+
+    override suspend fun getTextElementsByCardId(cardId: Long): Result<List<TextElement>> =
         ioCatching {
-            cardElementDao.getTextElementsByCardId(cardId).map { it.toDomain() }
+            cardElementDao.getTextElementsByCardId(cardId).mapNotNull { text ->
+                text.toDomain().textAttributes?.let { attr ->
+                    TextElement(
+                        elementId = text.elementId,
+                        attributes = attr,
+                        posX = text.posX,
+                        posY = text.posY,
+                        posZ = text.posZ
+                    )
+                }
+            }
         }
 
     override suspend fun getObjectWithAssetKeys(elementId: Long): Result<CardElementWithAssetKeys> =

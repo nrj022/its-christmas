@@ -17,18 +17,11 @@
 
     <string name="editor_button_adjust">調整</string>
     <string name="editor_button_complete">完了</string>
-    <string name="editor_button_back">戻る</string>
     <string name="editor_button_add_text">テキスト編集</string>
 
     <string name="editor_title_asset_tab_objects">3Dオブジェクト</string>
     <string name="editor_title_asset_tab_background">背景</string>
     <string name="editor_title_spawned_objects_list">マイオブジェクト</string>
-
-    <string name="editor_title_text_tab_style">スタイル</string>
-    <string name="editor_title_text_tab_font">フォント</string>
-    <string name="editor_title_text_tab_position">位置</string>
-    <string name="editor_placeholder_text">新しいテキスト</string>
-    <string name="editor_content_empty_text">テキストがありません。\n\'+\'をタップして最初のテキストを追加しましょう！</string>
 
     <string name="editor_cd_link_button">リンク詳細</string>
     <string name="editor_cd_delete_img_button">要素を削除</string>
@@ -36,7 +29,6 @@
     <string name="editor_cd_complete_button">カード編集を完了</string>
     <string name="editor_cd_add_text">新しいテキスト</string>
     <string name="editor_cd_delete_text">テキストを削除</string>
-    <string name="editor_cd_align_icon">%s 揃え</string>
     <string name="editor_cd_asset">アセット</string>
 
     <!-- Editor Screen - Dialog (Delete Object) -->
@@ -58,6 +50,17 @@
     <string name="editor_dialog_button_set_card_title_save">保存</string>
     <string name="editor_dialog_button_link_copy">リンクをコピー</string>
     <string name="editor_dialog_text_exclude_new_edit">新しい編集は含まれません</string>
+
+    <!-- Text Edit Screen -->
+    <string name="text_edit_msg_fail_load">テキストを読み込めませんでした。</string>
+    <string name="text_edit_msg_fail_save">保存に失敗しました。もう一度お試しください。</string>
+    <string name="text_edit_msg_partial_fail_save">一部の変更を保存できませんでした。</string>
+    <string name="text_edit_title_tab_style">スタイル</string>
+    <string name="text_edit_title_tab_font">フォント</string>
+    <string name="text_edit_title_tab_position">位置</string>
+    <string name="text_edit_placeholder_text">新しいテキスト</string>
+    <string name="text_edit_content_empty_text">テキストがありません。\n\'+\'をタップして最初のテキストを追加しましょう！</string>
+    <string name="text_edit_cd_align_icon">%s 揃え</string>
 
     <!-- Transform Screen -->
     <string name="transform_msg_fail_load_object">オブジェクトの読み込みに失敗しました。もう一度お試しください。</string>

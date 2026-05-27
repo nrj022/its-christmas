@@ -7,5 +7,6 @@ sealed class CardEditorSideEffect {
     data object Finish: CardEditorSideEffect()
     data class NavigateToCardShare(val cardUrl: String): CardEditorSideEffect()
     data class NavigateToTransform(val elementId: Long): CardEditorSideEffect()
+    data object NavigateToTextEdit: CardEditorSideEffect()
     data class CopyCardLink(val cardUrl: String): CardEditorSideEffect()
 }

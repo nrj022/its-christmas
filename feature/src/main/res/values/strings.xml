@@ -17,18 +17,11 @@
 
     <string name="editor_button_adjust">Adjust</string>
     <string name="editor_button_complete">Complete</string>
-    <string name="editor_button_back">Back</string>
     <string name="editor_button_add_text">Edit Text</string>
 
     <string name="editor_title_asset_tab_objects">3D Object</string>
     <string name="editor_title_asset_tab_background">Background</string>
     <string name="editor_title_spawned_objects_list">My Objects</string>
-
-    <string name="editor_title_text_tab_style">Style</string>
-    <string name="editor_title_text_tab_font">Font</string>
-    <string name="editor_title_text_tab_position">Position</string>
-    <string name="editor_placeholder_text">New Text</string>
-    <string name="editor_content_empty_text">No text added.\nTap \'+\' to add your first text!</string>
 
     <string name="editor_cd_link_button">Link Detail</string>
     <string name="editor_cd_delete_img_button">Delete Element</string>
@@ -36,7 +29,6 @@
     <string name="editor_cd_complete_button">Complete Editing Card</string>
     <string name="editor_cd_add_text">New Text</string>
     <string name="editor_cd_delete_text">Delete Text</string>
-    <string name="editor_cd_align_icon">Align %s</string>
     <string name="editor_cd_asset">Asset</string>
 
     <!-- Editor Screen - Dialog (Delete Object) -->
@@ -67,6 +59,17 @@
     <string name="transform_cd_camera_focus_button">Camera Focus</string>
     <string name="transform_cd_increase_scale">Increase Scale</string>
     <string name="transform_cd_decrease_scale">Decrease Scale</string>
+
+    <!-- Text Edit Screen -->
+    <string name="text_edit_msg_fail_load">Failed to load texts.</string>
+    <string name="text_edit_msg_fail_save">Failed to save. Please try again.</string>
+    <string name="text_edit_msg_partial_fail_save">Some changes couldn\'t be saved.</string>
+    <string name="text_edit_title_tab_style">Style</string>
+    <string name="text_edit_title_tab_font">Font</string>
+    <string name="text_edit_title_tab_position">Position</string>
+    <string name="text_edit_placeholder_text">New Text</string>
+    <string name="text_edit_content_empty_text">No text added.\nTap \'+\' to add your first text!</string>
+    <string name="text_edit_cd_align_icon">Align %s</string>
 
     <!-- Share Screen -->
     <string name="share_button_share">Share</string>

@@ -7,7 +7,6 @@ import com.zcard.domain.repository.CardRepository
 import com.zcard.domain.usecase.GenerateCardUrlUseCase
 import com.zcard.domain.usecase.GetCardUseCase
 import com.zcard.domain.usecase.GetCardUseCaseResult
-import com.zcard.domain.usecase.GetTextElementsUseCase
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.first
@@ -19,7 +18,6 @@ class GetCardUseCaseImpl @Inject constructor(
     private val cardRepository: CardRepository,
     private val cardElementRepository: CardElementRepository,
     private val assetRepository: AssetRepository,
-    private val getTextsUseCase: GetTextElementsUseCase,
     private val generateCardUrlUseCase: GenerateCardUrlUseCase
 ): GetCardUseCase {
     override suspend fun invoke(cardId: Long): Result<GetCardUseCaseResult> {
@@ -28,7 +26,7 @@ class GetCardUseCaseImpl @Inject constructor(
                 val cardDataDeferred = async { cardRepository.getCardById(cardId).getOrThrow() }
                 val objectsDeferred = async { assetRepository.getObjects().getOrThrow() }
                 val backgroundsDeferred = async { assetRepository.getBackgrounds().getOrThrow() }
-                val textsDeferred = async { getTextsUseCase(cardId).getOrThrow() }
+                val textsDeferred = async { cardElementRepository.getTextElementsByCardId(cardId).getOrThrow() }
                 val spawnedObjectsFlow =
                     cardElementRepository.getObjectElementsWithAssetKeysByCardId(cardId)
                 val spawnedObjectsDeferred = async { spawnedObjectsFlow.first().getOrThrow() }

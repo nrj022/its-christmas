@@ -1,12 +1,8 @@
 package com.zcard.feature.cardeditor
 
 import com.zcard.feature.cardeditor.model.DialogState
-import com.zcard.feature.cardeditor.model.Direction
 import com.zcard.domain.model.Asset
 import com.zcard.domain.model.CardElementWithAssetKeys
-import com.zcard.domain.model.TextColor
-import com.zcard.domain.model.TextFontFamily
-import com.zcard.domain.model.TextAlignment
 import com.zcard.domain.bridge.UnityMessage
 
 sealed class CardEditorIntent {
@@ -31,19 +27,4 @@ sealed class CardEditorIntent {
     data object EnterTextMode: CardEditorIntent()
 
     data object ResetCamera: CardEditorIntent()
-
-    /* 텍스트 편집 패널 */
-    data object MissingTextSelection: CardEditorIntent()
-    data object AddText: CardEditorIntent()
-    data class DeleteText(val textId: Long): CardEditorIntent()
-    data class SelectText(val textId: Long): CardEditorIntent()
-    data class ChangeTextContent(val newText: String): CardEditorIntent()
-    data class SelectAlignment(val newAlignment: TextAlignment): CardEditorIntent()
-    data class SelectColor(val newColor: TextColor): CardEditorIntent()
-    data class ChangeFontSize(val newSize: Float): CardEditorIntent()
-    data class SelectFont(val newFont: TextFontFamily): CardEditorIntent()
-    data class MoveText(val direction: Direction): CardEditorIntent()
-    data object ApplyText: CardEditorIntent()
-    data object ApplyAndExitText: CardEditorIntent()
-    data object DiscardAndExitText: CardEditorIntent()
 }

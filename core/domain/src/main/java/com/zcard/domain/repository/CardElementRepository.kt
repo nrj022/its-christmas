@@ -3,6 +3,7 @@ package com.zcard.domain.repository
 import com.zcard.domain.model.CardElementWithAssetKeys
 import com.zcard.domain.model.CardElement
 import com.zcard.domain.model.TextAttributes
+import com.zcard.domain.model.TextElement
 import kotlinx.coroutines.flow.Flow
 
 interface CardElementRepository {
@@ -17,7 +18,9 @@ interface CardElementRepository {
 
     fun getObjectElementsWithAssetKeysByCardId(cardId: Long): Flow<Result<List<CardElementWithAssetKeys>>>
 
-    suspend fun getTextElementsByCardId(cardId: Long): Result<List<CardElement>>
+    fun getTextElementsFlowByCardId(cardId: Long): Flow<Result<List<TextElement>>>
+
+    suspend fun getTextElementsByCardId(cardId: Long): Result<List<TextElement>>
 
     suspend fun getObjectWithAssetKeys(elementId: Long): Result<CardElementWithAssetKeys>
 

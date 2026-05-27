@@ -65,7 +65,7 @@ class SaveTextElementsUseCaseImpl @Inject constructor(
                     }
                 }
 
-                val toDelete = params.deletedIds.toMutableSet().apply {
+                val toDelete = params.deleteIds.toMutableSet().apply {
                     addAll(emptyTextList.mapNotNull { it.elementId })
                 }.toList()
 

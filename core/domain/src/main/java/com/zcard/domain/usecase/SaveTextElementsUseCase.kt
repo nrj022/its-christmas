@@ -5,7 +5,7 @@ import com.zcard.domain.model.TextElement
 data class SaveTextElementsParams(
     val cardId: Long,
     val updates: List<TextElement>,
-    val deletedIds: Set<Long> = emptySet()
+    val deleteIds: Set<Long> = emptySet()
 )
 
 data class SaveTextElementsResult(

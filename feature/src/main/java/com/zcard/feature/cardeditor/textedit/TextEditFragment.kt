@@ -124,8 +124,8 @@ class TextEditFragment : Fragment() {
         }
 
         binding.imgBtnDeleteText.setOnClickListener {
-            val textId = viewModel.textEditState.value.selectedTextTempId ?: return@setOnClickListener
-            viewModel.onIntent(TextEditIntent.DeleteText(textId))
+            val tempId = viewModel.textEditState.value.selectedTextTempId ?: return@setOnClickListener
+            viewModel.onIntent(TextEditIntent.DeleteText(tempId))
         }
 
         binding.imgBtnCameraFocusReset.setOnClickListener {

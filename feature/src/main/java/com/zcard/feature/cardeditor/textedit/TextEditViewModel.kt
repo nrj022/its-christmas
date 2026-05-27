@@ -235,14 +235,14 @@ class TextEditViewModel @Inject constructor(
     }
 
     private fun saveTextChanges(onSuccess: () -> Unit = {}) {
-        val cardId = cardId ?: return
+        val id = cardId ?: return
 
         viewModelScope.launch {
             saveTextElementsUseCase(
                 SaveTextElementsParams(
-                    cardId = cardId,
+                    cardId = id,
                     updates = _textEditState.value.tempTexts.map { it.textElement },
-                    deleteIds = pendingDeleteIds
+                    deleteIds = pendingDeleteIds.toSet()
                 )
             ).onSuccess { result ->
                 if(result.failedUpdates.isNotEmpty() || result.failedDeleteIds.isNotEmpty()) {

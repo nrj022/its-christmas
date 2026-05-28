@@ -22,8 +22,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -49,26 +47,19 @@ import com.zcard.feature.cardeditor.component.BaseTabItem
 
 private const val COLUMNS = 4
 
-// 토글 탭 목록 정의
-enum class AssetBrowserTab(val resId: Int) {
-    OBJECTS(R.string.editor_title_asset_tab_objects),
-    BACKGROUND(R.string.editor_title_asset_tab_background)
-}
-
 @Composable
 fun CardEditorScreen(viewModel: CardEditorViewModel = hiltViewModel()) {
     val state by viewModel.cardEditorState.collectAsStateWithLifecycle()
-    var selectedTab by remember { mutableStateOf(AssetBrowserTab.OBJECTS) }
 
     CardEditorContent(
-        selectedTab = selectedTab,
+        selectedTab = state.selectedTab,
         objectItems = state.objects,
         backgroundItems = state.backgrounds,
         spawnedObjects = state.spawnedObjects,
         selectedSpawnedObject = state.selectedSpawnedObjectId,
         selectedBackground = state.selectedBackgroundId,
         loadingObjectIds = state.loadingObjectIds,
-        onTabSelected = { selectedTab = it },
+        onTabSelected = { viewModel.onIntent(CardEditorIntent.ChangeTab(it)) },
         onAddTextClicked = { viewModel.onIntent(CardEditorIntent.EnterTextMode) },
         onObjectClicked = { viewModel.onIntent(CardEditorIntent.CreateObject(it)) },
         onSpawnedObjectClicked = { viewModel.onIntent(CardEditorIntent.SelectSpawnedObject(it)) },
@@ -113,14 +104,14 @@ fun CardEditorScreen(viewModel: CardEditorViewModel = hiltViewModel()) {
 @Composable
 private fun CardEditorContent(
     modifier: Modifier = Modifier,
-    selectedTab: AssetBrowserTab = AssetBrowserTab.OBJECTS,
+    selectedTab: CardEditorState.AssetBrowserTab = CardEditorState.AssetBrowserTab.OBJECTS,
     objectItems: List<Asset> = emptyList(),
     backgroundItems: List<Asset> = emptyList(),
     spawnedObjects: List<CardElementWithAssetKeys> = emptyList(),
     selectedSpawnedObject: Long? = null,
     selectedBackground: Long = 1,
     loadingObjectIds: Set<Long> = emptySet(),
-    onTabSelected: (AssetBrowserTab) -> Unit = {},
+    onTabSelected: (CardEditorState.AssetBrowserTab) -> Unit = {},
     onAddTextClicked: () -> Unit = {},
     onObjectClicked: (Asset) -> Unit = {},
     onSpawnedObjectClicked: (CardElementWithAssetKeys) -> Unit = {},
@@ -136,7 +127,7 @@ private fun CardEditorContent(
             onAddTextClicked = onAddTextClicked
         )
 
-        if (selectedTab == AssetBrowserTab.OBJECTS) {
+        if (selectedTab == CardEditorState.AssetBrowserTab.OBJECTS) {
             if(spawnedObjects.isNotEmpty()) {
                 SpawnedObjectRow(
                     elements = spawnedObjects,
@@ -161,8 +152,8 @@ private fun CardEditorContent(
 
 @Composable
 private fun ControlHeader(
-    selectedTab: AssetBrowserTab,
-    onTabSelected: (AssetBrowserTab) -> Unit,
+    selectedTab: CardEditorState.AssetBrowserTab,
+    onTabSelected: (CardEditorState.AssetBrowserTab) -> Unit,
     onAddTextClicked: () -> Unit
 ) {
     Row(
@@ -174,9 +165,9 @@ private fun ControlHeader(
     ) {
         // "3D Object", "Background" 토글 버튼 그룹
         BaseTabs(
-            tabs = AssetBrowserTab.entries.map { BaseTabItem(it.name, it.resId) },
+            tabs = CardEditorState.AssetBrowserTab.entries.map { BaseTabItem(it.name, it.resId) },
             selectedTabId = selectedTab.name,
-            onTabSelected = { onTabSelected(AssetBrowserTab.valueOf(it)) }
+            onTabSelected = { onTabSelected(CardEditorState.AssetBrowserTab.valueOf(it)) }
         )
 
         // "Add Text >" 버튼

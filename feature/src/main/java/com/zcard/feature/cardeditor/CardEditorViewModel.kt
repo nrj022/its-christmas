@@ -73,6 +73,7 @@ class CardEditorViewModel @Inject constructor(
             is CardEditorIntent.ExportGlbAndUpload -> handleExportGlbAndUpload()
             is CardEditorIntent.ChangeDialogState -> handleChangeDialogState(intent.dialogState)
 
+            is CardEditorIntent.ChangeTab -> handleChangeTab(intent.tab)
             is CardEditorIntent.CreateObject -> handleCreateObject(intent.clickedObject)
             is CardEditorIntent.ChangeBackground -> handleChangeBackground(intent.assetId)
             is CardEditorIntent.SelectSpawnedObject -> handleSelectSpawnedObject(intent.element)
@@ -249,6 +250,10 @@ class CardEditorViewModel @Inject constructor(
     }
 
     // ── 오브젝트 ──────────────────────────────────────────────────────────────
+
+    private fun handleChangeTab(tab: CardEditorState.AssetBrowserTab) {
+        _cardEditorState.update { it.copy(selectedTab = tab) }
+    }
 
     private fun handleCreateObject(clickedObject: Asset) {
         viewModelScope.launch {

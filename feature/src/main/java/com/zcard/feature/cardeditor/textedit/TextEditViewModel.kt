@@ -48,6 +48,7 @@ class TextEditViewModel @Inject constructor(
         when (intent) {
             is TextEditIntent.Init -> handleInit(intent.cardId)
             is TextEditIntent.ImeVisible -> handleImeVisible(intent.visible)
+            is TextEditIntent.ChangeTab -> handleTabChange(intent.tab)
             is TextEditIntent.ResetCamera -> handleResetCamera()
             is TextEditIntent.MissingTextSelection -> handleMissingTextSelection()
             is TextEditIntent.AddText -> handleAddText()
@@ -98,6 +99,10 @@ class TextEditViewModel @Inject constructor(
                 unityContainerHeightFraction = if(visible) 0.4f else 0.6f
             )
         }
+    }
+
+    fun handleTabChange(tab: TextEditState.TextEditorTab) {
+        _textEditState.update { it.copy(selectedTab = tab) }
     }
 
     private fun handleMissingTextSelection() {

@@ -18,6 +18,7 @@ sealed class CardEditorIntent {
     data object ExportGlbAndUpload: CardEditorIntent()
     data class ChangeDialogState(val dialogState: CardEditorState.DialogState): CardEditorIntent()
 
+    data class ChangeTab(val tab: CardEditorState.AssetBrowserTab): CardEditorIntent()
     data class CreateObject(val clickedObject: Asset): CardEditorIntent()
     data class ChangeBackground(val assetId: Long): CardEditorIntent()
     data class SelectSpawnedObject(val element: CardElementWithAssetKeys): CardEditorIntent()

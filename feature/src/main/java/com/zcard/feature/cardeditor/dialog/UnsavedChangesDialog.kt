@@ -14,7 +14,7 @@ fun UnsavedChangesDialog(
     BaseDialog(
         title = stringResource(R.string.editor_dialog_title_unsaved_changes),
         content = stringResource(R.string.editor_dialog_content_unsaved_changes),
-        confirmLabel = stringResource(R.string.editor_dialog_button_save_confirm),
+        confirmLabel = stringResource(R.string.common_button_yes),
         dismissLabel = stringResource(R.string.common_button_no),
         onConfirm = onApplyChanges,
         onDismiss = onDiscardChanges,

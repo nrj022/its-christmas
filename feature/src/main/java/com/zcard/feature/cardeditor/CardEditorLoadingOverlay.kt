@@ -15,6 +15,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,6 +33,7 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
@@ -42,6 +48,7 @@ fun CardEditorLoadingOverlay(
     modifier: Modifier = Modifier,
     logoSize: Dp = 48.dp,
     backgroundColor: Color = Color.Black.copy(alpha = 0.7f),
+    onClose: () -> Unit = {}
 ) {
     val transition = rememberInfiniteTransition(label = "loading")
 
@@ -102,7 +109,8 @@ fun CardEditorLoadingOverlay(
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(backgroundColor),
+            .background(backgroundColor)
+            .statusBarsPadding(),
         contentAlignment = Alignment.Center
     ) {
         Column(
@@ -122,6 +130,20 @@ fun CardEditorLoadingOverlay(
             LoadingTextWithCyclingDots(
                 text = text,
                 modifier = Modifier.offset(y = 10.dp),
+            )
+        }
+
+        IconButton(
+            onClick = onClose,
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .offset(x = (-16).dp, y = 10.dp)
+        ) {
+            Icon(
+                modifier = Modifier.size(24.dp),
+                imageVector = Icons.Default.Clear,
+                contentDescription = "Close",
+                tint = Color.White,
             )
         }
     }
@@ -161,5 +183,11 @@ private fun LoadingTextWithCyclingDots(
             style = MaterialTheme.typography.bodyMedium.copy(fontSize = 15.sp),
         )
     }
+}
+
+@Composable
+@Preview(showBackground = true)
+private fun CardEditorLoadingOverlayPreview() {
+    CardEditorLoadingOverlay(text = "Loading...")
 }
 

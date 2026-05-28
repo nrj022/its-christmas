@@ -3,6 +3,7 @@
     <string name="common_cd_back_button">Zurück</string>
     <string name="common_button_cancel">Abbrechen</string>
     <string name="common_button_confirm">Bestätigen</string>
+    <string name="common_button_yes">Ja</string>
     <string name="common_button_no">Nein</string>
     <string name="common_button_apply">Anwenden</string>
 
@@ -43,7 +44,10 @@
     <!-- Editor Screen - Dialog (Unsaved Changes) -->
     <string name="editor_dialog_title_unsaved_changes">Es gibt ungespeicherte Änderungen.</string>
     <string name="editor_dialog_content_unsaved_changes">Vor dem Verlassen speichern?</string>
-    <string name="editor_dialog_button_save_confirm">Ja</string>
+
+    <!-- Editor Screen - Dialog (Cancel Upload) -->
+    <string name="editor_dialog_title_cancel_upload">Upload läuft</string>
+    <string name="editor_dialog_content_cancel_upload">Upload abbrechen?</string>
 
     <!-- Editor Screen - Dialog (Link Detail) -->
     <string name="editor_dialog_title_link_detail">Karten-Link kopieren</string>

@@ -3,6 +3,7 @@
     <string name="common_cd_back_button">Volver</string>
     <string name="common_button_cancel">Cancelar</string>
     <string name="common_button_confirm">Confirmar</string>
+    <string name="common_button_yes">Sí</string>
     <string name="common_button_no">No</string>
     <string name="common_button_apply">Aplicar</string>
 
@@ -43,7 +44,10 @@
     <!-- Editor Screen - Dialog (Unsaved Changes) -->
     <string name="editor_dialog_title_unsaved_changes">Tienes cambios sin guardar.</string>
     <string name="editor_dialog_content_unsaved_changes">¿Quieres guardar antes de salir?</string>
-    <string name="editor_dialog_button_save_confirm">Sí</string>
+
+    <!-- Editor Screen - Dialog (Cancel Upload) -->
+    <string name="editor_dialog_title_cancel_upload">Subida en curso</string>
+    <string name="editor_dialog_content_cancel_upload">¿Quieres cancelar la subida?</string>
 
     <!-- Editor Screen - Dialog (Link Detail) -->
     <string name="editor_dialog_title_link_detail">Copiar enlace de tarjeta</string>

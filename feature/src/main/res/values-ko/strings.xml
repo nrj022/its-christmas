@@ -3,6 +3,7 @@
     <string name="common_cd_back_button">뒤로 가기</string>
     <string name="common_button_cancel">취소</string>
     <string name="common_button_confirm">확인</string>
+    <string name="common_button_yes">네</string>
     <string name="common_button_no">아니요</string>
     <string name="common_button_apply">적용</string>
 
@@ -43,7 +44,10 @@
     <!-- Editor Screen - Dialog (Unsaved Changes) -->
     <string name="editor_dialog_title_unsaved_changes">저장되지 않은 변경사항이 있어요.</string>
     <string name="editor_dialog_content_unsaved_changes">나가기 전에 저장할까요?</string>
-    <string name="editor_dialog_button_save_confirm">네</string>
+
+    <!-- Editor Screen - Dialog (Cancel Upload) -->
+    <string name="editor_dialog_title_cancel_upload">업로드 진행 중</string>
+    <string name="editor_dialog_content_cancel_upload">업로드를 취소할까요?</string>
 
     <!-- Editor Screen - Dialog (Link Detail) -->
     <string name="editor_dialog_title_link_detail">카드 정보</string>

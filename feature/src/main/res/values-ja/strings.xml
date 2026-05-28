@@ -3,6 +3,7 @@
     <string name="common_cd_back_button">戻る</string>
     <string name="common_button_cancel">キャンセル</string>
     <string name="common_button_confirm">確認</string>
+    <string name="common_button_yes">はい</string>
     <string name="common_button_no">いいえ</string>
     <string name="common_button_apply">適用</string>
 
@@ -43,7 +44,10 @@
     <!-- Editor Screen - Dialog (Unsaved Changes) -->
     <string name="editor_dialog_title_unsaved_changes">保存されていない変更があります。</string>
     <string name="editor_dialog_content_unsaved_changes">終了前に保存しますか？</string>
-    <string name="editor_dialog_button_save_confirm">はい</string>
+
+    <!-- Editor Screen - Dialog (Cancel Upload) -->
+    <string name="editor_dialog_title_cancel_upload">アップロード中</string>
+    <string name="editor_dialog_content_cancel_upload">アップロードをキャンセルしますか？</string>
 
     <!-- Editor Screen - Dialog (Link Detail) -->
     <string name="editor_dialog_title_link_detail">カードリンクをコピー</string>

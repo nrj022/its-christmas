@@ -161,7 +161,7 @@ class CardEditorFragment : Fragment() {
 
     private fun initListener() {
         binding.imgBtnBack.setOnClickListener {
-            parentFragmentManager.popBackStack()
+            viewModel.onIntent(CardEditorIntent.BackPressed)
         }
 
         binding.imgBtnLink.setOnClickListener {

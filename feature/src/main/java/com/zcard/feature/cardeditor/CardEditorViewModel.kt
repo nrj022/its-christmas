@@ -64,7 +64,7 @@ class CardEditorViewModel @Inject constructor(
         when (intent) {
             is CardEditorIntent.OnUnityMessage -> handleUnityMessage(intent.message)
             is CardEditorIntent.Init -> handleInit(intent.cardId)
-            is CardEditorIntent.BackPressed -> handleBackPressed()
+            is CardEditorIntent.BackPressed -> handleLeaveAttempt()
             is CardEditorIntent.ChangeTitle -> handleChangeTitle(intent.newTitle)
 
             is CardEditorIntent.OpenCardLinkDetail -> handleOpenCardLinkDetail()
@@ -75,6 +75,7 @@ class CardEditorViewModel @Inject constructor(
             is CardEditorIntent.FinishEditing -> handleFinishEditing()
             is CardEditorIntent.ExportGlbAndUpload -> handleExportGlbAndUpload()
             is CardEditorIntent.CancelUpload -> handleCancelUpload()
+            is CardEditorIntent.CloseLoading -> handleLeaveAttempt()
             is CardEditorIntent.ChangeDialogState -> handleChangeDialogState(intent.dialogState)
 
             is CardEditorIntent.ChangeTab -> handleChangeTab(intent.tab)
@@ -142,7 +143,7 @@ class CardEditorViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
-    private fun handleBackPressed() {
+    private fun handleLeaveAttempt() {
         if(uploadJob?.isActive == true) {
             updateDialogState(CardEditorState.DialogState.UPLOAD_CANCEL_CONFIRM)
         } else if(_cardEditorState.value.isLoading) {
@@ -261,10 +262,10 @@ class CardEditorViewModel @Inject constructor(
     }
 
     private fun handleCancelUpload() {
+        updateDialogState(CardEditorState.DialogState.NONE)
         val job = uploadJob ?: return
         job.cancel()
         _cardEditorState.update { it.copy(isLoading = false) }
-        updateDialogState(CardEditorState.DialogState.NONE)
         _cardEditorSideEffect.trySend(CardEditorSideEffect.ToastMessage(R.string.editor_msg_cancel_card_upload))
     }
 

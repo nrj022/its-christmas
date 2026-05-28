@@ -17,6 +17,7 @@ sealed class CardEditorIntent {
 
     data object FinishEditing: CardEditorIntent()
     data object ExportGlbAndUpload: CardEditorIntent()
+    data object CloseLoading: CardEditorIntent()
     data object CancelUpload: CardEditorIntent()
     data class ChangeDialogState(val dialogState: CardEditorState.DialogState): CardEditorIntent()
 

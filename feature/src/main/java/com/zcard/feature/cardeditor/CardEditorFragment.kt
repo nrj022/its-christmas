@@ -145,7 +145,7 @@ class CardEditorFragment : Fragment() {
                 if (state.isLoading) {
                     CardEditorLoadingOverlay(
                         text = state.loadingText,
-                        onClose = { viewModel.onIntent(CardEditorIntent.ChangeDialogState(CardEditorState.DialogState.UPLOAD_CANCEL_CONFIRM)) }
+                        onClose = { viewModel.onIntent(CardEditorIntent.CloseLoading) }
                     )
                 }
             }

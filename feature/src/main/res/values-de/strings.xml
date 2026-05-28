@@ -15,6 +15,8 @@
     <string name="editor_msg_fail_card_title_update">Kartentitel konnte nicht aktualisiert werden. Bitte erneut versuchen.</string>
     <string name="editor_msg_block_system_back">Bitte die Schaltflächen oben verwenden, um die Bearbeitung abzuschließen</string>
     <string name="editor_msg_copy_success">In die Zwischenablage kopiert</string>
+    <string name="editor_msg_cancel_card_upload">Karten-Upload abgebrochen</string>
+    <string name="editor_msg_block_back_during_export">Export läuft. Bitte warte einen Moment.</string>
 
     <string name="editor_button_adjust">Anpassen</string>
     <string name="editor_button_complete">Fertig</string>

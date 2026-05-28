@@ -15,6 +15,8 @@
     <string name="editor_msg_fail_card_title_update">No se pudo actualizar el título. Por favor, inténtalo de nuevo.</string>
     <string name="editor_msg_block_system_back">Usa los botones de arriba para terminar la edición</string>
     <string name="editor_msg_copy_success">Copiado al portapapeles</string>
+    <string name="editor_msg_cancel_card_upload">Subida de tarjeta cancelada</string>
+    <string name="editor_msg_block_back_during_export">Exportación en curso. Por favor, espera un momento.</string>
 
     <string name="editor_button_adjust">Ajustar</string>
     <string name="editor_button_complete">Listo</string>

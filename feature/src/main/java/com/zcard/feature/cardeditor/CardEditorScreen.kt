@@ -44,6 +44,7 @@ import com.zcard.feature.cardeditor.util.getObjectThumbByKey
 import com.zcard.designsystem.util.DrawableResProvider.getBgThumbByKey
 import com.zcard.feature.R
 import com.zcard.feature.cardeditor.component.BaseTabItem
+import com.zcard.feature.cardeditor.dialog.UploadCancelConfirmDialog
 
 private const val COLUMNS = 4
 
@@ -71,6 +72,12 @@ fun CardEditorScreen(viewModel: CardEditorViewModel = hiltViewModel()) {
         CardEditorState.DialogState.DELETE_CONFIRM -> {
             ObjectDeleteConfirmDialog(
                 onDeleteObject = { viewModel.onIntent(CardEditorIntent.DeleteSpawnedObject) },
+                onDismiss = { viewModel.onIntent(CardEditorIntent.ChangeDialogState(CardEditorState.DialogState.NONE)) }
+            )
+        }
+        CardEditorState.DialogState.UPLOAD_CANCEL_CONFIRM -> {
+            UploadCancelConfirmDialog(
+                onCancelUpload = { viewModel.onIntent(CardEditorIntent.CancelUpload) },
                 onDismiss = { viewModel.onIntent(CardEditorIntent.ChangeDialogState(CardEditorState.DialogState.NONE)) }
             )
         }

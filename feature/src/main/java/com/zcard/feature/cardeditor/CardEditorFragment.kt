@@ -99,7 +99,7 @@ class CardEditorFragment : Fragment() {
 
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                Toast.makeText(requireContext(), getString(R.string.editor_msg_block_system_back), Toast.LENGTH_SHORT).show()
+                viewModel.onIntent(CardEditorIntent.BackPressed)
             }
         })
 
@@ -145,7 +145,10 @@ class CardEditorFragment : Fragment() {
         binding.composeLoading.setContent {
             ZCardTheme {
                 if (loadingOverlayVisible.value) {
-                    CardEditorLoadingOverlay(text = loadingText.value)
+                    CardEditorLoadingOverlay(
+                        text = loadingText.value,
+                        onClose = { viewModel.onIntent(CardEditorIntent.ChangeDialogState(CardEditorState.DialogState.UPLOAD_CANCEL_CONFIRM)) }
+                    )
                 }
             }
         }

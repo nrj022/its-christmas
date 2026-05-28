@@ -15,6 +15,8 @@
     <string name="editor_msg_fail_card_title_update">タイトルの更新に失敗しました。もう一度お試しください。</string>
     <string name="editor_msg_block_system_back">編集を終了するには上部のボタンをご利用ください</string>
     <string name="editor_msg_copy_success">クリップボードにコピーしました</string>
+    <string name="editor_msg_cancel_card_upload">カードのアップロードがキャンセルされました</string>
+    <string name="editor_msg_block_back_during_export">エクスポート中はキャンセルできません。少々お待ちください。</string>
 
     <string name="editor_button_adjust">調整</string>
     <string name="editor_button_complete">完了</string>

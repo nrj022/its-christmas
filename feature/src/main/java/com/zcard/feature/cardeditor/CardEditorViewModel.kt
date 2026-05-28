@@ -1,6 +1,7 @@
 package com.zcard.feature.cardeditor
 
 import android.util.Log
+import androidx.compose.material3.Card
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zcard.domain.bridge.UnityBridge
@@ -22,6 +23,7 @@ import com.zcard.domain.usecase.UploadCardModelUseCase
 import com.zcard.feature.R
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -51,6 +53,7 @@ class CardEditorViewModel @Inject constructor(
 
     private var _cardId: Long = -1L
     private var _exportId: Long = -1L
+    private var uploadJob: Job? = null
 
     private val _cardEditorState = MutableStateFlow(CardEditorState())
     val cardEditorState: StateFlow<CardEditorState> = _cardEditorState
@@ -62,6 +65,7 @@ class CardEditorViewModel @Inject constructor(
         when (intent) {
             is CardEditorIntent.OnUnityMessage -> handleUnityMessage(intent.message)
             is CardEditorIntent.Init -> handleInit(intent.cardId)
+            is CardEditorIntent.BackPressed -> handleBackPressed()
             is CardEditorIntent.ChangeTitle -> handleChangeTitle(intent.newTitle)
 
             is CardEditorIntent.OpenCardLinkDetail -> handleOpenCardLinkDetail()
@@ -71,6 +75,7 @@ class CardEditorViewModel @Inject constructor(
 
             is CardEditorIntent.FinishEditing -> handleFinishEditing()
             is CardEditorIntent.ExportGlbAndUpload -> handleExportGlbAndUpload()
+            is CardEditorIntent.CancelUpload -> handleCancelUpload()
             is CardEditorIntent.ChangeDialogState -> handleChangeDialogState(intent.dialogState)
 
             is CardEditorIntent.ChangeTab -> handleChangeTab(intent.tab)
@@ -85,7 +90,7 @@ class CardEditorViewModel @Inject constructor(
         }
     }
 
-    // ── 씬 초기화 ─────────────────────────────────────────────────────────────
+    // ── 초기 설정 ─────────────────────────────────────────────────────────────
 
     private fun handleInit(cardId: Long) {
         viewModelScope.launch {
@@ -138,12 +143,22 @@ class CardEditorViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
+    private fun handleBackPressed() {
+        if(uploadJob?.isActive == true) {
+            updateDialogState(CardEditorState.DialogState.UPLOAD_CANCEL_CONFIRM)
+        } else if(_cardEditorState.value.isLoading) {
+            _cardEditorSideEffect.trySend(CardEditorSideEffect.ToastMessage(R.string.editor_msg_block_back_during_export))
+        } else {
+            _cardEditorSideEffect.trySend(CardEditorSideEffect.Finish)
+        }
+    }
+
     // ── Unity 메시지 ──────────────────────────────────────────────────────────
 
     private fun handleUnityMessage(msg: UnityMessage) {
         when (msg.type) {
             UnityEventType.CREATE_OBJECT -> handleCreateObjectResult(msg.status, msg.data)
-            UnityEventType.EXPORT_GLB -> handleExportGlbResult(msg.status, msg.data)
+            UnityEventType.EXPORT_GLB -> handleUploadGlbResult(msg.status, msg.data)
             else -> Unit
         }
     }
@@ -174,8 +189,8 @@ class CardEditorViewModel @Inject constructor(
         }
     }
 
-    private fun handleExportGlbResult(unityStatusType: UnityEventStatus, fileName: String) {
-        viewModelScope.launch {
+    private fun handleUploadGlbResult(unityStatusType: UnityEventStatus, fileName: String) {
+        uploadJob = viewModelScope.launch {
             try {
                 if(unityStatusType != UnityEventStatus.SUCCESS) error(fileName)
 
@@ -198,6 +213,7 @@ class CardEditorViewModel @Inject constructor(
                 _cardEditorSideEffect.trySend(CardEditorSideEffect.ToastMessage(R.string.editor_msg_fail_card_upload))
             } finally {
                 _cardEditorState.update { it.copy(isLoading = false) }
+                uploadJob = null
             }
         }
     }
@@ -243,6 +259,14 @@ class CardEditorViewModel @Inject constructor(
                 loadingText = "Exporting"
             )
         }
+    }
+
+    private fun handleCancelUpload() {
+        val job = uploadJob ?: return
+        job.cancel()
+        _cardEditorState.update { it.copy(isLoading = false) }
+        updateDialogState(CardEditorState.DialogState.NONE)
+        _cardEditorSideEffect.trySend(CardEditorSideEffect.ToastMessage(R.string.editor_msg_cancel_card_upload))
     }
 
     private fun handleChangeDialogState(dialogState: CardEditorState.DialogState) {

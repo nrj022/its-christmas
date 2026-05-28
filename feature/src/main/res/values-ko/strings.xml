@@ -15,6 +15,8 @@
     <string name="editor_msg_fail_card_title_update">카드 제목 업데이트에 실패했어요. 다시 시도해 주세요.</string>
     <string name="editor_msg_block_system_back">편집을 마치려면 상단 버튼을 사용해 주세요</string>
     <string name="editor_msg_copy_success">클립보드에 복사됐어요</string>
+    <string name="editor_msg_cancel_card_upload">카드 업로드가 취소됐어요</string>
+    <string name="editor_msg_block_back_during_export">추출 중에는 취소할 수 없어요. 잠시만 기다려 주세요.</string>
 
     <string name="editor_button_adjust">Adjust</string>
     <string name="editor_button_complete">Complete</string>

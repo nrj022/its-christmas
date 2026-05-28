@@ -35,6 +35,7 @@
     <string name="editor_cd_add_text">New Text</string>
     <string name="editor_cd_delete_text">Delete Text</string>
     <string name="editor_cd_asset">Asset</string>
+    <string name="editor_cd_close_button">Close</string>
 
     <!-- Editor Screen - Dialog (Delete Object) -->
     <string name="editor_dialog_title_delete">Delete This Object?</string>

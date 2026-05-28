@@ -144,7 +144,7 @@ fun CardEditorLoadingOverlay(
             Icon(
                 modifier = Modifier.size(24.dp),
                 imageVector = Icons.Default.Clear,
-                contentDescription = "Close",
+                contentDescription = stringResource(R.string.editor_cd_close_button),
                 tint = Color.White,
             )
         }

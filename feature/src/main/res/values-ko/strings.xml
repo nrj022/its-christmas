@@ -35,6 +35,7 @@
     <string name="editor_cd_add_text">새 텍스트</string>
     <string name="editor_cd_delete_text">텍스트 삭제</string>
     <string name="editor_cd_asset">에셋</string>
+    <string name="editor_cd_close_button">닫기</string>
 
     <!-- Editor Screen - Dialog (Delete Object) -->
     <string name="editor_dialog_title_delete">이 오브젝트를 삭제할까요?</string>

@@ -17,6 +17,8 @@
     <string name="editor_msg_copy_success">クリップボードにコピーしました</string>
     <string name="editor_msg_cancel_card_upload">カードのアップロードがキャンセルされました</string>
     <string name="editor_msg_block_back_during_export">エクスポート中はキャンセルできません。少々お待ちください。</string>
+    <string name="editor_loading_msg_network_required">この作業にはネットワーク接続が必要です。</string>
+    <string name="editor_loading_msg_uploading">%1$d%% アップロード中</string>
 
     <string name="editor_button_adjust">調整</string>
     <string name="editor_button_complete">完了</string>

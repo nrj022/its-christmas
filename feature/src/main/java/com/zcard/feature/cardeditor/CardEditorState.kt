@@ -11,7 +11,7 @@ data class CardEditorState(
     val originalCardTitle: String = "New Card",
     val cardTitle: String = "New Card",
     val cardUrl: String = "",
-    val loadingText: String = "Loading",
+    val loadingText: String = "Exporting",
     val objects: List<Asset> = emptyList(),
     val backgrounds: List<Asset> = emptyList(),
     val spawnedObjects: List<CardElementWithAssetKeys> = emptyList(),

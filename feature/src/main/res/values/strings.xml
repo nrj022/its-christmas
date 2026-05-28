@@ -17,6 +17,8 @@
     <string name="editor_msg_copy_success">Copied to clipboard</string>
     <string name="editor_msg_cancel_card_upload">Card upload cancelled</string>
     <string name="editor_msg_block_back_during_export">Export in progress. Please wait a moment.</string>
+    <string name="editor_loading_msg_network_required">This task requires a network connection.</string>
+    <string name="editor_loading_msg_uploading">Uploading %1$d%%</string>
 
     <string name="editor_button_adjust">Adjust</string>
     <string name="editor_button_complete">Complete</string>

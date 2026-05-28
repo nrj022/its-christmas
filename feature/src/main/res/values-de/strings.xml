@@ -17,6 +17,8 @@
     <string name="editor_msg_copy_success">In die Zwischenablage kopiert</string>
     <string name="editor_msg_cancel_card_upload">Karten-Upload abgebrochen</string>
     <string name="editor_msg_block_back_during_export">Export läuft. Bitte warte einen Moment.</string>
+    <string name="editor_loading_msg_network_required">Diese Aufgabe erfordert eine Netzwerkverbindung.</string>
+    <string name="editor_loading_msg_uploading">Upload %1$d%%</string>
 
     <string name="editor_button_adjust">Anpassen</string>
     <string name="editor_button_complete">Fertig</string>

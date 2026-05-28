@@ -10,7 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.getValue
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -19,6 +19,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.zcard.feature.R
@@ -42,8 +43,6 @@ class CardEditorFragment : Fragment() {
     private val viewModel: CardEditorViewModel by viewModels()
     private val mainViewModel: MainViewModel by activityViewModels()
 
-    private val loadingOverlayVisible = mutableStateOf(true)
-    private val loadingText = mutableStateOf("Loading")
     private var cardId: Long = -1L
 
     companion object {
@@ -106,9 +105,7 @@ class CardEditorFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
-                    viewModel.cardEditorState.collect {
-                        updateUi(it)
-                    }
+                    viewModel.cardEditorState.collect { updateUi(it) }
                 }
                 launch {
                     viewModel.cardEditorSideEffect.collect { sideEffect ->
@@ -143,10 +140,11 @@ class CardEditorFragment : Fragment() {
         }
 
         binding.composeLoading.setContent {
+            val state by viewModel.cardEditorState.collectAsStateWithLifecycle()
             ZCardTheme {
-                if (loadingOverlayVisible.value) {
+                if (state.isLoading) {
                     CardEditorLoadingOverlay(
-                        text = loadingText.value,
+                        text = state.loadingText,
                         onClose = { viewModel.onIntent(CardEditorIntent.ChangeDialogState(CardEditorState.DialogState.UPLOAD_CANCEL_CONFIRM)) }
                     )
                 }
@@ -186,8 +184,6 @@ class CardEditorFragment : Fragment() {
     private fun updateUi(state: CardEditorState) {
         binding.imgBtnLink.isVisible = state.showLinkDetailButton
         binding.containerObjectOption.isVisible = state.showObjectOptionContainer
-        loadingOverlayVisible.value = state.isLoading
-        loadingText.value = state.loadingText
         binding.frameLoading.isVisible = state.isLoading
     }
 

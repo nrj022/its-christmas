@@ -1,7 +1,5 @@
 package com.zcard.feature.cardeditor.textedit
 
-import com.zcard.feature.cardeditor.model.TempText
-
 data class TextEditState(
     val tempTexts: List<TempText> = emptyList(),
     val savedTexts: List<TempText> = emptyList(),

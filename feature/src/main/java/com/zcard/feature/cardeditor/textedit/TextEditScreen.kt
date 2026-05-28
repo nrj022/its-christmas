@@ -64,13 +64,13 @@ import com.zcard.domain.model.TextColor
 import com.zcard.domain.model.TextElement
 import com.zcard.domain.model.TextFontFamily
 import com.zcard.feature.R
-import com.zcard.feature.cardeditor.model.BaseTabItem
+import com.zcard.feature.cardeditor.component.BaseTabItem
 import com.zcard.feature.cardeditor.model.Direction
-import com.zcard.feature.cardeditor.ui.common.BaseTabs
-import com.zcard.feature.cardeditor.ui.common.DirectionalController
-import com.zcard.feature.cardeditor.ui.dialog.UnsavedChangesDialog
-import com.zcard.feature.cardeditor.ui.uimapper.icon
-import com.zcard.feature.cardeditor.ui.uimapper.rememberFontFamilies
+import com.zcard.feature.cardeditor.component.BaseTabs
+import com.zcard.feature.cardeditor.component.DirectionalController
+import com.zcard.feature.cardeditor.dialog.UnsavedChangesDialog
+import com.zcard.feature.cardeditor.textedit.util.icon
+import com.zcard.feature.cardeditor.textedit.util.rememberFontFamilies
 
 // 토글 탭 목록 정의
 enum class TextEditorTab(val resId: Int) {

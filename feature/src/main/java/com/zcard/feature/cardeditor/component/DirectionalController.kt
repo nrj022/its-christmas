@@ -1,4 +1,4 @@
-package com.zcard.feature.cardeditor.ui.common
+package com.zcard.feature.cardeditor.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

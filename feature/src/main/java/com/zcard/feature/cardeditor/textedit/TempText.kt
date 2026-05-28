@@ -1,4 +1,4 @@
-package com.zcard.feature.cardeditor.model
+package com.zcard.feature.cardeditor.textedit
 
 import com.zcard.domain.model.TextElement
 

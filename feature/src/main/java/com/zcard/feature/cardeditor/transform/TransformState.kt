@@ -1,7 +1,5 @@
 package com.zcard.feature.cardeditor.transform
 
-import com.zcard.feature.cardeditor.model.ElementTransform
-
 data class TransformState(
     val elementKey: String = "",
     val thumbnailKey: String = "",

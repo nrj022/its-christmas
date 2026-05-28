@@ -31,8 +31,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.zcard.designsystem.theme.SoftBlack
 import com.zcard.designsystem.theme.White
 import com.zcard.designsystem.theme.ZCardTheme
-import com.zcard.feature.cardeditor.model.TempText
-import com.zcard.feature.cardeditor.ui.uimapper.rememberFontFamilies
+import com.zcard.feature.cardeditor.textedit.util.rememberFontFamilies
 
 @Composable
 fun TextListPanel(viewModel: TextEditViewModel = hiltViewModel()) {

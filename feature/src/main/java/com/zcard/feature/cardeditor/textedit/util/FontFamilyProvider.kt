@@ -1,4 +1,4 @@
-package com.zcard.feature.cardeditor.ui.uimapper
+package com.zcard.feature.cardeditor.textedit.util
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember

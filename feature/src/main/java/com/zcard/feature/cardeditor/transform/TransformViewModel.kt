@@ -7,7 +7,6 @@ import com.zcard.domain.bridge.UnityBridge
 import com.zcard.domain.repository.CardElementRepository
 import com.zcard.feature.R
 import com.zcard.feature.cardeditor.model.Direction
-import com.zcard.feature.cardeditor.model.ElementTransform
 import com.zcard.feature.cardeditor.util.toBase62
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel

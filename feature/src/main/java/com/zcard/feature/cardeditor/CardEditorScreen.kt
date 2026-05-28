@@ -4,9 +4,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.zcard.feature.cardeditor.ui.dialog.CardInfoDialog
-import com.zcard.feature.cardeditor.ui.dialog.ObjectDeleteConfirmDialog
-import com.zcard.feature.cardeditor.ui.dialog.SetCardTitleDialog
+import com.zcard.feature.cardeditor.dialog.CardInfoDialog
+import com.zcard.feature.cardeditor.dialog.ObjectDeleteConfirmDialog
+import com.zcard.feature.cardeditor.dialog.SetCardTitleDialog
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -40,12 +40,12 @@ import com.zcard.designsystem.theme.Gray
 import com.zcard.designsystem.theme.SoftBlack
 import com.zcard.designsystem.theme.White
 import com.zcard.domain.model.Asset
-import com.zcard.feature.cardeditor.ui.common.BaseTabs
+import com.zcard.feature.cardeditor.component.BaseTabs
 import com.zcard.feature.cardeditor.util.toBase62
-import com.zcard.feature.cardeditor.model.BaseTabItem
 import com.zcard.feature.cardeditor.util.getObjectThumbByKey
 import com.zcard.designsystem.util.DrawableResProvider.getBgThumbByKey
 import com.zcard.feature.R
+import com.zcard.feature.cardeditor.component.BaseTabItem
 
 private const val COLUMNS = 4
 

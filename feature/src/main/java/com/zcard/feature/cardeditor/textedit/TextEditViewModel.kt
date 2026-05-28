@@ -13,7 +13,6 @@ import com.zcard.domain.repository.CardElementRepository
 import com.zcard.domain.usecase.SaveTextElementsParams
 import com.zcard.domain.usecase.SaveTextElementsUseCase
 import com.zcard.feature.R
-import com.zcard.feature.cardeditor.model.TempText
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel

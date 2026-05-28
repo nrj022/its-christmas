@@ -21,8 +21,6 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.zcard.feature.cardeditor.model.DialogState
-import com.zcard.feature.cardeditor.ui.common.BouncingLogoLoadingOverlay
 import com.zcard.feature.R
 import com.zcard.feature.cardshare.CardShareFragment
 import com.zcard.feature.databinding.FragmentCardEditorBinding
@@ -147,7 +145,7 @@ class CardEditorFragment : Fragment() {
         binding.composeLoading.setContent {
             ZCardTheme {
                 if (loadingOverlayVisible.value) {
-                    BouncingLogoLoadingOverlay(text = loadingText.value)
+                    CardEditorLoadingOverlay(text = loadingText.value)
                 }
             }
         }
@@ -178,7 +176,7 @@ class CardEditorFragment : Fragment() {
         }
 
         binding.imgBtnDelete.setOnClickListener {
-            viewModel.onIntent(CardEditorIntent.ChangeDialogState(DialogState.DELETE_CONFIRM))
+            viewModel.onIntent(CardEditorIntent.ChangeDialogState(CardEditorState.DialogState.DELETE_CONFIRM))
         }
     }
 

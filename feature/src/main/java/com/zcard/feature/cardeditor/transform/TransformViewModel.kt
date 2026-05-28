@@ -66,7 +66,7 @@ class TransformViewModel @Inject constructor(
                     _cardId = obj.cardElement.cardId
                     _transformState.update {
                         it.copy(
-                            elementKey = toBase62(obj.cardElement.elementId),
+                            elementKey = obj.cardElement.elementId.toBase62(),
                             thumbnailKey = obj.thumbnailKey,
                             initialTransform = transform,
                             tempTransform = transform,

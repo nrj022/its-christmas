@@ -1,6 +1,5 @@
 package com.zcard.feature.cardeditor
 
-import com.zcard.feature.cardeditor.model.DialogState
 import com.zcard.domain.model.CardElementWithAssetKeys
 import com.zcard.domain.model.Asset
 
@@ -30,4 +29,6 @@ data class CardEditorState(
 
     val selectedSpawnedObjectId: Long?
         get() = selectedSpawnedObject?.cardElement?.elementId
+
+    enum class DialogState { NONE, DELETE_CONFIRM, CARD_LINK_DETAIL, SET_CARD_TITLE }
 }

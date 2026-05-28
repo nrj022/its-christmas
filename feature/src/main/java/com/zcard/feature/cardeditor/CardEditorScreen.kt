@@ -4,7 +4,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.zcard.feature.cardeditor.model.DialogState
 import com.zcard.feature.cardeditor.ui.dialog.CardInfoDialog
 import com.zcard.feature.cardeditor.ui.dialog.ObjectDeleteConfirmDialog
 import com.zcard.feature.cardeditor.ui.dialog.SetCardTitleDialog
@@ -77,14 +76,14 @@ fun CardEditorScreen(viewModel: CardEditorViewModel = hiltViewModel()) {
     )
 
     when(state.dialogState) {
-        DialogState.NONE -> {}
-        DialogState.DELETE_CONFIRM -> {
+        CardEditorState.DialogState.NONE -> {}
+        CardEditorState.DialogState.DELETE_CONFIRM -> {
             ObjectDeleteConfirmDialog(
                 onDeleteObject = { viewModel.onIntent(CardEditorIntent.DeleteSpawnedObject) },
-                onDismiss = { viewModel.onIntent(CardEditorIntent.ChangeDialogState(DialogState.NONE)) }
+                onDismiss = { viewModel.onIntent(CardEditorIntent.ChangeDialogState(CardEditorState.DialogState.NONE)) }
             )
         }
-        DialogState.CARD_LINK_DETAIL -> {
+        CardEditorState.DialogState.CARD_LINK_DETAIL -> {
             CardInfoDialog(
                 cardTitle = state.cardTitle,
                 isTitleChanged = state.isTitleChanged,
@@ -93,18 +92,18 @@ fun CardEditorScreen(viewModel: CardEditorViewModel = hiltViewModel()) {
                 onCopyLink = { viewModel.onIntent(CardEditorIntent.CopyCardLink) },
                 onDismiss = {
                     viewModel.onIntent(CardEditorIntent.ResetTitle)
-                    viewModel.onIntent(CardEditorIntent.ChangeDialogState(DialogState.NONE))
+                    viewModel.onIntent(CardEditorIntent.ChangeDialogState(CardEditorState.DialogState.NONE))
                 }
             )
         }
-        DialogState.SET_CARD_TITLE -> {
+        CardEditorState.DialogState.SET_CARD_TITLE -> {
             SetCardTitleDialog(
                 cardTitle = state.cardTitle,
                 onTitleChange = { viewModel.onIntent(CardEditorIntent.ChangeTitle(it)) },
                 onGenerateCard = { viewModel.onIntent(CardEditorIntent.ExportGlbAndUpload) },
                 onDismiss = {
                     viewModel.onIntent(CardEditorIntent.ResetTitle)
-                    viewModel.onIntent(CardEditorIntent.ChangeDialogState(DialogState.NONE))
+                    viewModel.onIntent(CardEditorIntent.ChangeDialogState(CardEditorState.DialogState.NONE))
                 }
             )
         }
@@ -248,7 +247,7 @@ private fun SpawnedObjectRow(
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = toBase62(element.cardElement.elementId),
+                            text = element.cardElement.elementId.toBase62(),
                             style = MaterialTheme.typography.labelSmall,
                         )
                     }

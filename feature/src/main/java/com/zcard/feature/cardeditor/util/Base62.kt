@@ -3,6 +3,7 @@ package com.zcard.feature.cardeditor.util
 private const val base62Chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
 
 fun Long.toBase62(): String {
+    require(this >= 0L) { "toBase62()는 0 이상의 값만 지원합니다." }
     if (this == 0L) return "0"
 
     var n = this

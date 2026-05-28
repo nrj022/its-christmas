@@ -1,4 +1,4 @@
-package com.zcard.feature.cardeditor.ui.common
+package com.zcard.feature.cardeditor.component
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -10,11 +10,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.zcard.feature.cardeditor.model.BaseTabItem
 import com.zcard.designsystem.theme.Gray
 import com.zcard.designsystem.theme.SoftBlack
 import com.zcard.designsystem.theme.White
 
+data class BaseTabItem(
+    val id: String,
+    val textRes: Int
+)
 @Composable
 fun BaseTabs(tabs: List<BaseTabItem>, selectedTabId: String, onTabSelected: (String) -> Unit) {
     Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {

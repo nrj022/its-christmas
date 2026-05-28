@@ -1,5 +1,12 @@
-package com.zcard.feature.cardeditor.ui.panels
+package com.zcard.feature.cardeditor
 
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.zcard.feature.cardeditor.dialog.CardInfoDialog
+import com.zcard.feature.cardeditor.dialog.ObjectDeleteConfirmDialog
+import com.zcard.feature.cardeditor.dialog.SetCardTitleDialog
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -15,9 +22,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -34,68 +38,84 @@ import com.zcard.designsystem.theme.Gray
 import com.zcard.designsystem.theme.SoftBlack
 import com.zcard.designsystem.theme.White
 import com.zcard.domain.model.Asset
-import com.zcard.feature.cardeditor.ui.common.BaseTabs
+import com.zcard.feature.cardeditor.component.BaseTabs
 import com.zcard.feature.cardeditor.util.toBase62
-import com.zcard.feature.cardeditor.model.BaseTabItem
 import com.zcard.feature.cardeditor.util.getObjectThumbByKey
 import com.zcard.designsystem.util.DrawableResProvider.getBgThumbByKey
 import com.zcard.feature.R
+import com.zcard.feature.cardeditor.component.BaseTabItem
 
 private const val COLUMNS = 4
 
-// 토글 탭 목록 정의
-enum class AssetBrowserTab(val resId: Int) {
-    OBJECTS(R.string.editor_title_asset_tab_objects),
-    BACKGROUND(R.string.editor_title_asset_tab_background)
+@Composable
+fun CardEditorScreen(viewModel: CardEditorViewModel = hiltViewModel()) {
+    val state by viewModel.cardEditorState.collectAsStateWithLifecycle()
+
+    CardEditorContent(
+        selectedTab = state.selectedTab,
+        objectItems = state.objects,
+        backgroundItems = state.backgrounds,
+        spawnedObjects = state.spawnedObjects,
+        selectedSpawnedObject = state.selectedSpawnedObjectId,
+        selectedBackground = state.selectedBackgroundId,
+        loadingObjectIds = state.loadingObjectIds,
+        onTabSelected = { viewModel.onIntent(CardEditorIntent.ChangeTab(it)) },
+        onAddTextClicked = { viewModel.onIntent(CardEditorIntent.EnterTextMode) },
+        onObjectClicked = { viewModel.onIntent(CardEditorIntent.CreateObject(it)) },
+        onSpawnedObjectClicked = { viewModel.onIntent(CardEditorIntent.SelectSpawnedObject(it)) },
+        onBackgroundClicked = { viewModel.onIntent(CardEditorIntent.ChangeBackground(it)) }
+    )
+
+    when(state.dialogState) {
+        CardEditorState.DialogState.NONE -> {}
+        CardEditorState.DialogState.DELETE_CONFIRM -> {
+            ObjectDeleteConfirmDialog(
+                onDeleteObject = { viewModel.onIntent(CardEditorIntent.DeleteSpawnedObject) },
+                onDismiss = { viewModel.onIntent(CardEditorIntent.ChangeDialogState(CardEditorState.DialogState.NONE)) }
+            )
+        }
+        CardEditorState.DialogState.CARD_LINK_DETAIL -> {
+            CardInfoDialog(
+                cardTitle = state.cardTitle,
+                isTitleChanged = state.isTitleChanged,
+                onTitleChange = { viewModel.onIntent(CardEditorIntent.ChangeTitle(it)) },
+                onTitleSave = { viewModel.onIntent(CardEditorIntent.SaveTitle) },
+                onCopyLink = { viewModel.onIntent(CardEditorIntent.CopyCardLink) },
+                onDismiss = {
+                    viewModel.onIntent(CardEditorIntent.ResetTitle)
+                    viewModel.onIntent(CardEditorIntent.ChangeDialogState(CardEditorState.DialogState.NONE))
+                }
+            )
+        }
+        CardEditorState.DialogState.SET_CARD_TITLE -> {
+            SetCardTitleDialog(
+                cardTitle = state.cardTitle,
+                onTitleChange = { viewModel.onIntent(CardEditorIntent.ChangeTitle(it)) },
+                onGenerateCard = { viewModel.onIntent(CardEditorIntent.ExportGlbAndUpload) },
+                onDismiss = {
+                    viewModel.onIntent(CardEditorIntent.ResetTitle)
+                    viewModel.onIntent(CardEditorIntent.ChangeDialogState(CardEditorState.DialogState.NONE))
+                }
+            )
+        }
+    }
 }
 
 @Composable
-fun AssetBrowserPanel(
+private fun CardEditorContent(
+    modifier: Modifier = Modifier,
+    selectedTab: CardEditorState.AssetBrowserTab = CardEditorState.AssetBrowserTab.OBJECTS,
     objectItems: List<Asset> = emptyList(),
     backgroundItems: List<Asset> = emptyList(),
     spawnedObjects: List<CardElementWithAssetKeys> = emptyList(),
     selectedSpawnedObject: Long? = null,
     selectedBackground: Long = 1,
     loadingObjectIds: Set<Long> = emptySet(),
+    onTabSelected: (CardEditorState.AssetBrowserTab) -> Unit = {},
     onAddTextClicked: () -> Unit = {},
     onObjectClicked: (Asset) -> Unit = {},
     onSpawnedObjectClicked: (CardElementWithAssetKeys) -> Unit = {},
     onBackgroundClicked: (Long) -> Unit = {},
-) {
-
-    var selectedTab by remember { mutableStateOf(AssetBrowserTab.OBJECTS) }
-
-    AssetBrowserPanelContent(
-        selectedTab = selectedTab,
-        objectItems = objectItems,
-        backgroundItems = backgroundItems,
-        spawnedObjects = spawnedObjects,
-        selectedSpawnedObject = selectedSpawnedObject,
-        selectedBackground = selectedBackground,
-        loadingObjectIds = loadingObjectIds,
-        onTabSelected = { selectedTab = it },
-        onAddTextClicked = onAddTextClicked,
-        onObjectClicked = onObjectClicked,
-        onSpawnedObjectClicked = onSpawnedObjectClicked,
-        onBackgroundClicked = onBackgroundClicked
-    )
-}
-
-@Composable
-fun AssetBrowserPanelContent(
-    modifier: Modifier = Modifier,
-    selectedTab: AssetBrowserTab,
-    objectItems: List<Asset>,
-    backgroundItems: List<Asset>,
-    spawnedObjects: List<CardElementWithAssetKeys>,
-    selectedSpawnedObject: Long?,
-    selectedBackground: Long,
-    loadingObjectIds: Set<Long>,
-    onTabSelected: (AssetBrowserTab) -> Unit,
-    onObjectClicked: (Asset) -> Unit,
-    onSpawnedObjectClicked: (CardElementWithAssetKeys) -> Unit,
-    onBackgroundClicked: (Long) -> Unit,
-    onAddTextClicked: () -> Unit
 ) {
     Column(
         modifier = modifier.fillMaxWidth().background(White)
@@ -107,7 +127,7 @@ fun AssetBrowserPanelContent(
             onAddTextClicked = onAddTextClicked
         )
 
-        if (selectedTab == AssetBrowserTab.OBJECTS) {
+        if (selectedTab == CardEditorState.AssetBrowserTab.OBJECTS) {
             if(spawnedObjects.isNotEmpty()) {
                 SpawnedObjectRow(
                     elements = spawnedObjects,
@@ -131,9 +151,9 @@ fun AssetBrowserPanelContent(
 }
 
 @Composable
-fun ControlHeader(
-    selectedTab: AssetBrowserTab,
-    onTabSelected: (AssetBrowserTab) -> Unit,
+private fun ControlHeader(
+    selectedTab: CardEditorState.AssetBrowserTab,
+    onTabSelected: (CardEditorState.AssetBrowserTab) -> Unit,
     onAddTextClicked: () -> Unit
 ) {
     Row(
@@ -145,9 +165,9 @@ fun ControlHeader(
     ) {
         // "3D Object", "Background" 토글 버튼 그룹
         BaseTabs(
-            tabs = AssetBrowserTab.entries.map { BaseTabItem(it.name, it.resId) },
+            tabs = CardEditorState.AssetBrowserTab.entries.map { BaseTabItem(it.name, it.resId) },
             selectedTabId = selectedTab.name,
-            onTabSelected = { onTabSelected(AssetBrowserTab.valueOf(it)) }
+            onTabSelected = { onTabSelected(CardEditorState.AssetBrowserTab.valueOf(it)) }
         )
 
         // "Add Text >" 버튼
@@ -170,7 +190,7 @@ fun ControlHeader(
 }
 
 @Composable
-fun SpawnedObjectRow(
+private fun SpawnedObjectRow(
     elements: List<CardElementWithAssetKeys>,
     selectedItemIndex: Long?,
     onItemClicked: (CardElementWithAssetKeys) -> Unit,
@@ -218,7 +238,7 @@ fun SpawnedObjectRow(
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = toBase62(element.cardElement.elementId),
+                            text = element.cardElement.elementId.toBase62(),
                             style = MaterialTheme.typography.labelSmall,
                         )
                     }
@@ -244,7 +264,7 @@ fun SpawnedObjectRow(
 }
 
 @Composable
-fun ObjectClickableGrid(assets: List<Asset>, onItemClicked: (Asset) -> Unit) {
+private fun ObjectClickableGrid(assets: List<Asset>, onItemClicked: (Asset) -> Unit) {
     val context = LocalContext.current
 
     LazyVerticalGrid(
@@ -271,7 +291,7 @@ fun ObjectClickableGrid(assets: List<Asset>, onItemClicked: (Asset) -> Unit) {
 }
 
 @Composable
-fun BackgroundSelectableGrid(assets: List<Asset>, selectedItemIndex: Long, onItemClicked: (Long) -> Unit) {
+private fun BackgroundSelectableGrid(assets: List<Asset>, selectedItemIndex: Long, onItemClicked: (Long) -> Unit) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(COLUMNS),
         modifier = Modifier.padding(horizontal = 16.dp),
@@ -298,13 +318,8 @@ fun BackgroundSelectableGrid(assets: List<Asset>, selectedItemIndex: Long, onIte
     }
 }
 
-
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun CardCreationScreenPreview() {
-    AssetBrowserPanel(
-        spawnedObjects = emptyList(),
-        objectItems = emptyList(),
-        backgroundItems = emptyList()
-    )
+private fun CardCreationScreenPreview() {
+    CardEditorContent()
 }

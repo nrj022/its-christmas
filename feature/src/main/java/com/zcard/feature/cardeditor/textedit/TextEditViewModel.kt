@@ -13,7 +13,6 @@ import com.zcard.domain.repository.CardElementRepository
 import com.zcard.domain.usecase.SaveTextElementsParams
 import com.zcard.domain.usecase.SaveTextElementsUseCase
 import com.zcard.feature.R
-import com.zcard.feature.cardeditor.model.TempText
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
@@ -49,6 +48,7 @@ class TextEditViewModel @Inject constructor(
         when (intent) {
             is TextEditIntent.Init -> handleInit(intent.cardId)
             is TextEditIntent.ImeVisible -> handleImeVisible(intent.visible)
+            is TextEditIntent.ChangeTab -> handleTabChange(intent.tab)
             is TextEditIntent.ResetCamera -> handleResetCamera()
             is TextEditIntent.MissingTextSelection -> handleMissingTextSelection()
             is TextEditIntent.AddText -> handleAddText()
@@ -99,6 +99,10 @@ class TextEditViewModel @Inject constructor(
                 unityContainerHeightFraction = if(visible) 0.4f else 0.6f
             )
         }
+    }
+
+    fun handleTabChange(tab: TextEditState.TextEditorTab) {
+        _textEditState.update { it.copy(selectedTab = tab) }
     }
 
     private fun handleMissingTextSelection() {

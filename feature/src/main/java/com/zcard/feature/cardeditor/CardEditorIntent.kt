@@ -1,6 +1,5 @@
 package com.zcard.feature.cardeditor
 
-import com.zcard.feature.cardeditor.model.DialogState
 import com.zcard.domain.model.Asset
 import com.zcard.domain.model.CardElementWithAssetKeys
 import com.zcard.domain.bridge.UnityMessage
@@ -17,8 +16,9 @@ sealed class CardEditorIntent {
 
     data object FinishEditing: CardEditorIntent()
     data object ExportGlbAndUpload: CardEditorIntent()
-    data class ChangeDialogState(val dialogState: DialogState): CardEditorIntent()
+    data class ChangeDialogState(val dialogState: CardEditorState.DialogState): CardEditorIntent()
 
+    data class ChangeTab(val tab: CardEditorState.AssetBrowserTab): CardEditorIntent()
     data class CreateObject(val clickedObject: Asset): CardEditorIntent()
     data class ChangeBackground(val assetId: Long): CardEditorIntent()
     data class SelectSpawnedObject(val element: CardElementWithAssetKeys): CardEditorIntent()

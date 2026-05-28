@@ -3,7 +3,6 @@ package com.zcard.feature.cardeditor
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.zcard.feature.cardeditor.model.DialogState
 import com.zcard.domain.bridge.UnityBridge
 import com.zcard.domain.model.ElementType
 import com.zcard.domain.model.Asset
@@ -74,6 +73,7 @@ class CardEditorViewModel @Inject constructor(
             is CardEditorIntent.ExportGlbAndUpload -> handleExportGlbAndUpload()
             is CardEditorIntent.ChangeDialogState -> handleChangeDialogState(intent.dialogState)
 
+            is CardEditorIntent.ChangeTab -> handleChangeTab(intent.tab)
             is CardEditorIntent.CreateObject -> handleCreateObject(intent.clickedObject)
             is CardEditorIntent.ChangeBackground -> handleChangeBackground(intent.assetId)
             is CardEditorIntent.SelectSpawnedObject -> handleSelectSpawnedObject(intent.element)
@@ -217,7 +217,7 @@ class CardEditorViewModel @Inject constructor(
     }
 
     private fun handleOpenCardLinkDetail() {
-        updateDialogState(DialogState.CARD_LINK_DETAIL)
+        updateDialogState(CardEditorState.DialogState.CARD_LINK_DETAIL)
     }
 
     private fun handleCopyCardLink() {
@@ -227,12 +227,12 @@ class CardEditorViewModel @Inject constructor(
     }
 
     private fun handleFinishEditing() {
-        updateDialogState(DialogState.SET_CARD_TITLE)
+        updateDialogState(CardEditorState.DialogState.SET_CARD_TITLE)
     }
 
     private fun handleExportGlbAndUpload() {
         saveCardTitle()
-        updateDialogState(DialogState.NONE)
+        updateDialogState(CardEditorState.DialogState.NONE)
 
         if(_exportId == -1L) return
         unityBridge.exportGlb(_exportId)
@@ -245,11 +245,15 @@ class CardEditorViewModel @Inject constructor(
         }
     }
 
-    private fun handleChangeDialogState(dialogState: DialogState) {
+    private fun handleChangeDialogState(dialogState: CardEditorState.DialogState) {
         updateDialogState(dialogState)
     }
 
     // ── 오브젝트 ──────────────────────────────────────────────────────────────
+
+    private fun handleChangeTab(tab: CardEditorState.AssetBrowserTab) {
+        _cardEditorState.update { it.copy(selectedTab = tab) }
+    }
 
     private fun handleCreateObject(clickedObject: Asset) {
         viewModelScope.launch {
@@ -306,7 +310,7 @@ class CardEditorViewModel @Inject constructor(
                         if(row > 0) unityBridge.deleteObject(id)
                     }
             }
-            updateDialogState(DialogState.NONE)
+            updateDialogState(CardEditorState.DialogState.NONE)
             _cardEditorState.update { it.copy(selectedSpawnedObject = null) }
         }
     }
@@ -326,7 +330,7 @@ class CardEditorViewModel @Inject constructor(
 
     // ── 공통 유틸 ─────────────────────────────────────────────────────────────
 
-    private fun updateDialogState(dialogState: DialogState) {
+    private fun updateDialogState(dialogState: CardEditorState.DialogState) {
         _cardEditorState.update { it.copy(dialogState = dialogState) }
     }
 

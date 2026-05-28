@@ -37,8 +37,8 @@ import com.zcard.designsystem.theme.White
 import com.zcard.designsystem.theme.ZCardTheme
 import com.zcard.feature.R
 import com.zcard.feature.cardeditor.model.Direction
-import com.zcard.feature.cardeditor.ui.common.DirectionalController
-import com.zcard.feature.cardeditor.ui.dialog.UnsavedChangesDialog
+import com.zcard.feature.cardeditor.component.DirectionalController
+import com.zcard.feature.cardeditor.dialog.UnsavedChangesDialog
 
 @Composable
 fun TransformScreen(viewModel: TransformViewModel = hiltViewModel()) {

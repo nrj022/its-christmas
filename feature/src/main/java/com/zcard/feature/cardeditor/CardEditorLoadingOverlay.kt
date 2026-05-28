@@ -1,4 +1,4 @@
-package com.zcard.feature.cardeditor.ui.common
+package com.zcard.feature.cardeditor
 
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.RepeatMode
@@ -37,7 +37,7 @@ import kotlinx.coroutines.delay
 import kotlin.math.roundToInt
 
 @Composable
-fun BouncingLogoLoadingOverlay(
+fun CardEditorLoadingOverlay(
     text: String,
     modifier: Modifier = Modifier,
     logoSize: Dp = 48.dp,

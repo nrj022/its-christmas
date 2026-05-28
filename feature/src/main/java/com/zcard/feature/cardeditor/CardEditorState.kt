@@ -1,11 +1,12 @@
 package com.zcard.feature.cardeditor
 
-import com.zcard.feature.cardeditor.model.DialogState
 import com.zcard.domain.model.CardElementWithAssetKeys
 import com.zcard.domain.model.Asset
+import com.zcard.feature.R
 
 data class CardEditorState(
     val dialogState: DialogState = DialogState.NONE,
+    val selectedTab: AssetBrowserTab = AssetBrowserTab.OBJECTS,
     val isLoading: Boolean = false,
     val originalCardTitle: String = "New Card",
     val cardTitle: String = "New Card",
@@ -30,4 +31,8 @@ data class CardEditorState(
 
     val selectedSpawnedObjectId: Long?
         get() = selectedSpawnedObject?.cardElement?.elementId
+
+    enum class DialogState { NONE, DELETE_CONFIRM, CARD_LINK_DETAIL, SET_CARD_TITLE }
+
+    enum class AssetBrowserTab(val resId: Int) { OBJECTS(R.string.editor_title_asset_tab_objects), BACKGROUND(R.string.editor_title_asset_tab_background) }
 }

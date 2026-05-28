@@ -37,9 +37,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -64,20 +61,13 @@ import com.zcard.domain.model.TextColor
 import com.zcard.domain.model.TextElement
 import com.zcard.domain.model.TextFontFamily
 import com.zcard.feature.R
-import com.zcard.feature.cardeditor.model.BaseTabItem
+import com.zcard.feature.cardeditor.component.BaseTabItem
 import com.zcard.feature.cardeditor.model.Direction
-import com.zcard.feature.cardeditor.ui.common.BaseTabs
-import com.zcard.feature.cardeditor.ui.common.DirectionalController
-import com.zcard.feature.cardeditor.ui.dialog.UnsavedChangesDialog
-import com.zcard.feature.cardeditor.ui.uimapper.icon
-import com.zcard.feature.cardeditor.ui.uimapper.rememberFontFamilies
-
-// 토글 탭 목록 정의
-enum class TextEditorTab(val resId: Int) {
-    STYLE(R.string.text_edit_title_tab_style),
-    FONT(R.string.text_edit_title_tab_font),
-    POSITION(R.string.text_edit_title_tab_position)
-}
+import com.zcard.feature.cardeditor.component.BaseTabs
+import com.zcard.feature.cardeditor.component.DirectionalController
+import com.zcard.feature.cardeditor.dialog.UnsavedChangesDialog
+import com.zcard.feature.cardeditor.textedit.util.icon
+import com.zcard.feature.cardeditor.textedit.util.rememberFontFamilies
 
 @Composable
 fun TextEditScreen(viewModel: TextEditViewModel = hiltViewModel()) {
@@ -85,6 +75,8 @@ fun TextEditScreen(viewModel: TextEditViewModel = hiltViewModel()) {
 
     TextEditContent(
         textElement = state.selectedText?.textElement,
+        selectedTab = state.selectedTab,
+        onTabSelected = { viewModel.onIntent(TextEditIntent.ChangeTab(it)) },
         onTextChange = { viewModel.onIntent(TextEditIntent.ChangeTextContent(it)) },
         onAlignmentSelected = { viewModel.onIntent(TextEditIntent.SelectAlignment(it)) },
         onColorSelected = { viewModel.onIntent(TextEditIntent.SelectColor(it)) },
@@ -107,6 +99,8 @@ fun TextEditScreen(viewModel: TextEditViewModel = hiltViewModel()) {
 @Composable
 fun TextEditContent(
     textElement: TextElement? = null,
+    selectedTab: TextEditState.TextEditorTab = TextEditState.TextEditorTab.STYLE,
+    onTabSelected: (TextEditState.TextEditorTab) -> Unit = {},
     onTextChange: (String) -> Unit = {},
     onColorSelected: (TextColor) -> Unit = {},
     onAlignmentSelected: (TextAlignment) -> Unit = {},
@@ -115,37 +109,6 @@ fun TextEditContent(
     onPositionChange: (Direction) -> Unit = { },
     onApply: () -> Unit = {},
     onBack: () -> Unit = {}
-) {
-    var selectedTab by remember { mutableStateOf(TextEditorTab.STYLE) }
-
-    EditorTabContent(
-        textElement = textElement,
-        selectedTab = selectedTab,
-        onTextChange = onTextChange,
-        onTabSelected = { selectedTab = it },
-        onColorSelected = onColorSelected,
-        onAlignmentSelected = onAlignmentSelected,
-        onFontSizeChange = onFontSizeChange,
-        onFontSelected = onFontSelected,
-        onPositionChange = onPositionChange,
-        onApply = onApply,
-        onBack = onBack
-    )
-}
-
-@Composable
-private fun EditorTabContent(
-    textElement: TextElement?,
-    selectedTab: TextEditorTab,
-    onTextChange: (String) -> Unit,
-    onTabSelected: (TextEditorTab) -> Unit,
-    onColorSelected: (TextColor) -> Unit,
-    onAlignmentSelected: (TextAlignment) -> Unit,
-    onFontSizeChange: (Float) -> Unit,
-    onFontSelected: (TextFontFamily) -> Unit,
-    onPositionChange: (Direction) -> Unit,
-    onApply: () -> Unit,
-    onBack: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -172,14 +135,14 @@ private fun EditorTabContent(
 
         // "Style", "font", "Position" 탭
         BaseTabs(
-            tabs = TextEditorTab.entries.map { BaseTabItem(it.name, it.resId) },
+            tabs = TextEditState.TextEditorTab.entries.map { BaseTabItem(it.name, it.resId) },
             selectedTabId = selectedTab.name,
-            onTabSelected = { onTabSelected(TextEditorTab.valueOf(it)) }
+            onTabSelected = { onTabSelected(TextEditState.TextEditorTab.valueOf(it)) }
         )
         Spacer(Modifier.height(12.dp))
 
         when (selectedTab) {
-            TextEditorTab.STYLE -> {
+            TextEditState.TextEditorTab.STYLE -> {
                 StyleOptions(
                     selectedColor = textElement.attributes.textColor,
                     selectedAlignment = textElement.attributes.alignment,
@@ -189,10 +152,10 @@ private fun EditorTabContent(
                     onFontSizeChange = onFontSizeChange
                 )
             }
-            TextEditorTab.FONT -> {
+            TextEditState.TextEditorTab.FONT -> {
                 FontOptions(selectedFont = textElement.attributes.fontFamily, onFontSelected = onFontSelected)
             }
-            TextEditorTab.POSITION -> {
+            TextEditState.TextEditorTab.POSITION -> {
                 PositionOptions(onPositionChange = onPositionChange)
             }
         }

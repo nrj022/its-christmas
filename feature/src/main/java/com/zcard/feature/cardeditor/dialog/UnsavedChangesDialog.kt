@@ -1,4 +1,4 @@
-package com.zcard.feature.cardeditor.ui.dialog
+package com.zcard.feature.cardeditor.dialog
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource

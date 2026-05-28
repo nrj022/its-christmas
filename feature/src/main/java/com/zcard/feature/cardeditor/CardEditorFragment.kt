@@ -22,7 +22,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.zcard.feature.cardeditor.model.DialogState
-import com.zcard.feature.cardeditor.ui.CardEditorBottomScreen
 import com.zcard.feature.cardeditor.ui.common.BouncingLogoLoadingOverlay
 import com.zcard.feature.R
 import com.zcard.feature.cardshare.CardShareFragment
@@ -142,7 +141,7 @@ class CardEditorFragment : Fragment() {
         }
 
         binding.composeContainer.setContent {
-            ZCardTheme { CardEditorBottomScreen(viewModel) }
+            ZCardTheme { CardEditorScreen(viewModel) }
         }
 
         binding.composeLoading.setContent {

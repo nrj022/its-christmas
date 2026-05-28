@@ -1,11 +1,9 @@
-package com.zcard.feature.cardeditor.ui
+package com.zcard.feature.cardeditor
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.zcard.feature.cardeditor.CardEditorIntent
-import com.zcard.feature.cardeditor.CardEditorViewModel
 import com.zcard.feature.cardeditor.model.DialogState
 import com.zcard.feature.cardeditor.ui.dialog.CardInfoDialog
 import com.zcard.feature.cardeditor.ui.dialog.ObjectDeleteConfirmDialog
@@ -59,16 +57,19 @@ enum class AssetBrowserTab(val resId: Int) {
 }
 
 @Composable
-fun CardEditorBottomScreen(viewModel: CardEditorViewModel = hiltViewModel()) {
+fun CardEditorScreen(viewModel: CardEditorViewModel = hiltViewModel()) {
     val state by viewModel.cardEditorState.collectAsStateWithLifecycle()
+    var selectedTab by remember { mutableStateOf(AssetBrowserTab.OBJECTS) }
 
-    CardEditorBottomContent(
+    CardEditorContent(
+        selectedTab = selectedTab,
         objectItems = state.objects,
         backgroundItems = state.backgrounds,
         spawnedObjects = state.spawnedObjects,
         selectedSpawnedObject = state.selectedSpawnedObjectId,
         selectedBackground = state.selectedBackgroundId,
         loadingObjectIds = state.loadingObjectIds,
+        onTabSelected = { selectedTab = it },
         onAddTextClicked = { viewModel.onIntent(CardEditorIntent.EnterTextMode) },
         onObjectClicked = { viewModel.onIntent(CardEditorIntent.CreateObject(it)) },
         onSpawnedObjectClicked = { viewModel.onIntent(CardEditorIntent.SelectSpawnedObject(it)) },
@@ -110,54 +111,21 @@ fun CardEditorBottomScreen(viewModel: CardEditorViewModel = hiltViewModel()) {
     }
 }
 
-
 @Composable
-fun CardEditorBottomContent(
+private fun CardEditorContent(
+    modifier: Modifier = Modifier,
+    selectedTab: AssetBrowserTab = AssetBrowserTab.OBJECTS,
     objectItems: List<Asset> = emptyList(),
     backgroundItems: List<Asset> = emptyList(),
     spawnedObjects: List<CardElementWithAssetKeys> = emptyList(),
     selectedSpawnedObject: Long? = null,
     selectedBackground: Long = 1,
     loadingObjectIds: Set<Long> = emptySet(),
+    onTabSelected: (AssetBrowserTab) -> Unit = {},
     onAddTextClicked: () -> Unit = {},
     onObjectClicked: (Asset) -> Unit = {},
     onSpawnedObjectClicked: (CardElementWithAssetKeys) -> Unit = {},
     onBackgroundClicked: (Long) -> Unit = {},
-) {
-
-    var selectedTab by remember { mutableStateOf(AssetBrowserTab.OBJECTS) }
-
-    AssetBrowserPanelContent(
-        selectedTab = selectedTab,
-        objectItems = objectItems,
-        backgroundItems = backgroundItems,
-        spawnedObjects = spawnedObjects,
-        selectedSpawnedObject = selectedSpawnedObject,
-        selectedBackground = selectedBackground,
-        loadingObjectIds = loadingObjectIds,
-        onTabSelected = { selectedTab = it },
-        onAddTextClicked = onAddTextClicked,
-        onObjectClicked = onObjectClicked,
-        onSpawnedObjectClicked = onSpawnedObjectClicked,
-        onBackgroundClicked = onBackgroundClicked
-    )
-}
-
-@Composable
-fun AssetBrowserPanelContent(
-    modifier: Modifier = Modifier,
-    selectedTab: AssetBrowserTab,
-    objectItems: List<Asset>,
-    backgroundItems: List<Asset>,
-    spawnedObjects: List<CardElementWithAssetKeys>,
-    selectedSpawnedObject: Long?,
-    selectedBackground: Long,
-    loadingObjectIds: Set<Long>,
-    onTabSelected: (AssetBrowserTab) -> Unit,
-    onObjectClicked: (Asset) -> Unit,
-    onSpawnedObjectClicked: (CardElementWithAssetKeys) -> Unit,
-    onBackgroundClicked: (Long) -> Unit,
-    onAddTextClicked: () -> Unit
 ) {
     Column(
         modifier = modifier.fillMaxWidth().background(White)
@@ -193,7 +161,7 @@ fun AssetBrowserPanelContent(
 }
 
 @Composable
-fun ControlHeader(
+private fun ControlHeader(
     selectedTab: AssetBrowserTab,
     onTabSelected: (AssetBrowserTab) -> Unit,
     onAddTextClicked: () -> Unit
@@ -232,7 +200,7 @@ fun ControlHeader(
 }
 
 @Composable
-fun SpawnedObjectRow(
+private fun SpawnedObjectRow(
     elements: List<CardElementWithAssetKeys>,
     selectedItemIndex: Long?,
     onItemClicked: (CardElementWithAssetKeys) -> Unit,
@@ -306,7 +274,7 @@ fun SpawnedObjectRow(
 }
 
 @Composable
-fun ObjectClickableGrid(assets: List<Asset>, onItemClicked: (Asset) -> Unit) {
+private fun ObjectClickableGrid(assets: List<Asset>, onItemClicked: (Asset) -> Unit) {
     val context = LocalContext.current
 
     LazyVerticalGrid(
@@ -333,7 +301,7 @@ fun ObjectClickableGrid(assets: List<Asset>, onItemClicked: (Asset) -> Unit) {
 }
 
 @Composable
-fun BackgroundSelectableGrid(assets: List<Asset>, selectedItemIndex: Long, onItemClicked: (Long) -> Unit) {
+private fun BackgroundSelectableGrid(assets: List<Asset>, selectedItemIndex: Long, onItemClicked: (Long) -> Unit) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(COLUMNS),
         modifier = Modifier.padding(horizontal = 16.dp),
@@ -362,10 +330,6 @@ fun BackgroundSelectableGrid(assets: List<Asset>, selectedItemIndex: Long, onIte
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun CardCreationScreenPreview() {
-    CardEditorBottomContent(
-        spawnedObjects = emptyList(),
-        objectItems = emptyList(),
-        backgroundItems = emptyList()
-    )
+private fun CardCreationScreenPreview() {
+    CardEditorContent()
 }

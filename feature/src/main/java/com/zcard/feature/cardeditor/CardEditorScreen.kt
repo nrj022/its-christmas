@@ -87,7 +87,7 @@ fun CardEditorScreen(viewModel: CardEditorViewModel = hiltViewModel()) {
                 isTitleChanged = state.isTitleChanged,
                 onTitleChange = { viewModel.onIntent(CardEditorIntent.ChangeTitle(it)) },
                 onTitleSave = { viewModel.onIntent(CardEditorIntent.SaveTitle) },
-                onViewLink = { viewModel.onIntent(CardEditorIntent.CopyCardLink) },
+                onViewLink = { viewModel.onIntent(CardEditorIntent.NavigateToCardShare) },
                 onDismiss = {
                     viewModel.onIntent(CardEditorIntent.ResetTitle)
                     viewModel.onIntent(CardEditorIntent.ChangeDialogState(CardEditorState.DialogState.NONE))

@@ -83,8 +83,10 @@
     <string name="transform_cd_decrease_scale">Größe verringern</string>
 
     <!-- Share Screen -->
+    <string name="share_button_try_again">Erneut versuchen</string>
     <string name="share_button_share">Teilen</string>
     <string name="share_cd_home_button">Startseite</string>
+    <string name="share_text_no_internet">Keine Internetverbindung.\nBitte überprüfe deine Verbindung und versuche es erneut.</string>
 
     <!-- Home Screen -->
     <string name="home_msg_fail_create_card">Karte konnte nicht erstellt werden</string>

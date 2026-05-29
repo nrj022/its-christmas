@@ -83,8 +83,10 @@
     <string name="transform_cd_decrease_scale">サイズを縮小</string>
 
     <!-- Share Screen -->
+    <string name="share_button_try_again">再試行</string>
     <string name="share_button_share">シェア</string>
     <string name="share_cd_home_button">ホーム</string>
+    <string name="share_text_no_internet">インターネット接続がありません。\n接続を確認してからもう一度お試しください。</string>
 
     <!-- Home Screen -->
     <string name="home_msg_fail_create_card">カードの作成に失敗しました</string>

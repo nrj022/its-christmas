@@ -83,8 +83,10 @@
     <string name="transform_cd_decrease_scale">Reducir tamaño</string>
 
     <!-- Share Screen -->
+    <string name="share_button_try_again">Reintentar</string>
     <string name="share_button_share">Compartir</string>
     <string name="share_cd_home_button">Inicio</string>
+    <string name="share_text_no_internet">Sin conexión a internet.\nComprueba tu conexión e inténtalo de nuevo.</string>
 
     <!-- Home Screen -->
     <string name="home_msg_fail_create_card">No se pudo crear la tarjeta</string>

@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -45,6 +46,8 @@ fun CardShareScreen(cardUrl: String, onBackClicked: () -> Unit = {}, onHomeClick
 private fun CardShareContent(
     cardUrl: String = "",
     isLoading: Boolean = false,
+    isOnline: Boolean = false,
+    onNetworkCheckAgainClicked: () -> Unit = {},
     onPageFinished: () -> Unit = {},
     onBackClicked: () -> Unit = {},
     onHomeClicked: () -> Unit = {},
@@ -55,12 +58,43 @@ private fun CardShareContent(
             .fillMaxSize()
             .navigationBarsPadding()
     ) {
-
-        CardShareWebView(cardUrl, isLoading, onPageFinished)
+        if(isOnline) {
+            CardShareWebView(cardUrl, isLoading, onPageFinished)
+        } else {
+            NoNetworkScreen(onNetworkCheckAgainClicked)
+        }
 
         TopSection(onBackClicked, onHomeClicked)
 
         ShareButton(onShareClicked)
+    }
+}
+
+
+@Composable
+private fun NoNetworkScreen(onTryAgainClicked: () -> Unit) {
+    Column(
+        modifier = Modifier.fillMaxSize().background(Gray),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = stringResource(R.string.share_text_no_internet),
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.labelSmall,
+        )
+        Spacer(modifier = Modifier.height(25.dp))
+        TextButton (
+            onClick = onTryAgainClicked,
+            shape = MaterialTheme.shapes.extraLarge,
+            colors = ButtonDefaults.buttonColors(containerColor = White, contentColor = SoftBlack),
+        ) {
+            Text(
+                text = stringResource(R.string.share_button_try_again),
+                style = MaterialTheme.typography.labelSmall,
+                fontWeight = FontWeight.Bold
+            )
+        }
     }
 }
 

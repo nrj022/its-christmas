@@ -17,6 +17,7 @@
     <string name="editor_msg_copy_success">Copiado al portapapeles</string>
     <string name="editor_msg_cancel_card_upload">Subida de tarjeta cancelada</string>
     <string name="editor_msg_block_back_during_export">Exportación en curso. Por favor, espera un momento.</string>
+    <string name="editor_msg_fail_generate_link">No se pudo generar el enlace. Por favor, inténtalo de nuevo.</string>
     <string name="editor_loading_msg_network_required">Esta tarea requiere conexión a internet.</string>
     <string name="editor_loading_msg_uploading">Subiendo %1$d%%</string>
 

@@ -238,9 +238,14 @@ class CardEditorViewModel @Inject constructor(
 
     private fun handleNavigateToCardShare() {
         viewModelScope.launch {
-            val cardUrl = generateCardUrlUseCase(cardId).getOrThrow()
-            _cardEditorState.update { it.copy(dialogState = CardEditorState.DialogState.NONE) }
-            _cardEditorSideEffect.trySend(CardEditorSideEffect.NavigateToCardShare(cardUrl))
+            generateCardUrlUseCase(cardId)
+                .onSuccess { cardUrl ->
+                    _cardEditorState.update { it.copy(dialogState = CardEditorState.DialogState.NONE) }
+                    _cardEditorSideEffect.trySend(CardEditorSideEffect.NavigateToCardShare(cardUrl))
+                }.onFailure {
+                    Log.e(TAG, "handleNavigateToCardShare: $it")
+                    _cardEditorSideEffect.trySend(CardEditorSideEffect.ToastMessage(R.string.editor_msg_fail_generate_link))
+                }
         }
     }
 

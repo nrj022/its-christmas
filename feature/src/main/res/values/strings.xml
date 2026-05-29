@@ -55,7 +55,7 @@
     <string name="editor_dialog_content_cancel_upload">Do you want to cancel the upload?</string>
 
     <!-- Editor Screen - Dialog (Link Detail) -->
-    <string name="editor_dialog_title_link_detail">Copy Card Link</string>
+    <string name="editor_dialog_title_link_detail">Card Detail</string>
     <string name="editor_dialog_button_set_card_title_save">Save</string>
     <string name="editor_dialog_button_view_link">View Link</string>
     <string name="editor_dialog_text_exclude_new_edit">New edits are not included</string>

@@ -55,7 +55,7 @@
     <string name="editor_dialog_content_cancel_upload">¿Quieres cancelar la subida?</string>
 
     <!-- Editor Screen - Dialog (Link Detail) -->
-    <string name="editor_dialog_title_link_detail">Copiar enlace de tarjeta</string>
+    <string name="editor_dialog_title_link_detail">Detalle de tarjeta</string>
     <string name="editor_dialog_button_set_card_title_save">Guardar</string>
     <string name="editor_dialog_button_view_link">Ver enlace</string>
     <string name="editor_dialog_text_exclude_new_edit">Las ediciones nuevas no están incluidas</string>

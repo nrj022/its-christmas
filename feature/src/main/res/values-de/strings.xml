@@ -55,7 +55,7 @@
     <string name="editor_dialog_content_cancel_upload">Upload abbrechen?</string>
 
     <!-- Editor Screen - Dialog (Link Detail) -->
-    <string name="editor_dialog_title_link_detail">Karten-Link kopieren</string>
+    <string name="editor_dialog_title_link_detail">Kartendetails</string>
     <string name="editor_dialog_button_set_card_title_save">Speichern</string>
     <string name="editor_dialog_button_view_link">Link ansehen</string>
     <string name="editor_dialog_text_exclude_new_edit">Neue Änderungen sind nicht enthalten</string>

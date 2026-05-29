@@ -9,7 +9,11 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -18,14 +22,19 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import com.zcard.designsystem.theme.Gray
 import com.zcard.designsystem.theme.SoftBlack
 import com.zcard.designsystem.theme.White
 import com.zcard.feature.R
 
 @Composable
 fun CardShareScreen(cardUrl: String, onBackClicked: () -> Unit = {}, onHomeClicked: () -> Unit = {}, onShareClicked: () -> Unit = {}) {
+    var isLoading by remember { mutableStateOf(true) }
+
     CardShareContent(
         cardUrl = cardUrl,
+        isLoading = isLoading,
+        onPageFinished = { isLoading = false },
         onBackClicked = onBackClicked,
         onHomeClicked = onHomeClicked,
         onShareClicked = onShareClicked
@@ -35,9 +44,11 @@ fun CardShareScreen(cardUrl: String, onBackClicked: () -> Unit = {}, onHomeClick
 @Composable
 private fun CardShareContent(
     cardUrl: String = "",
+    isLoading: Boolean = false,
+    onPageFinished: () -> Unit = {},
     onBackClicked: () -> Unit = {},
     onHomeClicked: () -> Unit = {},
-    onShareClicked: () -> Unit = {}
+    onShareClicked: () -> Unit = {},
 ) {
     Box(
         modifier = Modifier
@@ -45,7 +56,7 @@ private fun CardShareContent(
             .navigationBarsPadding()
     ) {
 
-        CardShareWebView(cardUrl)
+        CardShareWebView(cardUrl, isLoading, onPageFinished)
 
         TopSection(onBackClicked, onHomeClicked)
 
@@ -54,7 +65,7 @@ private fun CardShareContent(
 }
 
 @Composable
-private fun TopSection(onBackClicked: () -> Unit, onCompleteClicked: () -> Unit) {
+private fun TopSection(onBackClicked: () -> Unit, onHomeClicked: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -65,7 +76,7 @@ private fun TopSection(onBackClicked: () -> Unit, onCompleteClicked: () -> Unit)
     ) {
         BackButton(onBackClicked)
 
-        HomeButton(onCompleteClicked)
+        HomeButton(onHomeClicked)
     }
 }
 
@@ -98,37 +109,52 @@ private fun HomeButton(onHomeClicked: () -> Unit) {
 }
 
 @Composable
-private fun CardShareWebView(cardUrl: String) {
-    AndroidView(
-        factory = { context ->
-            val webView = WebView(context)
-            webView.webViewClient = WebViewClient()
+private fun CardShareWebView(cardUrl: String, isLoading: Boolean, onPageFinished: () -> Unit = {}) {
+    Box(modifier = Modifier.fillMaxSize()) {
+        AndroidView(
+            factory = { context ->
+                val webView = WebView(context).apply {
+                    webViewClient = object : WebViewClient() {
+                        override fun onPageFinished(view: WebView?, url: String?) {
+                            super.onPageFinished(view, url)
+                            onPageFinished()
+                            println("onPageFinished: $url")
+                        }
+                    }
+                }
 
-            webView.settings.apply {
-                javaScriptEnabled = true
-                domStorageEnabled = true
-                loadsImagesAutomatically = true
-                useWideViewPort = true
-                loadWithOverviewMode = true
-                builtInZoomControls = false
-            }
+                webView.settings.apply {
+                    javaScriptEnabled = true
+                    domStorageEnabled = true
+                    loadsImagesAutomatically = true
+                    useWideViewPort = true
+                    loadWithOverviewMode = true
+                    builtInZoomControls = false
+                }
 
-            webView.apply {
-                layoutParams = ViewGroup.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.MATCH_PARENT
-                )
+                webView.apply {
+                    layoutParams = ViewGroup.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT
+                    )
+                    webView.loadUrl(cardUrl)
+                }
+            },
+            onRelease = { webView ->
+                webView.clearHistory()
+                webView.clearCache(true)
+                webView.stopLoading()   // 진행중인 동작 중단
+                webView.destroy()
             }
-        }, update = { webView ->
-            webView.loadUrl(cardUrl)
-        },
-        onRelease = { webView ->
-            webView.clearHistory()
-            webView.clearCache(true)
-            webView.stopLoading()   // 진행중인 동작 중단
-            webView.destroy()
+        )
+
+        if (isLoading) {
+            CircularProgressIndicator(
+                modifier = Modifier.align(Alignment.Center),
+                color = Gray
+            )
         }
-    )
+    }
 }
 
 @Composable

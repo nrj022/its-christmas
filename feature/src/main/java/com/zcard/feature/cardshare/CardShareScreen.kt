@@ -10,10 +10,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -23,22 +19,26 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.zcard.designsystem.theme.Gray
 import com.zcard.designsystem.theme.SoftBlack
 import com.zcard.designsystem.theme.White
 import com.zcard.feature.R
 
 @Composable
-fun CardShareScreen(cardUrl: String, onBackClicked: () -> Unit = {}, onHomeClicked: () -> Unit = {}, onShareClicked: () -> Unit = {}) {
-    var isLoading by remember { mutableStateOf(true) }
+fun CardShareScreen(viewModel:CardShareViewModel = hiltViewModel(), cardUrl: String) {
+    val state = viewModel.state.collectAsStateWithLifecycle()
 
     CardShareContent(
         cardUrl = cardUrl,
-        isLoading = isLoading,
-        onPageFinished = { isLoading = false },
-        onBackClicked = onBackClicked,
-        onHomeClicked = onHomeClicked,
-        onShareClicked = onShareClicked
+        isLoading = state.value.isLoading,
+        isOnline = state.value.isOnline,
+        onNetworkCheckAgainClicked = { viewModel.onIntent(CardShareIntent.CheckNetwork) },
+        onPageFinished = { viewModel.onIntent(CardShareIntent.StopLoading) },
+        onBackClicked = { viewModel.onIntent(CardShareIntent.NavigateBack) },
+        onHomeClicked = { viewModel.onIntent(CardShareIntent.NavigateToHome) },
+        onShareClicked = { viewModel.onIntent(CardShareIntent.ShareCardLink(cardUrl)) }
     )
 }
 

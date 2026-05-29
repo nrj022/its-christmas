@@ -9,10 +9,18 @@ import android.view.ViewGroup
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.zcard.designsystem.theme.ZCardTheme
-import kotlin.apply
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class CardShareFragment : Fragment() {
+
+    private val viewModel: CardShareViewModel by viewModels()
 
     companion object {
         private const val ARG_CARD_URL = "cardUrl"
@@ -29,21 +37,41 @@ class CardShareFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val cardUrl = arguments?.getString(ARG_CARD_URL) ?: ""
+        val cardUrl = requireArguments().getString(ARG_CARD_URL, "")    // newInstance로만 생성되므로 없으면 즉시 크래시
+        require(cardUrl.isNotEmpty()) { "Missing required argument: $ARG_CARD_URL" }
 
         return ComposeView(requireContext()).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 ZCardTheme {
-                    CardShareScreen(
-                        cardUrl = cardUrl,
-                        onBackClicked = { parentFragmentManager.popBackStack() },
-                        onHomeClicked = ::navigationToMain,
-                        onShareClicked = { shareCardLink(cardUrl) }
-                    )
+                    CardShareScreen(cardUrl = cardUrl)
                 }
             }
         }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.sideEffect.collect { sideEffect ->
+                    when (sideEffect) {
+                        is CardShareSideEffect.NavigateBack -> {
+                            parentFragmentManager.popBackStack()
+                        }
+                        is CardShareSideEffect.NavigateToHome -> {
+                            navigationToMain()
+                        }
+                        is CardShareSideEffect.ShareCardLink -> {
+                            shareCardLink(sideEffect.cardUrl)
+                        }
+                    }
+                }
+            }
+        }
+
+        viewModel.onIntent(CardShareIntent.CheckNetwork)
     }
 
     private fun navigationToMain() {

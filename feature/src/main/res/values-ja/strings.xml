@@ -17,11 +17,12 @@
     <string name="editor_msg_copy_success">クリップボードにコピーしました</string>
     <string name="editor_msg_cancel_card_upload">カードのアップロードがキャンセルされました</string>
     <string name="editor_msg_block_back_during_export">エクスポート中はキャンセルできません。少々お待ちください。</string>
+    <string name="editor_msg_fail_generate_link">リンクの生成に失敗しました。もう一度お試しください。</string>
     <string name="editor_loading_msg_network_required">この作業にはネットワーク接続が必要です。</string>
     <string name="editor_loading_msg_uploading">%1$d%% アップロード中</string>
 
     <string name="editor_button_adjust">調整</string>
-    <string name="editor_button_complete">完了</string>
+    <string name="editor_button_complete">生成</string>
     <string name="editor_button_add_text">テキスト編集</string>
 
     <string name="editor_title_asset_tab_objects">3Dオブジェクト</string>
@@ -55,12 +56,13 @@
     <string name="editor_dialog_content_cancel_upload">アップロードをキャンセルしますか？</string>
 
     <!-- Editor Screen - Dialog (Link Detail) -->
-    <string name="editor_dialog_title_link_detail">カードリンクをコピー</string>
+    <string name="editor_dialog_title_link_detail">カード詳細</string>
     <string name="editor_dialog_button_set_card_title_save">保存</string>
-    <string name="editor_dialog_button_link_copy">リンクをコピー</string>
-    <string name="editor_dialog_text_exclude_new_edit">新しい編集は含まれません</string>
+    <string name="editor_dialog_button_view_link">リンクを見る</string>
+    <string name="editor_dialog_text_exclude_new_edit">新しい編集内容は含まれません</string>
 
     <!-- Text Edit Screen -->
+    <string name="text_edit_button_back">戻る</string>
     <string name="text_edit_msg_fail_load">テキストを読み込めませんでした。</string>
     <string name="text_edit_msg_fail_save">保存に失敗しました。もう一度お試しください。</string>
     <string name="text_edit_msg_partial_fail_save">一部の変更を保存できませんでした。</string>

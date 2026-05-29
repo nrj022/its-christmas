@@ -17,11 +17,12 @@
     <string name="editor_msg_copy_success">In die Zwischenablage kopiert</string>
     <string name="editor_msg_cancel_card_upload">Karten-Upload abgebrochen</string>
     <string name="editor_msg_block_back_during_export">Export läuft. Bitte warte einen Moment.</string>
+    <string name="editor_msg_fail_generate_link">Link konnte nicht erstellt werden. Bitte erneut versuchen.</string>
     <string name="editor_loading_msg_network_required">Diese Aufgabe erfordert eine Netzwerkverbindung.</string>
     <string name="editor_loading_msg_uploading">Upload %1$d%%</string>
 
     <string name="editor_button_adjust">Anpassen</string>
-    <string name="editor_button_complete">Fertig</string>
+    <string name="editor_button_complete">Generieren</string>
     <string name="editor_button_add_text">Text bearbeiten</string>
 
     <string name="editor_title_asset_tab_objects">3D-Objekt</string>
@@ -55,12 +56,13 @@
     <string name="editor_dialog_content_cancel_upload">Upload abbrechen?</string>
 
     <!-- Editor Screen - Dialog (Link Detail) -->
-    <string name="editor_dialog_title_link_detail">Karten-Link kopieren</string>
+    <string name="editor_dialog_title_link_detail">Kartendetails</string>
     <string name="editor_dialog_button_set_card_title_save">Speichern</string>
-    <string name="editor_dialog_button_link_copy">Link kopieren</string>
-    <string name="editor_dialog_text_exclude_new_edit">Neue Bearbeitungen ausgeschlossen</string>
+    <string name="editor_dialog_button_view_link">Link ansehen</string>
+    <string name="editor_dialog_text_exclude_new_edit">Neue Änderungen sind nicht enthalten</string>
 
     <!-- Text Edit Screen -->
+    <string name="text_edit_button_back">Zurück</string>
     <string name="text_edit_msg_fail_load">Texte konnten nicht geladen werden.</string>
     <string name="text_edit_msg_fail_save">Speichern fehlgeschlagen. Bitte erneut versuchen.</string>
     <string name="text_edit_msg_partial_fail_save">Einige Änderungen konnten nicht gespeichert werden.</string>

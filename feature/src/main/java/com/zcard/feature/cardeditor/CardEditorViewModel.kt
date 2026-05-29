@@ -70,7 +70,7 @@ class CardEditorViewModel @Inject constructor(
             is CardEditorIntent.OpenCardLinkDetail -> handleOpenCardLinkDetail()
             is CardEditorIntent.SaveTitle -> handleSaveTitle()
             is CardEditorIntent.ResetTitle -> handleResetTitle()
-            is CardEditorIntent.CopyCardLink -> handleCopyCardLink()
+            is CardEditorIntent.NavigateToCardShare -> handleNavigateToCardShare()
 
             is CardEditorIntent.FinishEditing -> handleFinishEditing()
             is CardEditorIntent.ExportGlbAndUpload -> handleExportGlbAndUpload()
@@ -236,9 +236,16 @@ class CardEditorViewModel @Inject constructor(
         updateDialogState(CardEditorState.DialogState.CARD_LINK_DETAIL)
     }
 
-    private fun handleCopyCardLink() {
+    private fun handleNavigateToCardShare() {
         viewModelScope.launch {
-            _cardEditorSideEffect.trySend(CardEditorSideEffect.CopyCardLink(_cardEditorState.value.cardUrl))
+            generateCardUrlUseCase(cardId)
+                .onSuccess { cardUrl ->
+                    _cardEditorState.update { it.copy(dialogState = CardEditorState.DialogState.NONE) }
+                    _cardEditorSideEffect.trySend(CardEditorSideEffect.NavigateToCardShare(cardUrl))
+                }.onFailure {
+                    Log.e(TAG, "handleNavigateToCardShare: $it")
+                    _cardEditorSideEffect.trySend(CardEditorSideEffect.ToastMessage(R.string.editor_msg_fail_generate_link))
+                }
         }
     }
 

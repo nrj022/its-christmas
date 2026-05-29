@@ -1,11 +1,11 @@
 <resources>
     <!-- Common -->
-    <string name="common_cd_back_button">뒤로 가기</string>
+    <string name="common_cd_back_button">뒤로가기</string>
     <string name="common_button_cancel">취소</string>
     <string name="common_button_confirm">확인</string>
     <string name="common_button_yes">네</string>
     <string name="common_button_no">아니요</string>
-    <string name="common_button_apply">적용</string>
+    <string name="common_button_apply">저장</string>
 
     <!-- Editor Screen -->
     <string name="editor_msg_fail_load_card">카드를 불러오지 못했어요. 다시 시도해 주세요.</string>
@@ -17,11 +17,12 @@
     <string name="editor_msg_copy_success">클립보드에 복사됐어요</string>
     <string name="editor_msg_cancel_card_upload">카드 업로드가 취소됐어요</string>
     <string name="editor_msg_block_back_during_export">추출 중에는 취소할 수 없어요. 잠시만 기다려 주세요.</string>
+    <string name="editor_msg_fail_generate_link">링크 생성에 실패했어요. 다시 시도해 주세요.</string>
     <string name="editor_loading_msg_network_required">네트워크가 필요한 작업이에요.</string>
     <string name="editor_loading_msg_uploading">%1$d%% 업로드 중</string>
 
     <string name="editor_button_adjust">Adjust</string>
-    <string name="editor_button_complete">Complete</string>
+    <string name="editor_button_complete">Generate</string>
     <string name="editor_button_add_text">Edit Text</string>
 
     <string name="editor_title_asset_tab_objects">3D Object</string>
@@ -57,10 +58,11 @@
     <!-- Editor Screen - Dialog (Link Detail) -->
     <string name="editor_dialog_title_link_detail">카드 정보</string>
     <string name="editor_dialog_button_set_card_title_save">저장</string>
-    <string name="editor_dialog_button_link_copy">링크 복사</string>
-    <string name="editor_dialog_text_exclude_new_edit">새 편집 내용 미포함</string>
+    <string name="editor_dialog_button_view_link">링크 보기</string>
+    <string name="editor_dialog_text_exclude_new_edit">새로운 편집 내용은 포함되지 않아요</string>
 
     <!-- Text Edit Screen -->
+    <string name="text_edit_button_back">Back</string>
     <string name="text_edit_msg_fail_load">텍스트를 불러오지 못했어요.</string>
     <string name="text_edit_msg_fail_save">저장에 실패했어요. 다시 시도해 주세요.</string>
     <string name="text_edit_msg_partial_fail_save">일부 변경 사항을 저장하지 못했어요.</string>

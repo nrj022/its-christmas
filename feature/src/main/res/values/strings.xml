@@ -17,11 +17,12 @@
     <string name="editor_msg_copy_success">Copied to clipboard</string>
     <string name="editor_msg_cancel_card_upload">Card upload cancelled</string>
     <string name="editor_msg_block_back_during_export">Export in progress. Please wait a moment.</string>
+    <string name="editor_msg_fail_generate_link">Failed to generate link. Please try again.</string>
     <string name="editor_loading_msg_network_required">This task requires a network connection.</string>
     <string name="editor_loading_msg_uploading">Uploading %1$d%%</string>
 
     <string name="editor_button_adjust">Adjust</string>
-    <string name="editor_button_complete">Complete</string>
+    <string name="editor_button_complete">Generate</string>
     <string name="editor_button_add_text">Edit Text</string>
 
     <string name="editor_title_asset_tab_objects">3D Object</string>
@@ -55,10 +56,10 @@
     <string name="editor_dialog_content_cancel_upload">Do you want to cancel the upload?</string>
 
     <!-- Editor Screen - Dialog (Link Detail) -->
-    <string name="editor_dialog_title_link_detail">Copy Card Link</string>
+    <string name="editor_dialog_title_link_detail">Card Detail</string>
     <string name="editor_dialog_button_set_card_title_save">Save</string>
-    <string name="editor_dialog_button_link_copy">Copy Link</string>
-    <string name="editor_dialog_text_exclude_new_edit">Excludes new edits</string>
+    <string name="editor_dialog_button_view_link">View Link</string>
+    <string name="editor_dialog_text_exclude_new_edit">New edits are not included</string>
 
     <!-- Transform Screen -->
     <string name="transform_msg_fail_load_object">Failed to load object. Please try again.</string>
@@ -70,6 +71,7 @@
     <string name="transform_cd_decrease_scale">Decrease Scale</string>
 
     <!-- Text Edit Screen -->
+    <string name="text_edit_button_back">Back</string>
     <string name="text_edit_msg_fail_load">Failed to load texts.</string>
     <string name="text_edit_msg_fail_save">Failed to save. Please try again.</string>
     <string name="text_edit_msg_partial_fail_save">Some changes couldn\'t be saved.</string>

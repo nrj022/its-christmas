@@ -17,11 +17,12 @@
     <string name="editor_msg_copy_success">Copiado al portapapeles</string>
     <string name="editor_msg_cancel_card_upload">Subida de tarjeta cancelada</string>
     <string name="editor_msg_block_back_during_export">Exportación en curso. Por favor, espera un momento.</string>
+    <string name="editor_msg_fail_generate_link">No se pudo generar el enlace. Por favor, inténtalo de nuevo.</string>
     <string name="editor_loading_msg_network_required">Esta tarea requiere conexión a internet.</string>
     <string name="editor_loading_msg_uploading">Subiendo %1$d%%</string>
 
     <string name="editor_button_adjust">Ajustar</string>
-    <string name="editor_button_complete">Listo</string>
+    <string name="editor_button_complete">Generar</string>
     <string name="editor_button_add_text">Editar texto</string>
 
     <string name="editor_title_asset_tab_objects">Objeto 3D</string>
@@ -55,12 +56,13 @@
     <string name="editor_dialog_content_cancel_upload">¿Quieres cancelar la subida?</string>
 
     <!-- Editor Screen - Dialog (Link Detail) -->
-    <string name="editor_dialog_title_link_detail">Copiar enlace de tarjeta</string>
+    <string name="editor_dialog_title_link_detail">Detalle de tarjeta</string>
     <string name="editor_dialog_button_set_card_title_save">Guardar</string>
-    <string name="editor_dialog_button_link_copy">Copiar enlace</string>
-    <string name="editor_dialog_text_exclude_new_edit">Excluye nuevas ediciones</string>
+    <string name="editor_dialog_button_view_link">Ver enlace</string>
+    <string name="editor_dialog_text_exclude_new_edit">Las ediciones nuevas no están incluidas</string>
 
     <!-- Text Edit Screen -->
+    <string name="text_edit_button_back">Volver</string>
     <string name="text_edit_msg_fail_load">No se pudieron cargar los textos.</string>
     <string name="text_edit_msg_fail_save">Error al guardar. Por favor, inténtalo de nuevo.</string>
     <string name="text_edit_msg_partial_fail_save">Algunos cambios no se pudieron guardar.</string>

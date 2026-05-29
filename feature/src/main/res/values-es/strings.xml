@@ -3,6 +3,7 @@
     <string name="common_cd_back_button">Volver</string>
     <string name="common_button_cancel">Cancelar</string>
     <string name="common_button_confirm">Confirmar</string>
+    <string name="common_button_yes">Sí</string>
     <string name="common_button_no">No</string>
     <string name="common_button_apply">Aplicar</string>
 
@@ -14,6 +15,10 @@
     <string name="editor_msg_fail_card_title_update">No se pudo actualizar el título. Por favor, inténtalo de nuevo.</string>
     <string name="editor_msg_block_system_back">Usa los botones de arriba para terminar la edición</string>
     <string name="editor_msg_copy_success">Copiado al portapapeles</string>
+    <string name="editor_msg_cancel_card_upload">Subida de tarjeta cancelada</string>
+    <string name="editor_msg_block_back_during_export">Exportación en curso. Por favor, espera un momento.</string>
+    <string name="editor_loading_msg_network_required">Esta tarea requiere conexión a internet.</string>
+    <string name="editor_loading_msg_uploading">Subiendo %1$d%%</string>
 
     <string name="editor_button_adjust">Ajustar</string>
     <string name="editor_button_complete">Listo</string>
@@ -30,6 +35,7 @@
     <string name="editor_cd_add_text">Nuevo texto</string>
     <string name="editor_cd_delete_text">Eliminar texto</string>
     <string name="editor_cd_asset">Asset</string>
+    <string name="editor_cd_close_button">Cerrar</string>
 
     <!-- Editor Screen - Dialog (Delete Object) -->
     <string name="editor_dialog_title_delete">¿Eliminar este objeto?</string>
@@ -43,7 +49,10 @@
     <!-- Editor Screen - Dialog (Unsaved Changes) -->
     <string name="editor_dialog_title_unsaved_changes">Tienes cambios sin guardar.</string>
     <string name="editor_dialog_content_unsaved_changes">¿Quieres guardar antes de salir?</string>
-    <string name="editor_dialog_button_save_confirm">Sí</string>
+
+    <!-- Editor Screen - Dialog (Cancel Upload) -->
+    <string name="editor_dialog_title_cancel_upload">Subida en curso</string>
+    <string name="editor_dialog_content_cancel_upload">¿Quieres cancelar la subida?</string>
 
     <!-- Editor Screen - Dialog (Link Detail) -->
     <string name="editor_dialog_title_link_detail">Copiar enlace de tarjeta</string>

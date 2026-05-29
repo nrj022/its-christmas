@@ -3,6 +3,7 @@
     <string name="common_cd_back_button">戻る</string>
     <string name="common_button_cancel">キャンセル</string>
     <string name="common_button_confirm">確認</string>
+    <string name="common_button_yes">はい</string>
     <string name="common_button_no">いいえ</string>
     <string name="common_button_apply">適用</string>
 
@@ -14,6 +15,10 @@
     <string name="editor_msg_fail_card_title_update">タイトルの更新に失敗しました。もう一度お試しください。</string>
     <string name="editor_msg_block_system_back">編集を終了するには上部のボタンをご利用ください</string>
     <string name="editor_msg_copy_success">クリップボードにコピーしました</string>
+    <string name="editor_msg_cancel_card_upload">カードのアップロードがキャンセルされました</string>
+    <string name="editor_msg_block_back_during_export">エクスポート中はキャンセルできません。少々お待ちください。</string>
+    <string name="editor_loading_msg_network_required">この作業にはネットワーク接続が必要です。</string>
+    <string name="editor_loading_msg_uploading">%1$d%% アップロード中</string>
 
     <string name="editor_button_adjust">調整</string>
     <string name="editor_button_complete">完了</string>
@@ -30,6 +35,7 @@
     <string name="editor_cd_add_text">新しいテキスト</string>
     <string name="editor_cd_delete_text">テキストを削除</string>
     <string name="editor_cd_asset">アセット</string>
+    <string name="editor_cd_close_button">閉じる</string>
 
     <!-- Editor Screen - Dialog (Delete Object) -->
     <string name="editor_dialog_title_delete">このオブジェクトを削除しますか？</string>
@@ -43,7 +49,10 @@
     <!-- Editor Screen - Dialog (Unsaved Changes) -->
     <string name="editor_dialog_title_unsaved_changes">保存されていない変更があります。</string>
     <string name="editor_dialog_content_unsaved_changes">終了前に保存しますか？</string>
-    <string name="editor_dialog_button_save_confirm">はい</string>
+
+    <!-- Editor Screen - Dialog (Cancel Upload) -->
+    <string name="editor_dialog_title_cancel_upload">アップロード中</string>
+    <string name="editor_dialog_content_cancel_upload">アップロードをキャンセルしますか？</string>
 
     <!-- Editor Screen - Dialog (Link Detail) -->
     <string name="editor_dialog_title_link_detail">カードリンクをコピー</string>

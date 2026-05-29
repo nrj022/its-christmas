@@ -3,6 +3,7 @@
     <string name="common_cd_back_button">뒤로 가기</string>
     <string name="common_button_cancel">취소</string>
     <string name="common_button_confirm">확인</string>
+    <string name="common_button_yes">네</string>
     <string name="common_button_no">아니요</string>
     <string name="common_button_apply">적용</string>
 
@@ -14,6 +15,10 @@
     <string name="editor_msg_fail_card_title_update">카드 제목 업데이트에 실패했어요. 다시 시도해 주세요.</string>
     <string name="editor_msg_block_system_back">편집을 마치려면 상단 버튼을 사용해 주세요</string>
     <string name="editor_msg_copy_success">클립보드에 복사됐어요</string>
+    <string name="editor_msg_cancel_card_upload">카드 업로드가 취소됐어요</string>
+    <string name="editor_msg_block_back_during_export">추출 중에는 취소할 수 없어요. 잠시만 기다려 주세요.</string>
+    <string name="editor_loading_msg_network_required">네트워크가 필요한 작업이에요.</string>
+    <string name="editor_loading_msg_uploading">%1$d%% 업로드 중</string>
 
     <string name="editor_button_adjust">Adjust</string>
     <string name="editor_button_complete">Complete</string>
@@ -30,6 +35,7 @@
     <string name="editor_cd_add_text">새 텍스트</string>
     <string name="editor_cd_delete_text">텍스트 삭제</string>
     <string name="editor_cd_asset">에셋</string>
+    <string name="editor_cd_close_button">닫기</string>
 
     <!-- Editor Screen - Dialog (Delete Object) -->
     <string name="editor_dialog_title_delete">이 오브젝트를 삭제할까요?</string>
@@ -43,7 +49,10 @@
     <!-- Editor Screen - Dialog (Unsaved Changes) -->
     <string name="editor_dialog_title_unsaved_changes">저장되지 않은 변경사항이 있어요.</string>
     <string name="editor_dialog_content_unsaved_changes">나가기 전에 저장할까요?</string>
-    <string name="editor_dialog_button_save_confirm">네</string>
+
+    <!-- Editor Screen - Dialog (Cancel Upload) -->
+    <string name="editor_dialog_title_cancel_upload">업로드 진행 중</string>
+    <string name="editor_dialog_content_cancel_upload">업로드를 취소할까요?</string>
 
     <!-- Editor Screen - Dialog (Link Detail) -->
     <string name="editor_dialog_title_link_detail">카드 정보</string>

@@ -22,6 +22,7 @@ import com.zcard.domain.usecase.UploadCardModelUseCase
 import com.zcard.feature.R
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -49,8 +50,9 @@ class CardEditorViewModel @Inject constructor(
     private val uploadGlbUseCase: UploadCardModelUseCase,
 ) : ViewModel() {
 
-    private var _cardId: Long = -1L
-    private var _exportId: Long = -1L
+    private var cardId: Long = -1L
+    private var exportId: Long = -1L
+    private var uploadJob: Job? = null
 
     private val _cardEditorState = MutableStateFlow(CardEditorState())
     val cardEditorState: StateFlow<CardEditorState> = _cardEditorState
@@ -62,6 +64,7 @@ class CardEditorViewModel @Inject constructor(
         when (intent) {
             is CardEditorIntent.OnUnityMessage -> handleUnityMessage(intent.message)
             is CardEditorIntent.Init -> handleInit(intent.cardId)
+            is CardEditorIntent.BackPressed -> handleLeaveAttempt()
             is CardEditorIntent.ChangeTitle -> handleChangeTitle(intent.newTitle)
 
             is CardEditorIntent.OpenCardLinkDetail -> handleOpenCardLinkDetail()
@@ -71,6 +74,8 @@ class CardEditorViewModel @Inject constructor(
 
             is CardEditorIntent.FinishEditing -> handleFinishEditing()
             is CardEditorIntent.ExportGlbAndUpload -> handleExportGlbAndUpload()
+            is CardEditorIntent.CancelUpload -> handleCancelUpload()
+            is CardEditorIntent.CloseLoading -> handleLeaveAttempt()
             is CardEditorIntent.ChangeDialogState -> handleChangeDialogState(intent.dialogState)
 
             is CardEditorIntent.ChangeTab -> handleChangeTab(intent.tab)
@@ -85,14 +90,14 @@ class CardEditorViewModel @Inject constructor(
         }
     }
 
-    // ── 씬 초기화 ─────────────────────────────────────────────────────────────
+    // ── 초기 설정 ─────────────────────────────────────────────────────────────
 
     private fun handleInit(cardId: Long) {
         viewModelScope.launch {
             getCardUseCase(cardId)
                 .onSuccess { result ->
-                    _cardId = result.cardData.cardId
-                    _exportId = result.cardData.exportId
+                    this@CardEditorViewModel.cardId = result.cardData.cardId
+                    exportId = result.cardData.exportId
                     _cardEditorState.update {
                         it.copy(
                             originalCardTitle = result.cardData.title,
@@ -138,12 +143,22 @@ class CardEditorViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
+    private fun handleLeaveAttempt() {
+        if(uploadJob?.isActive == true) {
+            updateDialogState(CardEditorState.DialogState.UPLOAD_CANCEL_CONFIRM)
+        } else if(_cardEditorState.value.isLoading) {
+            _cardEditorSideEffect.trySend(CardEditorSideEffect.ToastMessage(R.string.editor_msg_block_back_during_export))
+        } else {
+            _cardEditorSideEffect.trySend(CardEditorSideEffect.Finish)
+        }
+    }
+
     // ── Unity 메시지 ──────────────────────────────────────────────────────────
 
     private fun handleUnityMessage(msg: UnityMessage) {
         when (msg.type) {
             UnityEventType.CREATE_OBJECT -> handleCreateObjectResult(msg.status, msg.data)
-            UnityEventType.EXPORT_GLB -> handleExportGlbResult(msg.status, msg.data)
+            UnityEventType.EXPORT_GLB -> handleUploadGlbResult(msg.status, msg.data)
             else -> Unit
         }
     }
@@ -157,7 +172,7 @@ class CardEditorViewModel @Inject constructor(
             if(unityStatusType == UnityEventStatus.FAILURE) {
                 Log.e(TAG, "Id $result Object Creation Failed")
                 selectedObject = null
-                cardElementRepository.deleteCardElementById(_cardId, id)
+                cardElementRepository.deleteCardElementById(cardId, id)
                     .onFailure { Log.e(TAG, "Zombie data created. Element ID: $id") }
                 _cardEditorSideEffect.trySend(CardEditorSideEffect.ToastMessage(R.string.editor_msg_fail_load_object))
             } else {
@@ -174,18 +189,18 @@ class CardEditorViewModel @Inject constructor(
         }
     }
 
-    private fun handleExportGlbResult(unityStatusType: UnityEventStatus, fileName: String) {
-        viewModelScope.launch {
+    private fun handleUploadGlbResult(unityStatusType: UnityEventStatus, fileName: String) {
+        uploadJob = viewModelScope.launch {
             try {
                 if(unityStatusType != UnityEventStatus.SUCCESS) error(fileName)
 
-                uploadGlbUseCase(_cardId, fileName).collect { state ->
+                uploadGlbUseCase(cardId, fileName).collect { state ->
                     when(state) {
                         is UploadState.Progress -> _cardEditorState.update {
                             it.copy(loadingText = "Uploading ${state.percent}%")
                         }
                         is UploadState.Success -> {
-                            val cardUrl = generateCardUrlUseCase(_cardId).getOrThrow()
+                            val cardUrl = generateCardUrlUseCase(cardId).getOrThrow()
                             _cardEditorSideEffect.trySend(CardEditorSideEffect.NavigateToCardShare(cardUrl))
                         }
                         is UploadState.Failure -> throw state.error ?: Exception("Firebase upload failed")
@@ -198,6 +213,7 @@ class CardEditorViewModel @Inject constructor(
                 _cardEditorSideEffect.trySend(CardEditorSideEffect.ToastMessage(R.string.editor_msg_fail_card_upload))
             } finally {
                 _cardEditorState.update { it.copy(isLoading = false) }
+                uploadJob = null
             }
         }
     }
@@ -234,8 +250,8 @@ class CardEditorViewModel @Inject constructor(
         saveCardTitle()
         updateDialogState(CardEditorState.DialogState.NONE)
 
-        if(_exportId == -1L) return
-        unityBridge.exportGlb(_exportId)
+        if(exportId == -1L) return
+        unityBridge.exportGlb(exportId)
 
         _cardEditorState.update {
             it.copy(
@@ -243,6 +259,14 @@ class CardEditorViewModel @Inject constructor(
                 loadingText = "Exporting"
             )
         }
+    }
+
+    private fun handleCancelUpload() {
+        updateDialogState(CardEditorState.DialogState.NONE)
+        val job = uploadJob ?: return
+        job.cancel()
+        _cardEditorState.update { it.copy(isLoading = false) }
+        _cardEditorSideEffect.trySend(CardEditorSideEffect.ToastMessage(R.string.editor_msg_cancel_card_upload))
     }
 
     private fun handleChangeDialogState(dialogState: CardEditorState.DialogState) {
@@ -259,7 +283,7 @@ class CardEditorViewModel @Inject constructor(
         viewModelScope.launch {
             val newElement = CardElement(
                 elementId = 0,
-                cardId = _cardId,
+                cardId = cardId,
                 assetId = clickedObject.assetId,
                 elementType = ElementType.OBJECT,
             )
@@ -280,7 +304,7 @@ class CardEditorViewModel @Inject constructor(
         if (currentBackgroundId == assetId) return
 
         viewModelScope.launch {
-            cardRepository.updateBackgroundAssetId(_cardId, assetId)
+            cardRepository.updateBackgroundAssetId(cardId, assetId)
         }
         _cardEditorState.update {
             it.copy(selectedBackgroundId = assetId)
@@ -305,7 +329,7 @@ class CardEditorViewModel @Inject constructor(
     private fun handleDeleteSpawnedObject() {
         viewModelScope.launch {
             _cardEditorState.value.selectedSpawnedObjectId?.let { id ->
-                cardElementRepository.deleteCardElementById(_cardId, id)
+                cardElementRepository.deleteCardElementById(cardId, id)
                     .onSuccess { row ->
                         if(row > 0) unityBridge.deleteObject(id)
                     }
@@ -337,7 +361,7 @@ class CardEditorViewModel @Inject constructor(
     private fun saveCardTitle() {
         val title = _cardEditorState.value.cardTitle
         viewModelScope.launch {
-            cardRepository.updateCardTitle(_cardId, title)
+            cardRepository.updateCardTitle(cardId, title)
                 .onSuccess {
                     _cardEditorState.update { it.copy(originalCardTitle = title) }
                 }.onFailure {

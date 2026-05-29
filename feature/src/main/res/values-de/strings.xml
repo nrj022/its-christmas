@@ -3,6 +3,7 @@
     <string name="common_cd_back_button">Zurück</string>
     <string name="common_button_cancel">Abbrechen</string>
     <string name="common_button_confirm">Bestätigen</string>
+    <string name="common_button_yes">Ja</string>
     <string name="common_button_no">Nein</string>
     <string name="common_button_apply">Anwenden</string>
 
@@ -14,6 +15,10 @@
     <string name="editor_msg_fail_card_title_update">Kartentitel konnte nicht aktualisiert werden. Bitte erneut versuchen.</string>
     <string name="editor_msg_block_system_back">Bitte die Schaltflächen oben verwenden, um die Bearbeitung abzuschließen</string>
     <string name="editor_msg_copy_success">In die Zwischenablage kopiert</string>
+    <string name="editor_msg_cancel_card_upload">Karten-Upload abgebrochen</string>
+    <string name="editor_msg_block_back_during_export">Export läuft. Bitte warte einen Moment.</string>
+    <string name="editor_loading_msg_network_required">Diese Aufgabe erfordert eine Netzwerkverbindung.</string>
+    <string name="editor_loading_msg_uploading">Upload %1$d%%</string>
 
     <string name="editor_button_adjust">Anpassen</string>
     <string name="editor_button_complete">Fertig</string>
@@ -30,6 +35,7 @@
     <string name="editor_cd_add_text">Neuer Text</string>
     <string name="editor_cd_delete_text">Text löschen</string>
     <string name="editor_cd_asset">Asset</string>
+    <string name="editor_cd_close_button">Schließen</string>
 
     <!-- Editor Screen - Dialog (Delete Object) -->
     <string name="editor_dialog_title_delete">Dieses Objekt löschen?</string>
@@ -43,7 +49,10 @@
     <!-- Editor Screen - Dialog (Unsaved Changes) -->
     <string name="editor_dialog_title_unsaved_changes">Es gibt ungespeicherte Änderungen.</string>
     <string name="editor_dialog_content_unsaved_changes">Vor dem Verlassen speichern?</string>
-    <string name="editor_dialog_button_save_confirm">Ja</string>
+
+    <!-- Editor Screen - Dialog (Cancel Upload) -->
+    <string name="editor_dialog_title_cancel_upload">Upload läuft</string>
+    <string name="editor_dialog_content_cancel_upload">Upload abbrechen?</string>
 
     <!-- Editor Screen - Dialog (Link Detail) -->
     <string name="editor_dialog_title_link_detail">Karten-Link kopieren</string>

@@ -3,6 +3,7 @@
     <string name="common_cd_back_button">Go back</string>
     <string name="common_button_cancel">Cancel</string>
     <string name="common_button_confirm">Confirm</string>
+    <string name="common_button_yes">Yes</string>
     <string name="common_button_no">No</string>
     <string name="common_button_apply">Apply</string>
 
@@ -14,6 +15,10 @@
     <string name="editor_msg_fail_card_title_update">Failed to update card title. Please try again.</string>
     <string name="editor_msg_block_system_back">Please use the buttons at the top to finish editing</string>
     <string name="editor_msg_copy_success">Copied to clipboard</string>
+    <string name="editor_msg_cancel_card_upload">Card upload cancelled</string>
+    <string name="editor_msg_block_back_during_export">Export in progress. Please wait a moment.</string>
+    <string name="editor_loading_msg_network_required">This task requires a network connection.</string>
+    <string name="editor_loading_msg_uploading">Uploading %1$d%%</string>
 
     <string name="editor_button_adjust">Adjust</string>
     <string name="editor_button_complete">Complete</string>
@@ -30,6 +35,7 @@
     <string name="editor_cd_add_text">New Text</string>
     <string name="editor_cd_delete_text">Delete Text</string>
     <string name="editor_cd_asset">Asset</string>
+    <string name="editor_cd_close_button">Close</string>
 
     <!-- Editor Screen - Dialog (Delete Object) -->
     <string name="editor_dialog_title_delete">Delete This Object?</string>
@@ -43,7 +49,10 @@
     <!-- Editor Screen - Dialog (Unsaved Changes) -->
     <string name="editor_dialog_title_unsaved_changes">You have unsaved changes.</string>
     <string name="editor_dialog_content_unsaved_changes">Do you want to save before leaving?</string>
-    <string name="editor_dialog_button_save_confirm">Yes</string>
+
+    <!-- Editor Screen - Dialog (Cancel Upload) -->
+    <string name="editor_dialog_title_cancel_upload">Upload in Progress</string>
+    <string name="editor_dialog_content_cancel_upload">Do you want to cancel the upload?</string>
 
     <!-- Editor Screen - Dialog (Link Detail) -->
     <string name="editor_dialog_title_link_detail">Copy Card Link</string>

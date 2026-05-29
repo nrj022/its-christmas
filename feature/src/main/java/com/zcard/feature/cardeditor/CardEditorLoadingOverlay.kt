@@ -15,12 +15,18 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,6 +34,8 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
@@ -42,6 +50,7 @@ fun CardEditorLoadingOverlay(
     modifier: Modifier = Modifier,
     logoSize: Dp = 48.dp,
     backgroundColor: Color = Color.Black.copy(alpha = 0.7f),
+    onClose: () -> Unit = {}
 ) {
     val transition = rememberInfiniteTransition(label = "loading")
 
@@ -102,7 +111,8 @@ fun CardEditorLoadingOverlay(
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(backgroundColor),
+            .background(backgroundColor)
+            .statusBarsPadding(),
         contentAlignment = Alignment.Center
     ) {
         Column(
@@ -124,6 +134,20 @@ fun CardEditorLoadingOverlay(
                 modifier = Modifier.offset(y = 10.dp),
             )
         }
+
+        IconButton(
+            onClick = onClose,
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .offset(x = (-16).dp, y = 10.dp)
+        ) {
+            Icon(
+                modifier = Modifier.size(24.dp),
+                imageVector = Icons.Default.Clear,
+                contentDescription = stringResource(R.string.editor_cd_close_button),
+                tint = Color.White,
+            )
+        }
     }
 }
 
@@ -135,13 +159,16 @@ private fun LoadingTextWithCyclingDots(
     stepMs: Long = 300L,
 ) {
     val dots = remember { mutableIntStateOf(0) }
+    val showNetworkMsg = remember { mutableStateOf(false) }
 
     LaunchedEffect(maxDots, stepMs) {
         while (true) {
             delay(stepMs)
-
             val next = dots.intValue + 1
-            dots.intValue = if(next > maxDots) 0 else next
+            if(next > maxDots) {
+                showNetworkMsg.value = !showNetworkMsg.value
+                dots.intValue = 0
+            } else dots.intValue = next
         }
     }
 
@@ -151,7 +178,7 @@ private fun LoadingTextWithCyclingDots(
         modifier = modifier,
     ) {
         Text(
-            text = text,
+            text = if(showNetworkMsg.value) stringResource(R.string.editor_loading_msg_network_required) else text,
             color = Color.White,
             style = MaterialTheme.typography.bodyMedium.copy(fontSize = 15.sp),
         )
@@ -161,5 +188,11 @@ private fun LoadingTextWithCyclingDots(
             style = MaterialTheme.typography.bodyMedium.copy(fontSize = 15.sp),
         )
     }
+}
+
+@Composable
+@Preview(showBackground = true)
+private fun CardEditorLoadingOverlayPreview() {
+    CardEditorLoadingOverlay(text = "Loading...")
 }
 

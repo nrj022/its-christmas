@@ -4,6 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -24,8 +25,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.zcard.feature.R
 import com.zcard.designsystem.component.BaseDialog
+import com.zcard.designsystem.theme.DimGray
 import com.zcard.designsystem.theme.Gray
 import com.zcard.designsystem.theme.White
 
@@ -35,7 +38,7 @@ fun CardInfoDialog(
     isTitleChanged: Boolean = false,
     onTitleChange: (String) -> Unit,
     onTitleSave: () -> Unit,
-    onCopyLink: () -> Unit,
+    onViewLink: () -> Unit,
     onDismiss: () -> Unit
 ) {
     BaseDialog(
@@ -83,31 +86,28 @@ fun CardInfoDialog(
                 }
             }
             Row(
-                modifier = Modifier.padding(top = 10.dp),
+                modifier = Modifier
+                    .padding(top = 10.dp)
+                    .clickable { onViewLink() }
+                    .padding(10.dp),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                Row(
-                    modifier = Modifier
-                        .clickable { onCopyLink() }
-                        .padding(10.dp),
-                    horizontalArrangement = Arrangement.spacedBy(10.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        imageVector = ImageVector.vectorResource(id = R.drawable.ic_copy),
-                        contentDescription = null,
-                        modifier = Modifier.size(14.dp),
-                    )
-                    Text(
-                        text = stringResource(R.string.editor_dialog_button_link_copy),
-                        style = MaterialTheme.typography.labelSmall,
-                    )
-                }
+                Icon(
+                    imageVector = ImageVector.vectorResource(id = R.drawable.ic_link),
+                    contentDescription = null,
+                    modifier = Modifier.size(14.dp),
+                )
+                Spacer(modifier = Modifier.size(10.dp))
+                Text(
+                    text = stringResource(R.string.editor_dialog_button_view_link),
+                    style = MaterialTheme.typography.labelSmall,
+                )
+                Spacer(modifier = Modifier.size(10.dp))
                 Text(
                     text = stringResource(R.string.editor_dialog_text_exclude_new_edit),
                     style = MaterialTheme.typography.labelSmall,
-                    color = Gray
+                    fontSize = 9.sp,
+                    color = DimGray
                 )
             }
         }
@@ -121,6 +121,6 @@ private fun CardInfoDialogPreview() {
         onTitleChange = {},
         onTitleSave = {},
         onDismiss = {},
-        onCopyLink = {}
+        onViewLink = {}
     )
 }

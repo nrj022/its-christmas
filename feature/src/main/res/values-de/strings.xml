@@ -57,8 +57,8 @@
     <!-- Editor Screen - Dialog (Link Detail) -->
     <string name="editor_dialog_title_link_detail">Karten-Link kopieren</string>
     <string name="editor_dialog_button_set_card_title_save">Speichern</string>
-    <string name="editor_dialog_button_link_copy">Link kopieren</string>
-    <string name="editor_dialog_text_exclude_new_edit">Neue Bearbeitungen ausgeschlossen</string>
+    <string name="editor_dialog_button_view_link">Link ansehen</string>
+    <string name="editor_dialog_text_exclude_new_edit">Neue Änderungen sind nicht enthalten</string>
 
     <!-- Text Edit Screen -->
     <string name="text_edit_button_back">Zurück</string>

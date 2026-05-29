@@ -57,8 +57,8 @@
     <!-- Editor Screen - Dialog (Link Detail) -->
     <string name="editor_dialog_title_link_detail">カードリンクをコピー</string>
     <string name="editor_dialog_button_set_card_title_save">保存</string>
-    <string name="editor_dialog_button_link_copy">リンクをコピー</string>
-    <string name="editor_dialog_text_exclude_new_edit">新しい編集は含まれません</string>
+    <string name="editor_dialog_button_view_link">リンクを見る</string>
+    <string name="editor_dialog_text_exclude_new_edit">新しい編集内容は含まれません</string>
 
     <!-- Text Edit Screen -->
     <string name="text_edit_button_back">戻る</string>

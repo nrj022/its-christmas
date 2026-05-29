@@ -57,8 +57,8 @@
     <!-- Editor Screen - Dialog (Link Detail) -->
     <string name="editor_dialog_title_link_detail">Copiar enlace de tarjeta</string>
     <string name="editor_dialog_button_set_card_title_save">Guardar</string>
-    <string name="editor_dialog_button_link_copy">Copiar enlace</string>
-    <string name="editor_dialog_text_exclude_new_edit">Excluye nuevas ediciones</string>
+    <string name="editor_dialog_button_view_link">Ver enlace</string>
+    <string name="editor_dialog_text_exclude_new_edit">Las ediciones nuevas no están incluidas</string>
 
     <!-- Text Edit Screen -->
     <string name="text_edit_button_back">Volver</string>

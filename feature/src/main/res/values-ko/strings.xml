@@ -57,8 +57,8 @@
     <!-- Editor Screen - Dialog (Link Detail) -->
     <string name="editor_dialog_title_link_detail">카드 정보</string>
     <string name="editor_dialog_button_set_card_title_save">저장</string>
-    <string name="editor_dialog_button_link_copy">링크 복사</string>
-    <string name="editor_dialog_text_exclude_new_edit">새 편집 내용 미포함</string>
+    <string name="editor_dialog_button_view_link">링크 보기</string>
+    <string name="editor_dialog_text_exclude_new_edit">새로운 편집 내용은 포함되지 않아요</string>
 
     <!-- Text Edit Screen -->
     <string name="text_edit_button_back">Back</string>

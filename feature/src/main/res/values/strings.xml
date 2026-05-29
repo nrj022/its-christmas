@@ -57,8 +57,8 @@
     <!-- Editor Screen - Dialog (Link Detail) -->
     <string name="editor_dialog_title_link_detail">Copy Card Link</string>
     <string name="editor_dialog_button_set_card_title_save">Save</string>
-    <string name="editor_dialog_button_link_copy">Copy Link</string>
-    <string name="editor_dialog_text_exclude_new_edit">Excludes new edits</string>
+    <string name="editor_dialog_button_view_link">View Link</string>
+    <string name="editor_dialog_text_exclude_new_edit">New edits are not included</string>
 
     <!-- Transform Screen -->
     <string name="transform_msg_fail_load_object">Failed to load object. Please try again.</string>

@@ -47,6 +47,7 @@ dependencies {
     implementation(project(":feature"))
     implementation(project(":core:data"))
     implementation(project(":core:analytics"))
+    implementation(project(":core:network"))
 
     // Hilt
     implementation(libs.google.hilt.android)

@@ -21,7 +21,7 @@
     <string name="editor_loading_msg_uploading">Upload %1$d%%</string>
 
     <string name="editor_button_adjust">Anpassen</string>
-    <string name="editor_button_complete">Fertig</string>
+    <string name="editor_button_complete">Generieren</string>
     <string name="editor_button_add_text">Text bearbeiten</string>
 
     <string name="editor_title_asset_tab_objects">3D-Objekt</string>
@@ -61,6 +61,7 @@
     <string name="editor_dialog_text_exclude_new_edit">Neue Bearbeitungen ausgeschlossen</string>
 
     <!-- Text Edit Screen -->
+    <string name="text_edit_button_back">Zurück</string>
     <string name="text_edit_msg_fail_load">Texte konnten nicht geladen werden.</string>
     <string name="text_edit_msg_fail_save">Speichern fehlgeschlagen. Bitte erneut versuchen.</string>
     <string name="text_edit_msg_partial_fail_save">Einige Änderungen konnten nicht gespeichert werden.</string>

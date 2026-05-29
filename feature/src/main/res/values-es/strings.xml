@@ -21,7 +21,7 @@
     <string name="editor_loading_msg_uploading">Subiendo %1$d%%</string>
 
     <string name="editor_button_adjust">Ajustar</string>
-    <string name="editor_button_complete">Listo</string>
+    <string name="editor_button_complete">Generar</string>
     <string name="editor_button_add_text">Editar texto</string>
 
     <string name="editor_title_asset_tab_objects">Objeto 3D</string>
@@ -61,6 +61,7 @@
     <string name="editor_dialog_text_exclude_new_edit">Excluye nuevas ediciones</string>
 
     <!-- Text Edit Screen -->
+    <string name="text_edit_button_back">Volver</string>
     <string name="text_edit_msg_fail_load">No se pudieron cargar los textos.</string>
     <string name="text_edit_msg_fail_save">Error al guardar. Por favor, inténtalo de nuevo.</string>
     <string name="text_edit_msg_partial_fail_save">Algunos cambios no se pudieron guardar.</string>

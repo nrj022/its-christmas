@@ -21,7 +21,7 @@
     <string name="editor_loading_msg_uploading">Uploading %1$d%%</string>
 
     <string name="editor_button_adjust">Adjust</string>
-    <string name="editor_button_complete">Complete</string>
+    <string name="editor_button_complete">Generate</string>
     <string name="editor_button_add_text">Edit Text</string>
 
     <string name="editor_title_asset_tab_objects">3D Object</string>
@@ -70,6 +70,7 @@
     <string name="transform_cd_decrease_scale">Decrease Scale</string>
 
     <!-- Text Edit Screen -->
+    <string name="text_edit_button_back">Back</string>
     <string name="text_edit_msg_fail_load">Failed to load texts.</string>
     <string name="text_edit_msg_fail_save">Failed to save. Please try again.</string>
     <string name="text_edit_msg_partial_fail_save">Some changes couldn\'t be saved.</string>

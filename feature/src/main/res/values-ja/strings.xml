@@ -21,7 +21,7 @@
     <string name="editor_loading_msg_uploading">%1$d%% アップロード中</string>
 
     <string name="editor_button_adjust">調整</string>
-    <string name="editor_button_complete">完了</string>
+    <string name="editor_button_complete">生成</string>
     <string name="editor_button_add_text">テキスト編集</string>
 
     <string name="editor_title_asset_tab_objects">3Dオブジェクト</string>
@@ -61,6 +61,7 @@
     <string name="editor_dialog_text_exclude_new_edit">新しい編集は含まれません</string>
 
     <!-- Text Edit Screen -->
+    <string name="text_edit_button_back">戻る</string>
     <string name="text_edit_msg_fail_load">テキストを読み込めませんでした。</string>
     <string name="text_edit_msg_fail_save">保存に失敗しました。もう一度お試しください。</string>
     <string name="text_edit_msg_partial_fail_save">一部の変更を保存できませんでした。</string>

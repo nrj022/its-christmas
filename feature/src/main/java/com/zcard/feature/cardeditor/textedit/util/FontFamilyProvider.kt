@@ -9,6 +9,9 @@ import com.zcard.feature.R
 
 
 private val fontResMap: Map<String, Int> = mapOf(
+    TextFontFamily.ChironGoRoundTC.key to R.font.chirongoroundtc_regular,
+    TextFontFamily.Diphylleia.key to R.font.diphylleia_regular,
+    TextFontFamily.HiMelody.key to R.font.himelody_regular,
     TextFontFamily.PlaywriteUsTradGuides.key to R.font.playwriteustradguides_regular,
     TextFontFamily.Anton.key to R.font.anton_regular,
     TextFontFamily.BebasNeue.key to R.font.bebasneue_regular,

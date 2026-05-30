@@ -8,8 +8,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material3.Card
@@ -17,6 +19,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,8 +39,15 @@ import com.zcard.feature.cardeditor.textedit.util.rememberFontFamilies
 @Composable
 fun TextListPanel(viewModel: TextEditViewModel = hiltViewModel()) {
     val state by viewModel.textEditState.collectAsStateWithLifecycle()
+    val scrollState = rememberLazyListState()
+
+    LaunchedEffect(state.selectedTextTempId) {
+        val selectedIndex = state.tempTexts.indexOfFirst { it.tempId == state.selectedTextTempId }
+        if (selectedIndex >= 0) scrollState.animateScrollToItem(selectedIndex)
+    }
 
     TextListContent(
+        scrollState = scrollState,
         textList = state.tempTexts,
         selectedTextId = state.selectedTextTempId
     ) {
@@ -47,6 +57,7 @@ fun TextListPanel(viewModel: TextEditViewModel = hiltViewModel()) {
 
 @Composable
 fun TextListContent(
+    scrollState: LazyListState = rememberLazyListState(),
     textList: List<TempText> = emptyList(),
     selectedTextId: Long? = null,
     onClick: (Long) -> Unit = {}
@@ -55,6 +66,7 @@ fun TextListContent(
 
     LazyRow(
         modifier = Modifier.padding(horizontal = 10.dp),
+        state = scrollState,
         horizontalArrangement = Arrangement.spacedBy(10.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {

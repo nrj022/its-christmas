@@ -11,7 +11,7 @@ sealed class TextEditIntent {
     data class ChangeTab(val tab: TextEditState.TextEditorTab): TextEditIntent()
     data object ResetCamera: TextEditIntent()
     data object MissingTextSelection: TextEditIntent()
-    data object AddText: TextEditIntent()
+    data class AddText(val text: String): TextEditIntent()
     data class DeleteText(val tempId: Long): TextEditIntent()
     data class SelectText(val tempId: Long): TextEditIntent()
     data class ChangeTextContent(val newText: String): TextEditIntent()

@@ -18,6 +18,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.zcard.designsystem.theme.ZCardTheme
 import com.zcard.feature.MainIntent
 import com.zcard.feature.MainViewModel
+import com.zcard.feature.R
 import com.zcard.feature.databinding.FragmentTextEditBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -120,7 +121,7 @@ class TextEditFragment : Fragment() {
 
     private fun initListener() {
         binding.imgBtnAddText.setOnClickListener {
-            viewModel.onIntent(TextEditIntent.AddText)
+            viewModel.onIntent(TextEditIntent.AddText(getString(R.string.text_edit_placeholder_text)))
         }
 
         binding.imgBtnDeleteText.setOnClickListener {

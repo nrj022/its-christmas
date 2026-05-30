@@ -28,6 +28,16 @@ class HomeFragment : Fragment() {
     private val viewModel: HomeViewModel by viewModels()
     private val mainViewModel: MainViewModel by activityViewModels()
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        lifecycleScope.launch {
+            mainViewModel.unityMessage.collect { msg ->
+                viewModel.onIntent(HomeIntent.OnUnityMessage(msg))
+            }
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -46,21 +56,14 @@ class HomeFragment : Fragment() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                launch {
-                    mainViewModel.unityMessage.collect { msg ->
-                        viewModel.onIntent(HomeIntent.OnUnityMessage(msg))
-                    }
-                }
-                launch {
-                    viewModel.homeSideEffect.collect { sideEffect ->
-                        when(sideEffect) {
-                            is HomeSideEffect.NavigateToSetting -> navigateToSetting()
-                            is HomeSideEffect.NavigateToCardEditor -> navigateToCardEditor(sideEffect.cardId)
-                            is HomeSideEffect.ToastMessage -> {
-                                Toast.makeText(requireContext(), getString(sideEffect.msgRes), Toast.LENGTH_SHORT).show()
-                            }
-                            is HomeSideEffect.ShareLink -> shareCardLink(sideEffect.link)
+                viewModel.homeSideEffect.collect { sideEffect ->
+                    when(sideEffect) {
+                        is HomeSideEffect.NavigateToSetting -> navigateToSetting()
+                        is HomeSideEffect.NavigateToCardEditor -> navigateToCardEditor(sideEffect.cardId)
+                        is HomeSideEffect.ToastMessage -> {
+                            Toast.makeText(requireContext(), getString(sideEffect.msgRes), Toast.LENGTH_SHORT).show()
                         }
+                        is HomeSideEffect.ShareLink -> shareCardLink(sideEffect.link)
                     }
                 }
             }

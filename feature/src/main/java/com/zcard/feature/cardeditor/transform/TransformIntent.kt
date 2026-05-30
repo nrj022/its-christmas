@@ -4,6 +4,7 @@ import com.zcard.feature.cardeditor.model.Direction
 
 sealed class TransformIntent {
     data class Init(val elementId: Long): TransformIntent()
+    data object ToggleTransformType: TransformIntent()
     data class MoveObject(val direction: Direction): TransformIntent()
     data class ChangeScale(val newScale: Int): TransformIntent()
     data object Exit: TransformIntent()

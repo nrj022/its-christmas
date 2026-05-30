@@ -81,6 +81,8 @@
     <string name="transform_cd_camera_focus_button">Kamerafokus</string>
     <string name="transform_cd_increase_scale">Größe erhöhen</string>
     <string name="transform_cd_decrease_scale">Größe verringern</string>
+    <string name="transform_label_type_translation">Verschiebung</string>
+    <string name="transform_label_type_rotation">Rotation</string>
 
     <!-- Share Screen -->
     <string name="share_button_try_again">Erneut versuchen</string>

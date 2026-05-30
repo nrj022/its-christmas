@@ -69,6 +69,8 @@
     <string name="transform_cd_camera_focus_button">Camera Focus</string>
     <string name="transform_cd_increase_scale">Increase Scale</string>
     <string name="transform_cd_decrease_scale">Decrease Scale</string>
+    <string name="transform_label_type_translation">Translation</string>
+    <string name="transform_label_type_rotation">Rotation</string>
 
     <!-- Text Edit Screen -->
     <string name="text_edit_button_back">Back</string>

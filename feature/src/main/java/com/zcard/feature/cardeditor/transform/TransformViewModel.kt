@@ -38,6 +38,7 @@ class TransformViewModel @Inject constructor(
     fun onIntent(intent: TransformIntent) {
         when (intent) {
             is TransformIntent.Init -> handleInit(intent.elementId)
+            is TransformIntent.ToggleTransformType -> handleToggleTransformType()
             is TransformIntent.MoveObject -> handleMoveObject(intent.direction)
             is TransformIntent.ChangeScale -> handleChangeScale(intent.newScale)
             is TransformIntent.ResetTransform -> handleResetTransform()
@@ -80,6 +81,12 @@ class TransformViewModel @Inject constructor(
     }
 
     // ── 트랜스폼 조작 ──────────────────────────────────────────────────────────
+
+    private fun handleToggleTransformType() {
+        _transformState.update {
+            it.copy(transformToggleType = it.transformToggleType.toggled())
+        }
+    }
 
     private fun handleMoveObject(direction: Direction) {
         val elementId = _elementId ?: return

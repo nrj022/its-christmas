@@ -81,6 +81,8 @@
     <string name="transform_cd_camera_focus_button">카메라 포커스</string>
     <string name="transform_cd_increase_scale">크기 늘리기</string>
     <string name="transform_cd_decrease_scale">크기 줄이기</string>
+    <string name="transform_label_type_translation">이동</string>
+    <string name="transform_label_type_rotation">회전</string>
 
     <!-- Share Screen -->
     <string name="share_button_try_again">다시 시도</string>

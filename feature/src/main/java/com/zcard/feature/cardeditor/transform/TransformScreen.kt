@@ -24,6 +24,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -46,10 +47,12 @@ fun TransformScreen(viewModel: TransformViewModel = hiltViewModel()) {
 
     TransformContent(
         scale = state.tempTransform.scale,
+        transformToggleType = state.transformToggleType,
         onScaleChange = { newScale ->
             viewModel.onIntent(TransformIntent.ChangeScale(newScale))
         },
         onCancel = { viewModel.onIntent(TransformIntent.Exit) },
+        onToggle = { viewModel.onIntent(TransformIntent.ToggleTransformType) },
         onApply = { viewModel.onIntent(TransformIntent.SaveChanges) },
         onDirectionalClick = { direction ->
             viewModel.onIntent(TransformIntent.MoveObject(direction))
@@ -68,9 +71,11 @@ fun TransformScreen(viewModel: TransformViewModel = hiltViewModel()) {
 @Composable
 fun TransformContent(
     scale: Int = 1,
+    transformToggleType: TransformState.TransformType = TransformState.TransformType.ROTATION,
     onScaleChange: (Int) -> Unit = {},
     onDirectionalClick: (Direction) -> Unit = {},
     onCancel: () -> Unit = {},
+    onToggle: () -> Unit = {},
     onApply: () -> Unit = {},
 ) {
     Column(
@@ -82,22 +87,26 @@ fun TransformContent(
     ) {
         // 1. 상단 Cancel, Apply 버튼
         TopActionRow(
+            toggleType = transformToggleType,
             onCancel = onCancel,
+            onToggle = onToggle,
             onApply = onApply
         )
+
         Row(
-            modifier = Modifier.padding(top = 10.dp, bottom = 30.dp),
+            modifier = Modifier.padding(top = 20.dp, bottom = 30.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(40.dp) // 방향키와 수량 조절기 사이 간격
         ) {
-            // 2-1. 방향키 컨트롤러
-            DirectionalController(onClick = onDirectionalClick)
-
-            // 2-2. Scale 조절기
-            ScaleController(
-                scale = scale,
-                onScaleChange = onScaleChange
-            )
+            if(transformToggleType != TransformState.TransformType.TRANSLATION) {
+                DirectionalController(onClick = onDirectionalClick)
+                ScaleController(
+                    scale = scale,
+                    onScaleChange = onScaleChange
+                )
+            } else {
+                RotationGizmo()
+            }
         }
     }
 }
@@ -107,7 +116,9 @@ fun TransformContent(
  */
 @Composable
 private fun TopActionRow(
+    toggleType: TransformState.TransformType,
     onCancel: () -> Unit,
+    onToggle: () -> Unit,
     onApply: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -122,6 +133,27 @@ private fun TopActionRow(
                 style = MaterialTheme.typography.labelSmall,
                 color = SoftBlack
             )
+        }
+        Button(
+            onClick = onToggle,
+            shape = MaterialTheme.shapes.extraLarge,
+            colors = ButtonDefaults.buttonColors(containerColor = Gray, contentColor = SoftBlack),
+        ) {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    painter = painterResource(toggleType.icon),
+                    contentDescription = null,
+                    tint = SoftBlack
+                )
+                Text(
+                    text = stringResource(toggleType.label),
+                    style = MaterialTheme.typography.labelSmall,
+                    fontWeight = FontWeight.Bold
+                )
+            }
         }
         TextButton(onClick = onApply) {
             Text(

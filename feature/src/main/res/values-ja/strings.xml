@@ -81,6 +81,8 @@
     <string name="transform_cd_camera_focus_button">カメラフォーカス</string>
     <string name="transform_cd_increase_scale">サイズを拡大</string>
     <string name="transform_cd_decrease_scale">サイズを縮小</string>
+    <string name="transform_label_type_translation">移動</string>
+    <string name="transform_label_type_rotation">回転</string>
 
     <!-- Share Screen -->
     <string name="share_button_try_again">再試行</string>

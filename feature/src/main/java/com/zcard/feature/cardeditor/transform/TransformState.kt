@@ -10,4 +10,6 @@ data class TransformState(
 ) {
     val hasPendingTransform: Boolean
         get() = initialTransform != tempTransform
+
+    enum class Axis { NONE, X, Y, Z }
 }

@@ -135,5 +135,7 @@
 
     <!-- Tutorial Screen -->
     <string name="tutorial_button_start">Loslegen</string>
+    <string name="tutorial_text_tagline">Erstelle deine eigene 3D-Karte!</string>
+    <string name="tutorial_text_swipe_hint">Wische, um das Tutorial zu starten</string>
 
 </resources>

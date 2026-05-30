@@ -1,6 +1,8 @@
-v1.7.0 Updates
-Tutorial screen and UI improvements are here!
-- A tutorial is shown on first launch to help you get started
-- Status and navigation bars no longer overlap content on any screen
+v1.8.0 Updates
+Text editing and card sharing just got a lot better!
+- 3 new multilingual fonts added: HiMelody, Diphylleia, and ChironGoRoundTC
+- A dedicated text editing screen makes it easier to adjust font, size, and color
+- The card sharing screen is improved — offline detection now shows a helpful message
+- You can cancel card export mid-way with a cancel button
 
 We recommend keeping your app up to date for the best experience :)

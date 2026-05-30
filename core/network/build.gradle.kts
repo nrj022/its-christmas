@@ -1,27 +1,19 @@
 plugins {
-    alias(libs.plugins.android.application)
+    alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.google.services)
-    alias(libs.plugins.firebase.crashlytics)
-    alias(libs.plugins.firebase.perf)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
 }
 
 android {
-    namespace = "com.zcard.android"
+    namespace = "com.zcard.network"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.zcard.android"
         minSdk = 26
-        targetSdk = 36
-        versionCode = project.findProperty("versionCode")?.toString()?.toInt() ?: 4
-
-        val baseVersion = "1.8.0"
-        versionName = project.findProperty("versionName")?.toString() ?: baseVersion
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles("consumer-rules.pro")
     }
 
     buildTypes {
@@ -43,18 +35,11 @@ android {
 }
 
 dependencies {
-
-    implementation(project(":feature"))
-    implementation(project(":core:data"))
-    implementation(project(":core:analytics"))
-    implementation(project(":core:network"))
+    implementation(project(":core:domain"))
 
     // Hilt
     implementation(libs.google.hilt.android)
     ksp(libs.google.hilt.compiler)
-
-    // Firebase
-    implementation(platform(libs.google.firebase.bom))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

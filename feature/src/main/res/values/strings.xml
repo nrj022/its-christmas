@@ -83,8 +83,10 @@
     <string name="text_edit_cd_align_icon">Align %s</string>
 
     <!-- Share Screen -->
+    <string name="share_button_try_again">Try Again</string>
     <string name="share_button_share">Share</string>
     <string name="share_cd_home_button">Home</string>
+    <string name="share_text_no_internet">No internet connection.\nPlease check your connection and try again.</string>
 
     <!-- Home Screen -->
     <string name="home_msg_fail_create_card">Failed to create card</string>

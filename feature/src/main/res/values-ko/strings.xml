@@ -83,8 +83,10 @@
     <string name="transform_cd_decrease_scale">크기 줄이기</string>
 
     <!-- Share Screen -->
+    <string name="share_button_try_again">다시 시도</string>
     <string name="share_button_share">Share</string>
     <string name="share_cd_home_button">홈</string>
+    <string name="share_text_no_internet">인터넷 연결이 없어요.\n연결 상태를 확인하고 다시 시도해 주세요.</string>
 
     <!-- Home Screen -->
     <string name="home_msg_fail_create_card">카드 생성에 실패했어요</string>

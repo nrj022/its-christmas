@@ -1,6 +1,9 @@
 package com.zcard.feature.cardshare
 
+import android.annotation.SuppressLint
 import android.view.ViewGroup
+import android.webkit.WebResourceError
+import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.compose.foundation.background
@@ -142,6 +145,7 @@ private fun HomeButton(onHomeClicked: () -> Unit) {
     }
 }
 
+@SuppressLint("SetJavaScriptEnabled")
 @Composable
 private fun CardShareWebView(cardUrl: String, isLoading: Boolean, onPageFinished: () -> Unit = {}) {
     Box(modifier = Modifier.fillMaxSize()) {
@@ -152,7 +156,15 @@ private fun CardShareWebView(cardUrl: String, isLoading: Boolean, onPageFinished
                         override fun onPageFinished(view: WebView?, url: String?) {
                             super.onPageFinished(view, url)
                             onPageFinished()
-                            println("onPageFinished: $url")
+                        }
+
+                        override fun onReceivedError(
+                            view: WebView?,
+                            request: WebResourceRequest?,
+                            error: WebResourceError?
+                        ) {
+                            super.onReceivedError(view, request, error)
+                            if(request?.isForMainFrame == true) onPageFinished()
                         }
                     }
                 }

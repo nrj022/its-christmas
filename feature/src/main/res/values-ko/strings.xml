@@ -135,5 +135,7 @@
 
     <!-- Tutorial Screen -->
     <string name="tutorial_button_start">시작하기</string>
+    <string name="tutorial_text_tagline">나만의 3D 카드를 직접 디자인해보세요!</string>
+    <string name="tutorial_text_swipe_hint">밀어서 튜토리얼 보기</string>
 
 </resources>

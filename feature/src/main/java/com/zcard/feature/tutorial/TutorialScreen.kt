@@ -35,6 +35,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.zcard.designsystem.theme.DimGray
 import com.zcard.designsystem.theme.Gray
 import com.zcard.designsystem.theme.Orange
 import com.zcard.designsystem.theme.ZCardTheme
@@ -55,10 +56,10 @@ fun TutorialScreen(onStart: () -> Unit = {}) {
     )
 
     // Pager 상태 관리 (총 페이지 수 지정)
-    val pagerState = rememberPagerState(pageCount = { tutorials.size })
+    val pagerState = rememberPagerState(pageCount = { tutorials.size + 1 })
 
     TutorialContent(
-        pages = tutorials,
+        tutorials = tutorials,
         pagerState = pagerState,
         onStart = onStart
     )
@@ -66,8 +67,8 @@ fun TutorialScreen(onStart: () -> Unit = {}) {
 
 @Composable
 fun TutorialContent(
-    pages: List<Int> = emptyList(),
-    pagerState: PagerState = rememberPagerState(pageCount = { 3 }),
+    tutorials: List<Int> = emptyList(),
+    pagerState: PagerState = rememberPagerState(pageCount = { 1 }),
     onStart: () -> Unit = {}
 ) {
     Column(
@@ -82,26 +83,30 @@ fun TutorialContent(
             state = pagerState,
             modifier = Modifier.weight(1f)
         ) { page ->
-            Box(
-                modifier = Modifier
-                    .padding(20.dp)
-                    .fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                Image(
-                    modifier = Modifier.fillMaxHeight().clip(RoundedCornerShape(25.dp)),
-                    painter = painterResource(id = pages[page]),
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop
-                )
+            if(page < 1) {
+                TutorialCover()
+            } else {
+                Box(
+                    modifier = Modifier
+                        .padding(20.dp)
+                        .fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Image(
+                        modifier = Modifier.fillMaxHeight().clip(RoundedCornerShape(25.dp)),
+                        painter = painterResource(id = tutorials[page - 1]),
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop
+                    )
 
+                }
             }
         }
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center
         ) {
-            repeat(pages.size) { iteration ->
+            repeat(pagerState.pageCount) { iteration ->
                 val color = if (pagerState.currentPage == iteration) Orange else Gray
 
                 Box(
@@ -115,7 +120,7 @@ fun TutorialContent(
         }
 
         // 마지막 페이지에서만 '시작하기' 버튼 노출
-        if (pagerState.currentPage == pages.size - 1) {
+        if (pagerState.currentPage == pagerState.pageCount - 1) {
             Box(
                 modifier = Modifier.height(82.dp),
                 contentAlignment = Alignment.Center
@@ -141,6 +146,34 @@ fun TutorialContent(
         } else {
             Spacer(modifier = Modifier.height(20.dp))
         }
+    }
+}
+
+@Composable
+fun TutorialCover() {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Spacer(modifier = Modifier.weight(1f))
+        Image(
+            modifier = Modifier.fillMaxWidth(0.5f),
+            painter = painterResource(id = R.drawable.logo_full),
+            contentDescription = null,
+        )
+        Spacer(modifier = Modifier.height(12.dp))
+        Text(
+            text = stringResource(R.string.tutorial_text_tagline),
+            style = MaterialTheme.typography.labelSmall,
+            color = DimGray
+        )
+        Spacer(modifier = Modifier.weight(1f))
+        Text(
+            text = stringResource(R.string.tutorial_text_swipe_hint),
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onBackground
+        )
+        Spacer(modifier = Modifier.height(30.dp))
     }
 }
 

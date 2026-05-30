@@ -135,5 +135,7 @@
 
     <!-- Tutorial Screen -->
     <string name="tutorial_button_start">はじめる</string>
+    <string name="tutorial_text_tagline">オリジナルの3Dカードを作ろう！</string>
+    <string name="tutorial_text_swipe_hint">スワイプしてチュートリアルを始めよう</string>
 
 </resources>

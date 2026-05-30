@@ -135,5 +135,7 @@
 
     <!-- Tutorial Screen -->
     <string name="tutorial_button_start">Get Started</string>
+    <string name="tutorial_text_tagline">Create Your Own 3D Card!</string>
+    <string name="tutorial_text_swipe_hint">Swipe to start tutorial</string>
 
 </resources>

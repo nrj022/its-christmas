@@ -9,6 +9,7 @@ import com.zcard.domain.model.TextColor
 import com.zcard.domain.model.TextFontFamily
 import com.zcard.domain.model.TextAlignment
 import com.zcard.domain.model.TextAttributes
+import com.zcard.domain.model.TextElement
 import com.zcard.domain.repository.CardElementRepository
 import com.zcard.domain.usecase.SaveTextElementsParams
 import com.zcard.domain.usecase.SaveTextElementsUseCase
@@ -51,7 +52,7 @@ class TextEditViewModel @Inject constructor(
             is TextEditIntent.ChangeTab -> handleTabChange(intent.tab)
             is TextEditIntent.ResetCamera -> handleResetCamera()
             is TextEditIntent.MissingTextSelection -> handleMissingTextSelection()
-            is TextEditIntent.AddText -> handleAddText()
+            is TextEditIntent.AddText -> handleAddText(intent.text)
             is TextEditIntent.DeleteText -> handleDeleteText(intent.tempId)
             is TextEditIntent.SelectText -> handleSelectText(intent.tempId)
             is TextEditIntent.ChangeTextContent -> handleChangeTextContent(intent.newText)
@@ -109,8 +110,8 @@ class TextEditViewModel @Inject constructor(
         _textEditState.update { it.copy(selectedTextTempId = it.tempTexts.firstOrNull()?.tempId) }
     }
 
-    private fun handleAddText() {
-        val newText = TempText()
+    private fun handleAddText(text: String) {
+        val newText = TempText(textElement = TextElement(attributes = TextAttributes(content = text)))
         _textEditState.update {
             it.copy(
                 tempTexts = listOf(newText) + it.tempTexts,

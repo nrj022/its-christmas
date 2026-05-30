@@ -69,6 +69,9 @@ import com.zcard.feature.cardeditor.dialog.UnsavedChangesDialog
 import com.zcard.feature.cardeditor.textedit.util.icon
 import com.zcard.feature.cardeditor.textedit.util.rememberFontFamilies
 
+private val FONT_SIZE_RANGE = 1f..60f
+private const val FONT_SIZE_STEPS = 58
+
 @Composable
 fun TextEditScreen(viewModel: TextEditViewModel = hiltViewModel()) {
     val state by viewModel.textEditState.collectAsStateWithLifecycle()
@@ -316,8 +319,8 @@ private fun FontSizeSlider(fontSize: Float, onFontSizeChange: (Float) -> Unit) {
             modifier = Modifier.weight(1f),
             value = fontSize,
             onValueChange = onFontSizeChange,
-            valueRange = 12f..48f,
-            steps = 35,
+            valueRange = FONT_SIZE_RANGE,
+            steps = FONT_SIZE_STEPS,
             colors = SliderDefaults.colors(
                 thumbColor = SoftBlack,
                 activeTrackColor = SoftBlack,

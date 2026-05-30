@@ -4,18 +4,23 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import com.zcard.domain.model.TextFontFamily
 import com.zcard.feature.R
 
+
 private val fontResMap: Map<String, Int> = mapOf(
-    "PlaywriteUsTradGuides" to R.font.playwriteustradguides_regular,
-    "Anton" to R.font.anton_regular,
-    "BebasNeue" to R.font.bebasneue_regular,
-    "IrishGrover" to R.font.irishgrover_regular,
-    "PermanentMarker" to R.font.permanentmarker_regular,
-    "PlayfairDisplay" to R.font.playfairdisplay_medium,
-    "PlayfairDisplayItalic" to R.font.playfairdisplay_medium_italic,
-    "ShadowsIntoLight" to R.font.shadowsintolight_regular,
-    "TitanOne" to R.font.titanone_regular
+    TextFontFamily.ChironGoRoundTC.key to R.font.chirongoroundtc_regular,
+    TextFontFamily.Diphylleia.key to R.font.diphylleia_regular,
+    TextFontFamily.HiMelody.key to R.font.himelody_regular,
+    TextFontFamily.PlaywriteUsTradGuides.key to R.font.playwriteustradguides_regular,
+    TextFontFamily.Anton.key to R.font.anton_regular,
+    TextFontFamily.BebasNeue.key to R.font.bebasneue_regular,
+    TextFontFamily.IrishGrover.key to R.font.irishgrover_regular,
+    TextFontFamily.PermanentMarker.key to R.font.permanentmarker_regular,
+    TextFontFamily.PlayfairDisplay.key to R.font.playfairdisplay_medium,
+    TextFontFamily.PlayfairDisplayItalic.key to R.font.playfairdisplay_medium_italic,
+    TextFontFamily.ShadowsIntoLight.key to R.font.shadowsintolight_regular,
+    TextFontFamily.TitanOne.key to R.font.titanone_regular
 )
 
 @Composable

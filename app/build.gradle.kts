@@ -18,7 +18,7 @@ android {
         targetSdk = 36
         versionCode = project.findProperty("versionCode")?.toString()?.toInt() ?: 4
 
-        val baseVersion = "1.8.1"
+        val baseVersion = "1.9.0"
         versionName = project.findProperty("versionName")?.toString() ?: baseVersion
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"

@@ -11,6 +11,14 @@ data class Vector3Dto(
 )
 
 @Serializable
+data class QuaternionDto(
+    val x: Float,
+    val y: Float,
+    val z: Float,
+    val w: Float,
+)
+
+@Serializable
 data class ColorDto(
     val r: Float,
     val g: Float,

@@ -33,6 +33,14 @@ interface UnityBridge {
         posZ: Float
     )
 
+    fun updateRotation(
+        elementId: Long,
+        rotX: Float,
+        rotY: Float,
+        rotZ: Float,
+        rotW: Float,
+    )
+
     fun updateScale(elementId: Long, scale: Int)
 
     fun updateTextContent(elementId: Long, textContent: String)

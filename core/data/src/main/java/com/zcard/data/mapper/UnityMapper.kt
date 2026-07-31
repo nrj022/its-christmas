@@ -2,6 +2,7 @@ package com.zcard.data.mapper
 
 import com.zcard.data.dto.ColorDto
 import com.zcard.data.dto.ObjectDto
+import com.zcard.data.dto.QuaternionDto
 import com.zcard.data.dto.ResetSceneDto
 import com.zcard.data.dto.SceneDto
 import com.zcard.data.dto.TextDto
@@ -88,6 +89,12 @@ object UnityMapper {
         UpdateDto(
             id = "$elementId",
             value = Vector3Dto(posX, posY, posZ)
+        )
+
+    fun toUpdateRotationDto(elementId: Long, rotX: Float, rotY: Float, rotZ: Float, rotW: Float): UpdateDto<QuaternionDto> =
+        UpdateDto(
+            id = "$elementId",
+            value = QuaternionDto(x = rotY, y = rotX, z = -rotZ, w = rotW)
         )
 
     fun toUpdateScaleDto(elementId: Long, scale: Int): UpdateDto<Int> =

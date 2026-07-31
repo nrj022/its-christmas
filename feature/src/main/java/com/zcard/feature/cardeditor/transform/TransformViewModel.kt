@@ -28,6 +28,7 @@ class TransformViewModel @Inject constructor(
     // handleInit의 onSuccess에서만 함께 설정됨 — non-null이면 DB 로드 완료 + tempTransform 초기화 보장
     private var _elementId: Long? = null
     private var _cardId: Long? = null
+    private var _dragStartQuaternion: Quaternion = Quaternion.identity
 
     private val _transformState = MutableStateFlow(TransformState())
     val transformState: StateFlow<TransformState> = _transformState
@@ -40,6 +41,8 @@ class TransformViewModel @Inject constructor(
             is TransformIntent.Init -> handleInit(intent.elementId)
             is TransformIntent.ToggleTransformType -> handleToggleTransformType()
             is TransformIntent.MoveObject -> handleMoveObject(intent.direction)
+            is TransformIntent.StartRotationDrag -> handleStartRotationDrag()
+            is TransformIntent.RotateObject -> handleRotateObject(intent.rotation)
             is TransformIntent.ChangeScale -> handleChangeScale(intent.newScale)
             is TransformIntent.ResetTransform -> handleResetTransform()
             is TransformIntent.ToggleCameraFocus -> handleToggleCameraFocus()
@@ -103,6 +106,19 @@ class TransformViewModel @Inject constructor(
         }
 
         unityBridge.updatePosition(elementId, updated.posX, updated.posY, updated.posZ)
+    }
+
+    private fun handleStartRotationDrag() {
+        _dragStartQuaternion = _transformState.value.tempTransform.rotation
+    }
+
+    private fun handleRotateObject(rotation: Rotation) {
+        val elementId = _elementId ?: return
+        val updatedRot = Quaternion.euler(rotation).times(_dragStartQuaternion)
+
+        _transformState.update { it.copy(tempTransform = it.tempTransform.copy(rotation = updatedRot)) }
+
+        unityBridge.updateRotation(elementId, updatedRot.x, updatedRot.y, updatedRot.z, updatedRot.w)
     }
 
     private fun handleChangeScale(newScale: Int) {

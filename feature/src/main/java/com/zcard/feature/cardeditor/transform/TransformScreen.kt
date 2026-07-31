@@ -51,12 +51,18 @@ fun TransformScreen(viewModel: TransformViewModel = hiltViewModel()) {
         onScaleChange = { newScale ->
             viewModel.onIntent(TransformIntent.ChangeScale(newScale))
         },
+        onDirectionalClick = { direction ->
+            viewModel.onIntent(TransformIntent.MoveObject(direction))
+        },
+        onRotationDragStart = {
+            viewModel.onIntent(TransformIntent.StartRotationDrag)
+        },
+        onRotationChange = { newRotation ->
+            viewModel.onIntent(TransformIntent.RotateObject(newRotation))
+        },
         onCancel = { viewModel.onIntent(TransformIntent.Exit) },
         onToggle = { viewModel.onIntent(TransformIntent.ToggleTransformType) },
         onApply = { viewModel.onIntent(TransformIntent.SaveChanges) },
-        onDirectionalClick = { direction ->
-            viewModel.onIntent(TransformIntent.MoveObject(direction))
-        }
     )
 
     if(state.showUnsavedChangesDialog) {
@@ -74,6 +80,8 @@ fun TransformContent(
     transformToggleType: TransformState.TransformType = TransformState.TransformType.ROTATION,
     onScaleChange: (Int) -> Unit = {},
     onDirectionalClick: (Direction) -> Unit = {},
+    onRotationDragStart: () -> Unit = {},
+    onRotationChange: (Rotation) -> Unit = {},
     onCancel: () -> Unit = {},
     onToggle: () -> Unit = {},
     onApply: () -> Unit = {},
@@ -105,7 +113,10 @@ fun TransformContent(
                     onScaleChange = onScaleChange
                 )
             } else {
-                RotationGizmo()
+                RotationGizmo(
+                    onDragStart = onRotationDragStart,
+                    onRotate = onRotationChange,
+                )
             }
         }
     }
